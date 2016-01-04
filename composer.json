@@ -1,5 +1,5 @@
 {
-    "name": "Rokfor/DB",
+    "name": "rokfor/db",
     "description": "PHP Library to access a Rokfor DB Structure",
     "type": "Library",
     "license": "MIT",
