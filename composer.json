@@ -1,0 +1,15 @@
+{
+    "name": "rokfor/php-db",
+    "description": "PHP Library to access a Rokfor DB Structure",
+    "type": "Library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Urs Hofer",
+            "email": "hoferurs@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Rokfor\\": "src/"}
+    },
+}
