@@ -11,38 +11,47 @@ class DB
 {
   
   /**
-   * undocumented class variable
+   * Propel ServiceContainer
    *
    * @var string
    */
-  private $db;
+  private $serviceContainer;
   
-  
+  /**
+   * Propel Manager
+   *
+   * @var string
+   */
+  private $manager;
+    
   function __construct($host, $user, $pass, $dbname)
   {
-    try {
-      $this->db = new \PDO('mysql:host='.$host.';dbname='.$dbname.';unix_socket=/tmp/mysql.sock;', $user, $pass);
-      $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    } 
-    catch(PDOException $e) {
-      echo 'ERROR: ' . $e->getMessage();
-      return false;
-    }
-    return true;
+    $this->serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
+    $this->serviceContainer->checkVersion('2.0.0-dev');
+    $this->serviceContainer->setAdapterClass('rokfor', 'mysql');
+    $this->manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
+    $this->manager->setConfiguration(array (
+      'classname' => 'Propel\\Runtime\\Connection\\DebugPDO',
+      'dsn' => 'mysql:host='.$host.';dbname='.$dbname.';unix_socket=/tmp/mysql.sock;',
+      'user' => $user,
+      'password' => $pass,
+      'attributes' =>
+      array (
+        'ATTR_EMULATE_PREPARES' => false,
+      ),
+    ));
+    $this->manager->setName('rokfor');
+    $this->serviceContainer->setConnectionManager('rokfor', $manager);
+    $this->serviceContainer->setDefaultDatasource('rokfor');
+    
+  }
+  
+  function getStructure() {
+    
   }
   
   function getData($id) {
-    /* Execute a prepared statement by passing an array of values */
-    $sql = 'SELECT _data.id,_templates.id as t_id, _templates._fieldname, _templates._fieldtype, 
-    _data._datatext as d_text,
-    _data._databinary as d_binary,
-    _data._datainteger as d_integer,
-    _data.__parentnode__ FROM _data
-    LEFT JOIN _templates ON _templates.id = _data._fortemplatefield
-    WHERE _data._forcontribution = ? ORDER BY _data.__sort__';        
-    $sth = $this->db->prepare($sql);
-    $sth->execute(array($id));
-    return $sth->fetchAll();
+    return BooksQuery::create()->find();
   }
   
 }

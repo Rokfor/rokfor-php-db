@@ -9,7 +9,11 @@
             "email": "hoferurs@gmail.com"
         }
     ],
+    "require": {
+      "propel/propel": "dev-master"
+    },
     "autoload": {
-        "psr-4": {"Rokfor\\": "src/"}
+        "psr-4": {"Rokfor\\": "src/"},
+        "classmap": ["config/generated-classes/"]
     }
 }
