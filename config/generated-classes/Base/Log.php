@@ -417,7 +417,7 @@ abstract class Log implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -427,7 +427,7 @@ abstract class Log implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -568,7 +568,7 @@ abstract class Log implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Log The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -580,7 +580,7 @@ abstract class Log implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -588,7 +588,7 @@ abstract class Log implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Log The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -600,7 +600,7 @@ abstract class Log implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -713,10 +713,10 @@ abstract class Log implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : LogTableMap::translateFieldName('Date', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_date = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : LogTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : LogTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : LogTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : LogTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : LogTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
@@ -1081,10 +1081,10 @@ abstract class Log implements ActiveRecordInterface
                 return $this->getDate();
                 break;
             case 5:
-                return $this->getUser();
+                return $this->getUserSys();
                 break;
             case 6:
-                return $this->getConfig();
+                return $this->getConfigSys();
                 break;
             case 7:
                 return $this->getSplit();
@@ -1129,8 +1129,8 @@ abstract class Log implements ActiveRecordInterface
             $keys[2] => $this->getAgent(),
             $keys[3] => $this->getUser(),
             $keys[4] => $this->getDate(),
-            $keys[5] => $this->getUser(),
-            $keys[6] => $this->getConfig(),
+            $keys[5] => $this->getUserSys(),
+            $keys[6] => $this->getConfigSys(),
             $keys[7] => $this->getSplit(),
             $keys[8] => $this->getParentnode(),
             $keys[9] => $this->getSort(),
@@ -1189,10 +1189,10 @@ abstract class Log implements ActiveRecordInterface
                 $this->setDate($value);
                 break;
             case 5:
-                $this->setUser($value);
+                $this->setUserSys($value);
                 break;
             case 6:
-                $this->setConfig($value);
+                $this->setConfigSys($value);
                 break;
             case 7:
                 $this->setSplit($value);
@@ -1245,10 +1245,10 @@ abstract class Log implements ActiveRecordInterface
             $this->setDate($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUser($arr[$keys[5]]);
+            $this->setUserSys($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setConfig($arr[$keys[6]]);
+            $this->setConfigSys($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
             $this->setSplit($arr[$keys[7]]);
@@ -1420,8 +1420,8 @@ abstract class Log implements ActiveRecordInterface
         $copyObj->setAgent($this->getAgent());
         $copyObj->setUser($this->getUser());
         $copyObj->setDate($this->getDate());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());

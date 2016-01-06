@@ -3,6 +3,7 @@
     "description": "PHP Library to access a Rokfor DB Structure",
     "type": "Library",
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Urs Hofer",

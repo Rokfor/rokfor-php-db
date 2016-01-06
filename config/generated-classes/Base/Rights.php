@@ -92,34 +92,6 @@ abstract class Rights implements ActiveRecordInterface
     protected $_group;
 
     /**
-     * The value for the _fortemplate field.
-     *
-     * @var        string
-     */
-    protected $_fortemplate;
-
-    /**
-     * The value for the _forissue field.
-     *
-     * @var        string
-     */
-    protected $_forissue;
-
-    /**
-     * The value for the _forbook field.
-     *
-     * @var        string
-     */
-    protected $_forbook;
-
-    /**
-     * The value for the _foruser field.
-     *
-     * @var        string
-     */
-    protected $_foruser;
-
-    /**
      * The value for the __user__ field.
      *
      * @var        string
@@ -520,51 +492,11 @@ abstract class Rights implements ActiveRecordInterface
     }
 
     /**
-     * Get the [_fortemplate] column value.
-     *
-     * @return string
-     */
-    public function getFortemplate()
-    {
-        return $this->_fortemplate;
-    }
-
-    /**
-     * Get the [_forissue] column value.
-     *
-     * @return string
-     */
-    public function getForissue()
-    {
-        return $this->_forissue;
-    }
-
-    /**
-     * Get the [_forbook] column value.
-     *
-     * @return string
-     */
-    public function getForbook()
-    {
-        return $this->_forbook;
-    }
-
-    /**
-     * Get the [_foruser] column value.
-     *
-     * @return string
-     */
-    public function getForuser()
-    {
-        return $this->_foruser;
-    }
-
-    /**
      * Get the [__user__] column value.
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -574,7 +506,7 @@ abstract class Rights implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -650,92 +582,12 @@ abstract class Rights implements ActiveRecordInterface
     } // setGroup()
 
     /**
-     * Set the value of [_fortemplate] column.
-     *
-     * @param string $v new value
-     * @return $this|\Rights The current object (for fluent API support)
-     */
-    public function setFortemplate($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_fortemplate !== $v) {
-            $this->_fortemplate = $v;
-            $this->modifiedColumns[RightsTableMap::COL__FORTEMPLATE] = true;
-        }
-
-        return $this;
-    } // setFortemplate()
-
-    /**
-     * Set the value of [_forissue] column.
-     *
-     * @param string $v new value
-     * @return $this|\Rights The current object (for fluent API support)
-     */
-    public function setForissue($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_forissue !== $v) {
-            $this->_forissue = $v;
-            $this->modifiedColumns[RightsTableMap::COL__FORISSUE] = true;
-        }
-
-        return $this;
-    } // setForissue()
-
-    /**
-     * Set the value of [_forbook] column.
-     *
-     * @param string $v new value
-     * @return $this|\Rights The current object (for fluent API support)
-     */
-    public function setForbook($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_forbook !== $v) {
-            $this->_forbook = $v;
-            $this->modifiedColumns[RightsTableMap::COL__FORBOOK] = true;
-        }
-
-        return $this;
-    } // setForbook()
-
-    /**
-     * Set the value of [_foruser] column.
-     *
-     * @param string $v new value
-     * @return $this|\Rights The current object (for fluent API support)
-     */
-    public function setForuser($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_foruser !== $v) {
-            $this->_foruser = $v;
-            $this->modifiedColumns[RightsTableMap::COL__FORUSER] = true;
-        }
-
-        return $this;
-    } // setForuser()
-
-    /**
      * Set the value of [__user__] column.
      *
      * @param string $v new value
      * @return $this|\Rights The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -747,7 +599,7 @@ abstract class Rights implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -755,7 +607,7 @@ abstract class Rights implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Rights The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -767,7 +619,7 @@ abstract class Rights implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -871,31 +723,19 @@ abstract class Rights implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RightsTableMap::translateFieldName('Group', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_group = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RightsTableMap::translateFieldName('Fortemplate', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_fortemplate = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RightsTableMap::translateFieldName('Forissue', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_forissue = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RightsTableMap::translateFieldName('Forbook', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_forbook = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RightsTableMap::translateFieldName('Foruser', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_foruser = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RightsTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RightsTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : RightsTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RightsTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : RightsTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RightsTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : RightsTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : RightsTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : RightsTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : RightsTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -905,7 +745,7 @@ abstract class Rights implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = RightsTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = RightsTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Rights'), 0, $e);
@@ -1304,18 +1144,6 @@ abstract class Rights implements ActiveRecordInterface
         if ($this->isColumnModified(RightsTableMap::COL__GROUP)) {
             $modifiedColumns[':p' . $index++]  = '_group';
         }
-        if ($this->isColumnModified(RightsTableMap::COL__FORTEMPLATE)) {
-            $modifiedColumns[':p' . $index++]  = '_fortemplate';
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORISSUE)) {
-            $modifiedColumns[':p' . $index++]  = '_forissue';
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORBOOK)) {
-            $modifiedColumns[':p' . $index++]  = '_forbook';
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORUSER)) {
-            $modifiedColumns[':p' . $index++]  = '_foruser';
-        }
         if ($this->isColumnModified(RightsTableMap::COL___USER__)) {
             $modifiedColumns[':p' . $index++]  = '__user__';
         }
@@ -1347,18 +1175,6 @@ abstract class Rights implements ActiveRecordInterface
                         break;
                     case '_group':
                         $stmt->bindValue($identifier, $this->_group, PDO::PARAM_STR);
-                        break;
-                    case '_fortemplate':
-                        $stmt->bindValue($identifier, $this->_fortemplate, PDO::PARAM_STR);
-                        break;
-                    case '_forissue':
-                        $stmt->bindValue($identifier, $this->_forissue, PDO::PARAM_STR);
-                        break;
-                    case '_forbook':
-                        $stmt->bindValue($identifier, $this->_forbook, PDO::PARAM_STR);
-                        break;
-                    case '_foruser':
-                        $stmt->bindValue($identifier, $this->_foruser, PDO::PARAM_STR);
                         break;
                     case '__user__':
                         $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
@@ -1444,30 +1260,18 @@ abstract class Rights implements ActiveRecordInterface
                 return $this->getGroup();
                 break;
             case 2:
-                return $this->getFortemplate();
+                return $this->getUserSys();
                 break;
             case 3:
-                return $this->getForissue();
+                return $this->getConfigSys();
                 break;
             case 4:
-                return $this->getForbook();
-                break;
-            case 5:
-                return $this->getForuser();
-                break;
-            case 6:
-                return $this->getUser();
-                break;
-            case 7:
-                return $this->getConfig();
-                break;
-            case 8:
                 return $this->getSplit();
                 break;
-            case 9:
+            case 5:
                 return $this->getParentnode();
                 break;
-            case 10:
+            case 6:
                 return $this->getSort();
                 break;
             default:
@@ -1502,15 +1306,11 @@ abstract class Rights implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getGroup(),
-            $keys[2] => $this->getFortemplate(),
-            $keys[3] => $this->getForissue(),
-            $keys[4] => $this->getForbook(),
-            $keys[5] => $this->getForuser(),
-            $keys[6] => $this->getUser(),
-            $keys[7] => $this->getConfig(),
-            $keys[8] => $this->getSplit(),
-            $keys[9] => $this->getParentnode(),
-            $keys[10] => $this->getSort(),
+            $keys[2] => $this->getUserSys(),
+            $keys[3] => $this->getConfigSys(),
+            $keys[4] => $this->getSplit(),
+            $keys[5] => $this->getParentnode(),
+            $keys[6] => $this->getSort(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1619,30 +1419,18 @@ abstract class Rights implements ActiveRecordInterface
                 $this->setGroup($value);
                 break;
             case 2:
-                $this->setFortemplate($value);
+                $this->setUserSys($value);
                 break;
             case 3:
-                $this->setForissue($value);
+                $this->setConfigSys($value);
                 break;
             case 4:
-                $this->setForbook($value);
-                break;
-            case 5:
-                $this->setForuser($value);
-                break;
-            case 6:
-                $this->setUser($value);
-                break;
-            case 7:
-                $this->setConfig($value);
-                break;
-            case 8:
                 $this->setSplit($value);
                 break;
-            case 9:
+            case 5:
                 $this->setParentnode($value);
                 break;
-            case 10:
+            case 6:
                 $this->setSort($value);
                 break;
         } // switch()
@@ -1678,31 +1466,19 @@ abstract class Rights implements ActiveRecordInterface
             $this->setGroup($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setFortemplate($arr[$keys[2]]);
+            $this->setUserSys($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setForissue($arr[$keys[3]]);
+            $this->setConfigSys($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setForbook($arr[$keys[4]]);
+            $this->setSplit($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setForuser($arr[$keys[5]]);
+            $this->setParentnode($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUser($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setConfig($arr[$keys[7]]);
-        }
-        if (array_key_exists($keys[8], $arr)) {
-            $this->setSplit($arr[$keys[8]]);
-        }
-        if (array_key_exists($keys[9], $arr)) {
-            $this->setParentnode($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setSort($arr[$keys[10]]);
+            $this->setSort($arr[$keys[6]]);
         }
     }
 
@@ -1750,18 +1526,6 @@ abstract class Rights implements ActiveRecordInterface
         }
         if ($this->isColumnModified(RightsTableMap::COL__GROUP)) {
             $criteria->add(RightsTableMap::COL__GROUP, $this->_group);
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORTEMPLATE)) {
-            $criteria->add(RightsTableMap::COL__FORTEMPLATE, $this->_fortemplate);
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORISSUE)) {
-            $criteria->add(RightsTableMap::COL__FORISSUE, $this->_forissue);
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORBOOK)) {
-            $criteria->add(RightsTableMap::COL__FORBOOK, $this->_forbook);
-        }
-        if ($this->isColumnModified(RightsTableMap::COL__FORUSER)) {
-            $criteria->add(RightsTableMap::COL__FORUSER, $this->_foruser);
         }
         if ($this->isColumnModified(RightsTableMap::COL___USER__)) {
             $criteria->add(RightsTableMap::COL___USER__, $this->__user__);
@@ -1865,12 +1629,8 @@ abstract class Rights implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setGroup($this->getGroup());
-        $copyObj->setFortemplate($this->getFortemplate());
-        $copyObj->setForissue($this->getForissue());
-        $copyObj->setForbook($this->getForbook());
-        $copyObj->setForuser($this->getForuser());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());
@@ -3936,10 +3696,6 @@ abstract class Rights implements ActiveRecordInterface
     {
         $this->id = null;
         $this->_group = null;
-        $this->_fortemplate = null;
-        $this->_forissue = null;
-        $this->_forbook = null;
-        $this->_foruser = null;
         $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;

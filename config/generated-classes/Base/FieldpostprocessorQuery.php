@@ -22,20 +22,18 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildFieldpostprocessorQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildFieldpostprocessorQuery orderByName($order = Criteria::ASC) Order by the _name column
- * @method     ChildFieldpostprocessorQuery orderByForfield($order = Criteria::ASC) Order by the _forfield column
  * @method     ChildFieldpostprocessorQuery orderByCode($order = Criteria::ASC) Order by the _code column
- * @method     ChildFieldpostprocessorQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildFieldpostprocessorQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildFieldpostprocessorQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildFieldpostprocessorQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildFieldpostprocessorQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildFieldpostprocessorQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildFieldpostprocessorQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  *
  * @method     ChildFieldpostprocessorQuery groupById() Group by the id column
  * @method     ChildFieldpostprocessorQuery groupByName() Group by the _name column
- * @method     ChildFieldpostprocessorQuery groupByForfield() Group by the _forfield column
  * @method     ChildFieldpostprocessorQuery groupByCode() Group by the _code column
- * @method     ChildFieldpostprocessorQuery groupByUser() Group by the __user__ column
- * @method     ChildFieldpostprocessorQuery groupByConfig() Group by the __config__ column
+ * @method     ChildFieldpostprocessorQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildFieldpostprocessorQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildFieldpostprocessorQuery groupBySplit() Group by the __split__ column
  * @method     ChildFieldpostprocessorQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildFieldpostprocessorQuery groupBySort() Group by the __sort__ column
@@ -65,10 +63,9 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildFieldpostprocessor findOneById(int $id) Return the first ChildFieldpostprocessor filtered by the id column
  * @method     ChildFieldpostprocessor findOneByName(string $_name) Return the first ChildFieldpostprocessor filtered by the _name column
- * @method     ChildFieldpostprocessor findOneByForfield(string $_forfield) Return the first ChildFieldpostprocessor filtered by the _forfield column
  * @method     ChildFieldpostprocessor findOneByCode(string $_code) Return the first ChildFieldpostprocessor filtered by the _code column
- * @method     ChildFieldpostprocessor findOneByUser(string $__user__) Return the first ChildFieldpostprocessor filtered by the __user__ column
- * @method     ChildFieldpostprocessor findOneByConfig(string $__config__) Return the first ChildFieldpostprocessor filtered by the __config__ column
+ * @method     ChildFieldpostprocessor findOneByUserSys(string $__user__) Return the first ChildFieldpostprocessor filtered by the __user__ column
+ * @method     ChildFieldpostprocessor findOneByConfigSys(string $__config__) Return the first ChildFieldpostprocessor filtered by the __config__ column
  * @method     ChildFieldpostprocessor findOneBySplit(string $__split__) Return the first ChildFieldpostprocessor filtered by the __split__ column
  * @method     ChildFieldpostprocessor findOneByParentnode(int $__parentnode__) Return the first ChildFieldpostprocessor filtered by the __parentnode__ column
  * @method     ChildFieldpostprocessor findOneBySort(int $__sort__) Return the first ChildFieldpostprocessor filtered by the __sort__ column *
@@ -78,10 +75,9 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildFieldpostprocessor requireOneById(int $id) Return the first ChildFieldpostprocessor filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFieldpostprocessor requireOneByName(string $_name) Return the first ChildFieldpostprocessor filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFieldpostprocessor requireOneByForfield(string $_forfield) Return the first ChildFieldpostprocessor filtered by the _forfield column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFieldpostprocessor requireOneByCode(string $_code) Return the first ChildFieldpostprocessor filtered by the _code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFieldpostprocessor requireOneByUser(string $__user__) Return the first ChildFieldpostprocessor filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFieldpostprocessor requireOneByConfig(string $__config__) Return the first ChildFieldpostprocessor filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFieldpostprocessor requireOneByUserSys(string $__user__) Return the first ChildFieldpostprocessor filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFieldpostprocessor requireOneByConfigSys(string $__config__) Return the first ChildFieldpostprocessor filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFieldpostprocessor requireOneBySplit(string $__split__) Return the first ChildFieldpostprocessor filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFieldpostprocessor requireOneByParentnode(int $__parentnode__) Return the first ChildFieldpostprocessor filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFieldpostprocessor requireOneBySort(int $__sort__) Return the first ChildFieldpostprocessor filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -89,10 +85,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFieldpostprocessor[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildFieldpostprocessor objects based on current ModelCriteria
  * @method     ChildFieldpostprocessor[]|ObjectCollection findById(int $id) Return ChildFieldpostprocessor objects filtered by the id column
  * @method     ChildFieldpostprocessor[]|ObjectCollection findByName(string $_name) Return ChildFieldpostprocessor objects filtered by the _name column
- * @method     ChildFieldpostprocessor[]|ObjectCollection findByForfield(string $_forfield) Return ChildFieldpostprocessor objects filtered by the _forfield column
  * @method     ChildFieldpostprocessor[]|ObjectCollection findByCode(string $_code) Return ChildFieldpostprocessor objects filtered by the _code column
- * @method     ChildFieldpostprocessor[]|ObjectCollection findByUser(string $__user__) Return ChildFieldpostprocessor objects filtered by the __user__ column
- * @method     ChildFieldpostprocessor[]|ObjectCollection findByConfig(string $__config__) Return ChildFieldpostprocessor objects filtered by the __config__ column
+ * @method     ChildFieldpostprocessor[]|ObjectCollection findByUserSys(string $__user__) Return ChildFieldpostprocessor objects filtered by the __user__ column
+ * @method     ChildFieldpostprocessor[]|ObjectCollection findByConfigSys(string $__config__) Return ChildFieldpostprocessor objects filtered by the __config__ column
  * @method     ChildFieldpostprocessor[]|ObjectCollection findBySplit(string $__split__) Return ChildFieldpostprocessor objects filtered by the __split__ column
  * @method     ChildFieldpostprocessor[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildFieldpostprocessor objects filtered by the __parentnode__ column
  * @method     ChildFieldpostprocessor[]|ObjectCollection findBySort(int $__sort__) Return ChildFieldpostprocessor objects filtered by the __sort__ column
@@ -188,7 +183,7 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, _forfield, _code, __user__, __config__, __split__, __parentnode__, __sort__ FROM _fieldpostprocessor WHERE id = :p0';
+        $sql = 'SELECT id, _name, _code, __user__, __config__, __split__, __parentnode__, __sort__ FROM _fieldpostprocessor WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -349,35 +344,6 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _forfield column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByForfield('fooValue');   // WHERE _forfield = 'fooValue'
-     * $query->filterByForfield('%fooValue%'); // WHERE _forfield LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $forfield The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
-     */
-    public function filterByForfield($forfield = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($forfield)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $forfield)) {
-                $forfield = str_replace('*', '%', $forfield);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(FieldpostprocessorTableMap::COL__FORFIELD, $forfield, $comparison);
-    }
-
-    /**
      * Filter the query on the _code column
      *
      * Example usage:
@@ -411,28 +377,28 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(FieldpostprocessorTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(FieldpostprocessorTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -440,28 +406,28 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(FieldpostprocessorTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(FieldpostprocessorTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

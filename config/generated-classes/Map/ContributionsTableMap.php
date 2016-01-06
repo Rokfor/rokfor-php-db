@@ -143,8 +143,8 @@ class ContributionsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Forissue', 'Name', 'Status', 'Newdate', 'Moddate', 'User', 'Config', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'forissue', 'name', 'status', 'newdate', 'moddate', 'user', 'config', 'split', 'parentnode', 'sort', ),
+        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Forissue', 'Name', 'Status', 'Newdate', 'Moddate', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'forissue', 'name', 'status', 'newdate', 'moddate', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
         self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID, ContributionsTableMap::COL__FORTEMPLATE, ContributionsTableMap::COL__FORISSUE, ContributionsTableMap::COL__NAME, ContributionsTableMap::COL__STATUS, ContributionsTableMap::COL__NEWDATE, ContributionsTableMap::COL__MODDATE, ContributionsTableMap::COL___USER__, ContributionsTableMap::COL___CONFIG__, ContributionsTableMap::COL___SPLIT__, ContributionsTableMap::COL___PARENTNODE__, ContributionsTableMap::COL___SORT__, ),
         self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_forissue', '_name', '_status', '_newdate', '_moddate', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
@@ -157,8 +157,8 @@ class ContributionsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Forissue' => 2, 'Name' => 3, 'Status' => 4, 'Newdate' => 5, 'Moddate' => 6, 'User' => 7, 'Config' => 8, 'Split' => 9, 'Parentnode' => 10, 'Sort' => 11, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'forissue' => 2, 'name' => 3, 'status' => 4, 'newdate' => 5, 'moddate' => 6, 'user' => 7, 'config' => 8, 'split' => 9, 'parentnode' => 10, 'sort' => 11, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Forissue' => 2, 'Name' => 3, 'Status' => 4, 'Newdate' => 5, 'Moddate' => 6, 'UserSys' => 7, 'ConfigSys' => 8, 'Split' => 9, 'Parentnode' => 10, 'Sort' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'forissue' => 2, 'name' => 3, 'status' => 4, 'newdate' => 5, 'moddate' => 6, 'userSys' => 7, 'configSys' => 8, 'split' => 9, 'parentnode' => 10, 'sort' => 11, ),
         self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID => 0, ContributionsTableMap::COL__FORTEMPLATE => 1, ContributionsTableMap::COL__FORISSUE => 2, ContributionsTableMap::COL__NAME => 3, ContributionsTableMap::COL__STATUS => 4, ContributionsTableMap::COL__NEWDATE => 5, ContributionsTableMap::COL__MODDATE => 6, ContributionsTableMap::COL___USER__ => 7, ContributionsTableMap::COL___CONFIG__ => 8, ContributionsTableMap::COL___SPLIT__ => 9, ContributionsTableMap::COL___PARENTNODE__ => 10, ContributionsTableMap::COL___SORT__ => 11, ),
         self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_forissue' => 2, '_name' => 3, '_status' => 4, '_newdate' => 5, '_moddate' => 6, '__user__' => 7, '__config__' => 8, '__split__' => 9, '__parentnode__' => 10, '__sort__' => 11, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
@@ -188,8 +188,8 @@ class ContributionsTableMap extends TableMap
         $this->addColumn('_status', 'Status', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_newdate', 'Newdate', 'INTEGER', false, 40, null);
         $this->addColumn('_moddate', 'Moddate', 'INTEGER', false, 40, null);
-        $this->addColumn('__user__', 'User', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__config__', 'Config', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addForeignKey('__split__', 'Split', 'INTEGER', '_formats', 'id', false, 32, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);

@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Map\DataTableMap</title>
+
+	<link rel="stylesheet" href="resources/bootstrap.min.css?973e37a8502921d56bc02bb55321f45b072b6f71">
+	<link rel="stylesheet" href="resources/style.css?49f43d3208c5d7e33fa16d36107a345bf11cc00d">
+
+</head>
+
+<body>
+	<nav id="navigation" class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="index.html" class="navbar-brand">Overview</a>
+			</div>
+			<div class="collapse navbar-collapse">
+
+                <form id="search" class="navbar-form navbar-left" role="search">
+                    <input type="hidden" name="cx" value="">
+                    <input type="hidden" name="ie" value="UTF-8">
+                    <div class="form-group">
+                        <input type="text" name="q" class="search-query form-control" placeholder="Search">
+					</div>
+				</form>
+
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="namespace-Map.html" title="Summary of Map"><span>Namespace</span></a>
+					</li>
+					<li class="active">
+<span>Class</span>					</li>
+
+
+
+
+
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div id="left">
+	<div id="menu">
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+					<li>
+						<a href="namespace-Base.html">
+							Base						</a>
+							</li>
+					<li class="active">
+						<a href="namespace-Map.html">
+							Map						</a>
+							</li>
+					<li>
+						<a href="namespace-None.html">
+							None						</a>
+							</li>
+					<li>
+						<a href="namespace-Rokfor.html">
+							Rokfor						</a>
+							</li>
+			</ul>
+		</div>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Map.BatchTableMap.html">BatchTableMap</a></li>
+				<li><a href="class-Map.BooksTableMap.html">BooksTableMap</a></li>
+				<li><a href="class-Map.ContributionsTableMap.html">ContributionsTableMap</a></li>
+				<li class="active"><a href="class-Map.DataTableMap.html">DataTableMap</a></li>
+				<li><a href="class-Map.FieldpostprocessorTableMap.html">FieldpostprocessorTableMap</a></li>
+				<li><a href="class-Map.FormatsTableMap.html">FormatsTableMap</a></li>
+				<li><a href="class-Map.IssuesTableMap.html">IssuesTableMap</a></li>
+				<li><a href="class-Map.LogTableMap.html">LogTableMap</a></li>
+				<li><a href="class-Map.PdfTableMap.html">PdfTableMap</a></li>
+				<li><a href="class-Map.PluginsTableMap.html">PluginsTableMap</a></li>
+				<li><a href="class-Map.RBatchForbookTableMap.html">RBatchForbookTableMap</a></li>
+				<li><a href="class-Map.RFieldpostprocessorForfieldTableMap.html">RFieldpostprocessorForfieldTableMap</a></li>
+				<li><a href="class-Map.RightsTableMap.html">RightsTableMap</a></li>
+				<li><a href="class-Map.RIssuesAllpluginTableMap.html">RIssuesAllpluginTableMap</a></li>
+				<li><a href="class-Map.RIssuesNarrationpluginTableMap.html">RIssuesNarrationpluginTableMap</a></li>
+				<li><a href="class-Map.RIssuesRtfpluginTableMap.html">RIssuesRtfpluginTableMap</a></li>
+				<li><a href="class-Map.RIssuesSinglepluginTableMap.html">RIssuesSinglepluginTableMap</a></li>
+				<li><a href="class-Map.RIssuesXmlpluginTableMap.html">RIssuesXmlpluginTableMap</a></li>
+				<li><a href="class-Map.RRightsForbookTableMap.html">RRightsForbookTableMap</a></li>
+				<li><a href="class-Map.RRightsForissueTableMap.html">RRightsForissueTableMap</a></li>
+				<li><a href="class-Map.RRightsFortemplateTableMap.html">RRightsFortemplateTableMap</a></li>
+				<li><a href="class-Map.RRightsForuserTableMap.html">RRightsForuserTableMap</a></li>
+				<li><a href="class-Map.RTemplatenamesForbookTableMap.html">RTemplatenamesForbookTableMap</a></li>
+				<li><a href="class-Map.RTemplatenamesInchapterTableMap.html">RTemplatenamesInchapterTableMap</a></li>
+				<li><a href="class-Map.SessionTableMap.html">SessionTableMap</a></li>
+				<li><a href="class-Map.TemplatenamesTableMap.html">TemplatenamesTableMap</a></li>
+				<li><a href="class-Map.TemplatesTableMap.html">TemplatesTableMap</a></li>
+				<li><a href="class-Map.UsersTableMap.html">UsersTableMap</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+	<div id="rightInner">
+<div id="content" class="class">
+	<h1>Class DataTableMap</h1>
+
+
+	<div class="description">
+	<p>This class defines the structure of the '_data' table.</p>
+
+<p>This map class is used by Propel to do runtime db structure discovery.
+For example, the createSelectSql() method checks the type of a given column used in an
+ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
+(i.e. if it's a text column type).</p>
+	</div>
+
+	<dl class="tree well">
+		<dd style="padding-left:0px">
+Propel\Runtime\Map\TableMap
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Map\DataTableMap</span></b>			
+			
+			 uses 
+					Propel\Runtime\ActiveQuery\InstancePoolTrait (not available)
+
+			
+					Propel\Runtime\Map\TableMapTrait (not available)
+
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="alert alert-info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Map.html">Map</a><br>
+		
+
+			<b>Located at</b> <a href="source-class-Map.DataTableMap.html#18-483" title="Go to source code">generated-classes/Map/DataTableMap.php</a>
+		<br>
+	</div>
+
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>Methods summary</h2></div>
+			<table class="summary table table-bordered table-striped methods" id="methods">
+		<tr data-order="initialize" id="_initialize">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_initialize">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#157-184" title="Go to source code">initialize</a>( )</code>
+
+			<div class="description short">
+				<p>Initialize the table attributes and columns
+Relations are not initialized by this method since they are lazy loaded</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Initialize the table attributes and columns
+Relations are not initialized by this method since they are lazy loaded</p>
+
+
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="buildRelations" id="_buildRelations">
+
+			<td class="attributes"><code>
+				 public 
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_buildRelations">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#186-205" title="Go to source code">buildRelations</a>( )</code>
+
+			<div class="description short">
+				<p>Build the RelationMap objects for this table relationships</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Build the RelationMap objects for this table relationships</p>
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getPrimaryKeyHashFromRow" id="_getPrimaryKeyHashFromRow">
+
+			<td class="attributes"><code>
+				 public static
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getPrimaryKeyHashFromRow">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#207-228" title="Go to source code">getPrimaryKeyHashFromRow</a>( <span>array <var>$row</var></span>, <span>integer <var>$offset</var> = <span class="php-num">0</span></span>, <span>string <var>$indexType</var> = Map\TableMap::TYPE_NUM</span> )</code>
+
+			<div class="description short">
+				<p>Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.</p>
+
+<p>For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+a multi-column primary key, a serialize()d version of the primary key will be returned.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$row</var></dt>
+						<dd>resultset row.</dd>
+						<dt><var>$offset</var></dt>
+						<dd>The 0-based offset for reading from the resultset row.</dd>
+						<dt><var>$indexType</var></dt>
+						<dd><p>One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM</p></dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>The primary key hash of the row
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getPrimaryKeyFromRow" id="_getPrimaryKeyFromRow">
+
+			<td class="attributes"><code>
+				 public static
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getPrimaryKeyFromRow">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#230-249" title="Go to source code">getPrimaryKeyFromRow</a>( <span>array <var>$row</var></span>, <span>integer <var>$offset</var> = <span class="php-num">0</span></span>, <span>string <var>$indexType</var> = Map\TableMap::TYPE_NUM</span> )</code>
+
+			<div class="description short">
+				<p>Retrieves the primary key from the DB resultset row
+For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+a multi-column primary key, an array of the primary key columns will be returned.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Retrieves the primary key from the DB resultset row
+For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
+a multi-column primary key, an array of the primary key columns will be returned.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$row</var></dt>
+						<dd>resultset row.</dd>
+						<dt><var>$offset</var></dt>
+						<dd>The 0-based offset for reading from the resultset row.</dd>
+						<dt><var>$indexType</var></dt>
+						<dd><p>One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM</p></dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>The primary key of the row
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getOMClass" id="_getOMClass">
+
+			<td class="attributes"><code>
+				 public static
+				string
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getOMClass">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#251-265" title="Go to source code">getOMClass</a>( <span>boolean <var>$withPrefix</var> = <span class="php-keyword1">true</span></span> )</code>
+
+			<div class="description short">
+				<p>The class that the tableMap will make instances of.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>The class that the tableMap will make instances of.</p>
+
+<p>If $withPrefix is true, the returned path
+uses a dot-path notation which is translated into a path
+relative to a location on the PHP include_path.
+(e.g. path.to.MyClass -> 'path/to/MyClass.php')</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$withPrefix</var></dt>
+						<dd>Whether or not to return the path with the class name</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						string<br>path.to.ClassName
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="populateObject" id="_populateObject">
+
+			<td class="attributes"><code>
+				 public static
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_populateObject">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#267-297" title="Go to source code">populateObject</a>( <span>array <var>$row</var></span>, <span>integer <var>$offset</var> = <span class="php-num">0</span></span>, <span>string <var>$indexType</var> = Map\TableMap::TYPE_NUM</span> )</code>
+
+			<div class="description short">
+				<p>Populates an object of the default type or an object that inherit from the default.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Populates an object of the default type or an object that inherit from the default.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$row</var></dt>
+						<dd>row returned by DataFetcher->fetch().</dd>
+						<dt><var>$offset</var></dt>
+						<dd>The 0-based offset for reading from the resultset row.</dd>
+						<dt><var>$indexType</var></dt>
+						<dd><p>The index type of $row. Mostly DataFetcher->getIndexType().
+One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.</p></dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						array<br>(Data object, last column rank)
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException<br><p>Any exceptions caught during processing will be
+                        rethrown wrapped into a PropelException.</p>
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="populateObjects" id="_populateObjects">
+
+			<td class="attributes"><code>
+				 public static
+				array
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_populateObjects">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#299-332" title="Go to source code">populateObjects</a>( <span>Propel\Runtime\Propel\Runtime\DataFetcher\DataFetcherInterface <var>$dataFetcher</var></span> )</code>
+
+			<div class="description short">
+				<p>The returned array will contain objects of the default type or
+objects that inherit from the default.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>The returned array will contain objects of the default type or
+objects that inherit from the default.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$dataFetcher</var></dt>
+						<dd></dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						array
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException<br><p>Any exceptions caught during processing will be
+                        rethrown wrapped into a PropelException.</p>
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="addSelectColumns" id="_addSelectColumns">
+
+			<td class="attributes"><code>
+				 public static
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_addSelectColumns">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#333-370" title="Go to source code">addSelectColumns</a>( <span>Propel\Runtime\Propel\Runtime\ActiveQuery\Criteria <var>$criteria</var></span>, <span>string <var>$alias</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				<p>Add all the columns needed to create a new object.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Add all the columns needed to create a new object.</p>
+
+<p>Note: any columns that were marked with lazyLoad="true" in the
+XML schema will not be added to the select list and only loaded
+on demand.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$criteria</var></dt>
+						<dd>object containing the columns to add.</dd>
+						<dt><var>$alias</var></dt>
+						<dd>optional table alias</dd>
+					</dl></div>
+
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException<br><p>Any exceptions caught during processing will be
+                        rethrown wrapped into a PropelException.</p>
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="getTableMap" id="_getTableMap">
+
+			<td class="attributes"><code>
+				 public static
+				Propel\Runtime\Map\TableMap
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_getTableMap">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#372-382" title="Go to source code">getTableMap</a>( )</code>
+
+			<div class="description short">
+				<p>Returns the TableMap related to this object.
+This method is not needed for general use but a specific application could have a need.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Returns the TableMap related to this object.
+This method is not needed for general use but a specific application could have a need.</p>
+
+
+
+					<h4>Returns</h4>
+					<div class="list">
+						Propel\Runtime\Map\TableMap
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException<br><p>Any exceptions caught during processing will be
+                        rethrown wrapped into a PropelException.</p>
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="buildTableMap" id="_buildTableMap">
+
+			<td class="attributes"><code>
+				 public static
+				
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_buildTableMap">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#384-393" title="Go to source code">buildTableMap</a>( )</code>
+
+			<div class="description short">
+				<p>Add a TableMap instance to the database for this tableMap class.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Add a TableMap instance to the database for this tableMap class.</p>
+
+
+
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doDelete" id="_doDelete">
+
+			<td class="attributes"><code>
+				 public static
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doDelete">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#395-434" title="Go to source code">doDelete</a>( <span>mixed <var>$values</var></span>, <span>Propel\Runtime\Propel\Runtime\Connection\ConnectionInterface <var>$con</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				<p>Performs a DELETE on the database, given a Data or Criteria object OR a primary key value.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Performs a DELETE on the database, given a Data or Criteria object OR a primary key value.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$values</var></dt>
+						<dd><p>Criteria or Data object or primary key or array of primary keys
+             which is used to create the DELETE statement</p></dd>
+						<dt><var>$con</var></dt>
+						<dd>the connection to use</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br><p>The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+                        if supported by native driver or if emulated using Propel.</p>
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException<br><p>Any exceptions caught during processing will be
+                        rethrown wrapped into a PropelException.</p>
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doDeleteAll" id="_doDeleteAll">
+
+			<td class="attributes"><code>
+				 public static
+				integer
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doDeleteAll">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#436-445" title="Go to source code">doDeleteAll</a>( <span>Propel\Runtime\Propel\Runtime\Connection\ConnectionInterface <var>$con</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				<p>Deletes all rows from the _data table.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Deletes all rows from the _data table.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$con</var></dt>
+						<dd>the connection to use</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						integer<br>The number of affected rows (if supported by underlying database driver).
+					</div>
+
+
+
+
+			</div>
+			</div></td>
+		</tr>
+		<tr data-order="doInsert" id="_doInsert">
+
+			<td class="attributes"><code>
+				 public static
+				mixed
+				
+				</code>
+			</td>
+
+			<td class="name"><div>
+			<a class="anchor" href="#_doInsert">#</a>
+			<code><a href="source-class-Map.DataTableMap.html#447-481" title="Go to source code">doInsert</a>( <span>mixed <var>$criteria</var></span>, <span>Propel\Runtime\Propel\Runtime\Connection\ConnectionInterface <var>$con</var> = <span class="php-keyword1">null</span></span> )</code>
+
+			<div class="description short">
+				<p>Performs an INSERT on the database, given a Data or Criteria object.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Performs an INSERT on the database, given a Data or Criteria object.</p>
+
+
+					<h4>Parameters</h4>
+					<div class="list"><dl>
+						<dt><var>$criteria</var></dt>
+						<dd>Criteria or Data object containing data that is used to create the INSERT statement.</dd>
+						<dt><var>$con</var></dt>
+						<dd>the ConnectionInterface connection to use</dd>
+					</dl></div>
+
+					<h4>Returns</h4>
+					<div class="list">
+						mixed<br>The new primary key.
+					</div>
+
+					<h4>Throws</h4>
+					<div class="list">
+						Propel\Runtime\Exception\PropelException<br><p>Any exceptions caught during processing will be
+                        rethrown wrapped into a PropelException.</p>
+					</div>
+
+
+
+			</div>
+			</div></td>
+		</tr>
+			</table>
+		</div>
+
+
+
+
+
+
+
+
+		<div class="panel panel-default">
+            <div class="panel-heading"><h2>Constants summary</h2></div>
+			<table class="summary table table-bordered table-striped constants" id="constants">
+			<tr data-order="CLASS_NAME" id="CLASS_NAME">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#34-37" title="Go to source code"><b>CLASS_NAME</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The (dot-path) name of this class</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The (dot-path) name of this class</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#CLASS_NAME" class="anchor">#</a>
+						<code><span class="php-quote">'.Map.DataTableMap'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="DATABASE_NAME" id="DATABASE_NAME">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#39-42" title="Go to source code"><b>DATABASE_NAME</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The default database name for this class</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The default database name for this class</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#DATABASE_NAME" class="anchor">#</a>
+						<code><span class="php-quote">'rokfor'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="TABLE_NAME" id="TABLE_NAME">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#44-47" title="Go to source code"><b>TABLE_NAME</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The table name for this class</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The table name for this class</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#TABLE_NAME" class="anchor">#</a>
+						<code><span class="php-quote">'_data'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="OM_CLASS" id="OM_CLASS">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#49-52" title="Go to source code"><b>OM_CLASS</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The related Propel class for this table</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The related Propel class for this table</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#OM_CLASS" class="anchor">#</a>
+						<code><span class="php-quote">'\\Data'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="CLASS_DEFAULT" id="CLASS_DEFAULT">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#54-57" title="Go to source code"><b>CLASS_DEFAULT</b></a>
+					</code>
+
+					<div class="description short">
+						<p>A class that can be returned by this tableMap</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>A class that can be returned by this tableMap</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#CLASS_DEFAULT" class="anchor">#</a>
+						<code><span class="php-quote">'Data'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="NUM_COLUMNS" id="NUM_COLUMNS">
+
+				<td class="attributes"><code>integer</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#59-62" title="Go to source code"><b>NUM_COLUMNS</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The total number of columns</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The total number of columns</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#NUM_COLUMNS" class="anchor">#</a>
+						<code><span class="php-num">10</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="NUM_LAZY_LOAD_COLUMNS" id="NUM_LAZY_LOAD_COLUMNS">
+
+				<td class="attributes"><code>integer</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#64-67" title="Go to source code"><b>NUM_LAZY_LOAD_COLUMNS</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The number of lazy-loaded columns</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The number of lazy-loaded columns</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#NUM_LAZY_LOAD_COLUMNS" class="anchor">#</a>
+						<code><span class="php-num">0</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="NUM_HYDRATE_COLUMNS" id="NUM_HYDRATE_COLUMNS">
+
+				<td class="attributes"><code>integer</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#69-72" title="Go to source code"><b>NUM_HYDRATE_COLUMNS</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#NUM_HYDRATE_COLUMNS" class="anchor">#</a>
+						<code><span class="php-num">10</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL_ID" id="COL_ID">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#74-77" title="Go to source code"><b>COL_ID</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the id field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the id field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL_ID" class="anchor">#</a>
+						<code><span class="php-quote">'_data.id'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL__FORCONTRIBUTION" id="COL__FORCONTRIBUTION">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#79-82" title="Go to source code"><b>COL__FORCONTRIBUTION</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the _forcontribution field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the _forcontribution field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL__FORCONTRIBUTION" class="anchor">#</a>
+						<code><span class="php-quote">'_data._forcontribution'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL__FORTEMPLATEFIELD" id="COL__FORTEMPLATEFIELD">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#84-87" title="Go to source code"><b>COL__FORTEMPLATEFIELD</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the _fortemplatefield field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the _fortemplatefield field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL__FORTEMPLATEFIELD" class="anchor">#</a>
+						<code><span class="php-quote">'_data._fortemplatefield'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL__CONTENT" id="COL__CONTENT">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#89-92" title="Go to source code"><b>COL__CONTENT</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the _content field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the _content field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL__CONTENT" class="anchor">#</a>
+						<code><span class="php-quote">'_data._content'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL__ISJSON" id="COL__ISJSON">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#94-97" title="Go to source code"><b>COL__ISJSON</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the _isjson field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the _isjson field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL__ISJSON" class="anchor">#</a>
+						<code><span class="php-quote">'_data._isjson'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL___USER__" id="COL___USER__">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#99-102" title="Go to source code"><b>COL___USER__</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the <strong>user</strong> field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the <strong>user</strong> field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL___USER__" class="anchor">#</a>
+						<code><span class="php-quote">'_data.__user__'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL___CONFIG__" id="COL___CONFIG__">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#104-107" title="Go to source code"><b>COL___CONFIG__</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the <strong>config</strong> field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the <strong>config</strong> field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL___CONFIG__" class="anchor">#</a>
+						<code><span class="php-quote">'_data.__config__'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL___SPLIT__" id="COL___SPLIT__">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#109-112" title="Go to source code"><b>COL___SPLIT__</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the <strong>split</strong> field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the <strong>split</strong> field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL___SPLIT__" class="anchor">#</a>
+						<code><span class="php-quote">'_data.__split__'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL___PARENTNODE__" id="COL___PARENTNODE__">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#114-117" title="Go to source code"><b>COL___PARENTNODE__</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the <strong>parentnode</strong> field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the <strong>parentnode</strong> field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL___PARENTNODE__" class="anchor">#</a>
+						<code><span class="php-quote">'_data.__parentnode__'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="COL___SORT__" id="COL___SORT__">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#119-122" title="Go to source code"><b>COL___SORT__</b></a>
+					</code>
+
+					<div class="description short">
+						<p>the column name for the <strong>sort</strong> field</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>the column name for the <strong>sort</strong> field</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#COL___SORT__" class="anchor">#</a>
+						<code><span class="php-quote">'_data.__sort__'</span></code>
+					</div>
+				</td>
+			</tr>
+			<tr data-order="DEFAULT_STRING_FORMAT" id="DEFAULT_STRING_FORMAT">
+
+				<td class="attributes"><code>string</code></td>
+				<td class="name">
+					<code>
+						<a href="source-class-Map.DataTableMap.html#124-127" title="Go to source code"><b>DEFAULT_STRING_FORMAT</b></a>
+					</code>
+
+					<div class="description short">
+						<p>The default string format for model objects of the related table</p>
+					</div>
+
+					<div class="description detailed hidden">
+						<p>The default string format for model objects of the related table</p>
+
+					</div>
+				</td>
+				<td class="value">
+					<div>
+						<a href="#DEFAULT_STRING_FORMAT" class="anchor">#</a>
+						<code><span class="php-quote">'YAML'</span></code>
+					</div>
+				</td>
+			</tr>
+			</table>
+		</div>
+
+
+
+
+		<div class="panel panel-default">
+            <div class="panel-heading"><h2>Properties summary</h2></div>
+			<table class="summary table table-bordered table-striped properties" id="properties">
+		<tr data-order="fieldNames" id="$fieldNames">
+			<td class="attributes"><code>
+				protected static 
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-Map.DataTableMap.html#129-141" title="Go to source code"><var>$fieldNames</var></a>
+
+				<div class="description short">
+					<p>holds an array of fieldnames</p>
+				</div>
+
+				<div class="description detailed hidden">
+					<p>holds an array of fieldnames</p>
+
+<p>first dimension keys are the type constants
+e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'</p>
+
+				</div>
+			</td>
+			<td class="value">
+				<div>
+					<a href="#$fieldNames" class="anchor">#</a>
+					<code><span class="php-keyword1">array</span> (
+    self::TYPE_PHPNAME       =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'Id'</span>, <span class="php-quote">'Forcontribution'</span>, <span class="php-quote">'Fortemplatefield'</span>, <span class="php-quote">'Content'</span>, <span class="php-quote">'Isjson'</span>, <span class="php-quote">'UserSys'</span>, <span class="php-quote">'ConfigSys'</span>, <span class="php-quote">'Split'</span>, <span class="php-quote">'Parentnode'</span>, <span class="php-quote">'Sort'</span>, ),
+    self::TYPE_CAMELNAME     =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'id'</span>, <span class="php-quote">'forcontribution'</span>, <span class="php-quote">'fortemplatefield'</span>, <span class="php-quote">'content'</span>, <span class="php-quote">'isjson'</span>, <span class="php-quote">'userSys'</span>, <span class="php-quote">'configSys'</span>, <span class="php-quote">'split'</span>, <span class="php-quote">'parentnode'</span>, <span class="php-quote">'sort'</span>, ),
+    self::TYPE_COLNAME       =&gt; <span class="php-keyword1">array</span>(DataTableMap::COL_ID, DataTableMap::COL__FORCONTRIBUTION, DataTableMap::COL__FORTEMPLATEFIELD, DataTableMap::COL__CONTENT, DataTableMap::COL__ISJSON, DataTableMap::COL___USER__, DataTableMap::COL___CONFIG__, DataTableMap::COL___SPLIT__, DataTableMap::COL___PARENTNODE__, DataTableMap::COL___SORT__, ),
+    self::TYPE_FIELDNAME     =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'id'</span>, <span class="php-quote">'_forcontribution'</span>, <span class="php-quote">'_fortemplatefield'</span>, <span class="php-quote">'_content'</span>, <span class="php-quote">'_isjson'</span>, <span class="php-quote">'__user__'</span>, <span class="php-quote">'__config__'</span>, <span class="php-quote">'__split__'</span>, <span class="php-quote">'__parentnode__'</span>, <span class="php-quote">'__sort__'</span>, ),
+    self::TYPE_NUM           =&gt; <span class="php-keyword1">array</span>(<span class="php-num">0</span>, <span class="php-num">1</span>, <span class="php-num">2</span>, <span class="php-num">3</span>, <span class="php-num">4</span>, <span class="php-num">5</span>, <span class="php-num">6</span>, <span class="php-num">7</span>, <span class="php-num">8</span>, <span class="php-num">9</span>, )
+)</code>
+				</div>
+			</td>
+		</tr>
+		<tr data-order="fieldKeys" id="$fieldKeys">
+			<td class="attributes"><code>
+				protected static 
+				array
+			</code></td>
+
+			<td class="name">
+					<a href="source-class-Map.DataTableMap.html#143-155" title="Go to source code"><var>$fieldKeys</var></a>
+
+				<div class="description short">
+					<p>holds an array of keys for quick access to the fieldnames array</p>
+				</div>
+
+				<div class="description detailed hidden">
+					<p>holds an array of keys for quick access to the fieldnames array</p>
+
+<p>first dimension keys are the type constants
+e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0</p>
+
+				</div>
+			</td>
+			<td class="value">
+				<div>
+					<a href="#$fieldKeys" class="anchor">#</a>
+					<code><span class="php-keyword1">array</span> (
+    self::TYPE_PHPNAME       =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'Id'</span> =&gt; <span class="php-num">0</span>, <span class="php-quote">'Forcontribution'</span> =&gt; <span class="php-num">1</span>, <span class="php-quote">'Fortemplatefield'</span> =&gt; <span class="php-num">2</span>, <span class="php-quote">'Content'</span> =&gt; <span class="php-num">3</span>, <span class="php-quote">'Isjson'</span> =&gt; <span class="php-num">4</span>, <span class="php-quote">'UserSys'</span> =&gt; <span class="php-num">5</span>, <span class="php-quote">'ConfigSys'</span> =&gt; <span class="php-num">6</span>, <span class="php-quote">'Split'</span> =&gt; <span class="php-num">7</span>, <span class="php-quote">'Parentnode'</span> =&gt; <span class="php-num">8</span>, <span class="php-quote">'Sort'</span> =&gt; <span class="php-num">9</span>, ),
+    self::TYPE_CAMELNAME     =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'id'</span> =&gt; <span class="php-num">0</span>, <span class="php-quote">'forcontribution'</span> =&gt; <span class="php-num">1</span>, <span class="php-quote">'fortemplatefield'</span> =&gt; <span class="php-num">2</span>, <span class="php-quote">'content'</span> =&gt; <span class="php-num">3</span>, <span class="php-quote">'isjson'</span> =&gt; <span class="php-num">4</span>, <span class="php-quote">'userSys'</span> =&gt; <span class="php-num">5</span>, <span class="php-quote">'configSys'</span> =&gt; <span class="php-num">6</span>, <span class="php-quote">'split'</span> =&gt; <span class="php-num">7</span>, <span class="php-quote">'parentnode'</span> =&gt; <span class="php-num">8</span>, <span class="php-quote">'sort'</span> =&gt; <span class="php-num">9</span>, ),
+    self::TYPE_COLNAME       =&gt; <span class="php-keyword1">array</span>(DataTableMap::COL_ID =&gt; <span class="php-num">0</span>, DataTableMap::COL__FORCONTRIBUTION =&gt; <span class="php-num">1</span>, DataTableMap::COL__FORTEMPLATEFIELD =&gt; <span class="php-num">2</span>, DataTableMap::COL__CONTENT =&gt; <span class="php-num">3</span>, DataTableMap::COL__ISJSON =&gt; <span class="php-num">4</span>, DataTableMap::COL___USER__ =&gt; <span class="php-num">5</span>, DataTableMap::COL___CONFIG__ =&gt; <span class="php-num">6</span>, DataTableMap::COL___SPLIT__ =&gt; <span class="php-num">7</span>, DataTableMap::COL___PARENTNODE__ =&gt; <span class="php-num">8</span>, DataTableMap::COL___SORT__ =&gt; <span class="php-num">9</span>, ),
+    self::TYPE_FIELDNAME     =&gt; <span class="php-keyword1">array</span>(<span class="php-quote">'id'</span> =&gt; <span class="php-num">0</span>, <span class="php-quote">'_forcontribution'</span> =&gt; <span class="php-num">1</span>, <span class="php-quote">'_fortemplatefield'</span> =&gt; <span class="php-num">2</span>, <span class="php-quote">'_content'</span> =&gt; <span class="php-num">3</span>, <span class="php-quote">'_isjson'</span> =&gt; <span class="php-num">4</span>, <span class="php-quote">'__user__'</span> =&gt; <span class="php-num">5</span>, <span class="php-quote">'__config__'</span> =&gt; <span class="php-num">6</span>, <span class="php-quote">'__split__'</span> =&gt; <span class="php-num">7</span>, <span class="php-quote">'__parentnode__'</span> =&gt; <span class="php-num">8</span>, <span class="php-quote">'__sort__'</span> =&gt; <span class="php-num">9</span>, ),
+    self::TYPE_NUM           =&gt; <span class="php-keyword1">array</span>(<span class="php-num">0</span>, <span class="php-num">1</span>, <span class="php-num">2</span>, <span class="php-num">3</span>, <span class="php-num">4</span>, <span class="php-num">5</span>, <span class="php-num">6</span>, <span class="php-num">7</span>, <span class="php-num">8</span>, <span class="php-num">9</span>, )
+)</code>
+				</div>
+			</td>
+		</tr>
+			</table>
+		</div>
+
+
+
+
+
+
+</div>
+	</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

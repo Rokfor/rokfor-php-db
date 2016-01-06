@@ -80,12 +80,12 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
     /**
      * @var        ChildIssues
      */
-    protected $aIssues;
+    protected $aSingleIssue;
 
     /**
      * @var        ChildPlugins
      */
-    protected $aPlugins;
+    protected $aSinglePlugin;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -357,8 +357,8 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
             $this->modifiedColumns[RIssuesSinglepluginTableMap::COL__ISSUEID] = true;
         }
 
-        if ($this->aIssues !== null && $this->aIssues->getId() !== $v) {
-            $this->aIssues = null;
+        if ($this->aSingleIssue !== null && $this->aSingleIssue->getId() !== $v) {
+            $this->aSingleIssue = null;
         }
 
         return $this;
@@ -381,8 +381,8 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
             $this->modifiedColumns[RIssuesSinglepluginTableMap::COL__PLUGINID] = true;
         }
 
-        if ($this->aPlugins !== null && $this->aPlugins->getId() !== $v) {
-            $this->aPlugins = null;
+        if ($this->aSinglePlugin !== null && $this->aSinglePlugin->getId() !== $v) {
+            $this->aSinglePlugin = null;
         }
 
         return $this;
@@ -459,11 +459,11 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aIssues !== null && $this->_issueid !== $this->aIssues->getId()) {
-            $this->aIssues = null;
+        if ($this->aSingleIssue !== null && $this->_issueid !== $this->aSingleIssue->getId()) {
+            $this->aSingleIssue = null;
         }
-        if ($this->aPlugins !== null && $this->_pluginid !== $this->aPlugins->getId()) {
-            $this->aPlugins = null;
+        if ($this->aSinglePlugin !== null && $this->_pluginid !== $this->aSinglePlugin->getId()) {
+            $this->aSinglePlugin = null;
         }
     } // ensureConsistency
 
@@ -504,8 +504,8 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aIssues = null;
-            $this->aPlugins = null;
+            $this->aSingleIssue = null;
+            $this->aSinglePlugin = null;
         } // if (deep)
     }
 
@@ -610,18 +610,18 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aIssues !== null) {
-                if ($this->aIssues->isModified() || $this->aIssues->isNew()) {
-                    $affectedRows += $this->aIssues->save($con);
+            if ($this->aSingleIssue !== null) {
+                if ($this->aSingleIssue->isModified() || $this->aSingleIssue->isNew()) {
+                    $affectedRows += $this->aSingleIssue->save($con);
                 }
-                $this->setIssues($this->aIssues);
+                $this->setSingleIssue($this->aSingleIssue);
             }
 
-            if ($this->aPlugins !== null) {
-                if ($this->aPlugins->isModified() || $this->aPlugins->isNew()) {
-                    $affectedRows += $this->aPlugins->save($con);
+            if ($this->aSinglePlugin !== null) {
+                if ($this->aSinglePlugin->isModified() || $this->aSinglePlugin->isNew()) {
+                    $affectedRows += $this->aSinglePlugin->save($con);
                 }
-                $this->setPlugins($this->aPlugins);
+                $this->setSinglePlugin($this->aSinglePlugin);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -780,7 +780,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aIssues) {
+            if (null !== $this->aSingleIssue) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -793,9 +793,9 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
                         $key = 'Issues';
                 }
 
-                $result[$key] = $this->aIssues->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aSingleIssue->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aPlugins) {
+            if (null !== $this->aSinglePlugin) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -808,7 +808,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
                         $key = 'Plugins';
                 }
 
-                $result[$key] = $this->aPlugins->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aSinglePlugin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -967,14 +967,14 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
         $primaryKeyFKs = [];
 
         //relation r_plugins1_a to table _issues
-        if ($this->aIssues && $hash = spl_object_hash($this->aIssues)) {
+        if ($this->aSingleIssue && $hash = spl_object_hash($this->aSingleIssue)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
         }
 
         //relation r_plugins1_b to table _plugins
-        if ($this->aPlugins && $hash = spl_object_hash($this->aPlugins)) {
+        if ($this->aSinglePlugin && $hash = spl_object_hash($this->aSinglePlugin)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1073,7 +1073,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
      * @return $this|\RIssuesSingleplugin The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setIssues(ChildIssues $v = null)
+    public function setSingleIssue(ChildIssues $v = null)
     {
         if ($v === null) {
             $this->setIssueid(NULL);
@@ -1081,7 +1081,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
             $this->setIssueid($v->getId());
         }
 
-        $this->aIssues = $v;
+        $this->aSingleIssue = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildIssues object, it will not be re-added.
@@ -1101,20 +1101,20 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
      * @return ChildIssues The associated ChildIssues object.
      * @throws PropelException
      */
-    public function getIssues(ConnectionInterface $con = null)
+    public function getSingleIssue(ConnectionInterface $con = null)
     {
-        if ($this->aIssues === null && ($this->_issueid !== null)) {
-            $this->aIssues = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
+        if ($this->aSingleIssue === null && ($this->_issueid !== null)) {
+            $this->aSingleIssue = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aIssues->addRIssuesSingleplugins($this);
+                $this->aSingleIssue->addRIssuesSingleplugins($this);
              */
         }
 
-        return $this->aIssues;
+        return $this->aSingleIssue;
     }
 
     /**
@@ -1124,7 +1124,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
      * @return $this|\RIssuesSingleplugin The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setPlugins(ChildPlugins $v = null)
+    public function setSinglePlugin(ChildPlugins $v = null)
     {
         if ($v === null) {
             $this->setPluginid(NULL);
@@ -1132,7 +1132,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
             $this->setPluginid($v->getId());
         }
 
-        $this->aPlugins = $v;
+        $this->aSinglePlugin = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildPlugins object, it will not be re-added.
@@ -1152,20 +1152,20 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
      * @return ChildPlugins The associated ChildPlugins object.
      * @throws PropelException
      */
-    public function getPlugins(ConnectionInterface $con = null)
+    public function getSinglePlugin(ConnectionInterface $con = null)
     {
-        if ($this->aPlugins === null && ($this->_pluginid !== null)) {
-            $this->aPlugins = ChildPluginsQuery::create()->findPk($this->_pluginid, $con);
+        if ($this->aSinglePlugin === null && ($this->_pluginid !== null)) {
+            $this->aSinglePlugin = ChildPluginsQuery::create()->findPk($this->_pluginid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPlugins->addRIssuesSingleplugins($this);
+                $this->aSinglePlugin->addRIssuesSingleplugins($this);
              */
         }
 
-        return $this->aPlugins;
+        return $this->aSinglePlugin;
     }
 
     /**
@@ -1175,11 +1175,11 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aIssues) {
-            $this->aIssues->removeRIssuesSingleplugin($this);
+        if (null !== $this->aSingleIssue) {
+            $this->aSingleIssue->removeRIssuesSingleplugin($this);
         }
-        if (null !== $this->aPlugins) {
-            $this->aPlugins->removeRIssuesSingleplugin($this);
+        if (null !== $this->aSinglePlugin) {
+            $this->aSinglePlugin->removeRIssuesSingleplugin($this);
         }
         $this->_issueid = null;
         $this->_pluginid = null;
@@ -1203,8 +1203,8 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aIssues = null;
-        $this->aPlugins = null;
+        $this->aSingleIssue = null;
+        $this->aSinglePlugin = null;
     }
 
     /**

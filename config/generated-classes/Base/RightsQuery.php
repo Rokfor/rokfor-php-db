@@ -22,24 +22,16 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRightsQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildRightsQuery orderByGroup($order = Criteria::ASC) Order by the _group column
- * @method     ChildRightsQuery orderByFortemplate($order = Criteria::ASC) Order by the _fortemplate column
- * @method     ChildRightsQuery orderByForissue($order = Criteria::ASC) Order by the _forissue column
- * @method     ChildRightsQuery orderByForbook($order = Criteria::ASC) Order by the _forbook column
- * @method     ChildRightsQuery orderByForuser($order = Criteria::ASC) Order by the _foruser column
- * @method     ChildRightsQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildRightsQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildRightsQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildRightsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildRightsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildRightsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildRightsQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  *
  * @method     ChildRightsQuery groupById() Group by the id column
  * @method     ChildRightsQuery groupByGroup() Group by the _group column
- * @method     ChildRightsQuery groupByFortemplate() Group by the _fortemplate column
- * @method     ChildRightsQuery groupByForissue() Group by the _forissue column
- * @method     ChildRightsQuery groupByForbook() Group by the _forbook column
- * @method     ChildRightsQuery groupByForuser() Group by the _foruser column
- * @method     ChildRightsQuery groupByUser() Group by the __user__ column
- * @method     ChildRightsQuery groupByConfig() Group by the __config__ column
+ * @method     ChildRightsQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildRightsQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildRightsQuery groupBySplit() Group by the __split__ column
  * @method     ChildRightsQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildRightsQuery groupBySort() Group by the __sort__ column
@@ -99,12 +91,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRights findOneById(int $id) Return the first ChildRights filtered by the id column
  * @method     ChildRights findOneByGroup(string $_group) Return the first ChildRights filtered by the _group column
- * @method     ChildRights findOneByFortemplate(string $_fortemplate) Return the first ChildRights filtered by the _fortemplate column
- * @method     ChildRights findOneByForissue(string $_forissue) Return the first ChildRights filtered by the _forissue column
- * @method     ChildRights findOneByForbook(string $_forbook) Return the first ChildRights filtered by the _forbook column
- * @method     ChildRights findOneByForuser(string $_foruser) Return the first ChildRights filtered by the _foruser column
- * @method     ChildRights findOneByUser(string $__user__) Return the first ChildRights filtered by the __user__ column
- * @method     ChildRights findOneByConfig(string $__config__) Return the first ChildRights filtered by the __config__ column
+ * @method     ChildRights findOneByUserSys(string $__user__) Return the first ChildRights filtered by the __user__ column
+ * @method     ChildRights findOneByConfigSys(string $__config__) Return the first ChildRights filtered by the __config__ column
  * @method     ChildRights findOneBySplit(string $__split__) Return the first ChildRights filtered by the __split__ column
  * @method     ChildRights findOneByParentnode(int $__parentnode__) Return the first ChildRights filtered by the __parentnode__ column
  * @method     ChildRights findOneBySort(int $__sort__) Return the first ChildRights filtered by the __sort__ column *
@@ -114,12 +102,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRights requireOneById(int $id) Return the first ChildRights filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneByGroup(string $_group) Return the first ChildRights filtered by the _group column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByFortemplate(string $_fortemplate) Return the first ChildRights filtered by the _fortemplate column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByForissue(string $_forissue) Return the first ChildRights filtered by the _forissue column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByForbook(string $_forbook) Return the first ChildRights filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByForuser(string $_foruser) Return the first ChildRights filtered by the _foruser column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByUser(string $__user__) Return the first ChildRights filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByConfig(string $__config__) Return the first ChildRights filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRights requireOneByUserSys(string $__user__) Return the first ChildRights filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRights requireOneByConfigSys(string $__config__) Return the first ChildRights filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneBySplit(string $__split__) Return the first ChildRights filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneByParentnode(int $__parentnode__) Return the first ChildRights filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneBySort(int $__sort__) Return the first ChildRights filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -127,12 +111,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRights[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRights objects based on current ModelCriteria
  * @method     ChildRights[]|ObjectCollection findById(int $id) Return ChildRights objects filtered by the id column
  * @method     ChildRights[]|ObjectCollection findByGroup(string $_group) Return ChildRights objects filtered by the _group column
- * @method     ChildRights[]|ObjectCollection findByFortemplate(string $_fortemplate) Return ChildRights objects filtered by the _fortemplate column
- * @method     ChildRights[]|ObjectCollection findByForissue(string $_forissue) Return ChildRights objects filtered by the _forissue column
- * @method     ChildRights[]|ObjectCollection findByForbook(string $_forbook) Return ChildRights objects filtered by the _forbook column
- * @method     ChildRights[]|ObjectCollection findByForuser(string $_foruser) Return ChildRights objects filtered by the _foruser column
- * @method     ChildRights[]|ObjectCollection findByUser(string $__user__) Return ChildRights objects filtered by the __user__ column
- * @method     ChildRights[]|ObjectCollection findByConfig(string $__config__) Return ChildRights objects filtered by the __config__ column
+ * @method     ChildRights[]|ObjectCollection findByUserSys(string $__user__) Return ChildRights objects filtered by the __user__ column
+ * @method     ChildRights[]|ObjectCollection findByConfigSys(string $__config__) Return ChildRights objects filtered by the __config__ column
  * @method     ChildRights[]|ObjectCollection findBySplit(string $__split__) Return ChildRights objects filtered by the __split__ column
  * @method     ChildRights[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildRights objects filtered by the __parentnode__ column
  * @method     ChildRights[]|ObjectCollection findBySort(int $__sort__) Return ChildRights objects filtered by the __sort__ column
@@ -228,7 +208,7 @@ abstract class RightsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _group, _fortemplate, _forissue, _forbook, _foruser, __user__, __config__, __split__, __parentnode__, __sort__ FROM _rights WHERE id = :p0';
+        $sql = 'SELECT id, _group, __user__, __config__, __split__, __parentnode__, __sort__ FROM _rights WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -389,148 +369,32 @@ abstract class RightsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _fortemplate column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByFortemplate('fooValue');   // WHERE _fortemplate = 'fooValue'
-     * $query->filterByFortemplate('%fooValue%'); // WHERE _fortemplate LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $fortemplate The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRightsQuery The current query, for fluid interface
-     */
-    public function filterByFortemplate($fortemplate = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($fortemplate)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $fortemplate)) {
-                $fortemplate = str_replace('*', '%', $fortemplate);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(RightsTableMap::COL__FORTEMPLATE, $fortemplate, $comparison);
-    }
-
-    /**
-     * Filter the query on the _forissue column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByForissue('fooValue');   // WHERE _forissue = 'fooValue'
-     * $query->filterByForissue('%fooValue%'); // WHERE _forissue LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $forissue The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRightsQuery The current query, for fluid interface
-     */
-    public function filterByForissue($forissue = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($forissue)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $forissue)) {
-                $forissue = str_replace('*', '%', $forissue);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(RightsTableMap::COL__FORISSUE, $forissue, $comparison);
-    }
-
-    /**
-     * Filter the query on the _forbook column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByForbook('fooValue');   // WHERE _forbook = 'fooValue'
-     * $query->filterByForbook('%fooValue%'); // WHERE _forbook LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $forbook The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRightsQuery The current query, for fluid interface
-     */
-    public function filterByForbook($forbook = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($forbook)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $forbook)) {
-                $forbook = str_replace('*', '%', $forbook);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(RightsTableMap::COL__FORBOOK, $forbook, $comparison);
-    }
-
-    /**
-     * Filter the query on the _foruser column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByForuser('fooValue');   // WHERE _foruser = 'fooValue'
-     * $query->filterByForuser('%fooValue%'); // WHERE _foruser LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $foruser The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRightsQuery The current query, for fluid interface
-     */
-    public function filterByForuser($foruser = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($foruser)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $foruser)) {
-                $foruser = str_replace('*', '%', $foruser);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(RightsTableMap::COL__FORUSER, $foruser, $comparison);
-    }
-
-    /**
      * Filter the query on the __user__ column
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildRightsQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(RightsTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(RightsTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -538,28 +402,28 @@ abstract class RightsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildRightsQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(RightsTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(RightsTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

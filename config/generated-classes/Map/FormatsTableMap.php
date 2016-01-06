@@ -9,7 +9,6 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
@@ -124,8 +123,8 @@ class FormatsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Forbook', 'User', 'Config', 'Split', 'Sort', 'Parentnode', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'forbook', 'user', 'config', 'split', 'sort', 'parentnode', ),
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Forbook', 'UserSys', 'ConfigSys', 'Split', 'Sort', 'Parentnode', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'forbook', 'userSys', 'configSys', 'split', 'sort', 'parentnode', ),
         self::TYPE_COLNAME       => array(FormatsTableMap::COL_ID, FormatsTableMap::COL__NAME, FormatsTableMap::COL__FORBOOK, FormatsTableMap::COL___USER__, FormatsTableMap::COL___CONFIG__, FormatsTableMap::COL___SPLIT__, FormatsTableMap::COL___SORT__, FormatsTableMap::COL___PARENTNODE__, ),
         self::TYPE_FIELDNAME     => array('id', '_name', '_forbook', '__user__', '__config__', '__split__', '__sort__', '__parentnode__', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
@@ -138,8 +137,8 @@ class FormatsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Forbook' => 2, 'User' => 3, 'Config' => 4, 'Split' => 5, 'Sort' => 6, 'Parentnode' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'forbook' => 2, 'user' => 3, 'config' => 4, 'split' => 5, 'sort' => 6, 'parentnode' => 7, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Forbook' => 2, 'UserSys' => 3, 'ConfigSys' => 4, 'Split' => 5, 'Sort' => 6, 'Parentnode' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'forbook' => 2, 'userSys' => 3, 'configSys' => 4, 'split' => 5, 'sort' => 6, 'parentnode' => 7, ),
         self::TYPE_COLNAME       => array(FormatsTableMap::COL_ID => 0, FormatsTableMap::COL__NAME => 1, FormatsTableMap::COL__FORBOOK => 2, FormatsTableMap::COL___USER__ => 3, FormatsTableMap::COL___CONFIG__ => 4, FormatsTableMap::COL___SPLIT__ => 5, FormatsTableMap::COL___SORT__ => 6, FormatsTableMap::COL___PARENTNODE__ => 7, ),
         self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_forbook' => 2, '__user__' => 3, '__config__' => 4, '__split__' => 5, '__sort__' => 6, '__parentnode__' => 7, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
@@ -162,11 +161,11 @@ class FormatsTableMap extends TableMap
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addColumn('id', 'Id', 'INTEGER', true, 4, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', true, null, null);
         $this->addForeignKey('_forbook', 'Forbook', 'INTEGER', '_books', 'id', false, 32, null);
-        $this->addColumn('__user__', 'User', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__config__', 'Config', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -226,7 +225,12 @@ class FormatsTableMap extends TableMap
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return null;
+        // If the PK cannot be derived from the row, return NULL.
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+            return null;
+        }
+
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -243,7 +247,11 @@ class FormatsTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return '';
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+        ];
     }
 
     /**
@@ -407,10 +415,11 @@ class FormatsTableMap extends TableMap
             // rename for clarity
             $criteria = $values;
         } elseif ($values instanceof \Formats) { // it's a model object
-            // create criteria based on pk value
-            $criteria = $values->buildCriteria();
+            // create criteria based on pk values
+            $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            throw new LogicException('The Formats object has no primary key');
+            $criteria = new Criteria(FormatsTableMap::DATABASE_NAME);
+            $criteria->add(FormatsTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = FormatsQuery::create()->mergeWith($criteria);
@@ -456,6 +465,10 @@ class FormatsTableMap extends TableMap
             $criteria = clone $criteria; // rename for clarity
         } else {
             $criteria = $criteria->buildCriteria(); // build Criteria from Formats object
+        }
+
+        if ($criteria->containsKey(FormatsTableMap::COL_ID) && $criteria->keyContainsValue(FormatsTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.FormatsTableMap::COL_ID.')');
         }
 
 

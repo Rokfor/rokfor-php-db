@@ -438,7 +438,7 @@ abstract class Formats implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -448,7 +448,7 @@ abstract class Formats implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -553,7 +553,7 @@ abstract class Formats implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Formats The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -565,7 +565,7 @@ abstract class Formats implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -573,7 +573,7 @@ abstract class Formats implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Formats The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -585,7 +585,7 @@ abstract class Formats implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -692,10 +692,10 @@ abstract class Formats implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FormatsTableMap::translateFieldName('Forbook', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_forbook = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FormatsTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FormatsTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FormatsTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FormatsTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : FormatsTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
@@ -989,6 +989,10 @@ abstract class Formats implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
+        $this->modifiedColumns[FormatsTableMap::COL_ID] = true;
+        if (null !== $this->id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . FormatsTableMap::COL_ID . ')');
+        }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(FormatsTableMap::COL_ID)) {
@@ -1063,6 +1067,7 @@ abstract class Formats implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
+        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -1121,10 +1126,10 @@ abstract class Formats implements ActiveRecordInterface
                 return $this->getForbook();
                 break;
             case 3:
-                return $this->getUser();
+                return $this->getUserSys();
                 break;
             case 4:
-                return $this->getConfig();
+                return $this->getConfigSys();
                 break;
             case 5:
                 return $this->getSplit();
@@ -1168,8 +1173,8 @@ abstract class Formats implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getForbook(),
-            $keys[3] => $this->getUser(),
-            $keys[4] => $this->getConfig(),
+            $keys[3] => $this->getUserSys(),
+            $keys[4] => $this->getConfigSys(),
             $keys[5] => $this->getSplit(),
             $keys[6] => $this->getSort(),
             $keys[7] => $this->getParentnode(),
@@ -1269,10 +1274,10 @@ abstract class Formats implements ActiveRecordInterface
                 $this->setForbook($value);
                 break;
             case 3:
-                $this->setUser($value);
+                $this->setUserSys($value);
                 break;
             case 4:
-                $this->setConfig($value);
+                $this->setConfigSys($value);
                 break;
             case 5:
                 $this->setSplit($value);
@@ -1319,10 +1324,10 @@ abstract class Formats implements ActiveRecordInterface
             $this->setForbook($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setUser($arr[$keys[3]]);
+            $this->setUserSys($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setConfig($arr[$keys[4]]);
+            $this->setConfigSys($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
             $this->setSplit($arr[$keys[5]]);
@@ -1414,7 +1419,8 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        throw new LogicException('The Formats object has no primary key');
+        $criteria = ChildFormatsQuery::create();
+        $criteria->add(FormatsTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1427,7 +1433,7 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = false;
+        $validPk = null !== $this->getId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1442,27 +1448,23 @@ abstract class Formats implements ActiveRecordInterface
     }
 
     /**
-     * Returns NULL since this table doesn't have a primary key.
-     * This method exists only for BC and is deprecated!
-     * @return null
+     * Returns the primary key for this object (row).
+     * @return int
      */
     public function getPrimaryKey()
     {
-        return null;
+        return $this->getId();
     }
 
     /**
-     * Dummy primary key setter.
+     * Generic method to set the primary key (id column).
      *
-     * This function only exists to preserve backwards compatibility.  It is no longer
-     * needed or required by the Persistent interface.  It will be removed in next BC-breaking
-     * release of Propel.
-     *
-     * @deprecated
+     * @param       int $key Primary key.
+     * @return void
      */
-    public function setPrimaryKey($pk)
+    public function setPrimaryKey($key)
     {
-        // do nothing, because this object doesn't have any primary keys
+        $this->setId($key);
     }
 
     /**
@@ -1471,7 +1473,7 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return ;
+        return null === $this->getId();
     }
 
     /**
@@ -1489,8 +1491,8 @@ abstract class Formats implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setForbook($this->getForbook());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setSort($this->getSort());
         $copyObj->setParentnode($this->getParentnode());

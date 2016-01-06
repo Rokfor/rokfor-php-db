@@ -1155,9 +1155,7 @@ abstract class RTemplatenamesInchapter implements ActiveRecordInterface
     public function getFormats(ConnectionInterface $con = null)
     {
         if ($this->aFormats === null && ($this->_chapterid !== null)) {
-            $this->aFormats = ChildFormatsQuery::create()
-                ->filterByRTemplatenamesInchapter($this) // here
-                ->findOne($con);
+            $this->aFormats = ChildFormatsQuery::create()->findPk($this->_chapterid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be

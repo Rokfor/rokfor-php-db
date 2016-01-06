@@ -34,25 +34,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesNarrationpluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildRIssuesNarrationpluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
- * @method     ChildRIssuesNarrationpluginQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
- * @method     ChildRIssuesNarrationpluginQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ * @method     ChildRIssuesNarrationpluginQuery leftJoinNarrationIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the NarrationIssue relation
+ * @method     ChildRIssuesNarrationpluginQuery rightJoinNarrationIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NarrationIssue relation
+ * @method     ChildRIssuesNarrationpluginQuery innerJoinNarrationIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the NarrationIssue relation
  *
- * @method     ChildRIssuesNarrationpluginQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ * @method     ChildRIssuesNarrationpluginQuery joinWithNarrationIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the NarrationIssue relation
  *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
- * @method     ChildRIssuesNarrationpluginQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
- * @method     ChildRIssuesNarrationpluginQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
+ * @method     ChildRIssuesNarrationpluginQuery leftJoinWithNarrationIssue() Adds a LEFT JOIN clause and with to the query using the NarrationIssue relation
+ * @method     ChildRIssuesNarrationpluginQuery rightJoinWithNarrationIssue() Adds a RIGHT JOIN clause and with to the query using the NarrationIssue relation
+ * @method     ChildRIssuesNarrationpluginQuery innerJoinWithNarrationIssue() Adds a INNER JOIN clause and with to the query using the NarrationIssue relation
  *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinPlugins($relationAlias = null) Adds a LEFT JOIN clause to the query using the Plugins relation
- * @method     ChildRIssuesNarrationpluginQuery rightJoinPlugins($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Plugins relation
- * @method     ChildRIssuesNarrationpluginQuery innerJoinPlugins($relationAlias = null) Adds a INNER JOIN clause to the query using the Plugins relation
+ * @method     ChildRIssuesNarrationpluginQuery leftJoinNarrationPlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the NarrationPlugin relation
+ * @method     ChildRIssuesNarrationpluginQuery rightJoinNarrationPlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NarrationPlugin relation
+ * @method     ChildRIssuesNarrationpluginQuery innerJoinNarrationPlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the NarrationPlugin relation
  *
- * @method     ChildRIssuesNarrationpluginQuery joinWithPlugins($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Plugins relation
+ * @method     ChildRIssuesNarrationpluginQuery joinWithNarrationPlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the NarrationPlugin relation
  *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinWithPlugins() Adds a LEFT JOIN clause and with to the query using the Plugins relation
- * @method     ChildRIssuesNarrationpluginQuery rightJoinWithPlugins() Adds a RIGHT JOIN clause and with to the query using the Plugins relation
- * @method     ChildRIssuesNarrationpluginQuery innerJoinWithPlugins() Adds a INNER JOIN clause and with to the query using the Plugins relation
+ * @method     ChildRIssuesNarrationpluginQuery leftJoinWithNarrationPlugin() Adds a LEFT JOIN clause and with to the query using the NarrationPlugin relation
+ * @method     ChildRIssuesNarrationpluginQuery rightJoinWithNarrationPlugin() Adds a RIGHT JOIN clause and with to the query using the NarrationPlugin relation
+ * @method     ChildRIssuesNarrationpluginQuery innerJoinWithNarrationPlugin() Adds a INNER JOIN clause and with to the query using the NarrationPlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -275,7 +275,7 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
      * $query->filterByIssueid(array('min' => 12)); // WHERE _issueid > 12
      * </code>
      *
-     * @see       filterByIssues()
+     * @see       filterByNarrationIssue()
      *
      * @param     mixed $issueid The value to use as filter.
      *              Use scalar values for equality.
@@ -318,7 +318,7 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
      * $query->filterByPluginid(array('min' => 12)); // WHERE _pluginid > 12
      * </code>
      *
-     * @see       filterByPlugins()
+     * @see       filterByNarrationPlugin()
      *
      * @param     mixed $pluginid The value to use as filter.
      *              Use scalar values for equality.
@@ -361,7 +361,7 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
      *
      * @return ChildRIssuesNarrationpluginQuery The current query, for fluid interface
      */
-    public function filterByIssues($issues, $comparison = null)
+    public function filterByNarrationIssue($issues, $comparison = null)
     {
         if ($issues instanceof \Issues) {
             return $this
@@ -374,22 +374,22 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RIssuesNarrationpluginTableMap::COL__ISSUEID, $issues->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByIssues() only accepts arguments of type \Issues or Collection');
+            throw new PropelException('filterByNarrationIssue() only accepts arguments of type \Issues or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Issues relation
+     * Adds a JOIN clause to the query using the NarrationIssue relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRIssuesNarrationpluginQuery The current query, for fluid interface
      */
-    public function joinIssues($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinNarrationIssue($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Issues');
+        $relationMap = $tableMap->getRelation('NarrationIssue');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -404,14 +404,14 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Issues');
+            $this->addJoinObject($join, 'NarrationIssue');
         }
 
         return $this;
     }
 
     /**
-     * Use the Issues relation Issues object
+     * Use the NarrationIssue relation Issues object
      *
      * @see useQuery()
      *
@@ -421,11 +421,11 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
      *
      * @return \IssuesQuery A secondary query class using the current class as primary query
      */
-    public function useIssuesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useNarrationIssueQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinIssues($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Issues', '\IssuesQuery');
+            ->joinNarrationIssue($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'NarrationIssue', '\IssuesQuery');
     }
 
     /**
@@ -438,7 +438,7 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
      *
      * @return ChildRIssuesNarrationpluginQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = null)
+    public function filterByNarrationPlugin($plugins, $comparison = null)
     {
         if ($plugins instanceof \Plugins) {
             return $this
@@ -451,22 +451,22 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RIssuesNarrationpluginTableMap::COL__PLUGINID, $plugins->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByPlugins() only accepts arguments of type \Plugins or Collection');
+            throw new PropelException('filterByNarrationPlugin() only accepts arguments of type \Plugins or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Plugins relation
+     * Adds a JOIN clause to the query using the NarrationPlugin relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRIssuesNarrationpluginQuery The current query, for fluid interface
      */
-    public function joinPlugins($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinNarrationPlugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Plugins');
+        $relationMap = $tableMap->getRelation('NarrationPlugin');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -481,14 +481,14 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Plugins');
+            $this->addJoinObject($join, 'NarrationPlugin');
         }
 
         return $this;
     }
 
     /**
-     * Use the Plugins relation Plugins object
+     * Use the NarrationPlugin relation Plugins object
      *
      * @see useQuery()
      *
@@ -498,11 +498,11 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
      *
      * @return \PluginsQuery A secondary query class using the current class as primary query
      */
-    public function usePluginsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useNarrationPluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPlugins($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Plugins', '\PluginsQuery');
+            ->joinNarrationPlugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'NarrationPlugin', '\PluginsQuery');
     }
 
     /**

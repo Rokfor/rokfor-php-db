@@ -25,8 +25,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery orderByIssue($order = Criteria::ASC) Order by the _issue column
  * @method     ChildPdfQuery orderByPlugin($order = Criteria::ASC) Order by the _plugin column
  * @method     ChildPdfQuery orderByPages($order = Criteria::ASC) Order by the _pages column
- * @method     ChildPdfQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildPdfQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildPdfQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildPdfQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildPdfQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildPdfQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildPdfQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
@@ -37,8 +37,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery groupByIssue() Group by the _issue column
  * @method     ChildPdfQuery groupByPlugin() Group by the _plugin column
  * @method     ChildPdfQuery groupByPages() Group by the _pages column
- * @method     ChildPdfQuery groupByUser() Group by the __user__ column
- * @method     ChildPdfQuery groupByConfig() Group by the __config__ column
+ * @method     ChildPdfQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildPdfQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildPdfQuery groupBySplit() Group by the __split__ column
  * @method     ChildPdfQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildPdfQuery groupBySort() Group by the __sort__ column
@@ -60,8 +60,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdf findOneByIssue(int $_issue) Return the first ChildPdf filtered by the _issue column
  * @method     ChildPdf findOneByPlugin(int $_plugin) Return the first ChildPdf filtered by the _plugin column
  * @method     ChildPdf findOneByPages(int $_pages) Return the first ChildPdf filtered by the _pages column
- * @method     ChildPdf findOneByUser(string $__user__) Return the first ChildPdf filtered by the __user__ column
- * @method     ChildPdf findOneByConfig(string $__config__) Return the first ChildPdf filtered by the __config__ column
+ * @method     ChildPdf findOneByUserSys(string $__user__) Return the first ChildPdf filtered by the __user__ column
+ * @method     ChildPdf findOneByConfigSys(string $__config__) Return the first ChildPdf filtered by the __config__ column
  * @method     ChildPdf findOneBySplit(string $__split__) Return the first ChildPdf filtered by the __split__ column
  * @method     ChildPdf findOneByParentnode(int $__parentnode__) Return the first ChildPdf filtered by the __parentnode__ column
  * @method     ChildPdf findOneBySort(int $__sort__) Return the first ChildPdf filtered by the __sort__ column *
@@ -75,8 +75,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdf requireOneByIssue(int $_issue) Return the first ChildPdf filtered by the _issue column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneByPlugin(int $_plugin) Return the first ChildPdf filtered by the _plugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneByPages(int $_pages) Return the first ChildPdf filtered by the _pages column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPdf requireOneByUser(string $__user__) Return the first ChildPdf filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPdf requireOneByConfig(string $__config__) Return the first ChildPdf filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPdf requireOneByUserSys(string $__user__) Return the first ChildPdf filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPdf requireOneByConfigSys(string $__config__) Return the first ChildPdf filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneBySplit(string $__split__) Return the first ChildPdf filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneByParentnode(int $__parentnode__) Return the first ChildPdf filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneBySort(int $__sort__) Return the first ChildPdf filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -88,8 +88,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdf[]|ObjectCollection findByIssue(int $_issue) Return ChildPdf objects filtered by the _issue column
  * @method     ChildPdf[]|ObjectCollection findByPlugin(int $_plugin) Return ChildPdf objects filtered by the _plugin column
  * @method     ChildPdf[]|ObjectCollection findByPages(int $_pages) Return ChildPdf objects filtered by the _pages column
- * @method     ChildPdf[]|ObjectCollection findByUser(string $__user__) Return ChildPdf objects filtered by the __user__ column
- * @method     ChildPdf[]|ObjectCollection findByConfig(string $__config__) Return ChildPdf objects filtered by the __config__ column
+ * @method     ChildPdf[]|ObjectCollection findByUserSys(string $__user__) Return ChildPdf objects filtered by the __user__ column
+ * @method     ChildPdf[]|ObjectCollection findByConfigSys(string $__config__) Return ChildPdf objects filtered by the __config__ column
  * @method     ChildPdf[]|ObjectCollection findBySplit(string $__split__) Return ChildPdf objects filtered by the __split__ column
  * @method     ChildPdf[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildPdf objects filtered by the __parentnode__ column
  * @method     ChildPdf[]|ObjectCollection findBySort(int $__sort__) Return ChildPdf objects filtered by the __sort__ column
@@ -514,28 +514,28 @@ abstract class PdfQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(PdfTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(PdfTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -543,28 +543,28 @@ abstract class PdfQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(PdfTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(PdfTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

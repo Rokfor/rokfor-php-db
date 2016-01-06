@@ -110,20 +110,6 @@ abstract class Templatenames implements ActiveRecordInterface
     protected $_helpimage;
 
     /**
-     * The value for the _inchapter field.
-     *
-     * @var        string
-     */
-    protected $_inchapter;
-
-    /**
-     * The value for the _forbook field.
-     *
-     * @var        string
-     */
-    protected $_forbook;
-
-    /**
      * The value for the _category field.
      *
      * @var        string
@@ -582,26 +568,6 @@ abstract class Templatenames implements ActiveRecordInterface
     }
 
     /**
-     * Get the [_inchapter] column value.
-     *
-     * @return string
-     */
-    public function getInchapter()
-    {
-        return $this->_inchapter;
-    }
-
-    /**
-     * Get the [_forbook] column value.
-     *
-     * @return string
-     */
-    public function getForbook()
-    {
-        return $this->_forbook;
-    }
-
-    /**
      * Get the [_category] column value.
      *
      * @return string
@@ -626,7 +592,7 @@ abstract class Templatenames implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -636,7 +602,7 @@ abstract class Templatenames implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -752,46 +718,6 @@ abstract class Templatenames implements ActiveRecordInterface
     } // setHelpimage()
 
     /**
-     * Set the value of [_inchapter] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templatenames The current object (for fluent API support)
-     */
-    public function setInchapter($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_inchapter !== $v) {
-            $this->_inchapter = $v;
-            $this->modifiedColumns[TemplatenamesTableMap::COL__INCHAPTER] = true;
-        }
-
-        return $this;
-    } // setInchapter()
-
-    /**
-     * Set the value of [_forbook] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templatenames The current object (for fluent API support)
-     */
-    public function setForbook($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_forbook !== $v) {
-            $this->_forbook = $v;
-            $this->modifiedColumns[TemplatenamesTableMap::COL__FORBOOK] = true;
-        }
-
-        return $this;
-    } // setForbook()
-
-    /**
      * Set the value of [_category] column.
      *
      * @param string $v new value
@@ -837,7 +763,7 @@ abstract class Templatenames implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Templatenames The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -849,7 +775,7 @@ abstract class Templatenames implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -857,7 +783,7 @@ abstract class Templatenames implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Templatenames The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -869,7 +795,7 @@ abstract class Templatenames implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -979,31 +905,25 @@ abstract class Templatenames implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : TemplatenamesTableMap::translateFieldName('Helpimage', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_helpimage = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : TemplatenamesTableMap::translateFieldName('Inchapter', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_inchapter = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TemplatenamesTableMap::translateFieldName('Forbook', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_forbook = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TemplatenamesTableMap::translateFieldName('Category', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : TemplatenamesTableMap::translateFieldName('Category', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_category = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TemplatenamesTableMap::translateFieldName('Public', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TemplatenamesTableMap::translateFieldName('Public', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_public = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TemplatenamesTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TemplatenamesTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TemplatenamesTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TemplatenamesTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TemplatenamesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TemplatenamesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : TemplatenamesTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TemplatenamesTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : TemplatenamesTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TemplatenamesTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -1013,7 +933,7 @@ abstract class Templatenames implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = TemplatenamesTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = TemplatenamesTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Templatenames'), 0, $e);
@@ -1456,12 +1376,6 @@ abstract class Templatenames implements ActiveRecordInterface
         if ($this->isColumnModified(TemplatenamesTableMap::COL__HELPIMAGE)) {
             $modifiedColumns[':p' . $index++]  = '_helpimage';
         }
-        if ($this->isColumnModified(TemplatenamesTableMap::COL__INCHAPTER)) {
-            $modifiedColumns[':p' . $index++]  = '_inchapter';
-        }
-        if ($this->isColumnModified(TemplatenamesTableMap::COL__FORBOOK)) {
-            $modifiedColumns[':p' . $index++]  = '_forbook';
-        }
         if ($this->isColumnModified(TemplatenamesTableMap::COL__CATEGORY)) {
             $modifiedColumns[':p' . $index++]  = '_category';
         }
@@ -1505,12 +1419,6 @@ abstract class Templatenames implements ActiveRecordInterface
                         break;
                     case '_helpimage':
                         $stmt->bindValue($identifier, $this->_helpimage, PDO::PARAM_STR);
-                        break;
-                    case '_inchapter':
-                        $stmt->bindValue($identifier, $this->_inchapter, PDO::PARAM_STR);
-                        break;
-                    case '_forbook':
-                        $stmt->bindValue($identifier, $this->_forbook, PDO::PARAM_STR);
                         break;
                     case '_category':
                         $stmt->bindValue($identifier, $this->_category, PDO::PARAM_STR);
@@ -1608,30 +1516,24 @@ abstract class Templatenames implements ActiveRecordInterface
                 return $this->getHelpimage();
                 break;
             case 4:
-                return $this->getInchapter();
-                break;
-            case 5:
-                return $this->getForbook();
-                break;
-            case 6:
                 return $this->getCategory();
                 break;
-            case 7:
+            case 5:
                 return $this->getPublic();
                 break;
+            case 6:
+                return $this->getUserSys();
+                break;
+            case 7:
+                return $this->getConfigSys();
+                break;
             case 8:
-                return $this->getUser();
-                break;
-            case 9:
-                return $this->getConfig();
-                break;
-            case 10:
                 return $this->getSplit();
                 break;
-            case 11:
+            case 9:
                 return $this->getSort();
                 break;
-            case 12:
+            case 10:
                 return $this->getParentnode();
                 break;
             default:
@@ -1668,15 +1570,13 @@ abstract class Templatenames implements ActiveRecordInterface
             $keys[1] => $this->getName(),
             $keys[2] => $this->getHelptext(),
             $keys[3] => $this->getHelpimage(),
-            $keys[4] => $this->getInchapter(),
-            $keys[5] => $this->getForbook(),
-            $keys[6] => $this->getCategory(),
-            $keys[7] => $this->getPublic(),
-            $keys[8] => $this->getUser(),
-            $keys[9] => $this->getConfig(),
-            $keys[10] => $this->getSplit(),
-            $keys[11] => $this->getSort(),
-            $keys[12] => $this->getParentnode(),
+            $keys[4] => $this->getCategory(),
+            $keys[5] => $this->getPublic(),
+            $keys[6] => $this->getUserSys(),
+            $keys[7] => $this->getConfigSys(),
+            $keys[8] => $this->getSplit(),
+            $keys[9] => $this->getSort(),
+            $keys[10] => $this->getParentnode(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1821,30 +1721,24 @@ abstract class Templatenames implements ActiveRecordInterface
                 $this->setHelpimage($value);
                 break;
             case 4:
-                $this->setInchapter($value);
-                break;
-            case 5:
-                $this->setForbook($value);
-                break;
-            case 6:
                 $this->setCategory($value);
                 break;
-            case 7:
+            case 5:
                 $this->setPublic($value);
                 break;
+            case 6:
+                $this->setUserSys($value);
+                break;
+            case 7:
+                $this->setConfigSys($value);
+                break;
             case 8:
-                $this->setUser($value);
-                break;
-            case 9:
-                $this->setConfig($value);
-                break;
-            case 10:
                 $this->setSplit($value);
                 break;
-            case 11:
+            case 9:
                 $this->setSort($value);
                 break;
-            case 12:
+            case 10:
                 $this->setParentnode($value);
                 break;
         } // switch()
@@ -1886,31 +1780,25 @@ abstract class Templatenames implements ActiveRecordInterface
             $this->setHelpimage($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setInchapter($arr[$keys[4]]);
+            $this->setCategory($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setForbook($arr[$keys[5]]);
+            $this->setPublic($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setCategory($arr[$keys[6]]);
+            $this->setUserSys($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setPublic($arr[$keys[7]]);
+            $this->setConfigSys($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setUser($arr[$keys[8]]);
+            $this->setSplit($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setConfig($arr[$keys[9]]);
+            $this->setSort($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setSplit($arr[$keys[10]]);
-        }
-        if (array_key_exists($keys[11], $arr)) {
-            $this->setSort($arr[$keys[11]]);
-        }
-        if (array_key_exists($keys[12], $arr)) {
-            $this->setParentnode($arr[$keys[12]]);
+            $this->setParentnode($arr[$keys[10]]);
         }
     }
 
@@ -1964,12 +1852,6 @@ abstract class Templatenames implements ActiveRecordInterface
         }
         if ($this->isColumnModified(TemplatenamesTableMap::COL__HELPIMAGE)) {
             $criteria->add(TemplatenamesTableMap::COL__HELPIMAGE, $this->_helpimage);
-        }
-        if ($this->isColumnModified(TemplatenamesTableMap::COL__INCHAPTER)) {
-            $criteria->add(TemplatenamesTableMap::COL__INCHAPTER, $this->_inchapter);
-        }
-        if ($this->isColumnModified(TemplatenamesTableMap::COL__FORBOOK)) {
-            $criteria->add(TemplatenamesTableMap::COL__FORBOOK, $this->_forbook);
         }
         if ($this->isColumnModified(TemplatenamesTableMap::COL__CATEGORY)) {
             $criteria->add(TemplatenamesTableMap::COL__CATEGORY, $this->_category);
@@ -2081,12 +1963,10 @@ abstract class Templatenames implements ActiveRecordInterface
         $copyObj->setName($this->getName());
         $copyObj->setHelptext($this->getHelptext());
         $copyObj->setHelpimage($this->getHelpimage());
-        $copyObj->setInchapter($this->getInchapter());
-        $copyObj->setForbook($this->getForbook());
         $copyObj->setCategory($this->getCategory());
         $copyObj->setPublic($this->getPublic());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setSort($this->getSort());
         $copyObj->setParentnode($this->getParentnode());
@@ -4666,8 +4546,6 @@ abstract class Templatenames implements ActiveRecordInterface
         $this->_name = null;
         $this->_helptext = null;
         $this->_helpimage = null;
-        $this->_inchapter = null;
-        $this->_forbook = null;
         $this->_category = null;
         $this->_public = null;
         $this->__user__ = null;

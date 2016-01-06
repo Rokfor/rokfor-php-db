@@ -27,8 +27,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery orderByStatus($order = Criteria::ASC) Order by the _status column
  * @method     ChildContributionsQuery orderByNewdate($order = Criteria::ASC) Order by the _newdate column
  * @method     ChildContributionsQuery orderByModdate($order = Criteria::ASC) Order by the _moddate column
- * @method     ChildContributionsQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildContributionsQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildContributionsQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildContributionsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildContributionsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildContributionsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildContributionsQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
@@ -40,8 +40,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery groupByStatus() Group by the _status column
  * @method     ChildContributionsQuery groupByNewdate() Group by the _newdate column
  * @method     ChildContributionsQuery groupByModdate() Group by the _moddate column
- * @method     ChildContributionsQuery groupByUser() Group by the __user__ column
- * @method     ChildContributionsQuery groupByConfig() Group by the __config__ column
+ * @method     ChildContributionsQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildContributionsQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildContributionsQuery groupBySplit() Group by the __split__ column
  * @method     ChildContributionsQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildContributionsQuery groupBySort() Group by the __sort__ column
@@ -106,8 +106,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions findOneByStatus(string $_status) Return the first ChildContributions filtered by the _status column
  * @method     ChildContributions findOneByNewdate(int $_newdate) Return the first ChildContributions filtered by the _newdate column
  * @method     ChildContributions findOneByModdate(int $_moddate) Return the first ChildContributions filtered by the _moddate column
- * @method     ChildContributions findOneByUser(string $__user__) Return the first ChildContributions filtered by the __user__ column
- * @method     ChildContributions findOneByConfig(string $__config__) Return the first ChildContributions filtered by the __config__ column
+ * @method     ChildContributions findOneByUserSys(string $__user__) Return the first ChildContributions filtered by the __user__ column
+ * @method     ChildContributions findOneByConfigSys(string $__config__) Return the first ChildContributions filtered by the __config__ column
  * @method     ChildContributions findOneBySplit(int $__split__) Return the first ChildContributions filtered by the __split__ column
  * @method     ChildContributions findOneByParentnode(int $__parentnode__) Return the first ChildContributions filtered by the __parentnode__ column
  * @method     ChildContributions findOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column *
@@ -122,8 +122,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions requireOneByStatus(string $_status) Return the first ChildContributions filtered by the _status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByNewdate(int $_newdate) Return the first ChildContributions filtered by the _newdate column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByModdate(int $_moddate) Return the first ChildContributions filtered by the _moddate column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContributions requireOneByUser(string $__user__) Return the first ChildContributions filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContributions requireOneByConfig(string $__config__) Return the first ChildContributions filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByUserSys(string $__user__) Return the first ChildContributions filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByConfigSys(string $__config__) Return the first ChildContributions filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneBySplit(int $__split__) Return the first ChildContributions filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByParentnode(int $__parentnode__) Return the first ChildContributions filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -136,8 +136,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions[]|ObjectCollection findByStatus(string $_status) Return ChildContributions objects filtered by the _status column
  * @method     ChildContributions[]|ObjectCollection findByNewdate(int $_newdate) Return ChildContributions objects filtered by the _newdate column
  * @method     ChildContributions[]|ObjectCollection findByModdate(int $_moddate) Return ChildContributions objects filtered by the _moddate column
- * @method     ChildContributions[]|ObjectCollection findByUser(string $__user__) Return ChildContributions objects filtered by the __user__ column
- * @method     ChildContributions[]|ObjectCollection findByConfig(string $__config__) Return ChildContributions objects filtered by the __config__ column
+ * @method     ChildContributions[]|ObjectCollection findByUserSys(string $__user__) Return ChildContributions objects filtered by the __user__ column
+ * @method     ChildContributions[]|ObjectCollection findByConfigSys(string $__config__) Return ChildContributions objects filtered by the __config__ column
  * @method     ChildContributions[]|ObjectCollection findBySplit(int $__split__) Return ChildContributions objects filtered by the __split__ column
  * @method     ChildContributions[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildContributions objects filtered by the __parentnode__ column
  * @method     ChildContributions[]|ObjectCollection findBySort(int $__sort__) Return ChildContributions objects filtered by the __sort__ column
@@ -595,28 +595,28 @@ abstract class ContributionsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(ContributionsTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(ContributionsTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -624,28 +624,28 @@ abstract class ContributionsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(ContributionsTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(ContributionsTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

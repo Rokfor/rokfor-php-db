@@ -610,7 +610,7 @@ abstract class Templates implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -620,7 +620,7 @@ abstract class Templates implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -965,7 +965,7 @@ abstract class Templates implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Templates The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -977,7 +977,7 @@ abstract class Templates implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -985,7 +985,7 @@ abstract class Templates implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Templates The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -997,7 +997,7 @@ abstract class Templates implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -1140,10 +1140,10 @@ abstract class Templates implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : TemplatesTableMap::translateFieldName('Lengthinfluence', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_lengthinfluence = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : TemplatesTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : TemplatesTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : TemplatesTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : TemplatesTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : TemplatesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
@@ -1633,10 +1633,10 @@ abstract class Templates implements ActiveRecordInterface
                 return $this->getLengthinfluence();
                 break;
             case 15:
-                return $this->getUser();
+                return $this->getUserSys();
                 break;
             case 16:
-                return $this->getConfig();
+                return $this->getConfigSys();
                 break;
             case 17:
                 return $this->getSplit();
@@ -1692,8 +1692,8 @@ abstract class Templates implements ActiveRecordInterface
             $keys[12] => $this->getHistory(),
             $keys[13] => $this->getGrowing(),
             $keys[14] => $this->getLengthinfluence(),
-            $keys[15] => $this->getUser(),
-            $keys[16] => $this->getConfig(),
+            $keys[15] => $this->getUserSys(),
+            $keys[16] => $this->getConfigSys(),
             $keys[17] => $this->getSplit(),
             $keys[18] => $this->getParentnode(),
             $keys[19] => $this->getSort(),
@@ -1814,10 +1814,10 @@ abstract class Templates implements ActiveRecordInterface
                 $this->setLengthinfluence($value);
                 break;
             case 15:
-                $this->setUser($value);
+                $this->setUserSys($value);
                 break;
             case 16:
-                $this->setConfig($value);
+                $this->setConfigSys($value);
                 break;
             case 17:
                 $this->setSplit($value);
@@ -1900,10 +1900,10 @@ abstract class Templates implements ActiveRecordInterface
             $this->setLengthinfluence($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setUser($arr[$keys[15]]);
+            $this->setUserSys($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setConfig($arr[$keys[16]]);
+            $this->setConfigSys($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
             $this->setSplit($arr[$keys[17]]);
@@ -2115,8 +2115,8 @@ abstract class Templates implements ActiveRecordInterface
         $copyObj->setHistory($this->getHistory());
         $copyObj->setGrowing($this->getGrowing());
         $copyObj->setLengthinfluence($this->getLengthinfluence());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());

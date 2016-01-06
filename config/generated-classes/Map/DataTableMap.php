@@ -59,7 +59,7 @@ class DataTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class DataTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the id field
@@ -87,19 +87,14 @@ class DataTableMap extends TableMap
     const COL__FORTEMPLATEFIELD = '_data._fortemplatefield';
 
     /**
-     * the column name for the _datatext field
+     * the column name for the _content field
      */
-    const COL__DATATEXT = '_data._datatext';
+    const COL__CONTENT = '_data._content';
 
     /**
-     * the column name for the _databinary field
+     * the column name for the _isjson field
      */
-    const COL__DATABINARY = '_data._databinary';
-
-    /**
-     * the column name for the _datainteger field
-     */
-    const COL__DATAINTEGER = '_data._datainteger';
+    const COL__ISJSON = '_data._isjson';
 
     /**
      * the column name for the __user__ field
@@ -138,11 +133,11 @@ class DataTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Forcontribution', 'Fortemplatefield', 'Datatext', 'Databinary', 'Datainteger', 'User', 'Config', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'forcontribution', 'fortemplatefield', 'datatext', 'databinary', 'datainteger', 'user', 'config', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(DataTableMap::COL_ID, DataTableMap::COL__FORCONTRIBUTION, DataTableMap::COL__FORTEMPLATEFIELD, DataTableMap::COL__DATATEXT, DataTableMap::COL__DATABINARY, DataTableMap::COL__DATAINTEGER, DataTableMap::COL___USER__, DataTableMap::COL___CONFIG__, DataTableMap::COL___SPLIT__, DataTableMap::COL___PARENTNODE__, DataTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_forcontribution', '_fortemplatefield', '_datatext', '_databinary', '_datainteger', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id', 'Forcontribution', 'Fortemplatefield', 'Content', 'Isjson', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'forcontribution', 'fortemplatefield', 'content', 'isjson', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(DataTableMap::COL_ID, DataTableMap::COL__FORCONTRIBUTION, DataTableMap::COL__FORTEMPLATEFIELD, DataTableMap::COL__CONTENT, DataTableMap::COL__ISJSON, DataTableMap::COL___USER__, DataTableMap::COL___CONFIG__, DataTableMap::COL___SPLIT__, DataTableMap::COL___PARENTNODE__, DataTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_forcontribution', '_fortemplatefield', '_content', '_isjson', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -152,11 +147,11 @@ class DataTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Forcontribution' => 1, 'Fortemplatefield' => 2, 'Datatext' => 3, 'Databinary' => 4, 'Datainteger' => 5, 'User' => 6, 'Config' => 7, 'Split' => 8, 'Parentnode' => 9, 'Sort' => 10, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'forcontribution' => 1, 'fortemplatefield' => 2, 'datatext' => 3, 'databinary' => 4, 'datainteger' => 5, 'user' => 6, 'config' => 7, 'split' => 8, 'parentnode' => 9, 'sort' => 10, ),
-        self::TYPE_COLNAME       => array(DataTableMap::COL_ID => 0, DataTableMap::COL__FORCONTRIBUTION => 1, DataTableMap::COL__FORTEMPLATEFIELD => 2, DataTableMap::COL__DATATEXT => 3, DataTableMap::COL__DATABINARY => 4, DataTableMap::COL__DATAINTEGER => 5, DataTableMap::COL___USER__ => 6, DataTableMap::COL___CONFIG__ => 7, DataTableMap::COL___SPLIT__ => 8, DataTableMap::COL___PARENTNODE__ => 9, DataTableMap::COL___SORT__ => 10, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_forcontribution' => 1, '_fortemplatefield' => 2, '_datatext' => 3, '_databinary' => 4, '_datainteger' => 5, '__user__' => 6, '__config__' => 7, '__split__' => 8, '__parentnode__' => 9, '__sort__' => 10, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Forcontribution' => 1, 'Fortemplatefield' => 2, 'Content' => 3, 'Isjson' => 4, 'UserSys' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'forcontribution' => 1, 'fortemplatefield' => 2, 'content' => 3, 'isjson' => 4, 'userSys' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, ),
+        self::TYPE_COLNAME       => array(DataTableMap::COL_ID => 0, DataTableMap::COL__FORCONTRIBUTION => 1, DataTableMap::COL__FORTEMPLATEFIELD => 2, DataTableMap::COL__CONTENT => 3, DataTableMap::COL__ISJSON => 4, DataTableMap::COL___USER__ => 5, DataTableMap::COL___CONFIG__ => 6, DataTableMap::COL___SPLIT__ => 7, DataTableMap::COL___PARENTNODE__ => 8, DataTableMap::COL___SORT__ => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_forcontribution' => 1, '_fortemplatefield' => 2, '_content' => 3, '_isjson' => 4, '__user__' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -179,11 +174,10 @@ class DataTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addForeignKey('_forcontribution', 'Forcontribution', 'INTEGER', '_contributions', 'id', false, 4, null);
         $this->addForeignKey('_fortemplatefield', 'Fortemplatefield', 'INTEGER', '_templates', 'id', false, 32, null);
-        $this->addColumn('_datatext', 'Datatext', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_databinary', 'Databinary', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_datainteger', 'Datainteger', 'INTEGER', false, 32, null);
-        $this->addColumn('__user__', 'User', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__config__', 'Config', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('_content', 'Content', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('_isjson', 'Isjson', 'BOOLEAN', false, 1, null);
+        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
@@ -354,9 +348,8 @@ class DataTableMap extends TableMap
             $criteria->addSelectColumn(DataTableMap::COL_ID);
             $criteria->addSelectColumn(DataTableMap::COL__FORCONTRIBUTION);
             $criteria->addSelectColumn(DataTableMap::COL__FORTEMPLATEFIELD);
-            $criteria->addSelectColumn(DataTableMap::COL__DATATEXT);
-            $criteria->addSelectColumn(DataTableMap::COL__DATABINARY);
-            $criteria->addSelectColumn(DataTableMap::COL__DATAINTEGER);
+            $criteria->addSelectColumn(DataTableMap::COL__CONTENT);
+            $criteria->addSelectColumn(DataTableMap::COL__ISJSON);
             $criteria->addSelectColumn(DataTableMap::COL___USER__);
             $criteria->addSelectColumn(DataTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(DataTableMap::COL___SPLIT__);
@@ -366,9 +359,8 @@ class DataTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._forcontribution');
             $criteria->addSelectColumn($alias . '._fortemplatefield');
-            $criteria->addSelectColumn($alias . '._datatext');
-            $criteria->addSelectColumn($alias . '._databinary');
-            $criteria->addSelectColumn($alias . '._datainteger');
+            $criteria->addSelectColumn($alias . '._content');
+            $criteria->addSelectColumn($alias . '._isjson');
             $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');

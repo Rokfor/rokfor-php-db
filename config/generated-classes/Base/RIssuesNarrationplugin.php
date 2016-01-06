@@ -80,12 +80,12 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
     /**
      * @var        ChildIssues
      */
-    protected $aIssues;
+    protected $aNarrationIssue;
 
     /**
      * @var        ChildPlugins
      */
-    protected $aPlugins;
+    protected $aNarrationPlugin;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -357,8 +357,8 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
             $this->modifiedColumns[RIssuesNarrationpluginTableMap::COL__ISSUEID] = true;
         }
 
-        if ($this->aIssues !== null && $this->aIssues->getId() !== $v) {
-            $this->aIssues = null;
+        if ($this->aNarrationIssue !== null && $this->aNarrationIssue->getId() !== $v) {
+            $this->aNarrationIssue = null;
         }
 
         return $this;
@@ -381,8 +381,8 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
             $this->modifiedColumns[RIssuesNarrationpluginTableMap::COL__PLUGINID] = true;
         }
 
-        if ($this->aPlugins !== null && $this->aPlugins->getId() !== $v) {
-            $this->aPlugins = null;
+        if ($this->aNarrationPlugin !== null && $this->aNarrationPlugin->getId() !== $v) {
+            $this->aNarrationPlugin = null;
         }
 
         return $this;
@@ -459,11 +459,11 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aIssues !== null && $this->_issueid !== $this->aIssues->getId()) {
-            $this->aIssues = null;
+        if ($this->aNarrationIssue !== null && $this->_issueid !== $this->aNarrationIssue->getId()) {
+            $this->aNarrationIssue = null;
         }
-        if ($this->aPlugins !== null && $this->_pluginid !== $this->aPlugins->getId()) {
-            $this->aPlugins = null;
+        if ($this->aNarrationPlugin !== null && $this->_pluginid !== $this->aNarrationPlugin->getId()) {
+            $this->aNarrationPlugin = null;
         }
     } // ensureConsistency
 
@@ -504,8 +504,8 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aIssues = null;
-            $this->aPlugins = null;
+            $this->aNarrationIssue = null;
+            $this->aNarrationPlugin = null;
         } // if (deep)
     }
 
@@ -610,18 +610,18 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aIssues !== null) {
-                if ($this->aIssues->isModified() || $this->aIssues->isNew()) {
-                    $affectedRows += $this->aIssues->save($con);
+            if ($this->aNarrationIssue !== null) {
+                if ($this->aNarrationIssue->isModified() || $this->aNarrationIssue->isNew()) {
+                    $affectedRows += $this->aNarrationIssue->save($con);
                 }
-                $this->setIssues($this->aIssues);
+                $this->setNarrationIssue($this->aNarrationIssue);
             }
 
-            if ($this->aPlugins !== null) {
-                if ($this->aPlugins->isModified() || $this->aPlugins->isNew()) {
-                    $affectedRows += $this->aPlugins->save($con);
+            if ($this->aNarrationPlugin !== null) {
+                if ($this->aNarrationPlugin->isModified() || $this->aNarrationPlugin->isNew()) {
+                    $affectedRows += $this->aNarrationPlugin->save($con);
                 }
-                $this->setPlugins($this->aPlugins);
+                $this->setNarrationPlugin($this->aNarrationPlugin);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -780,7 +780,7 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aIssues) {
+            if (null !== $this->aNarrationIssue) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -793,9 +793,9 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
                         $key = 'Issues';
                 }
 
-                $result[$key] = $this->aIssues->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aNarrationIssue->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aPlugins) {
+            if (null !== $this->aNarrationPlugin) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -808,7 +808,7 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
                         $key = 'Plugins';
                 }
 
-                $result[$key] = $this->aPlugins->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aNarrationPlugin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -967,14 +967,14 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
         $primaryKeyFKs = [];
 
         //relation r_plugins5_a to table _issues
-        if ($this->aIssues && $hash = spl_object_hash($this->aIssues)) {
+        if ($this->aNarrationIssue && $hash = spl_object_hash($this->aNarrationIssue)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
         }
 
         //relation r_plugins5_b to table _plugins
-        if ($this->aPlugins && $hash = spl_object_hash($this->aPlugins)) {
+        if ($this->aNarrationPlugin && $hash = spl_object_hash($this->aNarrationPlugin)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1073,7 +1073,7 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
      * @return $this|\RIssuesNarrationplugin The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setIssues(ChildIssues $v = null)
+    public function setNarrationIssue(ChildIssues $v = null)
     {
         if ($v === null) {
             $this->setIssueid(NULL);
@@ -1081,7 +1081,7 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
             $this->setIssueid($v->getId());
         }
 
-        $this->aIssues = $v;
+        $this->aNarrationIssue = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildIssues object, it will not be re-added.
@@ -1101,20 +1101,20 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
      * @return ChildIssues The associated ChildIssues object.
      * @throws PropelException
      */
-    public function getIssues(ConnectionInterface $con = null)
+    public function getNarrationIssue(ConnectionInterface $con = null)
     {
-        if ($this->aIssues === null && ($this->_issueid !== null)) {
-            $this->aIssues = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
+        if ($this->aNarrationIssue === null && ($this->_issueid !== null)) {
+            $this->aNarrationIssue = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aIssues->addRIssuesNarrationplugins($this);
+                $this->aNarrationIssue->addRIssuesNarrationplugins($this);
              */
         }
 
-        return $this->aIssues;
+        return $this->aNarrationIssue;
     }
 
     /**
@@ -1124,7 +1124,7 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
      * @return $this|\RIssuesNarrationplugin The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setPlugins(ChildPlugins $v = null)
+    public function setNarrationPlugin(ChildPlugins $v = null)
     {
         if ($v === null) {
             $this->setPluginid(NULL);
@@ -1132,7 +1132,7 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
             $this->setPluginid($v->getId());
         }
 
-        $this->aPlugins = $v;
+        $this->aNarrationPlugin = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildPlugins object, it will not be re-added.
@@ -1152,20 +1152,20 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
      * @return ChildPlugins The associated ChildPlugins object.
      * @throws PropelException
      */
-    public function getPlugins(ConnectionInterface $con = null)
+    public function getNarrationPlugin(ConnectionInterface $con = null)
     {
-        if ($this->aPlugins === null && ($this->_pluginid !== null)) {
-            $this->aPlugins = ChildPluginsQuery::create()->findPk($this->_pluginid, $con);
+        if ($this->aNarrationPlugin === null && ($this->_pluginid !== null)) {
+            $this->aNarrationPlugin = ChildPluginsQuery::create()->findPk($this->_pluginid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPlugins->addRIssuesNarrationplugins($this);
+                $this->aNarrationPlugin->addRIssuesNarrationplugins($this);
              */
         }
 
-        return $this->aPlugins;
+        return $this->aNarrationPlugin;
     }
 
     /**
@@ -1175,11 +1175,11 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aIssues) {
-            $this->aIssues->removeRIssuesNarrationplugin($this);
+        if (null !== $this->aNarrationIssue) {
+            $this->aNarrationIssue->removeRIssuesNarrationplugin($this);
         }
-        if (null !== $this->aPlugins) {
-            $this->aPlugins->removeRIssuesNarrationplugin($this);
+        if (null !== $this->aNarrationPlugin) {
+            $this->aNarrationPlugin->removeRIssuesNarrationplugin($this);
         }
         $this->_issueid = null;
         $this->_pluginid = null;
@@ -1203,8 +1203,8 @@ abstract class RIssuesNarrationplugin implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aIssues = null;
-        $this->aPlugins = null;
+        $this->aNarrationIssue = null;
+        $this->aNarrationPlugin = null;
     }
 
     /**

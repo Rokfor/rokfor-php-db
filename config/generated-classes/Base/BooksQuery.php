@@ -22,16 +22,16 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildBooksQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildBooksQuery orderByName($order = Criteria::ASC) Order by the _name column
- * @method     ChildBooksQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildBooksQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildBooksQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildBooksQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildBooksQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildBooksQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildBooksQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  *
  * @method     ChildBooksQuery groupById() Group by the id column
  * @method     ChildBooksQuery groupByName() Group by the _name column
- * @method     ChildBooksQuery groupByUser() Group by the __user__ column
- * @method     ChildBooksQuery groupByConfig() Group by the __config__ column
+ * @method     ChildBooksQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildBooksQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildBooksQuery groupBySplit() Group by the __split__ column
  * @method     ChildBooksQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildBooksQuery groupBySort() Group by the __sort__ column
@@ -101,8 +101,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildBooks findOneById(int $id) Return the first ChildBooks filtered by the id column
  * @method     ChildBooks findOneByName(string $_name) Return the first ChildBooks filtered by the _name column
- * @method     ChildBooks findOneByUser(string $__user__) Return the first ChildBooks filtered by the __user__ column
- * @method     ChildBooks findOneByConfig(string $__config__) Return the first ChildBooks filtered by the __config__ column
+ * @method     ChildBooks findOneByUserSys(string $__user__) Return the first ChildBooks filtered by the __user__ column
+ * @method     ChildBooks findOneByConfigSys(string $__config__) Return the first ChildBooks filtered by the __config__ column
  * @method     ChildBooks findOneBySplit(string $__split__) Return the first ChildBooks filtered by the __split__ column
  * @method     ChildBooks findOneByParentnode(int $__parentnode__) Return the first ChildBooks filtered by the __parentnode__ column
  * @method     ChildBooks findOneBySort(int $__sort__) Return the first ChildBooks filtered by the __sort__ column *
@@ -112,8 +112,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildBooks requireOneById(int $id) Return the first ChildBooks filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBooks requireOneByName(string $_name) Return the first ChildBooks filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBooks requireOneByUser(string $__user__) Return the first ChildBooks filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBooks requireOneByConfig(string $__config__) Return the first ChildBooks filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBooks requireOneByUserSys(string $__user__) Return the first ChildBooks filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBooks requireOneByConfigSys(string $__config__) Return the first ChildBooks filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBooks requireOneBySplit(string $__split__) Return the first ChildBooks filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBooks requireOneByParentnode(int $__parentnode__) Return the first ChildBooks filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBooks requireOneBySort(int $__sort__) Return the first ChildBooks filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -121,8 +121,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBooks[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBooks objects based on current ModelCriteria
  * @method     ChildBooks[]|ObjectCollection findById(int $id) Return ChildBooks objects filtered by the id column
  * @method     ChildBooks[]|ObjectCollection findByName(string $_name) Return ChildBooks objects filtered by the _name column
- * @method     ChildBooks[]|ObjectCollection findByUser(string $__user__) Return ChildBooks objects filtered by the __user__ column
- * @method     ChildBooks[]|ObjectCollection findByConfig(string $__config__) Return ChildBooks objects filtered by the __config__ column
+ * @method     ChildBooks[]|ObjectCollection findByUserSys(string $__user__) Return ChildBooks objects filtered by the __user__ column
+ * @method     ChildBooks[]|ObjectCollection findByConfigSys(string $__config__) Return ChildBooks objects filtered by the __config__ column
  * @method     ChildBooks[]|ObjectCollection findBySplit(string $__split__) Return ChildBooks objects filtered by the __split__ column
  * @method     ChildBooks[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildBooks objects filtered by the __parentnode__ column
  * @method     ChildBooks[]|ObjectCollection findBySort(int $__sort__) Return ChildBooks objects filtered by the __sort__ column
@@ -383,28 +383,28 @@ abstract class BooksQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBooksQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(BooksTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(BooksTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -412,28 +412,28 @@ abstract class BooksQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBooksQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(BooksTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(BooksTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

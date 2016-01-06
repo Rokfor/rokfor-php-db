@@ -34,25 +34,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesSinglepluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildRIssuesSinglepluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildRIssuesSinglepluginQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
- * @method     ChildRIssuesSinglepluginQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
- * @method     ChildRIssuesSinglepluginQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ * @method     ChildRIssuesSinglepluginQuery leftJoinSingleIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the SingleIssue relation
+ * @method     ChildRIssuesSinglepluginQuery rightJoinSingleIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SingleIssue relation
+ * @method     ChildRIssuesSinglepluginQuery innerJoinSingleIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the SingleIssue relation
  *
- * @method     ChildRIssuesSinglepluginQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ * @method     ChildRIssuesSinglepluginQuery joinWithSingleIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SingleIssue relation
  *
- * @method     ChildRIssuesSinglepluginQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
- * @method     ChildRIssuesSinglepluginQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
- * @method     ChildRIssuesSinglepluginQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
+ * @method     ChildRIssuesSinglepluginQuery leftJoinWithSingleIssue() Adds a LEFT JOIN clause and with to the query using the SingleIssue relation
+ * @method     ChildRIssuesSinglepluginQuery rightJoinWithSingleIssue() Adds a RIGHT JOIN clause and with to the query using the SingleIssue relation
+ * @method     ChildRIssuesSinglepluginQuery innerJoinWithSingleIssue() Adds a INNER JOIN clause and with to the query using the SingleIssue relation
  *
- * @method     ChildRIssuesSinglepluginQuery leftJoinPlugins($relationAlias = null) Adds a LEFT JOIN clause to the query using the Plugins relation
- * @method     ChildRIssuesSinglepluginQuery rightJoinPlugins($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Plugins relation
- * @method     ChildRIssuesSinglepluginQuery innerJoinPlugins($relationAlias = null) Adds a INNER JOIN clause to the query using the Plugins relation
+ * @method     ChildRIssuesSinglepluginQuery leftJoinSinglePlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the SinglePlugin relation
+ * @method     ChildRIssuesSinglepluginQuery rightJoinSinglePlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SinglePlugin relation
+ * @method     ChildRIssuesSinglepluginQuery innerJoinSinglePlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the SinglePlugin relation
  *
- * @method     ChildRIssuesSinglepluginQuery joinWithPlugins($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Plugins relation
+ * @method     ChildRIssuesSinglepluginQuery joinWithSinglePlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SinglePlugin relation
  *
- * @method     ChildRIssuesSinglepluginQuery leftJoinWithPlugins() Adds a LEFT JOIN clause and with to the query using the Plugins relation
- * @method     ChildRIssuesSinglepluginQuery rightJoinWithPlugins() Adds a RIGHT JOIN clause and with to the query using the Plugins relation
- * @method     ChildRIssuesSinglepluginQuery innerJoinWithPlugins() Adds a INNER JOIN clause and with to the query using the Plugins relation
+ * @method     ChildRIssuesSinglepluginQuery leftJoinWithSinglePlugin() Adds a LEFT JOIN clause and with to the query using the SinglePlugin relation
+ * @method     ChildRIssuesSinglepluginQuery rightJoinWithSinglePlugin() Adds a RIGHT JOIN clause and with to the query using the SinglePlugin relation
+ * @method     ChildRIssuesSinglepluginQuery innerJoinWithSinglePlugin() Adds a INNER JOIN clause and with to the query using the SinglePlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -275,7 +275,7 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
      * $query->filterByIssueid(array('min' => 12)); // WHERE _issueid > 12
      * </code>
      *
-     * @see       filterByIssues()
+     * @see       filterBySingleIssue()
      *
      * @param     mixed $issueid The value to use as filter.
      *              Use scalar values for equality.
@@ -318,7 +318,7 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
      * $query->filterByPluginid(array('min' => 12)); // WHERE _pluginid > 12
      * </code>
      *
-     * @see       filterByPlugins()
+     * @see       filterBySinglePlugin()
      *
      * @param     mixed $pluginid The value to use as filter.
      *              Use scalar values for equality.
@@ -361,7 +361,7 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
      *
      * @return ChildRIssuesSinglepluginQuery The current query, for fluid interface
      */
-    public function filterByIssues($issues, $comparison = null)
+    public function filterBySingleIssue($issues, $comparison = null)
     {
         if ($issues instanceof \Issues) {
             return $this
@@ -374,22 +374,22 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RIssuesSinglepluginTableMap::COL__ISSUEID, $issues->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByIssues() only accepts arguments of type \Issues or Collection');
+            throw new PropelException('filterBySingleIssue() only accepts arguments of type \Issues or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Issues relation
+     * Adds a JOIN clause to the query using the SingleIssue relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRIssuesSinglepluginQuery The current query, for fluid interface
      */
-    public function joinIssues($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinSingleIssue($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Issues');
+        $relationMap = $tableMap->getRelation('SingleIssue');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -404,14 +404,14 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Issues');
+            $this->addJoinObject($join, 'SingleIssue');
         }
 
         return $this;
     }
 
     /**
-     * Use the Issues relation Issues object
+     * Use the SingleIssue relation Issues object
      *
      * @see useQuery()
      *
@@ -421,11 +421,11 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
      *
      * @return \IssuesQuery A secondary query class using the current class as primary query
      */
-    public function useIssuesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useSingleIssueQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinIssues($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Issues', '\IssuesQuery');
+            ->joinSingleIssue($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SingleIssue', '\IssuesQuery');
     }
 
     /**
@@ -438,7 +438,7 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
      *
      * @return ChildRIssuesSinglepluginQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = null)
+    public function filterBySinglePlugin($plugins, $comparison = null)
     {
         if ($plugins instanceof \Plugins) {
             return $this
@@ -451,22 +451,22 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RIssuesSinglepluginTableMap::COL__PLUGINID, $plugins->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByPlugins() only accepts arguments of type \Plugins or Collection');
+            throw new PropelException('filterBySinglePlugin() only accepts arguments of type \Plugins or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Plugins relation
+     * Adds a JOIN clause to the query using the SinglePlugin relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRIssuesSinglepluginQuery The current query, for fluid interface
      */
-    public function joinPlugins($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinSinglePlugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Plugins');
+        $relationMap = $tableMap->getRelation('SinglePlugin');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -481,14 +481,14 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Plugins');
+            $this->addJoinObject($join, 'SinglePlugin');
         }
 
         return $this;
     }
 
     /**
-     * Use the Plugins relation Plugins object
+     * Use the SinglePlugin relation Plugins object
      *
      * @see useQuery()
      *
@@ -498,11 +498,11 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
      *
      * @return \PluginsQuery A secondary query class using the current class as primary query
      */
-    public function usePluginsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useSinglePluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPlugins($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Plugins', '\PluginsQuery');
+            ->joinSinglePlugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SinglePlugin', '\PluginsQuery');
     }
 
     /**

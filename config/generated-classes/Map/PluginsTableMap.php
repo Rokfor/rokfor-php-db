@@ -133,8 +133,8 @@ class PluginsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'User', 'Config', 'Split', 'Parentnode', 'Sort', 'Page', 'Config', 'Callback', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'user', 'config', 'split', 'parentnode', 'sort', 'page', 'config', 'callback', ),
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', 'Page', 'Config', 'Callback', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'userSys', 'configSys', 'split', 'parentnode', 'sort', 'page', 'config', 'callback', ),
         self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID, PluginsTableMap::COL__NAME, PluginsTableMap::COL___USER__, PluginsTableMap::COL___CONFIG__, PluginsTableMap::COL___SPLIT__, PluginsTableMap::COL___PARENTNODE__, PluginsTableMap::COL___SORT__, PluginsTableMap::COL__PAGE, PluginsTableMap::COL__CONFIG, PluginsTableMap::COL__CALLBACK, ),
         self::TYPE_FIELDNAME     => array('id', '_name', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', '_page', '_config', '_callback', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
@@ -147,8 +147,8 @@ class PluginsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'User' => 2, 'Config' => 3, 'Split' => 4, 'Parentnode' => 5, 'Sort' => 6, 'Page' => 7, 'Config' => 8, 'Callback' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'user' => 2, 'config' => 3, 'split' => 4, 'parentnode' => 5, 'sort' => 6, 'page' => 7, 'config' => 8, 'callback' => 9, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'UserSys' => 2, 'ConfigSys' => 3, 'Split' => 4, 'Parentnode' => 5, 'Sort' => 6, 'Page' => 7, 'Config' => 8, 'Callback' => 9, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'userSys' => 2, 'configSys' => 3, 'split' => 4, 'parentnode' => 5, 'sort' => 6, 'page' => 7, 'config' => 8, 'callback' => 9, ),
         self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID => 0, PluginsTableMap::COL__NAME => 1, PluginsTableMap::COL___USER__ => 2, PluginsTableMap::COL___CONFIG__ => 3, PluginsTableMap::COL___SPLIT__ => 4, PluginsTableMap::COL___PARENTNODE__ => 5, PluginsTableMap::COL___SORT__ => 6, PluginsTableMap::COL__PAGE => 7, PluginsTableMap::COL__CONFIG => 8, PluginsTableMap::COL__CALLBACK => 9, ),
         self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '__user__' => 2, '__config__' => 3, '__split__' => 4, '__parentnode__' => 5, '__sort__' => 6, '_page' => 7, '_config' => 8, '_callback' => 9, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
@@ -173,8 +173,8 @@ class PluginsTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'User', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__config__', 'Config', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
@@ -223,11 +223,11 @@ class PluginsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RIssuesXmlplugins', false);
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Issuess');
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Issuess');
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Issuess');
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Issuess');
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Issuess');
+        $this->addRelation('AllIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'AllIssues');
+        $this->addRelation('NarrationIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'NarrationIssues');
+        $this->addRelation('RtfIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RtfIssues');
+        $this->addRelation('SingleIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'SingleIssues');
+        $this->addRelation('XmlIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'XmlIssues');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _plugins     * by a foreign key with ON DELETE CASCADE

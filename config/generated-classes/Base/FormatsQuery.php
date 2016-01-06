@@ -5,6 +5,7 @@ namespace Base;
 use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
 use \Exception;
+use \PDO;
 use Map\FormatsTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -12,7 +13,6 @@ use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
-use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 
 /**
@@ -23,8 +23,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildFormatsQuery orderByName($order = Criteria::ASC) Order by the _name column
  * @method     ChildFormatsQuery orderByForbook($order = Criteria::ASC) Order by the _forbook column
- * @method     ChildFormatsQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildFormatsQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildFormatsQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildFormatsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildFormatsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildFormatsQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  * @method     ChildFormatsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
@@ -32,8 +32,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery groupById() Group by the id column
  * @method     ChildFormatsQuery groupByName() Group by the _name column
  * @method     ChildFormatsQuery groupByForbook() Group by the _forbook column
- * @method     ChildFormatsQuery groupByUser() Group by the __user__ column
- * @method     ChildFormatsQuery groupByConfig() Group by the __config__ column
+ * @method     ChildFormatsQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildFormatsQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildFormatsQuery groupBySplit() Group by the __split__ column
  * @method     ChildFormatsQuery groupBySort() Group by the __sort__ column
  * @method     ChildFormatsQuery groupByParentnode() Group by the __parentnode__ column
@@ -84,8 +84,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormats findOneById(int $id) Return the first ChildFormats filtered by the id column
  * @method     ChildFormats findOneByName(string $_name) Return the first ChildFormats filtered by the _name column
  * @method     ChildFormats findOneByForbook(int $_forbook) Return the first ChildFormats filtered by the _forbook column
- * @method     ChildFormats findOneByUser(string $__user__) Return the first ChildFormats filtered by the __user__ column
- * @method     ChildFormats findOneByConfig(string $__config__) Return the first ChildFormats filtered by the __config__ column
+ * @method     ChildFormats findOneByUserSys(string $__user__) Return the first ChildFormats filtered by the __user__ column
+ * @method     ChildFormats findOneByConfigSys(string $__config__) Return the first ChildFormats filtered by the __config__ column
  * @method     ChildFormats findOneBySplit(string $__split__) Return the first ChildFormats filtered by the __split__ column
  * @method     ChildFormats findOneBySort(int $__sort__) Return the first ChildFormats filtered by the __sort__ column
  * @method     ChildFormats findOneByParentnode(int $__parentnode__) Return the first ChildFormats filtered by the __parentnode__ column *
@@ -96,8 +96,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormats requireOneById(int $id) Return the first ChildFormats filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneByName(string $_name) Return the first ChildFormats filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneByForbook(int $_forbook) Return the first ChildFormats filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormats requireOneByUser(string $__user__) Return the first ChildFormats filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormats requireOneByConfig(string $__config__) Return the first ChildFormats filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFormats requireOneByUserSys(string $__user__) Return the first ChildFormats filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFormats requireOneByConfigSys(string $__config__) Return the first ChildFormats filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneBySplit(string $__split__) Return the first ChildFormats filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneBySort(int $__sort__) Return the first ChildFormats filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneByParentnode(int $__parentnode__) Return the first ChildFormats filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -106,8 +106,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormats[]|ObjectCollection findById(int $id) Return ChildFormats objects filtered by the id column
  * @method     ChildFormats[]|ObjectCollection findByName(string $_name) Return ChildFormats objects filtered by the _name column
  * @method     ChildFormats[]|ObjectCollection findByForbook(int $_forbook) Return ChildFormats objects filtered by the _forbook column
- * @method     ChildFormats[]|ObjectCollection findByUser(string $__user__) Return ChildFormats objects filtered by the __user__ column
- * @method     ChildFormats[]|ObjectCollection findByConfig(string $__config__) Return ChildFormats objects filtered by the __config__ column
+ * @method     ChildFormats[]|ObjectCollection findByUserSys(string $__user__) Return ChildFormats objects filtered by the __user__ column
+ * @method     ChildFormats[]|ObjectCollection findByConfigSys(string $__config__) Return ChildFormats objects filtered by the __config__ column
  * @method     ChildFormats[]|ObjectCollection findBySplit(string $__split__) Return ChildFormats objects filtered by the __split__ column
  * @method     ChildFormats[]|ObjectCollection findBySort(int $__sort__) Return ChildFormats objects filtered by the __sort__ column
  * @method     ChildFormats[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildFormats objects filtered by the __parentnode__ column
@@ -170,13 +170,83 @@ abstract class FormatsQuery extends ModelCriteria
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
-        throw new LogicException('The Formats object has no primary key');
+        if ($key === null) {
+            return null;
+        }
+        if ((null !== ($obj = FormatsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+        if ($con === null) {
+            $con = Propel::getServiceContainer()->getReadConnection(FormatsTableMap::DATABASE_NAME);
+        }
+        $this->basePreSelect($con);
+        if ($this->formatter || $this->modelAlias || $this->with || $this->select
+         || $this->selectColumns || $this->asColumns || $this->selectModifiers
+         || $this->map || $this->having || $this->joins) {
+            return $this->findPkComplex($key, $con);
+        } else {
+            return $this->findPkSimple($key, $con);
+        }
+    }
+
+    /**
+     * Find object by primary key using raw SQL to go fast.
+     * Bypass doSelect() and the object formatter by using generated code.
+     *
+     * @param     mixed $key Primary key to use for the query
+     * @param     ConnectionInterface $con A connection object
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildFormats A model object, or null if the key is not found
+     */
+    protected function findPkSimple($key, ConnectionInterface $con)
+    {
+        $sql = 'SELECT id, _name, _forbook, __user__, __config__, __split__, __sort__, __parentnode__ FROM _formats WHERE id = :p0';
+        try {
+            $stmt = $con->prepare($sql);
+            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (Exception $e) {
+            Propel::log($e->getMessage(), Propel::LOG_ERR);
+            throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), 0, $e);
+        }
+        $obj = null;
+        if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            /** @var ChildFormats $obj */
+            $obj = new ChildFormats();
+            $obj->hydrate($row);
+            FormatsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+        }
+        $stmt->closeCursor();
+
+        return $obj;
+    }
+
+    /**
+     * Find object by primary key.
+     *
+     * @param     mixed $key Primary key to use for the query
+     * @param     ConnectionInterface $con A connection object
+     *
+     * @return ChildFormats|array|mixed the result, formatted by the current formatter
+     */
+    protected function findPkComplex($key, ConnectionInterface $con)
+    {
+        // As the query uses a PK condition, no limit(1) is necessary.
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
+        $dataFetcher = $criteria
+            ->filterByPrimaryKey($key)
+            ->doSelect($con);
+
+        return $criteria->getFormatter()->init($criteria)->formatOne($dataFetcher);
     }
 
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
+     * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -185,7 +255,16 @@ abstract class FormatsQuery extends ModelCriteria
      */
     public function findPks($keys, ConnectionInterface $con = null)
     {
-        throw new LogicException('The Formats object has no primary key');
+        if (null === $con) {
+            $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
+        }
+        $this->basePreSelect($con);
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
+        $dataFetcher = $criteria
+            ->filterByPrimaryKeys($keys)
+            ->doSelect($con);
+
+        return $criteria->getFormatter()->init($criteria)->format($dataFetcher);
     }
 
     /**
@@ -197,7 +276,8 @@ abstract class FormatsQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-        throw new LogicException('The Formats object has no primary key');
+
+        return $this->addUsingAlias(FormatsTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -209,7 +289,8 @@ abstract class FormatsQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-        throw new LogicException('The Formats object has no primary key');
+
+        return $this->addUsingAlias(FormatsTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -330,28 +411,28 @@ abstract class FormatsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormatsQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(FormatsTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(FormatsTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -359,28 +440,28 @@ abstract class FormatsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormatsQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(FormatsTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(FormatsTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**
@@ -744,8 +825,7 @@ abstract class FormatsQuery extends ModelCriteria
     public function prune($formats = null)
     {
         if ($formats) {
-            throw new LogicException('Formats object has no primary key');
-
+            $this->addUsingAlias(FormatsTableMap::COL_ID, $formats->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;

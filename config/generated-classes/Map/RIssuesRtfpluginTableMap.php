@@ -141,14 +141,14 @@ class RIssuesRtfpluginTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('RtfIssue', '\\Issues', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_issueid',
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('RtfPlugin', '\\Plugins', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_pluginid',

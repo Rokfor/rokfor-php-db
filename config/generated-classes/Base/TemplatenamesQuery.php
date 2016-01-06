@@ -24,12 +24,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenamesQuery orderByName($order = Criteria::ASC) Order by the _name column
  * @method     ChildTemplatenamesQuery orderByHelptext($order = Criteria::ASC) Order by the _helptext column
  * @method     ChildTemplatenamesQuery orderByHelpimage($order = Criteria::ASC) Order by the _helpimage column
- * @method     ChildTemplatenamesQuery orderByInchapter($order = Criteria::ASC) Order by the _inchapter column
- * @method     ChildTemplatenamesQuery orderByForbook($order = Criteria::ASC) Order by the _forbook column
  * @method     ChildTemplatenamesQuery orderByCategory($order = Criteria::ASC) Order by the _category column
  * @method     ChildTemplatenamesQuery orderByPublic($order = Criteria::ASC) Order by the _public column
- * @method     ChildTemplatenamesQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildTemplatenamesQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildTemplatenamesQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildTemplatenamesQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildTemplatenamesQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildTemplatenamesQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  * @method     ChildTemplatenamesQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
@@ -38,12 +36,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenamesQuery groupByName() Group by the _name column
  * @method     ChildTemplatenamesQuery groupByHelptext() Group by the _helptext column
  * @method     ChildTemplatenamesQuery groupByHelpimage() Group by the _helpimage column
- * @method     ChildTemplatenamesQuery groupByInchapter() Group by the _inchapter column
- * @method     ChildTemplatenamesQuery groupByForbook() Group by the _forbook column
  * @method     ChildTemplatenamesQuery groupByCategory() Group by the _category column
  * @method     ChildTemplatenamesQuery groupByPublic() Group by the _public column
- * @method     ChildTemplatenamesQuery groupByUser() Group by the __user__ column
- * @method     ChildTemplatenamesQuery groupByConfig() Group by the __config__ column
+ * @method     ChildTemplatenamesQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildTemplatenamesQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildTemplatenamesQuery groupBySplit() Group by the __split__ column
  * @method     ChildTemplatenamesQuery groupBySort() Group by the __sort__ column
  * @method     ChildTemplatenamesQuery groupByParentnode() Group by the __parentnode__ column
@@ -125,12 +121,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenames findOneByName(string $_name) Return the first ChildTemplatenames filtered by the _name column
  * @method     ChildTemplatenames findOneByHelptext(string $_helptext) Return the first ChildTemplatenames filtered by the _helptext column
  * @method     ChildTemplatenames findOneByHelpimage(string $_helpimage) Return the first ChildTemplatenames filtered by the _helpimage column
- * @method     ChildTemplatenames findOneByInchapter(string $_inchapter) Return the first ChildTemplatenames filtered by the _inchapter column
- * @method     ChildTemplatenames findOneByForbook(string $_forbook) Return the first ChildTemplatenames filtered by the _forbook column
  * @method     ChildTemplatenames findOneByCategory(string $_category) Return the first ChildTemplatenames filtered by the _category column
  * @method     ChildTemplatenames findOneByPublic(string $_public) Return the first ChildTemplatenames filtered by the _public column
- * @method     ChildTemplatenames findOneByUser(string $__user__) Return the first ChildTemplatenames filtered by the __user__ column
- * @method     ChildTemplatenames findOneByConfig(string $__config__) Return the first ChildTemplatenames filtered by the __config__ column
+ * @method     ChildTemplatenames findOneByUserSys(string $__user__) Return the first ChildTemplatenames filtered by the __user__ column
+ * @method     ChildTemplatenames findOneByConfigSys(string $__config__) Return the first ChildTemplatenames filtered by the __config__ column
  * @method     ChildTemplatenames findOneBySplit(string $__split__) Return the first ChildTemplatenames filtered by the __split__ column
  * @method     ChildTemplatenames findOneBySort(int $__sort__) Return the first ChildTemplatenames filtered by the __sort__ column
  * @method     ChildTemplatenames findOneByParentnode(int $__parentnode__) Return the first ChildTemplatenames filtered by the __parentnode__ column *
@@ -142,12 +136,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenames requireOneByName(string $_name) Return the first ChildTemplatenames filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByHelptext(string $_helptext) Return the first ChildTemplatenames filtered by the _helptext column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByHelpimage(string $_helpimage) Return the first ChildTemplatenames filtered by the _helpimage column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplatenames requireOneByInchapter(string $_inchapter) Return the first ChildTemplatenames filtered by the _inchapter column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplatenames requireOneByForbook(string $_forbook) Return the first ChildTemplatenames filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByCategory(string $_category) Return the first ChildTemplatenames filtered by the _category column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByPublic(string $_public) Return the first ChildTemplatenames filtered by the _public column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplatenames requireOneByUser(string $__user__) Return the first ChildTemplatenames filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplatenames requireOneByConfig(string $__config__) Return the first ChildTemplatenames filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTemplatenames requireOneByUserSys(string $__user__) Return the first ChildTemplatenames filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTemplatenames requireOneByConfigSys(string $__config__) Return the first ChildTemplatenames filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneBySplit(string $__split__) Return the first ChildTemplatenames filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneBySort(int $__sort__) Return the first ChildTemplatenames filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByParentnode(int $__parentnode__) Return the first ChildTemplatenames filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -157,12 +149,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenames[]|ObjectCollection findByName(string $_name) Return ChildTemplatenames objects filtered by the _name column
  * @method     ChildTemplatenames[]|ObjectCollection findByHelptext(string $_helptext) Return ChildTemplatenames objects filtered by the _helptext column
  * @method     ChildTemplatenames[]|ObjectCollection findByHelpimage(string $_helpimage) Return ChildTemplatenames objects filtered by the _helpimage column
- * @method     ChildTemplatenames[]|ObjectCollection findByInchapter(string $_inchapter) Return ChildTemplatenames objects filtered by the _inchapter column
- * @method     ChildTemplatenames[]|ObjectCollection findByForbook(string $_forbook) Return ChildTemplatenames objects filtered by the _forbook column
  * @method     ChildTemplatenames[]|ObjectCollection findByCategory(string $_category) Return ChildTemplatenames objects filtered by the _category column
  * @method     ChildTemplatenames[]|ObjectCollection findByPublic(string $_public) Return ChildTemplatenames objects filtered by the _public column
- * @method     ChildTemplatenames[]|ObjectCollection findByUser(string $__user__) Return ChildTemplatenames objects filtered by the __user__ column
- * @method     ChildTemplatenames[]|ObjectCollection findByConfig(string $__config__) Return ChildTemplatenames objects filtered by the __config__ column
+ * @method     ChildTemplatenames[]|ObjectCollection findByUserSys(string $__user__) Return ChildTemplatenames objects filtered by the __user__ column
+ * @method     ChildTemplatenames[]|ObjectCollection findByConfigSys(string $__config__) Return ChildTemplatenames objects filtered by the __config__ column
  * @method     ChildTemplatenames[]|ObjectCollection findBySplit(string $__split__) Return ChildTemplatenames objects filtered by the __split__ column
  * @method     ChildTemplatenames[]|ObjectCollection findBySort(int $__sort__) Return ChildTemplatenames objects filtered by the __sort__ column
  * @method     ChildTemplatenames[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildTemplatenames objects filtered by the __parentnode__ column
@@ -258,7 +248,7 @@ abstract class TemplatenamesQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, _helptext, _helpimage, _inchapter, _forbook, _category, _public, __user__, __config__, __split__, __sort__, __parentnode__ FROM _templatenames WHERE id = :p0';
+        $sql = 'SELECT id, _name, _helptext, _helpimage, _category, _public, __user__, __config__, __split__, __sort__, __parentnode__ FROM _templatenames WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -477,64 +467,6 @@ abstract class TemplatenamesQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _inchapter column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByInchapter('fooValue');   // WHERE _inchapter = 'fooValue'
-     * $query->filterByInchapter('%fooValue%'); // WHERE _inchapter LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $inchapter The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatenamesQuery The current query, for fluid interface
-     */
-    public function filterByInchapter($inchapter = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($inchapter)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $inchapter)) {
-                $inchapter = str_replace('*', '%', $inchapter);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatenamesTableMap::COL__INCHAPTER, $inchapter, $comparison);
-    }
-
-    /**
-     * Filter the query on the _forbook column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByForbook('fooValue');   // WHERE _forbook = 'fooValue'
-     * $query->filterByForbook('%fooValue%'); // WHERE _forbook LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $forbook The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatenamesQuery The current query, for fluid interface
-     */
-    public function filterByForbook($forbook = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($forbook)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $forbook)) {
-                $forbook = str_replace('*', '%', $forbook);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatenamesTableMap::COL__FORBOOK, $forbook, $comparison);
-    }
-
-    /**
      * Filter the query on the _category column
      *
      * Example usage:
@@ -597,28 +529,28 @@ abstract class TemplatenamesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatenamesQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(TemplatenamesTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(TemplatenamesTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -626,28 +558,28 @@ abstract class TemplatenamesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatenamesQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(TemplatenamesTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(TemplatenamesTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

@@ -492,7 +492,7 @@ abstract class Books implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -502,7 +502,7 @@ abstract class Books implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -583,7 +583,7 @@ abstract class Books implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Books The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -595,7 +595,7 @@ abstract class Books implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -603,7 +603,7 @@ abstract class Books implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Books The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -615,7 +615,7 @@ abstract class Books implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -719,10 +719,10 @@ abstract class Books implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BooksTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BooksTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BooksTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BooksTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BooksTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BooksTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
@@ -1245,10 +1245,10 @@ abstract class Books implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getUser();
+                return $this->getUserSys();
                 break;
             case 3:
-                return $this->getConfig();
+                return $this->getConfigSys();
                 break;
             case 4:
                 return $this->getSplit();
@@ -1291,8 +1291,8 @@ abstract class Books implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getUser(),
-            $keys[3] => $this->getConfig(),
+            $keys[2] => $this->getUserSys(),
+            $keys[3] => $this->getConfigSys(),
             $keys[4] => $this->getSplit(),
             $keys[5] => $this->getParentnode(),
             $keys[6] => $this->getSort(),
@@ -1419,10 +1419,10 @@ abstract class Books implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setUser($value);
+                $this->setUserSys($value);
                 break;
             case 3:
-                $this->setConfig($value);
+                $this->setConfigSys($value);
                 break;
             case 4:
                 $this->setSplit($value);
@@ -1466,10 +1466,10 @@ abstract class Books implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setUser($arr[$keys[2]]);
+            $this->setUserSys($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setConfig($arr[$keys[3]]);
+            $this->setConfigSys($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setSplit($arr[$keys[4]]);
@@ -1629,8 +1629,8 @@ abstract class Books implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());

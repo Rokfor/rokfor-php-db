@@ -59,7 +59,7 @@ class IssuesTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 17;
+    const NUM_COLUMNS = 12;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class IssuesTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 17;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /**
      * the column name for the id field
@@ -105,31 +105,6 @@ class IssuesTableMap extends TableMap
      * the column name for the _forbook field
      */
     const COL__FORBOOK = '_issues._forbook';
-
-    /**
-     * the column name for the _singleplugin field
-     */
-    const COL__SINGLEPLUGIN = '_issues._singleplugin';
-
-    /**
-     * the column name for the _allplugin field
-     */
-    const COL__ALLPLUGIN = '_issues._allplugin';
-
-    /**
-     * the column name for the _rtfplugin field
-     */
-    const COL__RTFPLUGIN = '_issues._rtfplugin';
-
-    /**
-     * the column name for the _xmlplugin field
-     */
-    const COL__XMLPLUGIN = '_issues._xmlplugin';
-
-    /**
-     * the column name for the _narrationplugin field
-     */
-    const COL__NARRATIONPLUGIN = '_issues._narrationplugin';
 
     /**
      * the column name for the __user__ field
@@ -168,11 +143,11 @@ class IssuesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Opendate', 'Closedate', 'Status', 'Infotext', 'Forbook', 'Singleplugin', 'Allplugin', 'Rtfplugin', 'Xmlplugin', 'Narrationplugin', 'User', 'Config', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'opendate', 'closedate', 'status', 'infotext', 'forbook', 'singleplugin', 'allplugin', 'rtfplugin', 'xmlplugin', 'narrationplugin', 'user', 'config', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(IssuesTableMap::COL_ID, IssuesTableMap::COL__NAME, IssuesTableMap::COL__OPENDATE, IssuesTableMap::COL__CLOSEDATE, IssuesTableMap::COL__STATUS, IssuesTableMap::COL__INFOTEXT, IssuesTableMap::COL__FORBOOK, IssuesTableMap::COL__SINGLEPLUGIN, IssuesTableMap::COL__ALLPLUGIN, IssuesTableMap::COL__RTFPLUGIN, IssuesTableMap::COL__XMLPLUGIN, IssuesTableMap::COL__NARRATIONPLUGIN, IssuesTableMap::COL___USER__, IssuesTableMap::COL___CONFIG__, IssuesTableMap::COL___SPLIT__, IssuesTableMap::COL___PARENTNODE__, IssuesTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_name', '_opendate', '_closedate', '_status', '_infotext', '_forbook', '_singleplugin', '_allplugin', '_rtfplugin', '_xmlplugin', '_narrationplugin', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Opendate', 'Closedate', 'Status', 'Infotext', 'Forbook', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'opendate', 'closedate', 'status', 'infotext', 'forbook', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(IssuesTableMap::COL_ID, IssuesTableMap::COL__NAME, IssuesTableMap::COL__OPENDATE, IssuesTableMap::COL__CLOSEDATE, IssuesTableMap::COL__STATUS, IssuesTableMap::COL__INFOTEXT, IssuesTableMap::COL__FORBOOK, IssuesTableMap::COL___USER__, IssuesTableMap::COL___CONFIG__, IssuesTableMap::COL___SPLIT__, IssuesTableMap::COL___PARENTNODE__, IssuesTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_name', '_opendate', '_closedate', '_status', '_infotext', '_forbook', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -182,11 +157,11 @@ class IssuesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Opendate' => 2, 'Closedate' => 3, 'Status' => 4, 'Infotext' => 5, 'Forbook' => 6, 'Singleplugin' => 7, 'Allplugin' => 8, 'Rtfplugin' => 9, 'Xmlplugin' => 10, 'Narrationplugin' => 11, 'User' => 12, 'Config' => 13, 'Split' => 14, 'Parentnode' => 15, 'Sort' => 16, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'opendate' => 2, 'closedate' => 3, 'status' => 4, 'infotext' => 5, 'forbook' => 6, 'singleplugin' => 7, 'allplugin' => 8, 'rtfplugin' => 9, 'xmlplugin' => 10, 'narrationplugin' => 11, 'user' => 12, 'config' => 13, 'split' => 14, 'parentnode' => 15, 'sort' => 16, ),
-        self::TYPE_COLNAME       => array(IssuesTableMap::COL_ID => 0, IssuesTableMap::COL__NAME => 1, IssuesTableMap::COL__OPENDATE => 2, IssuesTableMap::COL__CLOSEDATE => 3, IssuesTableMap::COL__STATUS => 4, IssuesTableMap::COL__INFOTEXT => 5, IssuesTableMap::COL__FORBOOK => 6, IssuesTableMap::COL__SINGLEPLUGIN => 7, IssuesTableMap::COL__ALLPLUGIN => 8, IssuesTableMap::COL__RTFPLUGIN => 9, IssuesTableMap::COL__XMLPLUGIN => 10, IssuesTableMap::COL__NARRATIONPLUGIN => 11, IssuesTableMap::COL___USER__ => 12, IssuesTableMap::COL___CONFIG__ => 13, IssuesTableMap::COL___SPLIT__ => 14, IssuesTableMap::COL___PARENTNODE__ => 15, IssuesTableMap::COL___SORT__ => 16, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_opendate' => 2, '_closedate' => 3, '_status' => 4, '_infotext' => 5, '_forbook' => 6, '_singleplugin' => 7, '_allplugin' => 8, '_rtfplugin' => 9, '_xmlplugin' => 10, '_narrationplugin' => 11, '__user__' => 12, '__config__' => 13, '__split__' => 14, '__parentnode__' => 15, '__sort__' => 16, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Opendate' => 2, 'Closedate' => 3, 'Status' => 4, 'Infotext' => 5, 'Forbook' => 6, 'UserSys' => 7, 'ConfigSys' => 8, 'Split' => 9, 'Parentnode' => 10, 'Sort' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'opendate' => 2, 'closedate' => 3, 'status' => 4, 'infotext' => 5, 'forbook' => 6, 'userSys' => 7, 'configSys' => 8, 'split' => 9, 'parentnode' => 10, 'sort' => 11, ),
+        self::TYPE_COLNAME       => array(IssuesTableMap::COL_ID => 0, IssuesTableMap::COL__NAME => 1, IssuesTableMap::COL__OPENDATE => 2, IssuesTableMap::COL__CLOSEDATE => 3, IssuesTableMap::COL__STATUS => 4, IssuesTableMap::COL__INFOTEXT => 5, IssuesTableMap::COL__FORBOOK => 6, IssuesTableMap::COL___USER__ => 7, IssuesTableMap::COL___CONFIG__ => 8, IssuesTableMap::COL___SPLIT__ => 9, IssuesTableMap::COL___PARENTNODE__ => 10, IssuesTableMap::COL___SORT__ => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_opendate' => 2, '_closedate' => 3, '_status' => 4, '_infotext' => 5, '_forbook' => 6, '__user__' => 7, '__config__' => 8, '__split__' => 9, '__parentnode__' => 10, '__sort__' => 11, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -213,13 +188,8 @@ class IssuesTableMap extends TableMap
         $this->addColumn('_status', 'Status', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_infotext', 'Infotext', 'LONGVARCHAR', false, null, null);
         $this->addForeignKey('_forbook', 'Forbook', 'INTEGER', '_books', 'id', false, 32, null);
-        $this->addColumn('_singleplugin', 'Singleplugin', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_allplugin', 'Allplugin', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_rtfplugin', 'Rtfplugin', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_xmlplugin', 'Xmlplugin', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_narrationplugin', 'Narrationplugin', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'User', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__config__', 'Config', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
@@ -286,11 +256,11 @@ class IssuesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Contributionss', false);
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Pluginss');
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Pluginss');
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Pluginss');
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Pluginss');
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Pluginss');
+        $this->addRelation('AllPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'AllPlugins');
+        $this->addRelation('NarrationPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'NarrationPlugins');
+        $this->addRelation('RtfPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RtfPlugins');
+        $this->addRelation('SinglePlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'SinglePlugins');
+        $this->addRelation('XmlPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'XmlPlugins');
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
     } // buildRelations()
     /**
@@ -457,11 +427,6 @@ class IssuesTableMap extends TableMap
             $criteria->addSelectColumn(IssuesTableMap::COL__STATUS);
             $criteria->addSelectColumn(IssuesTableMap::COL__INFOTEXT);
             $criteria->addSelectColumn(IssuesTableMap::COL__FORBOOK);
-            $criteria->addSelectColumn(IssuesTableMap::COL__SINGLEPLUGIN);
-            $criteria->addSelectColumn(IssuesTableMap::COL__ALLPLUGIN);
-            $criteria->addSelectColumn(IssuesTableMap::COL__RTFPLUGIN);
-            $criteria->addSelectColumn(IssuesTableMap::COL__XMLPLUGIN);
-            $criteria->addSelectColumn(IssuesTableMap::COL__NARRATIONPLUGIN);
             $criteria->addSelectColumn(IssuesTableMap::COL___USER__);
             $criteria->addSelectColumn(IssuesTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(IssuesTableMap::COL___SPLIT__);
@@ -475,11 +440,6 @@ class IssuesTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._status');
             $criteria->addSelectColumn($alias . '._infotext');
             $criteria->addSelectColumn($alias . '._forbook');
-            $criteria->addSelectColumn($alias . '._singleplugin');
-            $criteria->addSelectColumn($alias . '._allplugin');
-            $criteria->addSelectColumn($alias . '._rtfplugin');
-            $criteria->addSelectColumn($alias . '._xmlplugin');
-            $criteria->addSelectColumn($alias . '._narrationplugin');
             $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');

@@ -80,12 +80,12 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
     /**
      * @var        ChildIssues
      */
-    protected $aIssues;
+    protected $aRtfIssue;
 
     /**
      * @var        ChildPlugins
      */
-    protected $aPlugins;
+    protected $aRtfPlugin;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -357,8 +357,8 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
             $this->modifiedColumns[RIssuesRtfpluginTableMap::COL__ISSUEID] = true;
         }
 
-        if ($this->aIssues !== null && $this->aIssues->getId() !== $v) {
-            $this->aIssues = null;
+        if ($this->aRtfIssue !== null && $this->aRtfIssue->getId() !== $v) {
+            $this->aRtfIssue = null;
         }
 
         return $this;
@@ -381,8 +381,8 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
             $this->modifiedColumns[RIssuesRtfpluginTableMap::COL__PLUGINID] = true;
         }
 
-        if ($this->aPlugins !== null && $this->aPlugins->getId() !== $v) {
-            $this->aPlugins = null;
+        if ($this->aRtfPlugin !== null && $this->aRtfPlugin->getId() !== $v) {
+            $this->aRtfPlugin = null;
         }
 
         return $this;
@@ -459,11 +459,11 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aIssues !== null && $this->_issueid !== $this->aIssues->getId()) {
-            $this->aIssues = null;
+        if ($this->aRtfIssue !== null && $this->_issueid !== $this->aRtfIssue->getId()) {
+            $this->aRtfIssue = null;
         }
-        if ($this->aPlugins !== null && $this->_pluginid !== $this->aPlugins->getId()) {
-            $this->aPlugins = null;
+        if ($this->aRtfPlugin !== null && $this->_pluginid !== $this->aRtfPlugin->getId()) {
+            $this->aRtfPlugin = null;
         }
     } // ensureConsistency
 
@@ -504,8 +504,8 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aIssues = null;
-            $this->aPlugins = null;
+            $this->aRtfIssue = null;
+            $this->aRtfPlugin = null;
         } // if (deep)
     }
 
@@ -610,18 +610,18 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aIssues !== null) {
-                if ($this->aIssues->isModified() || $this->aIssues->isNew()) {
-                    $affectedRows += $this->aIssues->save($con);
+            if ($this->aRtfIssue !== null) {
+                if ($this->aRtfIssue->isModified() || $this->aRtfIssue->isNew()) {
+                    $affectedRows += $this->aRtfIssue->save($con);
                 }
-                $this->setIssues($this->aIssues);
+                $this->setRtfIssue($this->aRtfIssue);
             }
 
-            if ($this->aPlugins !== null) {
-                if ($this->aPlugins->isModified() || $this->aPlugins->isNew()) {
-                    $affectedRows += $this->aPlugins->save($con);
+            if ($this->aRtfPlugin !== null) {
+                if ($this->aRtfPlugin->isModified() || $this->aRtfPlugin->isNew()) {
+                    $affectedRows += $this->aRtfPlugin->save($con);
                 }
-                $this->setPlugins($this->aPlugins);
+                $this->setRtfPlugin($this->aRtfPlugin);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -780,7 +780,7 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aIssues) {
+            if (null !== $this->aRtfIssue) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -793,9 +793,9 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
                         $key = 'Issues';
                 }
 
-                $result[$key] = $this->aIssues->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aRtfIssue->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aPlugins) {
+            if (null !== $this->aRtfPlugin) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
@@ -808,7 +808,7 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
                         $key = 'Plugins';
                 }
 
-                $result[$key] = $this->aPlugins->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aRtfPlugin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -967,14 +967,14 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
         $primaryKeyFKs = [];
 
         //relation r_plugins3_a to table _issues
-        if ($this->aIssues && $hash = spl_object_hash($this->aIssues)) {
+        if ($this->aRtfIssue && $hash = spl_object_hash($this->aRtfIssue)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
         }
 
         //relation r_plugins3_b to table _plugins
-        if ($this->aPlugins && $hash = spl_object_hash($this->aPlugins)) {
+        if ($this->aRtfPlugin && $hash = spl_object_hash($this->aRtfPlugin)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1073,7 +1073,7 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
      * @return $this|\RIssuesRtfplugin The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setIssues(ChildIssues $v = null)
+    public function setRtfIssue(ChildIssues $v = null)
     {
         if ($v === null) {
             $this->setIssueid(NULL);
@@ -1081,7 +1081,7 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
             $this->setIssueid($v->getId());
         }
 
-        $this->aIssues = $v;
+        $this->aRtfIssue = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildIssues object, it will not be re-added.
@@ -1101,20 +1101,20 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
      * @return ChildIssues The associated ChildIssues object.
      * @throws PropelException
      */
-    public function getIssues(ConnectionInterface $con = null)
+    public function getRtfIssue(ConnectionInterface $con = null)
     {
-        if ($this->aIssues === null && ($this->_issueid !== null)) {
-            $this->aIssues = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
+        if ($this->aRtfIssue === null && ($this->_issueid !== null)) {
+            $this->aRtfIssue = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aIssues->addRIssuesRtfplugins($this);
+                $this->aRtfIssue->addRIssuesRtfplugins($this);
              */
         }
 
-        return $this->aIssues;
+        return $this->aRtfIssue;
     }
 
     /**
@@ -1124,7 +1124,7 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
      * @return $this|\RIssuesRtfplugin The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setPlugins(ChildPlugins $v = null)
+    public function setRtfPlugin(ChildPlugins $v = null)
     {
         if ($v === null) {
             $this->setPluginid(NULL);
@@ -1132,7 +1132,7 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
             $this->setPluginid($v->getId());
         }
 
-        $this->aPlugins = $v;
+        $this->aRtfPlugin = $v;
 
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildPlugins object, it will not be re-added.
@@ -1152,20 +1152,20 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
      * @return ChildPlugins The associated ChildPlugins object.
      * @throws PropelException
      */
-    public function getPlugins(ConnectionInterface $con = null)
+    public function getRtfPlugin(ConnectionInterface $con = null)
     {
-        if ($this->aPlugins === null && ($this->_pluginid !== null)) {
-            $this->aPlugins = ChildPluginsQuery::create()->findPk($this->_pluginid, $con);
+        if ($this->aRtfPlugin === null && ($this->_pluginid !== null)) {
+            $this->aRtfPlugin = ChildPluginsQuery::create()->findPk($this->_pluginid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPlugins->addRIssuesRtfplugins($this);
+                $this->aRtfPlugin->addRIssuesRtfplugins($this);
              */
         }
 
-        return $this->aPlugins;
+        return $this->aRtfPlugin;
     }
 
     /**
@@ -1175,11 +1175,11 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aIssues) {
-            $this->aIssues->removeRIssuesRtfplugin($this);
+        if (null !== $this->aRtfIssue) {
+            $this->aRtfIssue->removeRIssuesRtfplugin($this);
         }
-        if (null !== $this->aPlugins) {
-            $this->aPlugins->removeRIssuesRtfplugin($this);
+        if (null !== $this->aRtfPlugin) {
+            $this->aRtfPlugin->removeRIssuesRtfplugin($this);
         }
         $this->_issueid = null;
         $this->_pluginid = null;
@@ -1203,8 +1203,8 @@ abstract class RIssuesRtfplugin implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aIssues = null;
-        $this->aPlugins = null;
+        $this->aRtfIssue = null;
+        $this->aRtfPlugin = null;
     }
 
     /**

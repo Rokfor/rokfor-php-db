@@ -85,25 +85,18 @@ abstract class Data implements ActiveRecordInterface
     protected $_fortemplatefield;
 
     /**
-     * The value for the _datatext field.
+     * The value for the _content field.
      *
      * @var        string
      */
-    protected $_datatext;
+    protected $_content;
 
     /**
-     * The value for the _databinary field.
+     * The value for the _isjson field.
      *
-     * @var        string
+     * @var        boolean
      */
-    protected $_databinary;
-
-    /**
-     * The value for the _datainteger field.
-     *
-     * @var        int
-     */
-    protected $_datainteger;
+    protected $_isjson;
 
     /**
      * The value for the __user__ field.
@@ -414,33 +407,33 @@ abstract class Data implements ActiveRecordInterface
     }
 
     /**
-     * Get the [_datatext] column value.
+     * Get the [_content] column value.
      *
      * @return string
      */
-    public function getDatatext()
+    public function getContent()
     {
-        return $this->_datatext;
+        return $this->_content;
     }
 
     /**
-     * Get the [_databinary] column value.
+     * Get the [_isjson] column value.
      *
-     * @return string
+     * @return boolean
      */
-    public function getDatabinary()
+    public function getIsjson()
     {
-        return $this->_databinary;
+        return $this->_isjson;
     }
 
     /**
-     * Get the [_datainteger] column value.
+     * Get the [_isjson] column value.
      *
-     * @return int
+     * @return boolean
      */
-    public function getDatainteger()
+    public function isIsjson()
     {
-        return $this->_datainteger;
+        return $this->getIsjson();
     }
 
     /**
@@ -448,7 +441,7 @@ abstract class Data implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getUser()
+    public function getUserSys()
     {
         return $this->__user__;
     }
@@ -458,7 +451,7 @@ abstract class Data implements ActiveRecordInterface
      *
      * @return string
      */
-    public function getConfig()
+    public function getConfigSys()
     {
         return $this->__config__;
     }
@@ -562,64 +555,52 @@ abstract class Data implements ActiveRecordInterface
     } // setFortemplatefield()
 
     /**
-     * Set the value of [_datatext] column.
+     * Set the value of [_content] column.
      *
      * @param string $v new value
      * @return $this|\Data The current object (for fluent API support)
      */
-    public function setDatatext($v)
+    public function setContent($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->_datatext !== $v) {
-            $this->_datatext = $v;
-            $this->modifiedColumns[DataTableMap::COL__DATATEXT] = true;
+        if ($this->_content !== $v) {
+            $this->_content = $v;
+            $this->modifiedColumns[DataTableMap::COL__CONTENT] = true;
         }
 
         return $this;
-    } // setDatatext()
+    } // setContent()
 
     /**
-     * Set the value of [_databinary] column.
+     * Sets the value of the [_isjson] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      *
-     * @param string $v new value
+     * @param  boolean|integer|string $v The new value
      * @return $this|\Data The current object (for fluent API support)
      */
-    public function setDatabinary($v)
+    public function setIsjson($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
         }
 
-        if ($this->_databinary !== $v) {
-            $this->_databinary = $v;
-            $this->modifiedColumns[DataTableMap::COL__DATABINARY] = true;
+        if ($this->_isjson !== $v) {
+            $this->_isjson = $v;
+            $this->modifiedColumns[DataTableMap::COL__ISJSON] = true;
         }
 
         return $this;
-    } // setDatabinary()
-
-    /**
-     * Set the value of [_datainteger] column.
-     *
-     * @param int $v new value
-     * @return $this|\Data The current object (for fluent API support)
-     */
-    public function setDatainteger($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->_datainteger !== $v) {
-            $this->_datainteger = $v;
-            $this->modifiedColumns[DataTableMap::COL__DATAINTEGER] = true;
-        }
-
-        return $this;
-    } // setDatainteger()
+    } // setIsjson()
 
     /**
      * Set the value of [__user__] column.
@@ -627,7 +608,7 @@ abstract class Data implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Data The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setUserSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -639,7 +620,7 @@ abstract class Data implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUser()
+    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -647,7 +628,7 @@ abstract class Data implements ActiveRecordInterface
      * @param string $v new value
      * @return $this|\Data The current object (for fluent API support)
      */
-    public function setConfig($v)
+    public function setConfigSys($v)
     {
         if ($v !== null) {
             $v = (string) $v;
@@ -659,7 +640,7 @@ abstract class Data implements ActiveRecordInterface
         }
 
         return $this;
-    } // setConfig()
+    } // setConfigSys()
 
     /**
      * Set the value of [__split__] column.
@@ -766,28 +747,25 @@ abstract class Data implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DataTableMap::translateFieldName('Fortemplatefield', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_fortemplatefield = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DataTableMap::translateFieldName('Datatext', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_datatext = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DataTableMap::translateFieldName('Content', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_content = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DataTableMap::translateFieldName('Databinary', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_databinary = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DataTableMap::translateFieldName('Isjson', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_isjson = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DataTableMap::translateFieldName('Datainteger', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_datainteger = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DataTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DataTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : DataTableMap::translateFieldName('Config', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DataTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : DataTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : DataTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : DataTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : DataTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : DataTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : DataTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -797,7 +775,7 @@ abstract class Data implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = DataTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = DataTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Data'), 0, $e);
@@ -1030,14 +1008,11 @@ abstract class Data implements ActiveRecordInterface
         if ($this->isColumnModified(DataTableMap::COL__FORTEMPLATEFIELD)) {
             $modifiedColumns[':p' . $index++]  = '_fortemplatefield';
         }
-        if ($this->isColumnModified(DataTableMap::COL__DATATEXT)) {
-            $modifiedColumns[':p' . $index++]  = '_datatext';
+        if ($this->isColumnModified(DataTableMap::COL__CONTENT)) {
+            $modifiedColumns[':p' . $index++]  = '_content';
         }
-        if ($this->isColumnModified(DataTableMap::COL__DATABINARY)) {
-            $modifiedColumns[':p' . $index++]  = '_databinary';
-        }
-        if ($this->isColumnModified(DataTableMap::COL__DATAINTEGER)) {
-            $modifiedColumns[':p' . $index++]  = '_datainteger';
+        if ($this->isColumnModified(DataTableMap::COL__ISJSON)) {
+            $modifiedColumns[':p' . $index++]  = '_isjson';
         }
         if ($this->isColumnModified(DataTableMap::COL___USER__)) {
             $modifiedColumns[':p' . $index++]  = '__user__';
@@ -1074,14 +1049,11 @@ abstract class Data implements ActiveRecordInterface
                     case '_fortemplatefield':
                         $stmt->bindValue($identifier, $this->_fortemplatefield, PDO::PARAM_INT);
                         break;
-                    case '_datatext':
-                        $stmt->bindValue($identifier, $this->_datatext, PDO::PARAM_STR);
+                    case '_content':
+                        $stmt->bindValue($identifier, $this->_content, PDO::PARAM_STR);
                         break;
-                    case '_databinary':
-                        $stmt->bindValue($identifier, $this->_databinary, PDO::PARAM_STR);
-                        break;
-                    case '_datainteger':
-                        $stmt->bindValue($identifier, $this->_datainteger, PDO::PARAM_INT);
+                    case '_isjson':
+                        $stmt->bindValue($identifier, (int) $this->_isjson, PDO::PARAM_INT);
                         break;
                     case '__user__':
                         $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
@@ -1170,27 +1142,24 @@ abstract class Data implements ActiveRecordInterface
                 return $this->getFortemplatefield();
                 break;
             case 3:
-                return $this->getDatatext();
+                return $this->getContent();
                 break;
             case 4:
-                return $this->getDatabinary();
+                return $this->getIsjson();
                 break;
             case 5:
-                return $this->getDatainteger();
+                return $this->getUserSys();
                 break;
             case 6:
-                return $this->getUser();
+                return $this->getConfigSys();
                 break;
             case 7:
-                return $this->getConfig();
-                break;
-            case 8:
                 return $this->getSplit();
                 break;
-            case 9:
+            case 8:
                 return $this->getParentnode();
                 break;
-            case 10:
+            case 9:
                 return $this->getSort();
                 break;
             default:
@@ -1226,14 +1195,13 @@ abstract class Data implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getForcontribution(),
             $keys[2] => $this->getFortemplatefield(),
-            $keys[3] => $this->getDatatext(),
-            $keys[4] => $this->getDatabinary(),
-            $keys[5] => $this->getDatainteger(),
-            $keys[6] => $this->getUser(),
-            $keys[7] => $this->getConfig(),
-            $keys[8] => $this->getSplit(),
-            $keys[9] => $this->getParentnode(),
-            $keys[10] => $this->getSort(),
+            $keys[3] => $this->getContent(),
+            $keys[4] => $this->getIsjson(),
+            $keys[5] => $this->getUserSys(),
+            $keys[6] => $this->getConfigSys(),
+            $keys[7] => $this->getSplit(),
+            $keys[8] => $this->getParentnode(),
+            $keys[9] => $this->getSort(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1315,27 +1283,24 @@ abstract class Data implements ActiveRecordInterface
                 $this->setFortemplatefield($value);
                 break;
             case 3:
-                $this->setDatatext($value);
+                $this->setContent($value);
                 break;
             case 4:
-                $this->setDatabinary($value);
+                $this->setIsjson($value);
                 break;
             case 5:
-                $this->setDatainteger($value);
+                $this->setUserSys($value);
                 break;
             case 6:
-                $this->setUser($value);
+                $this->setConfigSys($value);
                 break;
             case 7:
-                $this->setConfig($value);
-                break;
-            case 8:
                 $this->setSplit($value);
                 break;
-            case 9:
+            case 8:
                 $this->setParentnode($value);
                 break;
-            case 10:
+            case 9:
                 $this->setSort($value);
                 break;
         } // switch()
@@ -1374,28 +1339,25 @@ abstract class Data implements ActiveRecordInterface
             $this->setFortemplatefield($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDatatext($arr[$keys[3]]);
+            $this->setContent($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setDatabinary($arr[$keys[4]]);
+            $this->setIsjson($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setDatainteger($arr[$keys[5]]);
+            $this->setUserSys($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUser($arr[$keys[6]]);
+            $this->setConfigSys($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setConfig($arr[$keys[7]]);
+            $this->setSplit($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setSplit($arr[$keys[8]]);
+            $this->setParentnode($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setParentnode($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setSort($arr[$keys[10]]);
+            $this->setSort($arr[$keys[9]]);
         }
     }
 
@@ -1447,14 +1409,11 @@ abstract class Data implements ActiveRecordInterface
         if ($this->isColumnModified(DataTableMap::COL__FORTEMPLATEFIELD)) {
             $criteria->add(DataTableMap::COL__FORTEMPLATEFIELD, $this->_fortemplatefield);
         }
-        if ($this->isColumnModified(DataTableMap::COL__DATATEXT)) {
-            $criteria->add(DataTableMap::COL__DATATEXT, $this->_datatext);
+        if ($this->isColumnModified(DataTableMap::COL__CONTENT)) {
+            $criteria->add(DataTableMap::COL__CONTENT, $this->_content);
         }
-        if ($this->isColumnModified(DataTableMap::COL__DATABINARY)) {
-            $criteria->add(DataTableMap::COL__DATABINARY, $this->_databinary);
-        }
-        if ($this->isColumnModified(DataTableMap::COL__DATAINTEGER)) {
-            $criteria->add(DataTableMap::COL__DATAINTEGER, $this->_datainteger);
+        if ($this->isColumnModified(DataTableMap::COL__ISJSON)) {
+            $criteria->add(DataTableMap::COL__ISJSON, $this->_isjson);
         }
         if ($this->isColumnModified(DataTableMap::COL___USER__)) {
             $criteria->add(DataTableMap::COL___USER__, $this->__user__);
@@ -1559,11 +1518,10 @@ abstract class Data implements ActiveRecordInterface
     {
         $copyObj->setForcontribution($this->getForcontribution());
         $copyObj->setFortemplatefield($this->getFortemplatefield());
-        $copyObj->setDatatext($this->getDatatext());
-        $copyObj->setDatabinary($this->getDatabinary());
-        $copyObj->setDatainteger($this->getDatainteger());
-        $copyObj->setUser($this->getUser());
-        $copyObj->setConfig($this->getConfig());
+        $copyObj->setContent($this->getContent());
+        $copyObj->setIsjson($this->getIsjson());
+        $copyObj->setUserSys($this->getUserSys());
+        $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());
@@ -1713,9 +1671,8 @@ abstract class Data implements ActiveRecordInterface
         $this->id = null;
         $this->_forcontribution = null;
         $this->_fortemplatefield = null;
-        $this->_datatext = null;
-        $this->_databinary = null;
-        $this->_datainteger = null;
+        $this->_content = null;
+        $this->_isjson = null;
         $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;

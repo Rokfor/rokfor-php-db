@@ -25,9 +25,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatchQuery orderByDescription($order = Criteria::ASC) Order by the _description column
  * @method     ChildBatchQuery orderByPrecode($order = Criteria::ASC) Order by the _precode column
  * @method     ChildBatchQuery orderByPostcode($order = Criteria::ASC) Order by the _postcode column
- * @method     ChildBatchQuery orderByForbook($order = Criteria::ASC) Order by the _forbook column
- * @method     ChildBatchQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildBatchQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildBatchQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildBatchQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildBatchQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildBatchQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildBatchQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
@@ -37,9 +36,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatchQuery groupByDescription() Group by the _description column
  * @method     ChildBatchQuery groupByPrecode() Group by the _precode column
  * @method     ChildBatchQuery groupByPostcode() Group by the _postcode column
- * @method     ChildBatchQuery groupByForbook() Group by the _forbook column
- * @method     ChildBatchQuery groupByUser() Group by the __user__ column
- * @method     ChildBatchQuery groupByConfig() Group by the __config__ column
+ * @method     ChildBatchQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildBatchQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildBatchQuery groupBySplit() Group by the __split__ column
  * @method     ChildBatchQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildBatchQuery groupBySort() Group by the __sort__ column
@@ -72,9 +70,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatch findOneByDescription(string $_description) Return the first ChildBatch filtered by the _description column
  * @method     ChildBatch findOneByPrecode(string $_precode) Return the first ChildBatch filtered by the _precode column
  * @method     ChildBatch findOneByPostcode(string $_postcode) Return the first ChildBatch filtered by the _postcode column
- * @method     ChildBatch findOneByForbook(string $_forbook) Return the first ChildBatch filtered by the _forbook column
- * @method     ChildBatch findOneByUser(string $__user__) Return the first ChildBatch filtered by the __user__ column
- * @method     ChildBatch findOneByConfig(string $__config__) Return the first ChildBatch filtered by the __config__ column
+ * @method     ChildBatch findOneByUserSys(string $__user__) Return the first ChildBatch filtered by the __user__ column
+ * @method     ChildBatch findOneByConfigSys(string $__config__) Return the first ChildBatch filtered by the __config__ column
  * @method     ChildBatch findOneBySplit(string $__split__) Return the first ChildBatch filtered by the __split__ column
  * @method     ChildBatch findOneByParentnode(int $__parentnode__) Return the first ChildBatch filtered by the __parentnode__ column
  * @method     ChildBatch findOneBySort(int $__sort__) Return the first ChildBatch filtered by the __sort__ column *
@@ -87,9 +84,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatch requireOneByDescription(string $_description) Return the first ChildBatch filtered by the _description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBatch requireOneByPrecode(string $_precode) Return the first ChildBatch filtered by the _precode column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBatch requireOneByPostcode(string $_postcode) Return the first ChildBatch filtered by the _postcode column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBatch requireOneByForbook(string $_forbook) Return the first ChildBatch filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBatch requireOneByUser(string $__user__) Return the first ChildBatch filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildBatch requireOneByConfig(string $__config__) Return the first ChildBatch filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBatch requireOneByUserSys(string $__user__) Return the first ChildBatch filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBatch requireOneByConfigSys(string $__config__) Return the first ChildBatch filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBatch requireOneBySplit(string $__split__) Return the first ChildBatch filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBatch requireOneByParentnode(int $__parentnode__) Return the first ChildBatch filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBatch requireOneBySort(int $__sort__) Return the first ChildBatch filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -100,9 +96,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatch[]|ObjectCollection findByDescription(string $_description) Return ChildBatch objects filtered by the _description column
  * @method     ChildBatch[]|ObjectCollection findByPrecode(string $_precode) Return ChildBatch objects filtered by the _precode column
  * @method     ChildBatch[]|ObjectCollection findByPostcode(string $_postcode) Return ChildBatch objects filtered by the _postcode column
- * @method     ChildBatch[]|ObjectCollection findByForbook(string $_forbook) Return ChildBatch objects filtered by the _forbook column
- * @method     ChildBatch[]|ObjectCollection findByUser(string $__user__) Return ChildBatch objects filtered by the __user__ column
- * @method     ChildBatch[]|ObjectCollection findByConfig(string $__config__) Return ChildBatch objects filtered by the __config__ column
+ * @method     ChildBatch[]|ObjectCollection findByUserSys(string $__user__) Return ChildBatch objects filtered by the __user__ column
+ * @method     ChildBatch[]|ObjectCollection findByConfigSys(string $__config__) Return ChildBatch objects filtered by the __config__ column
  * @method     ChildBatch[]|ObjectCollection findBySplit(string $__split__) Return ChildBatch objects filtered by the __split__ column
  * @method     ChildBatch[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildBatch objects filtered by the __parentnode__ column
  * @method     ChildBatch[]|ObjectCollection findBySort(int $__sort__) Return ChildBatch objects filtered by the __sort__ column
@@ -198,7 +193,7 @@ abstract class BatchQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, _description, _precode, _postcode, _forbook, __user__, __config__, __split__, __parentnode__, __sort__ FROM _batch WHERE id = :p0';
+        $sql = 'SELECT id, _name, _description, _precode, _postcode, __user__, __config__, __split__, __parentnode__, __sort__ FROM _batch WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -446,61 +441,32 @@ abstract class BatchQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _forbook column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByForbook('fooValue');   // WHERE _forbook = 'fooValue'
-     * $query->filterByForbook('%fooValue%'); // WHERE _forbook LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $forbook The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildBatchQuery The current query, for fluid interface
-     */
-    public function filterByForbook($forbook = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($forbook)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $forbook)) {
-                $forbook = str_replace('*', '%', $forbook);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(BatchTableMap::COL__FORBOOK, $forbook, $comparison);
-    }
-
-    /**
      * Filter the query on the __user__ column
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(BatchTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(BatchTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -508,28 +474,28 @@ abstract class BatchQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(BatchTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(BatchTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

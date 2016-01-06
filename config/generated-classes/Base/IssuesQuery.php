@@ -27,13 +27,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery orderByStatus($order = Criteria::ASC) Order by the _status column
  * @method     ChildIssuesQuery orderByInfotext($order = Criteria::ASC) Order by the _infotext column
  * @method     ChildIssuesQuery orderByForbook($order = Criteria::ASC) Order by the _forbook column
- * @method     ChildIssuesQuery orderBySingleplugin($order = Criteria::ASC) Order by the _singleplugin column
- * @method     ChildIssuesQuery orderByAllplugin($order = Criteria::ASC) Order by the _allplugin column
- * @method     ChildIssuesQuery orderByRtfplugin($order = Criteria::ASC) Order by the _rtfplugin column
- * @method     ChildIssuesQuery orderByXmlplugin($order = Criteria::ASC) Order by the _xmlplugin column
- * @method     ChildIssuesQuery orderByNarrationplugin($order = Criteria::ASC) Order by the _narrationplugin column
- * @method     ChildIssuesQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildIssuesQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildIssuesQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildIssuesQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildIssuesQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildIssuesQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildIssuesQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
@@ -45,13 +40,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery groupByStatus() Group by the _status column
  * @method     ChildIssuesQuery groupByInfotext() Group by the _infotext column
  * @method     ChildIssuesQuery groupByForbook() Group by the _forbook column
- * @method     ChildIssuesQuery groupBySingleplugin() Group by the _singleplugin column
- * @method     ChildIssuesQuery groupByAllplugin() Group by the _allplugin column
- * @method     ChildIssuesQuery groupByRtfplugin() Group by the _rtfplugin column
- * @method     ChildIssuesQuery groupByXmlplugin() Group by the _xmlplugin column
- * @method     ChildIssuesQuery groupByNarrationplugin() Group by the _narrationplugin column
- * @method     ChildIssuesQuery groupByUser() Group by the __user__ column
- * @method     ChildIssuesQuery groupByConfig() Group by the __config__ column
+ * @method     ChildIssuesQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildIssuesQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildIssuesQuery groupBySplit() Group by the __split__ column
  * @method     ChildIssuesQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildIssuesQuery groupBySort() Group by the __sort__ column
@@ -156,13 +146,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssues findOneByStatus(string $_status) Return the first ChildIssues filtered by the _status column
  * @method     ChildIssues findOneByInfotext(string $_infotext) Return the first ChildIssues filtered by the _infotext column
  * @method     ChildIssues findOneByForbook(int $_forbook) Return the first ChildIssues filtered by the _forbook column
- * @method     ChildIssues findOneBySingleplugin(string $_singleplugin) Return the first ChildIssues filtered by the _singleplugin column
- * @method     ChildIssues findOneByAllplugin(string $_allplugin) Return the first ChildIssues filtered by the _allplugin column
- * @method     ChildIssues findOneByRtfplugin(string $_rtfplugin) Return the first ChildIssues filtered by the _rtfplugin column
- * @method     ChildIssues findOneByXmlplugin(string $_xmlplugin) Return the first ChildIssues filtered by the _xmlplugin column
- * @method     ChildIssues findOneByNarrationplugin(string $_narrationplugin) Return the first ChildIssues filtered by the _narrationplugin column
- * @method     ChildIssues findOneByUser(string $__user__) Return the first ChildIssues filtered by the __user__ column
- * @method     ChildIssues findOneByConfig(string $__config__) Return the first ChildIssues filtered by the __config__ column
+ * @method     ChildIssues findOneByUserSys(string $__user__) Return the first ChildIssues filtered by the __user__ column
+ * @method     ChildIssues findOneByConfigSys(string $__config__) Return the first ChildIssues filtered by the __config__ column
  * @method     ChildIssues findOneBySplit(string $__split__) Return the first ChildIssues filtered by the __split__ column
  * @method     ChildIssues findOneByParentnode(int $__parentnode__) Return the first ChildIssues filtered by the __parentnode__ column
  * @method     ChildIssues findOneBySort(int $__sort__) Return the first ChildIssues filtered by the __sort__ column *
@@ -177,13 +162,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssues requireOneByStatus(string $_status) Return the first ChildIssues filtered by the _status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByInfotext(string $_infotext) Return the first ChildIssues filtered by the _infotext column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByForbook(int $_forbook) Return the first ChildIssues filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneBySingleplugin(string $_singleplugin) Return the first ChildIssues filtered by the _singleplugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByAllplugin(string $_allplugin) Return the first ChildIssues filtered by the _allplugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByRtfplugin(string $_rtfplugin) Return the first ChildIssues filtered by the _rtfplugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByXmlplugin(string $_xmlplugin) Return the first ChildIssues filtered by the _xmlplugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByNarrationplugin(string $_narrationplugin) Return the first ChildIssues filtered by the _narrationplugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByUser(string $__user__) Return the first ChildIssues filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByConfig(string $__config__) Return the first ChildIssues filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildIssues requireOneByUserSys(string $__user__) Return the first ChildIssues filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildIssues requireOneByConfigSys(string $__config__) Return the first ChildIssues filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneBySplit(string $__split__) Return the first ChildIssues filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByParentnode(int $__parentnode__) Return the first ChildIssues filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneBySort(int $__sort__) Return the first ChildIssues filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -196,13 +176,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssues[]|ObjectCollection findByStatus(string $_status) Return ChildIssues objects filtered by the _status column
  * @method     ChildIssues[]|ObjectCollection findByInfotext(string $_infotext) Return ChildIssues objects filtered by the _infotext column
  * @method     ChildIssues[]|ObjectCollection findByForbook(int $_forbook) Return ChildIssues objects filtered by the _forbook column
- * @method     ChildIssues[]|ObjectCollection findBySingleplugin(string $_singleplugin) Return ChildIssues objects filtered by the _singleplugin column
- * @method     ChildIssues[]|ObjectCollection findByAllplugin(string $_allplugin) Return ChildIssues objects filtered by the _allplugin column
- * @method     ChildIssues[]|ObjectCollection findByRtfplugin(string $_rtfplugin) Return ChildIssues objects filtered by the _rtfplugin column
- * @method     ChildIssues[]|ObjectCollection findByXmlplugin(string $_xmlplugin) Return ChildIssues objects filtered by the _xmlplugin column
- * @method     ChildIssues[]|ObjectCollection findByNarrationplugin(string $_narrationplugin) Return ChildIssues objects filtered by the _narrationplugin column
- * @method     ChildIssues[]|ObjectCollection findByUser(string $__user__) Return ChildIssues objects filtered by the __user__ column
- * @method     ChildIssues[]|ObjectCollection findByConfig(string $__config__) Return ChildIssues objects filtered by the __config__ column
+ * @method     ChildIssues[]|ObjectCollection findByUserSys(string $__user__) Return ChildIssues objects filtered by the __user__ column
+ * @method     ChildIssues[]|ObjectCollection findByConfigSys(string $__config__) Return ChildIssues objects filtered by the __config__ column
  * @method     ChildIssues[]|ObjectCollection findBySplit(string $__split__) Return ChildIssues objects filtered by the __split__ column
  * @method     ChildIssues[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildIssues objects filtered by the __parentnode__ column
  * @method     ChildIssues[]|ObjectCollection findBySort(int $__sort__) Return ChildIssues objects filtered by the __sort__ column
@@ -298,7 +273,7 @@ abstract class IssuesQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, _opendate, _closedate, _status, _infotext, _forbook, _singleplugin, _allplugin, _rtfplugin, _xmlplugin, _narrationplugin, __user__, __config__, __split__, __parentnode__, __sort__ FROM _issues WHERE id = :p0';
+        $sql = 'SELECT id, _name, _opendate, _closedate, _status, _infotext, _forbook, __user__, __config__, __split__, __parentnode__, __sort__ FROM _issues WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -642,177 +617,32 @@ abstract class IssuesQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _singleplugin column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterBySingleplugin('fooValue');   // WHERE _singleplugin = 'fooValue'
-     * $query->filterBySingleplugin('%fooValue%'); // WHERE _singleplugin LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $singleplugin The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildIssuesQuery The current query, for fluid interface
-     */
-    public function filterBySingleplugin($singleplugin = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($singleplugin)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $singleplugin)) {
-                $singleplugin = str_replace('*', '%', $singleplugin);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(IssuesTableMap::COL__SINGLEPLUGIN, $singleplugin, $comparison);
-    }
-
-    /**
-     * Filter the query on the _allplugin column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByAllplugin('fooValue');   // WHERE _allplugin = 'fooValue'
-     * $query->filterByAllplugin('%fooValue%'); // WHERE _allplugin LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $allplugin The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildIssuesQuery The current query, for fluid interface
-     */
-    public function filterByAllplugin($allplugin = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($allplugin)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $allplugin)) {
-                $allplugin = str_replace('*', '%', $allplugin);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(IssuesTableMap::COL__ALLPLUGIN, $allplugin, $comparison);
-    }
-
-    /**
-     * Filter the query on the _rtfplugin column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByRtfplugin('fooValue');   // WHERE _rtfplugin = 'fooValue'
-     * $query->filterByRtfplugin('%fooValue%'); // WHERE _rtfplugin LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $rtfplugin The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildIssuesQuery The current query, for fluid interface
-     */
-    public function filterByRtfplugin($rtfplugin = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($rtfplugin)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $rtfplugin)) {
-                $rtfplugin = str_replace('*', '%', $rtfplugin);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(IssuesTableMap::COL__RTFPLUGIN, $rtfplugin, $comparison);
-    }
-
-    /**
-     * Filter the query on the _xmlplugin column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByXmlplugin('fooValue');   // WHERE _xmlplugin = 'fooValue'
-     * $query->filterByXmlplugin('%fooValue%'); // WHERE _xmlplugin LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $xmlplugin The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildIssuesQuery The current query, for fluid interface
-     */
-    public function filterByXmlplugin($xmlplugin = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($xmlplugin)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $xmlplugin)) {
-                $xmlplugin = str_replace('*', '%', $xmlplugin);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(IssuesTableMap::COL__XMLPLUGIN, $xmlplugin, $comparison);
-    }
-
-    /**
-     * Filter the query on the _narrationplugin column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByNarrationplugin('fooValue');   // WHERE _narrationplugin = 'fooValue'
-     * $query->filterByNarrationplugin('%fooValue%'); // WHERE _narrationplugin LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $narrationplugin The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildIssuesQuery The current query, for fluid interface
-     */
-    public function filterByNarrationplugin($narrationplugin = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($narrationplugin)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $narrationplugin)) {
-                $narrationplugin = str_replace('*', '%', $narrationplugin);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(IssuesTableMap::COL__NARRATIONPLUGIN, $narrationplugin, $comparison);
-    }
-
-    /**
      * Filter the query on the __user__ column
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(IssuesTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(IssuesTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -820,28 +650,28 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(IssuesTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(IssuesTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**
@@ -1552,11 +1382,11 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * @return ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = Criteria::EQUAL)
+    public function filterByAllPlugin($plugins, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRIssuesAllpluginQuery()
-            ->filterByPlugins($plugins, $comparison)
+            ->filterByAllPlugin($plugins, $comparison)
             ->endUse();
     }
 
@@ -1569,11 +1399,11 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * @return ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = Criteria::EQUAL)
+    public function filterByNarrationPlugin($plugins, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRIssuesNarrationpluginQuery()
-            ->filterByPlugins($plugins, $comparison)
+            ->filterByNarrationPlugin($plugins, $comparison)
             ->endUse();
     }
 
@@ -1586,11 +1416,11 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * @return ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = Criteria::EQUAL)
+    public function filterByRtfPlugin($plugins, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRIssuesRtfpluginQuery()
-            ->filterByPlugins($plugins, $comparison)
+            ->filterByRtfPlugin($plugins, $comparison)
             ->endUse();
     }
 
@@ -1603,11 +1433,11 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * @return ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = Criteria::EQUAL)
+    public function filterBySinglePlugin($plugins, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRIssuesSinglepluginQuery()
-            ->filterByPlugins($plugins, $comparison)
+            ->filterBySinglePlugin($plugins, $comparison)
             ->endUse();
     }
 
@@ -1620,11 +1450,11 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * @return ChildIssuesQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = Criteria::EQUAL)
+    public function filterByXmlPlugin($plugins, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRIssuesXmlpluginQuery()
-            ->filterByPlugins($plugins, $comparison)
+            ->filterByXmlPlugin($plugins, $comparison)
             ->endUse();
     }
 

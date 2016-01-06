@@ -34,25 +34,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesXmlpluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildRIssuesXmlpluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildRIssuesXmlpluginQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
- * @method     ChildRIssuesXmlpluginQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
- * @method     ChildRIssuesXmlpluginQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ * @method     ChildRIssuesXmlpluginQuery leftJoinXmlIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the XmlIssue relation
+ * @method     ChildRIssuesXmlpluginQuery rightJoinXmlIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the XmlIssue relation
+ * @method     ChildRIssuesXmlpluginQuery innerJoinXmlIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the XmlIssue relation
  *
- * @method     ChildRIssuesXmlpluginQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ * @method     ChildRIssuesXmlpluginQuery joinWithXmlIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the XmlIssue relation
  *
- * @method     ChildRIssuesXmlpluginQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
- * @method     ChildRIssuesXmlpluginQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
- * @method     ChildRIssuesXmlpluginQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
+ * @method     ChildRIssuesXmlpluginQuery leftJoinWithXmlIssue() Adds a LEFT JOIN clause and with to the query using the XmlIssue relation
+ * @method     ChildRIssuesXmlpluginQuery rightJoinWithXmlIssue() Adds a RIGHT JOIN clause and with to the query using the XmlIssue relation
+ * @method     ChildRIssuesXmlpluginQuery innerJoinWithXmlIssue() Adds a INNER JOIN clause and with to the query using the XmlIssue relation
  *
- * @method     ChildRIssuesXmlpluginQuery leftJoinPlugins($relationAlias = null) Adds a LEFT JOIN clause to the query using the Plugins relation
- * @method     ChildRIssuesXmlpluginQuery rightJoinPlugins($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Plugins relation
- * @method     ChildRIssuesXmlpluginQuery innerJoinPlugins($relationAlias = null) Adds a INNER JOIN clause to the query using the Plugins relation
+ * @method     ChildRIssuesXmlpluginQuery leftJoinXmlPlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the XmlPlugin relation
+ * @method     ChildRIssuesXmlpluginQuery rightJoinXmlPlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the XmlPlugin relation
+ * @method     ChildRIssuesXmlpluginQuery innerJoinXmlPlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the XmlPlugin relation
  *
- * @method     ChildRIssuesXmlpluginQuery joinWithPlugins($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Plugins relation
+ * @method     ChildRIssuesXmlpluginQuery joinWithXmlPlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the XmlPlugin relation
  *
- * @method     ChildRIssuesXmlpluginQuery leftJoinWithPlugins() Adds a LEFT JOIN clause and with to the query using the Plugins relation
- * @method     ChildRIssuesXmlpluginQuery rightJoinWithPlugins() Adds a RIGHT JOIN clause and with to the query using the Plugins relation
- * @method     ChildRIssuesXmlpluginQuery innerJoinWithPlugins() Adds a INNER JOIN clause and with to the query using the Plugins relation
+ * @method     ChildRIssuesXmlpluginQuery leftJoinWithXmlPlugin() Adds a LEFT JOIN clause and with to the query using the XmlPlugin relation
+ * @method     ChildRIssuesXmlpluginQuery rightJoinWithXmlPlugin() Adds a RIGHT JOIN clause and with to the query using the XmlPlugin relation
+ * @method     ChildRIssuesXmlpluginQuery innerJoinWithXmlPlugin() Adds a INNER JOIN clause and with to the query using the XmlPlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -275,7 +275,7 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
      * $query->filterByIssueid(array('min' => 12)); // WHERE _issueid > 12
      * </code>
      *
-     * @see       filterByIssues()
+     * @see       filterByXmlIssue()
      *
      * @param     mixed $issueid The value to use as filter.
      *              Use scalar values for equality.
@@ -318,7 +318,7 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
      * $query->filterByPluginid(array('min' => 12)); // WHERE _pluginid > 12
      * </code>
      *
-     * @see       filterByPlugins()
+     * @see       filterByXmlPlugin()
      *
      * @param     mixed $pluginid The value to use as filter.
      *              Use scalar values for equality.
@@ -361,7 +361,7 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
      *
      * @return ChildRIssuesXmlpluginQuery The current query, for fluid interface
      */
-    public function filterByIssues($issues, $comparison = null)
+    public function filterByXmlIssue($issues, $comparison = null)
     {
         if ($issues instanceof \Issues) {
             return $this
@@ -374,22 +374,22 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RIssuesXmlpluginTableMap::COL__ISSUEID, $issues->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByIssues() only accepts arguments of type \Issues or Collection');
+            throw new PropelException('filterByXmlIssue() only accepts arguments of type \Issues or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Issues relation
+     * Adds a JOIN clause to the query using the XmlIssue relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRIssuesXmlpluginQuery The current query, for fluid interface
      */
-    public function joinIssues($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinXmlIssue($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Issues');
+        $relationMap = $tableMap->getRelation('XmlIssue');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -404,14 +404,14 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Issues');
+            $this->addJoinObject($join, 'XmlIssue');
         }
 
         return $this;
     }
 
     /**
-     * Use the Issues relation Issues object
+     * Use the XmlIssue relation Issues object
      *
      * @see useQuery()
      *
@@ -421,11 +421,11 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
      *
      * @return \IssuesQuery A secondary query class using the current class as primary query
      */
-    public function useIssuesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useXmlIssueQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinIssues($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Issues', '\IssuesQuery');
+            ->joinXmlIssue($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'XmlIssue', '\IssuesQuery');
     }
 
     /**
@@ -438,7 +438,7 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
      *
      * @return ChildRIssuesXmlpluginQuery The current query, for fluid interface
      */
-    public function filterByPlugins($plugins, $comparison = null)
+    public function filterByXmlPlugin($plugins, $comparison = null)
     {
         if ($plugins instanceof \Plugins) {
             return $this
@@ -451,22 +451,22 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RIssuesXmlpluginTableMap::COL__PLUGINID, $plugins->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByPlugins() only accepts arguments of type \Plugins or Collection');
+            throw new PropelException('filterByXmlPlugin() only accepts arguments of type \Plugins or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Plugins relation
+     * Adds a JOIN clause to the query using the XmlPlugin relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRIssuesXmlpluginQuery The current query, for fluid interface
      */
-    public function joinPlugins($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinXmlPlugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Plugins');
+        $relationMap = $tableMap->getRelation('XmlPlugin');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -481,14 +481,14 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Plugins');
+            $this->addJoinObject($join, 'XmlPlugin');
         }
 
         return $this;
     }
 
     /**
-     * Use the Plugins relation Plugins object
+     * Use the XmlPlugin relation Plugins object
      *
      * @see useQuery()
      *
@@ -498,11 +498,11 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
      *
      * @return \PluginsQuery A secondary query class using the current class as primary query
      */
-    public function usePluginsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useXmlPluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPlugins($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Plugins', '\PluginsQuery');
+            ->joinXmlPlugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'XmlPlugin', '\PluginsQuery');
     }
 
     /**

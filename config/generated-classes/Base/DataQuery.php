@@ -23,11 +23,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildDataQuery orderByForcontribution($order = Criteria::ASC) Order by the _forcontribution column
  * @method     ChildDataQuery orderByFortemplatefield($order = Criteria::ASC) Order by the _fortemplatefield column
- * @method     ChildDataQuery orderByDatatext($order = Criteria::ASC) Order by the _datatext column
- * @method     ChildDataQuery orderByDatabinary($order = Criteria::ASC) Order by the _databinary column
- * @method     ChildDataQuery orderByDatainteger($order = Criteria::ASC) Order by the _datainteger column
- * @method     ChildDataQuery orderByUser($order = Criteria::ASC) Order by the __user__ column
- * @method     ChildDataQuery orderByConfig($order = Criteria::ASC) Order by the __config__ column
+ * @method     ChildDataQuery orderByContent($order = Criteria::ASC) Order by the _content column
+ * @method     ChildDataQuery orderByIsjson($order = Criteria::ASC) Order by the _isjson column
+ * @method     ChildDataQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
+ * @method     ChildDataQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildDataQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildDataQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildDataQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
@@ -35,11 +34,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataQuery groupById() Group by the id column
  * @method     ChildDataQuery groupByForcontribution() Group by the _forcontribution column
  * @method     ChildDataQuery groupByFortemplatefield() Group by the _fortemplatefield column
- * @method     ChildDataQuery groupByDatatext() Group by the _datatext column
- * @method     ChildDataQuery groupByDatabinary() Group by the _databinary column
- * @method     ChildDataQuery groupByDatainteger() Group by the _datainteger column
- * @method     ChildDataQuery groupByUser() Group by the __user__ column
- * @method     ChildDataQuery groupByConfig() Group by the __config__ column
+ * @method     ChildDataQuery groupByContent() Group by the _content column
+ * @method     ChildDataQuery groupByIsjson() Group by the _isjson column
+ * @method     ChildDataQuery groupByUserSys() Group by the __user__ column
+ * @method     ChildDataQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildDataQuery groupBySplit() Group by the __split__ column
  * @method     ChildDataQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildDataQuery groupBySort() Group by the __sort__ column
@@ -80,11 +78,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildData findOneById(int $id) Return the first ChildData filtered by the id column
  * @method     ChildData findOneByForcontribution(int $_forcontribution) Return the first ChildData filtered by the _forcontribution column
  * @method     ChildData findOneByFortemplatefield(int $_fortemplatefield) Return the first ChildData filtered by the _fortemplatefield column
- * @method     ChildData findOneByDatatext(string $_datatext) Return the first ChildData filtered by the _datatext column
- * @method     ChildData findOneByDatabinary(string $_databinary) Return the first ChildData filtered by the _databinary column
- * @method     ChildData findOneByDatainteger(int $_datainteger) Return the first ChildData filtered by the _datainteger column
- * @method     ChildData findOneByUser(string $__user__) Return the first ChildData filtered by the __user__ column
- * @method     ChildData findOneByConfig(string $__config__) Return the first ChildData filtered by the __config__ column
+ * @method     ChildData findOneByContent(string $_content) Return the first ChildData filtered by the _content column
+ * @method     ChildData findOneByIsjson(boolean $_isjson) Return the first ChildData filtered by the _isjson column
+ * @method     ChildData findOneByUserSys(string $__user__) Return the first ChildData filtered by the __user__ column
+ * @method     ChildData findOneByConfigSys(string $__config__) Return the first ChildData filtered by the __config__ column
  * @method     ChildData findOneBySplit(string $__split__) Return the first ChildData filtered by the __split__ column
  * @method     ChildData findOneByParentnode(int $__parentnode__) Return the first ChildData filtered by the __parentnode__ column
  * @method     ChildData findOneBySort(int $__sort__) Return the first ChildData filtered by the __sort__ column *
@@ -95,11 +92,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildData requireOneById(int $id) Return the first ChildData filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByForcontribution(int $_forcontribution) Return the first ChildData filtered by the _forcontribution column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByFortemplatefield(int $_fortemplatefield) Return the first ChildData filtered by the _fortemplatefield column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildData requireOneByDatatext(string $_datatext) Return the first ChildData filtered by the _datatext column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildData requireOneByDatabinary(string $_databinary) Return the first ChildData filtered by the _databinary column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildData requireOneByDatainteger(int $_datainteger) Return the first ChildData filtered by the _datainteger column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildData requireOneByUser(string $__user__) Return the first ChildData filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildData requireOneByConfig(string $__config__) Return the first ChildData filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildData requireOneByContent(string $_content) Return the first ChildData filtered by the _content column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildData requireOneByIsjson(boolean $_isjson) Return the first ChildData filtered by the _isjson column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildData requireOneByUserSys(string $__user__) Return the first ChildData filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildData requireOneByConfigSys(string $__config__) Return the first ChildData filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneBySplit(string $__split__) Return the first ChildData filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByParentnode(int $__parentnode__) Return the first ChildData filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneBySort(int $__sort__) Return the first ChildData filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -108,11 +104,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildData[]|ObjectCollection findById(int $id) Return ChildData objects filtered by the id column
  * @method     ChildData[]|ObjectCollection findByForcontribution(int $_forcontribution) Return ChildData objects filtered by the _forcontribution column
  * @method     ChildData[]|ObjectCollection findByFortemplatefield(int $_fortemplatefield) Return ChildData objects filtered by the _fortemplatefield column
- * @method     ChildData[]|ObjectCollection findByDatatext(string $_datatext) Return ChildData objects filtered by the _datatext column
- * @method     ChildData[]|ObjectCollection findByDatabinary(string $_databinary) Return ChildData objects filtered by the _databinary column
- * @method     ChildData[]|ObjectCollection findByDatainteger(int $_datainteger) Return ChildData objects filtered by the _datainteger column
- * @method     ChildData[]|ObjectCollection findByUser(string $__user__) Return ChildData objects filtered by the __user__ column
- * @method     ChildData[]|ObjectCollection findByConfig(string $__config__) Return ChildData objects filtered by the __config__ column
+ * @method     ChildData[]|ObjectCollection findByContent(string $_content) Return ChildData objects filtered by the _content column
+ * @method     ChildData[]|ObjectCollection findByIsjson(boolean $_isjson) Return ChildData objects filtered by the _isjson column
+ * @method     ChildData[]|ObjectCollection findByUserSys(string $__user__) Return ChildData objects filtered by the __user__ column
+ * @method     ChildData[]|ObjectCollection findByConfigSys(string $__config__) Return ChildData objects filtered by the __config__ column
  * @method     ChildData[]|ObjectCollection findBySplit(string $__split__) Return ChildData objects filtered by the __split__ column
  * @method     ChildData[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildData objects filtered by the __parentnode__ column
  * @method     ChildData[]|ObjectCollection findBySort(int $__sort__) Return ChildData objects filtered by the __sort__ column
@@ -208,7 +203,7 @@ abstract class DataQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _forcontribution, _fortemplatefield, _datatext, _databinary, _datainteger, __user__, __config__, __split__, __parentnode__, __sort__ FROM _data WHERE id = :p0';
+        $sql = 'SELECT id, _forcontribution, _fortemplatefield, _content, _isjson, __user__, __config__, __split__, __parentnode__, __sort__ FROM _data WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -426,102 +421,59 @@ abstract class DataQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _datatext column
+     * Filter the query on the _content column
      *
      * Example usage:
      * <code>
-     * $query->filterByDatatext('fooValue');   // WHERE _datatext = 'fooValue'
-     * $query->filterByDatatext('%fooValue%'); // WHERE _datatext LIKE '%fooValue%'
+     * $query->filterByContent('fooValue');   // WHERE _content = 'fooValue'
+     * $query->filterByContent('%fooValue%'); // WHERE _content LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $datatext The value to use as filter.
+     * @param     string $content The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
      */
-    public function filterByDatatext($datatext = null, $comparison = null)
+    public function filterByContent($content = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($datatext)) {
+            if (is_array($content)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $datatext)) {
-                $datatext = str_replace('*', '%', $datatext);
+            } elseif (preg_match('/[\%\*]/', $content)) {
+                $content = str_replace('*', '%', $content);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(DataTableMap::COL__DATATEXT, $datatext, $comparison);
+        return $this->addUsingAlias(DataTableMap::COL__CONTENT, $content, $comparison);
     }
 
     /**
-     * Filter the query on the _databinary column
+     * Filter the query on the _isjson column
      *
      * Example usage:
      * <code>
-     * $query->filterByDatabinary('fooValue');   // WHERE _databinary = 'fooValue'
-     * $query->filterByDatabinary('%fooValue%'); // WHERE _databinary LIKE '%fooValue%'
+     * $query->filterByIsjson(true); // WHERE _isjson = true
+     * $query->filterByIsjson('yes'); // WHERE _isjson = true
      * </code>
      *
-     * @param     string $databinary The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     boolean|string $isjson The value to use as filter.
+     *              Non-boolean arguments are converted using the following rules:
+     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
      */
-    public function filterByDatabinary($databinary = null, $comparison = null)
+    public function filterByIsjson($isjson = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($databinary)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $databinary)) {
-                $databinary = str_replace('*', '%', $databinary);
-                $comparison = Criteria::LIKE;
-            }
+        if (is_string($isjson)) {
+            $isjson = in_array(strtolower($isjson), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
         }
 
-        return $this->addUsingAlias(DataTableMap::COL__DATABINARY, $databinary, $comparison);
-    }
-
-    /**
-     * Filter the query on the _datainteger column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByDatainteger(1234); // WHERE _datainteger = 1234
-     * $query->filterByDatainteger(array(12, 34)); // WHERE _datainteger IN (12, 34)
-     * $query->filterByDatainteger(array('min' => 12)); // WHERE _datainteger > 12
-     * </code>
-     *
-     * @param     mixed $datainteger The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildDataQuery The current query, for fluid interface
-     */
-    public function filterByDatainteger($datainteger = null, $comparison = null)
-    {
-        if (is_array($datainteger)) {
-            $useMinMax = false;
-            if (isset($datainteger['min'])) {
-                $this->addUsingAlias(DataTableMap::COL__DATAINTEGER, $datainteger['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($datainteger['max'])) {
-                $this->addUsingAlias(DataTableMap::COL__DATAINTEGER, $datainteger['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(DataTableMap::COL__DATAINTEGER, $datainteger, $comparison);
+        return $this->addUsingAlias(DataTableMap::COL__ISJSON, $isjson, $comparison);
     }
 
     /**
@@ -529,28 +481,28 @@ abstract class DataQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUser('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
+     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $user The value to use as filter.
+     * @param     string $userSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
      */
-    public function filterByUser($user = null, $comparison = null)
+    public function filterByUserSys($userSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($user)) {
+            if (is_array($userSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
+            } elseif (preg_match('/[\%\*]/', $userSys)) {
+                $userSys = str_replace('*', '%', $userSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(DataTableMap::COL___USER__, $user, $comparison);
+        return $this->addUsingAlias(DataTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**
@@ -558,28 +510,28 @@ abstract class DataQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByConfig('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $config The value to use as filter.
+     * @param     string $configSys The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function filterByConfigSys($configSys = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($config)) {
+            if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(DataTableMap::COL___CONFIG__, $config, $comparison);
+        return $this->addUsingAlias(DataTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

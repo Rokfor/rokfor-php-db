@@ -141,14 +141,14 @@ class RIssuesAllpluginTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('AllIssue', '\\Issues', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_issueid',
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
-        $this->addRelation('Plugins', '\\Plugins', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('AllPlugin', '\\Plugins', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_pluginid',
