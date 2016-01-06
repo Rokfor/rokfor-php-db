@@ -41,7 +41,7 @@ class DB
       ),
     ));
     $this->manager->setName('rokfor');
-    $this->serviceContainer->setConnectionManager('rokfor', $manager);
+    $this->serviceContainer->setConnectionManager('rokfor', $this->manager);
     $this->serviceContainer->setDefaultDatasource('rokfor');
     
   }
