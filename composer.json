@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-      "propel/propel": "2.0.x-dev"
+      "propel/propel": "~2.0@dev"
     },
     "autoload": {
         "psr-4": {"Rokfor\\": "src/"},
