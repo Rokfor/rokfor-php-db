@@ -193,7 +193,7 @@ class FormatsTableMap extends TableMap
         $this->addRelation('Contributions', '\\Contributions', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':__split__',
+    0 => ':_forchapter',
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Contributionss', false);

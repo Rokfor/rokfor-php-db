@@ -255,6 +255,13 @@ class TemplatesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
+        $this->addRelation('RFieldpostprocessorForfield', '\\RFieldpostprocessorForfield', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_templateid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RFieldpostprocessorForfields', false);
         $this->addRelation('Data', '\\Data', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -262,6 +269,7 @@ class TemplatesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Datas', false);
+        $this->addRelation('Fieldpostprocessor', '\\Fieldpostprocessor', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Fieldpostprocessors');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _templates     * by a foreign key with ON DELETE CASCADE
@@ -270,6 +278,7 @@ class TemplatesTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        RFieldpostprocessorForfieldTableMap::clearInstancePool();
         DataTableMap::clearInstancePool();
     }
 

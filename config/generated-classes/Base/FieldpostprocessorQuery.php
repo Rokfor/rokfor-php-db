@@ -615,19 +615,19 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related Templatenames object
+     * Filter the query by a related Templates object
      * using the R_fieldpostprocessor_forfield table as cross reference
      *
-     * @param Templatenames $templatenames the related object to use as filter
+     * @param Templates $templates the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildFieldpostprocessorQuery The current query, for fluid interface
      */
-    public function filterByTemplatenames($templatenames, $comparison = Criteria::EQUAL)
+    public function filterByTemplates($templates, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRFieldpostprocessorForfieldQuery()
-            ->filterByTemplatenames($templatenames, $comparison)
+            ->filterByTemplates($templates, $comparison)
             ->endUse();
     }
 

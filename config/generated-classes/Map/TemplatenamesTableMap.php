@@ -194,13 +194,6 @@ class TemplatenamesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('RFieldpostprocessorForfield', '\\RFieldpostprocessorForfield', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':_templateid',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'RFieldpostprocessorForfields', false);
         $this->addRelation('RRightsFortemplate', '\\RRightsFortemplate', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -236,7 +229,6 @@ class TemplatenamesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Templatess', false);
-        $this->addRelation('Fieldpostprocessor', '\\Fieldpostprocessor', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Fieldpostprocessors');
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
         $this->addRelation('Books', '\\Books', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Bookss');
         $this->addRelation('Formats', '\\Formats', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Formatss');
@@ -248,7 +240,6 @@ class TemplatenamesTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        RFieldpostprocessorForfieldTableMap::clearInstancePool();
         RRightsFortemplateTableMap::clearInstancePool();
         RTemplatenamesForbookTableMap::clearInstancePool();
         RTemplatenamesInchapterTableMap::clearInstancePool();

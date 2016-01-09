@@ -4,6 +4,10 @@ namespace Base;
 
 use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
+use \Fieldpostprocessor as ChildFieldpostprocessor;
+use \FieldpostprocessorQuery as ChildFieldpostprocessorQuery;
+use \RFieldpostprocessorForfield as ChildRFieldpostprocessorForfield;
+use \RFieldpostprocessorForfieldQuery as ChildRFieldpostprocessorForfieldQuery;
 use \Templatenames as ChildTemplatenames;
 use \TemplatenamesQuery as ChildTemplatenamesQuery;
 use \Templates as ChildTemplates;
@@ -211,10 +215,26 @@ abstract class Templates implements ActiveRecordInterface
     protected $aTemplatenames;
 
     /**
+     * @var        ObjectCollection|ChildRFieldpostprocessorForfield[] Collection to store aggregation of ChildRFieldpostprocessorForfield objects.
+     */
+    protected $collRFieldpostprocessorForfields;
+    protected $collRFieldpostprocessorForfieldsPartial;
+
+    /**
      * @var        ObjectCollection|ChildData[] Collection to store aggregation of ChildData objects.
      */
     protected $collDatas;
     protected $collDatasPartial;
+
+    /**
+     * @var        ObjectCollection|ChildFieldpostprocessor[] Cross Collection to store aggregation of ChildFieldpostprocessor objects.
+     */
+    protected $collFieldpostprocessors;
+
+    /**
+     * @var bool
+     */
+    protected $collFieldpostprocessorsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -223,6 +243,18 @@ abstract class Templates implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildFieldpostprocessor[]
+     */
+    protected $fieldpostprocessorsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRFieldpostprocessorForfield[]
+     */
+    protected $rFieldpostprocessorForfieldsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1227,8 +1259,11 @@ abstract class Templates implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aTemplatenames = null;
+            $this->collRFieldpostprocessorForfields = null;
+
             $this->collDatas = null;
 
+            $this->collFieldpostprocessors = null;
         } // if (deep)
     }
 
@@ -1349,6 +1384,52 @@ abstract class Templates implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->fieldpostprocessorsScheduledForDeletion !== null) {
+                if (!$this->fieldpostprocessorsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->fieldpostprocessorsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RFieldpostprocessorForfieldQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->fieldpostprocessorsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collFieldpostprocessors) {
+                foreach ($this->collFieldpostprocessors as $fieldpostprocessor) {
+                    if (!$fieldpostprocessor->isDeleted() && ($fieldpostprocessor->isNew() || $fieldpostprocessor->isModified())) {
+                        $fieldpostprocessor->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rFieldpostprocessorForfieldsScheduledForDeletion !== null) {
+                if (!$this->rFieldpostprocessorForfieldsScheduledForDeletion->isEmpty()) {
+                    \RFieldpostprocessorForfieldQuery::create()
+                        ->filterByPrimaryKeys($this->rFieldpostprocessorForfieldsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rFieldpostprocessorForfieldsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRFieldpostprocessorForfields !== null) {
+                foreach ($this->collRFieldpostprocessorForfields as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->datasScheduledForDeletion !== null) {
@@ -1718,6 +1799,21 @@ abstract class Templates implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aTemplatenames->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collRFieldpostprocessorForfields) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rFieldpostprocessorForfields';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_fieldpostprocessor_forfields';
+                        break;
+                    default:
+                        $key = 'RFieldpostprocessorForfields';
+                }
+
+                $result[$key] = $this->collRFieldpostprocessorForfields->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collDatas) {
 
@@ -2126,6 +2222,12 @@ abstract class Templates implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getRFieldpostprocessorForfields() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRFieldpostprocessorForfield($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getDatas() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addData($relObj->copy($deepCopy));
@@ -2224,9 +2326,262 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('RFieldpostprocessorForfield' == $relationName) {
+            return $this->initRFieldpostprocessorForfields();
+        }
         if ('Data' == $relationName) {
             return $this->initDatas();
         }
+    }
+
+    /**
+     * Clears out the collRFieldpostprocessorForfields collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRFieldpostprocessorForfields()
+     */
+    public function clearRFieldpostprocessorForfields()
+    {
+        $this->collRFieldpostprocessorForfields = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRFieldpostprocessorForfields collection loaded partially.
+     */
+    public function resetPartialRFieldpostprocessorForfields($v = true)
+    {
+        $this->collRFieldpostprocessorForfieldsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRFieldpostprocessorForfields collection.
+     *
+     * By default this just sets the collRFieldpostprocessorForfields collection to an empty array (like clearcollRFieldpostprocessorForfields());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRFieldpostprocessorForfields($overrideExisting = true)
+    {
+        if (null !== $this->collRFieldpostprocessorForfields && !$overrideExisting) {
+            return;
+        }
+        $this->collRFieldpostprocessorForfields = new ObjectCollection();
+        $this->collRFieldpostprocessorForfields->setModel('\RFieldpostprocessorForfield');
+    }
+
+    /**
+     * Gets an array of ChildRFieldpostprocessorForfield objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTemplates is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRFieldpostprocessorForfield[] List of ChildRFieldpostprocessorForfield objects
+     * @throws PropelException
+     */
+    public function getRFieldpostprocessorForfields(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRFieldpostprocessorForfieldsPartial && !$this->isNew();
+        if (null === $this->collRFieldpostprocessorForfields || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRFieldpostprocessorForfields) {
+                // return empty collection
+                $this->initRFieldpostprocessorForfields();
+            } else {
+                $collRFieldpostprocessorForfields = ChildRFieldpostprocessorForfieldQuery::create(null, $criteria)
+                    ->filterByTemplates($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRFieldpostprocessorForfieldsPartial && count($collRFieldpostprocessorForfields)) {
+                        $this->initRFieldpostprocessorForfields(false);
+
+                        foreach ($collRFieldpostprocessorForfields as $obj) {
+                            if (false == $this->collRFieldpostprocessorForfields->contains($obj)) {
+                                $this->collRFieldpostprocessorForfields->append($obj);
+                            }
+                        }
+
+                        $this->collRFieldpostprocessorForfieldsPartial = true;
+                    }
+
+                    return $collRFieldpostprocessorForfields;
+                }
+
+                if ($partial && $this->collRFieldpostprocessorForfields) {
+                    foreach ($this->collRFieldpostprocessorForfields as $obj) {
+                        if ($obj->isNew()) {
+                            $collRFieldpostprocessorForfields[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRFieldpostprocessorForfields = $collRFieldpostprocessorForfields;
+                $this->collRFieldpostprocessorForfieldsPartial = false;
+            }
+        }
+
+        return $this->collRFieldpostprocessorForfields;
+    }
+
+    /**
+     * Sets a collection of ChildRFieldpostprocessorForfield objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rFieldpostprocessorForfields A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildTemplates The current object (for fluent API support)
+     */
+    public function setRFieldpostprocessorForfields(Collection $rFieldpostprocessorForfields, ConnectionInterface $con = null)
+    {
+        /** @var ChildRFieldpostprocessorForfield[] $rFieldpostprocessorForfieldsToDelete */
+        $rFieldpostprocessorForfieldsToDelete = $this->getRFieldpostprocessorForfields(new Criteria(), $con)->diff($rFieldpostprocessorForfields);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rFieldpostprocessorForfieldsScheduledForDeletion = clone $rFieldpostprocessorForfieldsToDelete;
+
+        foreach ($rFieldpostprocessorForfieldsToDelete as $rFieldpostprocessorForfieldRemoved) {
+            $rFieldpostprocessorForfieldRemoved->setTemplates(null);
+        }
+
+        $this->collRFieldpostprocessorForfields = null;
+        foreach ($rFieldpostprocessorForfields as $rFieldpostprocessorForfield) {
+            $this->addRFieldpostprocessorForfield($rFieldpostprocessorForfield);
+        }
+
+        $this->collRFieldpostprocessorForfields = $rFieldpostprocessorForfields;
+        $this->collRFieldpostprocessorForfieldsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RFieldpostprocessorForfield objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RFieldpostprocessorForfield objects.
+     * @throws PropelException
+     */
+    public function countRFieldpostprocessorForfields(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRFieldpostprocessorForfieldsPartial && !$this->isNew();
+        if (null === $this->collRFieldpostprocessorForfields || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRFieldpostprocessorForfields) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRFieldpostprocessorForfields());
+            }
+
+            $query = ChildRFieldpostprocessorForfieldQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByTemplates($this)
+                ->count($con);
+        }
+
+        return count($this->collRFieldpostprocessorForfields);
+    }
+
+    /**
+     * Method called to associate a ChildRFieldpostprocessorForfield object to this object
+     * through the ChildRFieldpostprocessorForfield foreign key attribute.
+     *
+     * @param  ChildRFieldpostprocessorForfield $l ChildRFieldpostprocessorForfield
+     * @return $this|\Templates The current object (for fluent API support)
+     */
+    public function addRFieldpostprocessorForfield(ChildRFieldpostprocessorForfield $l)
+    {
+        if ($this->collRFieldpostprocessorForfields === null) {
+            $this->initRFieldpostprocessorForfields();
+            $this->collRFieldpostprocessorForfieldsPartial = true;
+        }
+
+        if (!$this->collRFieldpostprocessorForfields->contains($l)) {
+            $this->doAddRFieldpostprocessorForfield($l);
+
+            if ($this->rFieldpostprocessorForfieldsScheduledForDeletion and $this->rFieldpostprocessorForfieldsScheduledForDeletion->contains($l)) {
+                $this->rFieldpostprocessorForfieldsScheduledForDeletion->remove($this->rFieldpostprocessorForfieldsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRFieldpostprocessorForfield $rFieldpostprocessorForfield The ChildRFieldpostprocessorForfield object to add.
+     */
+    protected function doAddRFieldpostprocessorForfield(ChildRFieldpostprocessorForfield $rFieldpostprocessorForfield)
+    {
+        $this->collRFieldpostprocessorForfields[]= $rFieldpostprocessorForfield;
+        $rFieldpostprocessorForfield->setTemplates($this);
+    }
+
+    /**
+     * @param  ChildRFieldpostprocessorForfield $rFieldpostprocessorForfield The ChildRFieldpostprocessorForfield object to remove.
+     * @return $this|ChildTemplates The current object (for fluent API support)
+     */
+    public function removeRFieldpostprocessorForfield(ChildRFieldpostprocessorForfield $rFieldpostprocessorForfield)
+    {
+        if ($this->getRFieldpostprocessorForfields()->contains($rFieldpostprocessorForfield)) {
+            $pos = $this->collRFieldpostprocessorForfields->search($rFieldpostprocessorForfield);
+            $this->collRFieldpostprocessorForfields->remove($pos);
+            if (null === $this->rFieldpostprocessorForfieldsScheduledForDeletion) {
+                $this->rFieldpostprocessorForfieldsScheduledForDeletion = clone $this->collRFieldpostprocessorForfields;
+                $this->rFieldpostprocessorForfieldsScheduledForDeletion->clear();
+            }
+            $this->rFieldpostprocessorForfieldsScheduledForDeletion[]= clone $rFieldpostprocessorForfield;
+            $rFieldpostprocessorForfield->setTemplates(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Templates is new, it will return
+     * an empty collection; or if this Templates has previously
+     * been saved, it will retrieve related RFieldpostprocessorForfields from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Templates.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRFieldpostprocessorForfield[] List of ChildRFieldpostprocessorForfield objects
+     */
+    public function getRFieldpostprocessorForfieldsJoinFieldpostprocessor(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRFieldpostprocessorForfieldQuery::create(null, $criteria);
+        $query->joinWith('Fieldpostprocessor', $joinBehavior);
+
+        return $this->getRFieldpostprocessorForfields($query, $con);
     }
 
     /**
@@ -2477,6 +2832,248 @@ abstract class Templates implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collFieldpostprocessors collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addFieldpostprocessors()
+     */
+    public function clearFieldpostprocessors()
+    {
+        $this->collFieldpostprocessors = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collFieldpostprocessors crossRef collection.
+     *
+     * By default this just sets the collFieldpostprocessors collection to an empty collection (like clearFieldpostprocessors());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initFieldpostprocessors()
+    {
+        $this->collFieldpostprocessors = new ObjectCollection();
+        $this->collFieldpostprocessorsPartial = true;
+
+        $this->collFieldpostprocessors->setModel('\Fieldpostprocessor');
+    }
+
+    /**
+     * Checks if the collFieldpostprocessors collection is loaded.
+     *
+     * @return bool
+     */
+    public function isFieldpostprocessorsLoaded()
+    {
+        return null !== $this->collFieldpostprocessors;
+    }
+
+    /**
+     * Gets a collection of ChildFieldpostprocessor objects related by a many-to-many relationship
+     * to the current object by way of the R_fieldpostprocessor_forfield cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTemplates is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildFieldpostprocessor[] List of ChildFieldpostprocessor objects
+     */
+    public function getFieldpostprocessors(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collFieldpostprocessorsPartial && !$this->isNew();
+        if (null === $this->collFieldpostprocessors || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collFieldpostprocessors) {
+                    $this->initFieldpostprocessors();
+                }
+            } else {
+
+                $query = ChildFieldpostprocessorQuery::create(null, $criteria)
+                    ->filterByTemplates($this);
+                $collFieldpostprocessors = $query->find($con);
+                if (null !== $criteria) {
+                    return $collFieldpostprocessors;
+                }
+
+                if ($partial && $this->collFieldpostprocessors) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collFieldpostprocessors as $obj) {
+                        if (!$collFieldpostprocessors->contains($obj)) {
+                            $collFieldpostprocessors[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collFieldpostprocessors = $collFieldpostprocessors;
+                $this->collFieldpostprocessorsPartial = false;
+            }
+        }
+
+        return $this->collFieldpostprocessors;
+    }
+
+    /**
+     * Sets a collection of Fieldpostprocessor objects related by a many-to-many relationship
+     * to the current object by way of the R_fieldpostprocessor_forfield cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $fieldpostprocessors A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildTemplates The current object (for fluent API support)
+     */
+    public function setFieldpostprocessors(Collection $fieldpostprocessors, ConnectionInterface $con = null)
+    {
+        $this->clearFieldpostprocessors();
+        $currentFieldpostprocessors = $this->getFieldpostprocessors();
+
+        $fieldpostprocessorsScheduledForDeletion = $currentFieldpostprocessors->diff($fieldpostprocessors);
+
+        foreach ($fieldpostprocessorsScheduledForDeletion as $toDelete) {
+            $this->removeFieldpostprocessor($toDelete);
+        }
+
+        foreach ($fieldpostprocessors as $fieldpostprocessor) {
+            if (!$currentFieldpostprocessors->contains($fieldpostprocessor)) {
+                $this->doAddFieldpostprocessor($fieldpostprocessor);
+            }
+        }
+
+        $this->collFieldpostprocessorsPartial = false;
+        $this->collFieldpostprocessors = $fieldpostprocessors;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Fieldpostprocessor objects related by a many-to-many relationship
+     * to the current object by way of the R_fieldpostprocessor_forfield cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Fieldpostprocessor objects
+     */
+    public function countFieldpostprocessors(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collFieldpostprocessorsPartial && !$this->isNew();
+        if (null === $this->collFieldpostprocessors || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collFieldpostprocessors) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getFieldpostprocessors());
+                }
+
+                $query = ChildFieldpostprocessorQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByTemplates($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collFieldpostprocessors);
+        }
+    }
+
+    /**
+     * Associate a ChildFieldpostprocessor to this object
+     * through the R_fieldpostprocessor_forfield cross reference table.
+     *
+     * @param ChildFieldpostprocessor $fieldpostprocessor
+     * @return ChildTemplates The current object (for fluent API support)
+     */
+    public function addFieldpostprocessor(ChildFieldpostprocessor $fieldpostprocessor)
+    {
+        if ($this->collFieldpostprocessors === null) {
+            $this->initFieldpostprocessors();
+        }
+
+        if (!$this->getFieldpostprocessors()->contains($fieldpostprocessor)) {
+            // only add it if the **same** object is not already associated
+            $this->collFieldpostprocessors->push($fieldpostprocessor);
+            $this->doAddFieldpostprocessor($fieldpostprocessor);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildFieldpostprocessor $fieldpostprocessor
+     */
+    protected function doAddFieldpostprocessor(ChildFieldpostprocessor $fieldpostprocessor)
+    {
+        $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
+
+        $rFieldpostprocessorForfield->setFieldpostprocessor($fieldpostprocessor);
+
+        $rFieldpostprocessorForfield->setTemplates($this);
+
+        $this->addRFieldpostprocessorForfield($rFieldpostprocessorForfield);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$fieldpostprocessor->isTemplatessLoaded()) {
+            $fieldpostprocessor->initTemplatess();
+            $fieldpostprocessor->getTemplatess()->push($this);
+        } elseif (!$fieldpostprocessor->getTemplatess()->contains($this)) {
+            $fieldpostprocessor->getTemplatess()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove fieldpostprocessor of this object
+     * through the R_fieldpostprocessor_forfield cross reference table.
+     *
+     * @param ChildFieldpostprocessor $fieldpostprocessor
+     * @return ChildTemplates The current object (for fluent API support)
+     */
+    public function removeFieldpostprocessor(ChildFieldpostprocessor $fieldpostprocessor)
+    {
+        if ($this->getFieldpostprocessors()->contains($fieldpostprocessor)) { $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
+
+            $rFieldpostprocessorForfield->setFieldpostprocessor($fieldpostprocessor);
+            if ($fieldpostprocessor->isTemplatessLoaded()) {
+                //remove the back reference if available
+                $fieldpostprocessor->getTemplatess()->removeObject($this);
+            }
+
+            $rFieldpostprocessorForfield->setTemplates($this);
+            $this->removeRFieldpostprocessorForfield(clone $rFieldpostprocessorForfield);
+            $rFieldpostprocessorForfield->clear();
+
+            $this->collFieldpostprocessors->remove($this->collFieldpostprocessors->search($fieldpostprocessor));
+
+            if (null === $this->fieldpostprocessorsScheduledForDeletion) {
+                $this->fieldpostprocessorsScheduledForDeletion = clone $this->collFieldpostprocessors;
+                $this->fieldpostprocessorsScheduledForDeletion->clear();
+            }
+
+            $this->fieldpostprocessorsScheduledForDeletion->push($fieldpostprocessor);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2524,14 +3121,26 @@ abstract class Templates implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collRFieldpostprocessorForfields) {
+                foreach ($this->collRFieldpostprocessorForfields as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collDatas) {
                 foreach ($this->collDatas as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collFieldpostprocessors) {
+                foreach ($this->collFieldpostprocessors as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collRFieldpostprocessorForfields = null;
         $this->collDatas = null;
+        $this->collFieldpostprocessors = null;
         $this->aTemplatenames = null;
     }
 

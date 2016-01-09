@@ -29,7 +29,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery orderByModdate($order = Criteria::ASC) Order by the _moddate column
  * @method     ChildContributionsQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
  * @method     ChildContributionsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
- * @method     ChildContributionsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
+ * @method     ChildContributionsQuery orderByForchapter($order = Criteria::ASC) Order by the _forchapter column
  * @method     ChildContributionsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildContributionsQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  *
@@ -42,7 +42,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery groupByModdate() Group by the _moddate column
  * @method     ChildContributionsQuery groupByUserSys() Group by the __user__ column
  * @method     ChildContributionsQuery groupByConfigSys() Group by the __config__ column
- * @method     ChildContributionsQuery groupBySplit() Group by the __split__ column
+ * @method     ChildContributionsQuery groupByForchapter() Group by the _forchapter column
  * @method     ChildContributionsQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildContributionsQuery groupBySort() Group by the __sort__ column
  *
@@ -108,7 +108,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions findOneByModdate(int $_moddate) Return the first ChildContributions filtered by the _moddate column
  * @method     ChildContributions findOneByUserSys(string $__user__) Return the first ChildContributions filtered by the __user__ column
  * @method     ChildContributions findOneByConfigSys(string $__config__) Return the first ChildContributions filtered by the __config__ column
- * @method     ChildContributions findOneBySplit(int $__split__) Return the first ChildContributions filtered by the __split__ column
+ * @method     ChildContributions findOneByForchapter(int $_forchapter) Return the first ChildContributions filtered by the _forchapter column
  * @method     ChildContributions findOneByParentnode(int $__parentnode__) Return the first ChildContributions filtered by the __parentnode__ column
  * @method     ChildContributions findOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column *
 
@@ -124,7 +124,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions requireOneByModdate(int $_moddate) Return the first ChildContributions filtered by the _moddate column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByUserSys(string $__user__) Return the first ChildContributions filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByConfigSys(string $__config__) Return the first ChildContributions filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildContributions requireOneBySplit(int $__split__) Return the first ChildContributions filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByForchapter(int $_forchapter) Return the first ChildContributions filtered by the _forchapter column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByParentnode(int $__parentnode__) Return the first ChildContributions filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -138,7 +138,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions[]|ObjectCollection findByModdate(int $_moddate) Return ChildContributions objects filtered by the _moddate column
  * @method     ChildContributions[]|ObjectCollection findByUserSys(string $__user__) Return ChildContributions objects filtered by the __user__ column
  * @method     ChildContributions[]|ObjectCollection findByConfigSys(string $__config__) Return ChildContributions objects filtered by the __config__ column
- * @method     ChildContributions[]|ObjectCollection findBySplit(int $__split__) Return ChildContributions objects filtered by the __split__ column
+ * @method     ChildContributions[]|ObjectCollection findByForchapter(int $_forchapter) Return ChildContributions objects filtered by the _forchapter column
  * @method     ChildContributions[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildContributions objects filtered by the __parentnode__ column
  * @method     ChildContributions[]|ObjectCollection findBySort(int $__sort__) Return ChildContributions objects filtered by the __sort__ column
  * @method     ChildContributions[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -233,7 +233,7 @@ abstract class ContributionsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _fortemplate, _forissue, _name, _status, _newdate, _moddate, __user__, __config__, __split__, __parentnode__, __sort__ FROM _contributions WHERE id = :p0';
+        $sql = 'SELECT id, _fortemplate, _forissue, _name, _status, _newdate, _moddate, __user__, __config__, _forchapter, __parentnode__, __sort__ FROM _contributions WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -649,18 +649,18 @@ abstract class ContributionsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the __split__ column
+     * Filter the query on the _forchapter column
      *
      * Example usage:
      * <code>
-     * $query->filterBySplit(1234); // WHERE __split__ = 1234
-     * $query->filterBySplit(array(12, 34)); // WHERE __split__ IN (12, 34)
-     * $query->filterBySplit(array('min' => 12)); // WHERE __split__ > 12
+     * $query->filterByForchapter(1234); // WHERE _forchapter = 1234
+     * $query->filterByForchapter(array(12, 34)); // WHERE _forchapter IN (12, 34)
+     * $query->filterByForchapter(array('min' => 12)); // WHERE _forchapter > 12
      * </code>
      *
      * @see       filterByFormats()
      *
-     * @param     mixed $split The value to use as filter.
+     * @param     mixed $forchapter The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -668,16 +668,16 @@ abstract class ContributionsQuery extends ModelCriteria
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
      */
-    public function filterBySplit($split = null, $comparison = null)
+    public function filterByForchapter($forchapter = null, $comparison = null)
     {
-        if (is_array($split)) {
+        if (is_array($forchapter)) {
             $useMinMax = false;
-            if (isset($split['min'])) {
-                $this->addUsingAlias(ContributionsTableMap::COL___SPLIT__, $split['min'], Criteria::GREATER_EQUAL);
+            if (isset($forchapter['min'])) {
+                $this->addUsingAlias(ContributionsTableMap::COL__FORCHAPTER, $forchapter['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($split['max'])) {
-                $this->addUsingAlias(ContributionsTableMap::COL___SPLIT__, $split['max'], Criteria::LESS_EQUAL);
+            if (isset($forchapter['max'])) {
+                $this->addUsingAlias(ContributionsTableMap::COL__FORCHAPTER, $forchapter['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -688,7 +688,7 @@ abstract class ContributionsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ContributionsTableMap::COL___SPLIT__, $split, $comparison);
+        return $this->addUsingAlias(ContributionsTableMap::COL__FORCHAPTER, $forchapter, $comparison);
     }
 
     /**
@@ -787,14 +787,14 @@ abstract class ContributionsQuery extends ModelCriteria
     {
         if ($formats instanceof \Formats) {
             return $this
-                ->addUsingAlias(ContributionsTableMap::COL___SPLIT__, $formats->getId(), $comparison);
+                ->addUsingAlias(ContributionsTableMap::COL__FORCHAPTER, $formats->getId(), $comparison);
         } elseif ($formats instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ContributionsTableMap::COL___SPLIT__, $formats->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ContributionsTableMap::COL__FORCHAPTER, $formats->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByFormats() only accepts arguments of type \Formats or Collection');
         }

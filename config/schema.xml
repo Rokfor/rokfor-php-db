@@ -22,7 +22,7 @@
     <foreign-key foreignTable="_fieldpostprocessor" name="r_post_a" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="_postprocessorid" foreign="id"/>
     </foreign-key>
-    <foreign-key foreignTable="_templatenames" name="r_post_b" onDelete="CASCADE" onUpdate="CASCADE">
+    <foreign-key foreignTable="_templates" name="r_post_b" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="_templateid" foreign="id"/>
     </foreign-key>
     <index name="r_post_b">
@@ -245,11 +245,11 @@
     <column name="_moddate" phpName="Moddate" type="INTEGER" size="40"/>
     <column name="__user__" phpName="UserSys" type="LONGVARCHAR"/>
     <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
-    <column name="__split__" phpName="Split" type="INTEGER" size="32"/>
+    <column name="_forchapter" phpName="Forchapter" type="INTEGER" size="32"/>
     <column name="__parentnode__" phpName="Parentnode" type="INTEGER" size="32"/>
     <column name="__sort__" phpName="Sort" type="INTEGER" size="32"/>
     <foreign-key foreignTable="_formats" name="c_chapter_fk" onDelete="CASCADE" onUpdate="CASCADE">
-      <reference local="__split__" foreign="id"/>
+      <reference local="_forchapter" foreign="id"/>
     </foreign-key>
     <foreign-key foreignTable="_issues" name="c_issue_fk" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="_forissue" foreign="id"/>

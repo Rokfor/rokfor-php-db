@@ -1,5 +1,4 @@
 composer.phar
-config/propel.yaml
 config/generated-conf
 vendor/
 .idea/

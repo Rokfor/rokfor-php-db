@@ -5,8 +5,8 @@ namespace Base;
 use \Fieldpostprocessor as ChildFieldpostprocessor;
 use \FieldpostprocessorQuery as ChildFieldpostprocessorQuery;
 use \RFieldpostprocessorForfieldQuery as ChildRFieldpostprocessorForfieldQuery;
-use \Templatenames as ChildTemplatenames;
-use \TemplatenamesQuery as ChildTemplatenamesQuery;
+use \Templates as ChildTemplates;
+use \TemplatesQuery as ChildTemplatesQuery;
 use \Exception;
 use \PDO;
 use Map\RFieldpostprocessorForfieldTableMap;
@@ -83,9 +83,9 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
     protected $aFieldpostprocessor;
 
     /**
-     * @var        ChildTemplatenames
+     * @var        ChildTemplates
      */
-    protected $aTemplatenames;
+    protected $aTemplates;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -381,8 +381,8 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
             $this->modifiedColumns[RFieldpostprocessorForfieldTableMap::COL__TEMPLATEID] = true;
         }
 
-        if ($this->aTemplatenames !== null && $this->aTemplatenames->getId() !== $v) {
-            $this->aTemplatenames = null;
+        if ($this->aTemplates !== null && $this->aTemplates->getId() !== $v) {
+            $this->aTemplates = null;
         }
 
         return $this;
@@ -462,8 +462,8 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
         if ($this->aFieldpostprocessor !== null && $this->_postprocessorid !== $this->aFieldpostprocessor->getId()) {
             $this->aFieldpostprocessor = null;
         }
-        if ($this->aTemplatenames !== null && $this->_templateid !== $this->aTemplatenames->getId()) {
-            $this->aTemplatenames = null;
+        if ($this->aTemplates !== null && $this->_templateid !== $this->aTemplates->getId()) {
+            $this->aTemplates = null;
         }
     } // ensureConsistency
 
@@ -505,7 +505,7 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aFieldpostprocessor = null;
-            $this->aTemplatenames = null;
+            $this->aTemplates = null;
         } // if (deep)
     }
 
@@ -617,11 +617,11 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
                 $this->setFieldpostprocessor($this->aFieldpostprocessor);
             }
 
-            if ($this->aTemplatenames !== null) {
-                if ($this->aTemplatenames->isModified() || $this->aTemplatenames->isNew()) {
-                    $affectedRows += $this->aTemplatenames->save($con);
+            if ($this->aTemplates !== null) {
+                if ($this->aTemplates->isModified() || $this->aTemplates->isNew()) {
+                    $affectedRows += $this->aTemplates->save($con);
                 }
-                $this->setTemplatenames($this->aTemplatenames);
+                $this->setTemplates($this->aTemplates);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -795,20 +795,20 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
 
                 $result[$key] = $this->aFieldpostprocessor->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aTemplatenames) {
+            if (null !== $this->aTemplates) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'templatenames';
+                        $key = 'templates';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = '_templatenames';
+                        $key = '_templates';
                         break;
                     default:
-                        $key = 'Templatenames';
+                        $key = 'Templates';
                 }
 
-                $result[$key] = $this->aTemplatenames->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aTemplates->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -973,8 +973,8 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
             $validPrimaryKeyFKs = false;
         }
 
-        //relation r_post_b to table _templatenames
-        if ($this->aTemplatenames && $hash = spl_object_hash($this->aTemplatenames)) {
+        //relation r_post_b to table _templates
+        if ($this->aTemplates && $hash = spl_object_hash($this->aTemplates)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1118,13 +1118,13 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildTemplatenames object.
+     * Declares an association between this object and a ChildTemplates object.
      *
-     * @param  ChildTemplatenames $v
+     * @param  ChildTemplates $v
      * @return $this|\RFieldpostprocessorForfield The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setTemplatenames(ChildTemplatenames $v = null)
+    public function setTemplates(ChildTemplates $v = null)
     {
         if ($v === null) {
             $this->setTemplateid(NULL);
@@ -1132,10 +1132,10 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
             $this->setTemplateid($v->getId());
         }
 
-        $this->aTemplatenames = $v;
+        $this->aTemplates = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildTemplatenames object, it will not be re-added.
+        // If this object has already been added to the ChildTemplates object, it will not be re-added.
         if ($v !== null) {
             $v->addRFieldpostprocessorForfield($this);
         }
@@ -1146,26 +1146,26 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildTemplatenames object
+     * Get the associated ChildTemplates object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildTemplatenames The associated ChildTemplatenames object.
+     * @return ChildTemplates The associated ChildTemplates object.
      * @throws PropelException
      */
-    public function getTemplatenames(ConnectionInterface $con = null)
+    public function getTemplates(ConnectionInterface $con = null)
     {
-        if ($this->aTemplatenames === null && ($this->_templateid !== null)) {
-            $this->aTemplatenames = ChildTemplatenamesQuery::create()->findPk($this->_templateid, $con);
+        if ($this->aTemplates === null && ($this->_templateid !== null)) {
+            $this->aTemplates = ChildTemplatesQuery::create()->findPk($this->_templateid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aTemplatenames->addRFieldpostprocessorForfields($this);
+                $this->aTemplates->addRFieldpostprocessorForfields($this);
              */
         }
 
-        return $this->aTemplatenames;
+        return $this->aTemplates;
     }
 
     /**
@@ -1178,8 +1178,8 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
         if (null !== $this->aFieldpostprocessor) {
             $this->aFieldpostprocessor->removeRFieldpostprocessorForfield($this);
         }
-        if (null !== $this->aTemplatenames) {
-            $this->aTemplatenames->removeRFieldpostprocessorForfield($this);
+        if (null !== $this->aTemplates) {
+            $this->aTemplates->removeRFieldpostprocessorForfield($this);
         }
         $this->_postprocessorid = null;
         $this->_templateid = null;
@@ -1204,7 +1204,7 @@ abstract class RFieldpostprocessorForfield implements ActiveRecordInterface
         } // if ($deep)
 
         $this->aFieldpostprocessor = null;
-        $this->aTemplatenames = null;
+        $this->aTemplates = null;
     }
 
     /**

@@ -737,7 +737,7 @@ abstract class FormatsQuery extends ModelCriteria
     {
         if ($contributions instanceof \Contributions) {
             return $this
-                ->addUsingAlias(FormatsTableMap::COL_ID, $contributions->getSplit(), $comparison);
+                ->addUsingAlias(FormatsTableMap::COL_ID, $contributions->getForchapter(), $comparison);
         } elseif ($contributions instanceof ObjectCollection) {
             return $this
                 ->useContributionsQuery()

@@ -133,7 +133,7 @@ class RFieldpostprocessorForfieldTableMap extends TableMap
         $this->setIsCrossRef(true);
         // columns
         $this->addForeignPrimaryKey('_postprocessorid', 'Postprocessorid', 'INTEGER' , '_fieldpostprocessor', 'id', true, null, null);
-        $this->addForeignPrimaryKey('_templateid', 'Templateid', 'INTEGER' , '_templatenames', 'id', true, null, null);
+        $this->addForeignPrimaryKey('_templateid', 'Templateid', 'INTEGER' , '_templates', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -148,7 +148,7 @@ class RFieldpostprocessorForfieldTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
-        $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Templates', '\\Templates', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_templateid',

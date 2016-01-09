@@ -44,17 +44,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRFieldpostprocessorForfieldQuery rightJoinWithFieldpostprocessor() Adds a RIGHT JOIN clause and with to the query using the Fieldpostprocessor relation
  * @method     ChildRFieldpostprocessorForfieldQuery innerJoinWithFieldpostprocessor() Adds a INNER JOIN clause and with to the query using the Fieldpostprocessor relation
  *
- * @method     ChildRFieldpostprocessorForfieldQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
- * @method     ChildRFieldpostprocessorForfieldQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
- * @method     ChildRFieldpostprocessorForfieldQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
+ * @method     ChildRFieldpostprocessorForfieldQuery leftJoinTemplates($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templates relation
+ * @method     ChildRFieldpostprocessorForfieldQuery rightJoinTemplates($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templates relation
+ * @method     ChildRFieldpostprocessorForfieldQuery innerJoinTemplates($relationAlias = null) Adds a INNER JOIN clause to the query using the Templates relation
  *
- * @method     ChildRFieldpostprocessorForfieldQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
+ * @method     ChildRFieldpostprocessorForfieldQuery joinWithTemplates($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templates relation
  *
- * @method     ChildRFieldpostprocessorForfieldQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildRFieldpostprocessorForfieldQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildRFieldpostprocessorForfieldQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildRFieldpostprocessorForfieldQuery leftJoinWithTemplates() Adds a LEFT JOIN clause and with to the query using the Templates relation
+ * @method     ChildRFieldpostprocessorForfieldQuery rightJoinWithTemplates() Adds a RIGHT JOIN clause and with to the query using the Templates relation
+ * @method     ChildRFieldpostprocessorForfieldQuery innerJoinWithTemplates() Adds a INNER JOIN clause and with to the query using the Templates relation
  *
- * @method     \FieldpostprocessorQuery|\TemplatenamesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \FieldpostprocessorQuery|\TemplatesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildRFieldpostprocessorForfield findOne(ConnectionInterface $con = null) Return the first ChildRFieldpostprocessorForfield matching the query
  * @method     ChildRFieldpostprocessorForfield findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRFieldpostprocessorForfield matching the query, or a new ChildRFieldpostprocessorForfield object populated from the query conditions when no match is found
@@ -318,7 +318,7 @@ abstract class RFieldpostprocessorForfieldQuery extends ModelCriteria
      * $query->filterByTemplateid(array('min' => 12)); // WHERE _templateid > 12
      * </code>
      *
-     * @see       filterByTemplatenames()
+     * @see       filterByTemplates()
      *
      * @param     mixed $templateid The value to use as filter.
      *              Use scalar values for equality.
@@ -429,44 +429,44 @@ abstract class RFieldpostprocessorForfieldQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Templatenames object
+     * Filter the query by a related \Templates object
      *
-     * @param \Templatenames|ObjectCollection $templatenames The related object(s) to use as filter
+     * @param \Templates|ObjectCollection $templates The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildRFieldpostprocessorForfieldQuery The current query, for fluid interface
      */
-    public function filterByTemplatenames($templatenames, $comparison = null)
+    public function filterByTemplates($templates, $comparison = null)
     {
-        if ($templatenames instanceof \Templatenames) {
+        if ($templates instanceof \Templates) {
             return $this
-                ->addUsingAlias(RFieldpostprocessorForfieldTableMap::COL__TEMPLATEID, $templatenames->getId(), $comparison);
-        } elseif ($templatenames instanceof ObjectCollection) {
+                ->addUsingAlias(RFieldpostprocessorForfieldTableMap::COL__TEMPLATEID, $templates->getId(), $comparison);
+        } elseif ($templates instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(RFieldpostprocessorForfieldTableMap::COL__TEMPLATEID, $templatenames->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(RFieldpostprocessorForfieldTableMap::COL__TEMPLATEID, $templates->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByTemplatenames() only accepts arguments of type \Templatenames or Collection');
+            throw new PropelException('filterByTemplates() only accepts arguments of type \Templates or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Templatenames relation
+     * Adds a JOIN clause to the query using the Templates relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRFieldpostprocessorForfieldQuery The current query, for fluid interface
      */
-    public function joinTemplatenames($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinTemplates($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Templatenames');
+        $relationMap = $tableMap->getRelation('Templates');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -481,14 +481,14 @@ abstract class RFieldpostprocessorForfieldQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Templatenames');
+            $this->addJoinObject($join, 'Templates');
         }
 
         return $this;
     }
 
     /**
-     * Use the Templatenames relation Templatenames object
+     * Use the Templates relation Templates object
      *
      * @see useQuery()
      *
@@ -496,13 +496,13 @@ abstract class RFieldpostprocessorForfieldQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TemplatenamesQuery A secondary query class using the current class as primary query
+     * @return \TemplatesQuery A secondary query class using the current class as primary query
      */
-    public function useTemplatenamesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useTemplatesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinTemplatenames($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Templatenames', '\TemplatenamesQuery');
+            ->joinTemplates($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Templates', '\TemplatesQuery');
     }
 
     /**

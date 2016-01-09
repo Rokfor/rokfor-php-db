@@ -133,11 +133,11 @@ abstract class Contributions implements ActiveRecordInterface
     protected $__config__;
 
     /**
-     * The value for the __split__ field.
+     * The value for the _forchapter field.
      *
      * @var        int
      */
-    protected $__split__;
+    protected $_forchapter;
 
     /**
      * The value for the __parentnode__ field.
@@ -504,13 +504,13 @@ abstract class Contributions implements ActiveRecordInterface
     }
 
     /**
-     * Get the [__split__] column value.
+     * Get the [_forchapter] column value.
      *
      * @return int
      */
-    public function getSplit()
+    public function getForchapter()
     {
-        return $this->__split__;
+        return $this->_forchapter;
     }
 
     /**
@@ -722,20 +722,20 @@ abstract class Contributions implements ActiveRecordInterface
     } // setConfigSys()
 
     /**
-     * Set the value of [__split__] column.
+     * Set the value of [_forchapter] column.
      *
      * @param int $v new value
      * @return $this|\Contributions The current object (for fluent API support)
      */
-    public function setSplit($v)
+    public function setForchapter($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->__split__ !== $v) {
-            $this->__split__ = $v;
-            $this->modifiedColumns[ContributionsTableMap::COL___SPLIT__] = true;
+        if ($this->_forchapter !== $v) {
+            $this->_forchapter = $v;
+            $this->modifiedColumns[ContributionsTableMap::COL__FORCHAPTER] = true;
         }
 
         if ($this->aFormats !== null && $this->aFormats->getId() !== $v) {
@@ -743,7 +743,7 @@ abstract class Contributions implements ActiveRecordInterface
         }
 
         return $this;
-    } // setSplit()
+    } // setForchapter()
 
     /**
      * Set the value of [__parentnode__] column.
@@ -848,8 +848,8 @@ abstract class Contributions implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ContributionsTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ContributionsTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__split__ = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ContributionsTableMap::translateFieldName('Forchapter', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_forchapter = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : ContributionsTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
@@ -892,7 +892,7 @@ abstract class Contributions implements ActiveRecordInterface
         if ($this->aIssues !== null && $this->_forissue !== $this->aIssues->getId()) {
             $this->aIssues = null;
         }
-        if ($this->aFormats !== null && $this->__split__ !== $this->aFormats->getId()) {
+        if ($this->aFormats !== null && $this->_forchapter !== $this->aFormats->getId()) {
             $this->aFormats = null;
         }
     } // ensureConsistency
@@ -1145,8 +1145,8 @@ abstract class Contributions implements ActiveRecordInterface
         if ($this->isColumnModified(ContributionsTableMap::COL___CONFIG__)) {
             $modifiedColumns[':p' . $index++]  = '__config__';
         }
-        if ($this->isColumnModified(ContributionsTableMap::COL___SPLIT__)) {
-            $modifiedColumns[':p' . $index++]  = '__split__';
+        if ($this->isColumnModified(ContributionsTableMap::COL__FORCHAPTER)) {
+            $modifiedColumns[':p' . $index++]  = '_forchapter';
         }
         if ($this->isColumnModified(ContributionsTableMap::COL___PARENTNODE__)) {
             $modifiedColumns[':p' . $index++]  = '__parentnode__';
@@ -1192,8 +1192,8 @@ abstract class Contributions implements ActiveRecordInterface
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
                         break;
-                    case '__split__':
-                        $stmt->bindValue($identifier, $this->__split__, PDO::PARAM_INT);
+                    case '_forchapter':
+                        $stmt->bindValue($identifier, $this->_forchapter, PDO::PARAM_INT);
                         break;
                     case '__parentnode__':
                         $stmt->bindValue($identifier, $this->__parentnode__, PDO::PARAM_INT);
@@ -1291,7 +1291,7 @@ abstract class Contributions implements ActiveRecordInterface
                 return $this->getConfigSys();
                 break;
             case 9:
-                return $this->getSplit();
+                return $this->getForchapter();
                 break;
             case 10:
                 return $this->getParentnode();
@@ -1338,7 +1338,7 @@ abstract class Contributions implements ActiveRecordInterface
             $keys[6] => $this->getModdate(),
             $keys[7] => $this->getUserSys(),
             $keys[8] => $this->getConfigSys(),
-            $keys[9] => $this->getSplit(),
+            $keys[9] => $this->getForchapter(),
             $keys[10] => $this->getParentnode(),
             $keys[11] => $this->getSort(),
         );
@@ -1470,7 +1470,7 @@ abstract class Contributions implements ActiveRecordInterface
                 $this->setConfigSys($value);
                 break;
             case 9:
-                $this->setSplit($value);
+                $this->setForchapter($value);
                 break;
             case 10:
                 $this->setParentnode($value);
@@ -1532,7 +1532,7 @@ abstract class Contributions implements ActiveRecordInterface
             $this->setConfigSys($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setSplit($arr[$keys[9]]);
+            $this->setForchapter($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
             $this->setParentnode($arr[$keys[10]]);
@@ -1608,8 +1608,8 @@ abstract class Contributions implements ActiveRecordInterface
         if ($this->isColumnModified(ContributionsTableMap::COL___CONFIG__)) {
             $criteria->add(ContributionsTableMap::COL___CONFIG__, $this->__config__);
         }
-        if ($this->isColumnModified(ContributionsTableMap::COL___SPLIT__)) {
-            $criteria->add(ContributionsTableMap::COL___SPLIT__, $this->__split__);
+        if ($this->isColumnModified(ContributionsTableMap::COL__FORCHAPTER)) {
+            $criteria->add(ContributionsTableMap::COL__FORCHAPTER, $this->_forchapter);
         }
         if ($this->isColumnModified(ContributionsTableMap::COL___PARENTNODE__)) {
             $criteria->add(ContributionsTableMap::COL___PARENTNODE__, $this->__parentnode__);
@@ -1711,7 +1711,7 @@ abstract class Contributions implements ActiveRecordInterface
         $copyObj->setModdate($this->getModdate());
         $copyObj->setUserSys($this->getUserSys());
         $copyObj->setConfigSys($this->getConfigSys());
-        $copyObj->setSplit($this->getSplit());
+        $copyObj->setForchapter($this->getForchapter());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());
 
@@ -1766,9 +1766,9 @@ abstract class Contributions implements ActiveRecordInterface
     public function setFormats(ChildFormats $v = null)
     {
         if ($v === null) {
-            $this->setSplit(NULL);
+            $this->setForchapter(NULL);
         } else {
-            $this->setSplit($v->getId());
+            $this->setForchapter($v->getId());
         }
 
         $this->aFormats = $v;
@@ -1793,8 +1793,8 @@ abstract class Contributions implements ActiveRecordInterface
      */
     public function getFormats(ConnectionInterface $con = null)
     {
-        if ($this->aFormats === null && ($this->__split__ !== null)) {
-            $this->aFormats = ChildFormatsQuery::create()->findPk($this->__split__, $con);
+        if ($this->aFormats === null && ($this->_forchapter !== null)) {
+            $this->aFormats = ChildFormatsQuery::create()->findPk($this->_forchapter, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
@@ -2197,7 +2197,7 @@ abstract class Contributions implements ActiveRecordInterface
         $this->_moddate = null;
         $this->__user__ = null;
         $this->__config__ = null;
-        $this->__split__ = null;
+        $this->_forchapter = null;
         $this->__parentnode__ = null;
         $this->__sort__ = null;
         $this->alreadyInSave = false;

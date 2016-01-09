@@ -66,6 +66,72 @@ class PropelMigration_1452074796
   		if (substr($_rawdata, -8)=='<;;;;;;>') $_rawdata = substr($_rawdata, 0, -8);
   		return (explode("<;;;;;;>", $_rawdata));
   	}
+    
+  	function _splitCloudData($data,$xmin=-100,$xmax=100,$ymin=-100,$ymax=100)
+  	{
+		
+  		/**
+  		 * Frontend: Size of Cloud X
+  		 **/
+  		if (!defined("FRNTEND_CLOUD_X")) define("FRNTEND_CLOUD_X", 338);
+  		/**
+  		 * Frontend: Size of Cloud Y
+  		 **/
+  		if (!defined("FRNTEND_CLOUD_Y")) define("FRNTEND_CLOUD_Y", 290);
+		
+  		$return  = array();		
+  		foreach ($data as $entry) {
+  			list($key,$x,$y) = $entry;
+  			//if (array_key_exists($key, $return))
+  			//{
+  			//	$count = 1;
+  			//	while ( array_key_exists($key."_#".$count, $return)) $count++;
+  			//	$key = $key."_#".$count;
+  			//}
+			
+  			// 3d over time
+  			if (stristr($y,'<>')&&stristr($x,'<>')) {
+  				$_return = array();
+  				if (stristr($x,'<>')) {
+  					$_subvals_x = $this->_splitClean('<>', $x);
+  					foreach ($_subvals_x as $_subval_x) {
+  						list($_time,$_svx) = $this->_splitClean('_', $_subval_x);
+  						$_return[$_time][0]= (($xmax - $xmin)/FRNTEND_CLOUD_X*$_svx)+$xmin;
+  					}
+  				}
+
+  				if (stristr($y,'<>')) {
+  					$_subvals_y = $this->_splitClean('<>', $y);				
+  					foreach ($_subvals_y as $_subval_y) {
+  						list($_time,$_svy) = $this->_splitClean('_', $_subval_y);
+  						$_return[$_time][1]= (($ymax - $ymin)/FRNTEND_CLOUD_Y*$_svy)+$ymin;
+  					}
+  				}
+  		 		$return[$key] = $_return;				
+  			}
+
+  			// No 3d
+  			else {
+  		 		$return[$key] = array(array((($xmax - $xmin)/FRNTEND_CLOUD_X*$x)+$xmin,(($ymax - $ymin)/FRNTEND_CLOUD_Y*$y)+$ymin));
+  			}
+  		}
+  		return $return;
+  	}
+    
+  	/**
+  	 * _splitClean
+  	 * like explode, but cleans the final array from empty results
+  	 *
+  	 * @return array
+  	 * @author Urs Hofer
+  	 **/
+  	function _splitClean($_pattern,$_string)
+  	{
+  		$ret = array();
+  		$expl = explode($_pattern, $_string);
+  		foreach ($expl as $val) if ($val<>"") $ret[] = $val;
+  		return $ret;
+  	}    
 
     public function preUp($manager)
     {
@@ -181,8 +247,8 @@ class PropelMigration_1452074796
               if ($key) {
                 switch ($_field) {
                   case '_forfield':
-                    $p = TemplatenamesQuery::create()->findPk($key);                
-                    if ($p) $proc->addTemplatenames($p);
+                    $p = TemplatesQuery::create()->findPk($key);                
+                    if ($p) $proc->addTemplates($p);
                   break;
                 }
               }
@@ -240,7 +306,21 @@ class PropelMigration_1452074796
     				case 'Tabelle':
     					$_parsed_text = $this->_splitTableData($result['_datatext']);
               $_is_json = true;              
-    					break;				
+    					break;	
+    				case 'TypologyCloud':
+    					$_parsed_text = $this->_splitCloudData($this->_splitTableData($result['_datatext']));
+              $_is_json = true;              
+    					break; 
+            case 'MetaMatrix':
+              $_parsed_text =	json_decode($_parsed_text);
+              $_is_json = true;
+              break;
+            case 'TargetMatrix':  
+            case 'TimeMatrix':
+              $_parsed_text =	$this->_splitTextListData($result['_datatext']);  
+              $_parsed_text[1] =	json_decode($_parsed_text[1]);
+              $_is_json = true;              
+              break;
     				case 'Zahl':
     				case 'TypologySlider':
     					$_parsed_text = $result['_datainteger'];
@@ -315,13 +395,11 @@ ALTER TABLE `_contributions` CHANGE `__split__` `__split__` INT( 32 ) NULL DEFAU
 SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE `_contributions`
-
-  CHANGE `__split__` `__split__` INTEGER(32);
-
-CREATE INDEX `_forchapter_key` ON `_contributions` (`__split__`);
+  CHANGE `__split__` `_forchapter` INTEGER(32);
+  CREATE INDEX `_forchapter_key` ON `_contributions` (`_forchapter`);
 
 ALTER TABLE `_contributions` ADD CONSTRAINT `c_chapter_fk`
-    FOREIGN KEY (`__split__`)
+    FOREIGN KEY (`_forchapter`)
     REFERENCES `_formats` (`id`)
     ON UPDATE CASCADE
     ON DELETE CASCADE;
@@ -431,7 +509,7 @@ CREATE TABLE `R_fieldpostprocessor_forfield`
         ON DELETE CASCADE,
     CONSTRAINT `r_post_b`
         FOREIGN KEY (`_templateid`)
-        REFERENCES `_templatenames` (`id`)
+        REFERENCES `_templates` (`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;

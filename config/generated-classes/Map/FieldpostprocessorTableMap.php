@@ -183,7 +183,7 @@ class FieldpostprocessorTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RFieldpostprocessorForfields', false);
-        $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatenamess');
+        $this->addRelation('Templates', '\\Templates', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatess');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _fieldpostprocessor     * by a foreign key with ON DELETE CASCADE

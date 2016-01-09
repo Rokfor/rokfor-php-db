@@ -43,6 +43,10 @@ class PropelMigration_1452077180
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE `_batch`
+
+  DROP `_forbook`;
+
 ALTER TABLE `_fieldpostprocessor`
 
   DROP `_forfield`;

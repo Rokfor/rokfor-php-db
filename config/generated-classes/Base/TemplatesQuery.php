@@ -80,6 +80,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
  * @method     ChildTemplatesQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
  *
+ * @method     ChildTemplatesQuery leftJoinRFieldpostprocessorForfield($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildTemplatesQuery rightJoinRFieldpostprocessorForfield($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildTemplatesQuery innerJoinRFieldpostprocessorForfield($relationAlias = null) Adds a INNER JOIN clause to the query using the RFieldpostprocessorForfield relation
+ *
+ * @method     ChildTemplatesQuery joinWithRFieldpostprocessorForfield($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFieldpostprocessorForfield relation
+ *
+ * @method     ChildTemplatesQuery leftJoinWithRFieldpostprocessorForfield() Adds a LEFT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildTemplatesQuery rightJoinWithRFieldpostprocessorForfield() Adds a RIGHT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildTemplatesQuery innerJoinWithRFieldpostprocessorForfield() Adds a INNER JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ *
  * @method     ChildTemplatesQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
@@ -90,7 +100,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
  * @method     ChildTemplatesQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
  *
- * @method     \TemplatenamesQuery|\DataQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildTemplates findOne(ConnectionInterface $con = null) Return the first ChildTemplates matching the query
  * @method     ChildTemplates findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTemplates matching the query, or a new ChildTemplates object populated from the query conditions when no match is found
@@ -1087,6 +1097,79 @@ abstract class TemplatesQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RFieldpostprocessorForfield object
+     *
+     * @param \RFieldpostprocessorForfield|ObjectCollection $rFieldpostprocessorForfield the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTemplatesQuery The current query, for fluid interface
+     */
+    public function filterByRFieldpostprocessorForfield($rFieldpostprocessorForfield, $comparison = null)
+    {
+        if ($rFieldpostprocessorForfield instanceof \RFieldpostprocessorForfield) {
+            return $this
+                ->addUsingAlias(TemplatesTableMap::COL_ID, $rFieldpostprocessorForfield->getTemplateid(), $comparison);
+        } elseif ($rFieldpostprocessorForfield instanceof ObjectCollection) {
+            return $this
+                ->useRFieldpostprocessorForfieldQuery()
+                ->filterByPrimaryKeys($rFieldpostprocessorForfield->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRFieldpostprocessorForfield() only accepts arguments of type \RFieldpostprocessorForfield or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RFieldpostprocessorForfield relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTemplatesQuery The current query, for fluid interface
+     */
+    public function joinRFieldpostprocessorForfield($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RFieldpostprocessorForfield');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RFieldpostprocessorForfield');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RFieldpostprocessorForfield relation RFieldpostprocessorForfield object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RFieldpostprocessorForfieldQuery A secondary query class using the current class as primary query
+     */
+    public function useRFieldpostprocessorForfieldQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRFieldpostprocessorForfield($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RFieldpostprocessorForfield', '\RFieldpostprocessorForfieldQuery');
+    }
+
+    /**
      * Filter the query by a related \Data object
      *
      * @param \Data|ObjectCollection $data the related object to use as filter
@@ -1157,6 +1240,23 @@ abstract class TemplatesQuery extends ModelCriteria
         return $this
             ->joinData($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Data', '\DataQuery');
+    }
+
+    /**
+     * Filter the query by a related Fieldpostprocessor object
+     * using the R_fieldpostprocessor_forfield table as cross reference
+     *
+     * @param Fieldpostprocessor $fieldpostprocessor the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTemplatesQuery The current query, for fluid interface
+     */
+    public function filterByFieldpostprocessor($fieldpostprocessor, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRFieldpostprocessorForfieldQuery()
+            ->filterByFieldpostprocessor($fieldpostprocessor, $comparison)
+            ->endUse();
     }
 
     /**

@@ -5,8 +5,13 @@ namespace Rokfor;
 
 
 /**
-* Description
-*/
+ * Rokfor DB
+ * 
+ *
+ * @package Rokfor.DB
+ * @author Urs Hofer
+ */
+
 class DB
 {
   
@@ -46,6 +51,10 @@ class DB
     
   }
   
+  function issuesQuery() {
+    return IssuesQuery::create();
+  }
+  
   function getStructure() {
     
   }
@@ -54,6 +63,6 @@ class DB
     return BooksQuery::create()->find();
   }
   
-}
+} // END class 
 
 ?>

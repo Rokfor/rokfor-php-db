@@ -117,9 +117,9 @@ class ContributionsTableMap extends TableMap
     const COL___CONFIG__ = '_contributions.__config__';
 
     /**
-     * the column name for the __split__ field
+     * the column name for the _forchapter field
      */
-    const COL___SPLIT__ = '_contributions.__split__';
+    const COL__FORCHAPTER = '_contributions._forchapter';
 
     /**
      * the column name for the __parentnode__ field
@@ -143,10 +143,10 @@ class ContributionsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Forissue', 'Name', 'Status', 'Newdate', 'Moddate', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'forissue', 'name', 'status', 'newdate', 'moddate', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID, ContributionsTableMap::COL__FORTEMPLATE, ContributionsTableMap::COL__FORISSUE, ContributionsTableMap::COL__NAME, ContributionsTableMap::COL__STATUS, ContributionsTableMap::COL__NEWDATE, ContributionsTableMap::COL__MODDATE, ContributionsTableMap::COL___USER__, ContributionsTableMap::COL___CONFIG__, ContributionsTableMap::COL___SPLIT__, ContributionsTableMap::COL___PARENTNODE__, ContributionsTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_forissue', '_name', '_status', '_newdate', '_moddate', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Forissue', 'Name', 'Status', 'Newdate', 'Moddate', 'UserSys', 'ConfigSys', 'Forchapter', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'forissue', 'name', 'status', 'newdate', 'moddate', 'userSys', 'configSys', 'forchapter', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID, ContributionsTableMap::COL__FORTEMPLATE, ContributionsTableMap::COL__FORISSUE, ContributionsTableMap::COL__NAME, ContributionsTableMap::COL__STATUS, ContributionsTableMap::COL__NEWDATE, ContributionsTableMap::COL__MODDATE, ContributionsTableMap::COL___USER__, ContributionsTableMap::COL___CONFIG__, ContributionsTableMap::COL__FORCHAPTER, ContributionsTableMap::COL___PARENTNODE__, ContributionsTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_forissue', '_name', '_status', '_newdate', '_moddate', '__user__', '__config__', '_forchapter', '__parentnode__', '__sort__', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
@@ -157,10 +157,10 @@ class ContributionsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Forissue' => 2, 'Name' => 3, 'Status' => 4, 'Newdate' => 5, 'Moddate' => 6, 'UserSys' => 7, 'ConfigSys' => 8, 'Split' => 9, 'Parentnode' => 10, 'Sort' => 11, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'forissue' => 2, 'name' => 3, 'status' => 4, 'newdate' => 5, 'moddate' => 6, 'userSys' => 7, 'configSys' => 8, 'split' => 9, 'parentnode' => 10, 'sort' => 11, ),
-        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID => 0, ContributionsTableMap::COL__FORTEMPLATE => 1, ContributionsTableMap::COL__FORISSUE => 2, ContributionsTableMap::COL__NAME => 3, ContributionsTableMap::COL__STATUS => 4, ContributionsTableMap::COL__NEWDATE => 5, ContributionsTableMap::COL__MODDATE => 6, ContributionsTableMap::COL___USER__ => 7, ContributionsTableMap::COL___CONFIG__ => 8, ContributionsTableMap::COL___SPLIT__ => 9, ContributionsTableMap::COL___PARENTNODE__ => 10, ContributionsTableMap::COL___SORT__ => 11, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_forissue' => 2, '_name' => 3, '_status' => 4, '_newdate' => 5, '_moddate' => 6, '__user__' => 7, '__config__' => 8, '__split__' => 9, '__parentnode__' => 10, '__sort__' => 11, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Forissue' => 2, 'Name' => 3, 'Status' => 4, 'Newdate' => 5, 'Moddate' => 6, 'UserSys' => 7, 'ConfigSys' => 8, 'Forchapter' => 9, 'Parentnode' => 10, 'Sort' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'forissue' => 2, 'name' => 3, 'status' => 4, 'newdate' => 5, 'moddate' => 6, 'userSys' => 7, 'configSys' => 8, 'forchapter' => 9, 'parentnode' => 10, 'sort' => 11, ),
+        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID => 0, ContributionsTableMap::COL__FORTEMPLATE => 1, ContributionsTableMap::COL__FORISSUE => 2, ContributionsTableMap::COL__NAME => 3, ContributionsTableMap::COL__STATUS => 4, ContributionsTableMap::COL__NEWDATE => 5, ContributionsTableMap::COL__MODDATE => 6, ContributionsTableMap::COL___USER__ => 7, ContributionsTableMap::COL___CONFIG__ => 8, ContributionsTableMap::COL__FORCHAPTER => 9, ContributionsTableMap::COL___PARENTNODE__ => 10, ContributionsTableMap::COL___SORT__ => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_forissue' => 2, '_name' => 3, '_status' => 4, '_newdate' => 5, '_moddate' => 6, '__user__' => 7, '__config__' => 8, '_forchapter' => 9, '__parentnode__' => 10, '__sort__' => 11, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
@@ -190,7 +190,7 @@ class ContributionsTableMap extends TableMap
         $this->addColumn('_moddate', 'Moddate', 'INTEGER', false, 40, null);
         $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
-        $this->addForeignKey('__split__', 'Split', 'INTEGER', '_formats', 'id', false, 32, null);
+        $this->addForeignKey('_forchapter', 'Forchapter', 'INTEGER', '_formats', 'id', false, 32, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
     } // initialize()
@@ -203,7 +203,7 @@ class ContributionsTableMap extends TableMap
         $this->addRelation('Formats', '\\Formats', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':__split__',
+    0 => ':_forchapter',
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
@@ -389,7 +389,7 @@ class ContributionsTableMap extends TableMap
             $criteria->addSelectColumn(ContributionsTableMap::COL__MODDATE);
             $criteria->addSelectColumn(ContributionsTableMap::COL___USER__);
             $criteria->addSelectColumn(ContributionsTableMap::COL___CONFIG__);
-            $criteria->addSelectColumn(ContributionsTableMap::COL___SPLIT__);
+            $criteria->addSelectColumn(ContributionsTableMap::COL__FORCHAPTER);
             $criteria->addSelectColumn(ContributionsTableMap::COL___PARENTNODE__);
             $criteria->addSelectColumn(ContributionsTableMap::COL___SORT__);
         } else {
@@ -402,7 +402,7 @@ class ContributionsTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._moddate');
             $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
-            $criteria->addSelectColumn($alias . '.__split__');
+            $criteria->addSelectColumn($alias . '._forchapter');
             $criteria->addSelectColumn($alias . '.__parentnode__');
             $criteria->addSelectColumn($alias . '.__sort__');
         }

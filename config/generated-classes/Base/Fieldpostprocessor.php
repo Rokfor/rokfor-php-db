@@ -6,8 +6,8 @@ use \Fieldpostprocessor as ChildFieldpostprocessor;
 use \FieldpostprocessorQuery as ChildFieldpostprocessorQuery;
 use \RFieldpostprocessorForfield as ChildRFieldpostprocessorForfield;
 use \RFieldpostprocessorForfieldQuery as ChildRFieldpostprocessorForfieldQuery;
-use \Templatenames as ChildTemplatenames;
-use \TemplatenamesQuery as ChildTemplatenamesQuery;
+use \Templates as ChildTemplates;
+use \TemplatesQuery as ChildTemplatesQuery;
 use \Exception;
 use \PDO;
 use Map\FieldpostprocessorTableMap;
@@ -128,14 +128,14 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     protected $collRFieldpostprocessorForfieldsPartial;
 
     /**
-     * @var        ObjectCollection|ChildTemplatenames[] Cross Collection to store aggregation of ChildTemplatenames objects.
+     * @var        ObjectCollection|ChildTemplates[] Cross Collection to store aggregation of ChildTemplates objects.
      */
-    protected $collTemplatenamess;
+    protected $collTemplatess;
 
     /**
      * @var bool
      */
-    protected $collTemplatenamessPartial;
+    protected $collTemplatessPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -147,9 +147,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTemplatenames[]
+     * @var ObjectCollection|ChildTemplates[]
      */
-    protected $templatenamessScheduledForDeletion = null;
+    protected $templatessScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -752,7 +752,7 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
             $this->collRFieldpostprocessorForfields = null;
 
-            $this->collTemplatenamess = null;
+            $this->collTemplatess = null;
         } // if (deep)
     }
 
@@ -863,10 +863,10 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->templatenamessScheduledForDeletion !== null) {
-                if (!$this->templatenamessScheduledForDeletion->isEmpty()) {
+            if ($this->templatessScheduledForDeletion !== null) {
+                if (!$this->templatessScheduledForDeletion->isEmpty()) {
                     $pks = array();
-                    foreach ($this->templatenamessScheduledForDeletion as $entry) {
+                    foreach ($this->templatessScheduledForDeletion as $entry) {
                         $entryPk = [];
 
                         $entryPk[0] = $this->getId();
@@ -878,15 +878,15 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
-                    $this->templatenamessScheduledForDeletion = null;
+                    $this->templatessScheduledForDeletion = null;
                 }
 
             }
 
-            if ($this->collTemplatenamess) {
-                foreach ($this->collTemplatenamess as $templatenames) {
-                    if (!$templatenames->isDeleted() && ($templatenames->isNew() || $templatenames->isModified())) {
-                        $templatenames->save($con);
+            if ($this->collTemplatess) {
+                foreach ($this->collTemplatess as $templates) {
+                    if (!$templates->isDeleted() && ($templates->isNew() || $templates->isModified())) {
+                        $templates->save($con);
                     }
                 }
             }
@@ -1706,57 +1706,57 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildRFieldpostprocessorForfield[] List of ChildRFieldpostprocessorForfield objects
      */
-    public function getRFieldpostprocessorForfieldsJoinTemplatenames(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getRFieldpostprocessorForfieldsJoinTemplates(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildRFieldpostprocessorForfieldQuery::create(null, $criteria);
-        $query->joinWith('Templatenames', $joinBehavior);
+        $query->joinWith('Templates', $joinBehavior);
 
         return $this->getRFieldpostprocessorForfields($query, $con);
     }
 
     /**
-     * Clears out the collTemplatenamess collection
+     * Clears out the collTemplatess collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addTemplatenamess()
+     * @see        addTemplatess()
      */
-    public function clearTemplatenamess()
+    public function clearTemplatess()
     {
-        $this->collTemplatenamess = null; // important to set this to NULL since that means it is uninitialized
+        $this->collTemplatess = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Initializes the collTemplatenamess crossRef collection.
+     * Initializes the collTemplatess crossRef collection.
      *
-     * By default this just sets the collTemplatenamess collection to an empty collection (like clearTemplatenamess());
+     * By default this just sets the collTemplatess collection to an empty collection (like clearTemplatess());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
      * @return void
      */
-    public function initTemplatenamess()
+    public function initTemplatess()
     {
-        $this->collTemplatenamess = new ObjectCollection();
-        $this->collTemplatenamessPartial = true;
+        $this->collTemplatess = new ObjectCollection();
+        $this->collTemplatessPartial = true;
 
-        $this->collTemplatenamess->setModel('\Templatenames');
+        $this->collTemplatess->setModel('\Templates');
     }
 
     /**
-     * Checks if the collTemplatenamess collection is loaded.
+     * Checks if the collTemplatess collection is loaded.
      *
      * @return bool
      */
-    public function isTemplatenamessLoaded()
+    public function isTemplatessLoaded()
     {
-        return null !== $this->collTemplatenamess;
+        return null !== $this->collTemplatess;
     }
 
     /**
-     * Gets a collection of ChildTemplatenames objects related by a many-to-many relationship
+     * Gets a collection of ChildTemplates objects related by a many-to-many relationship
      * to the current object by way of the R_fieldpostprocessor_forfield cross-reference table.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
@@ -1768,99 +1768,99 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return ObjectCollection|ChildTemplatenames[] List of ChildTemplatenames objects
+     * @return ObjectCollection|ChildTemplates[] List of ChildTemplates objects
      */
-    public function getTemplatenamess(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getTemplatess(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collTemplatenamessPartial && !$this->isNew();
-        if (null === $this->collTemplatenamess || null !== $criteria || $partial) {
+        $partial = $this->collTemplatessPartial && !$this->isNew();
+        if (null === $this->collTemplatess || null !== $criteria || $partial) {
             if ($this->isNew()) {
                 // return empty collection
-                if (null === $this->collTemplatenamess) {
-                    $this->initTemplatenamess();
+                if (null === $this->collTemplatess) {
+                    $this->initTemplatess();
                 }
             } else {
 
-                $query = ChildTemplatenamesQuery::create(null, $criteria)
+                $query = ChildTemplatesQuery::create(null, $criteria)
                     ->filterByFieldpostprocessor($this);
-                $collTemplatenamess = $query->find($con);
+                $collTemplatess = $query->find($con);
                 if (null !== $criteria) {
-                    return $collTemplatenamess;
+                    return $collTemplatess;
                 }
 
-                if ($partial && $this->collTemplatenamess) {
+                if ($partial && $this->collTemplatess) {
                     //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->collTemplatenamess as $obj) {
-                        if (!$collTemplatenamess->contains($obj)) {
-                            $collTemplatenamess[] = $obj;
+                    foreach ($this->collTemplatess as $obj) {
+                        if (!$collTemplatess->contains($obj)) {
+                            $collTemplatess[] = $obj;
                         }
                     }
                 }
 
-                $this->collTemplatenamess = $collTemplatenamess;
-                $this->collTemplatenamessPartial = false;
+                $this->collTemplatess = $collTemplatess;
+                $this->collTemplatessPartial = false;
             }
         }
 
-        return $this->collTemplatenamess;
+        return $this->collTemplatess;
     }
 
     /**
-     * Sets a collection of Templatenames objects related by a many-to-many relationship
+     * Sets a collection of Templates objects related by a many-to-many relationship
      * to the current object by way of the R_fieldpostprocessor_forfield cross-reference table.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection $templatenamess A Propel collection.
+     * @param  Collection $templatess A Propel collection.
      * @param  ConnectionInterface $con Optional connection object
      * @return $this|ChildFieldpostprocessor The current object (for fluent API support)
      */
-    public function setTemplatenamess(Collection $templatenamess, ConnectionInterface $con = null)
+    public function setTemplatess(Collection $templatess, ConnectionInterface $con = null)
     {
-        $this->clearTemplatenamess();
-        $currentTemplatenamess = $this->getTemplatenamess();
+        $this->clearTemplatess();
+        $currentTemplatess = $this->getTemplatess();
 
-        $templatenamessScheduledForDeletion = $currentTemplatenamess->diff($templatenamess);
+        $templatessScheduledForDeletion = $currentTemplatess->diff($templatess);
 
-        foreach ($templatenamessScheduledForDeletion as $toDelete) {
-            $this->removeTemplatenames($toDelete);
+        foreach ($templatessScheduledForDeletion as $toDelete) {
+            $this->removeTemplates($toDelete);
         }
 
-        foreach ($templatenamess as $templatenames) {
-            if (!$currentTemplatenamess->contains($templatenames)) {
-                $this->doAddTemplatenames($templatenames);
+        foreach ($templatess as $templates) {
+            if (!$currentTemplatess->contains($templates)) {
+                $this->doAddTemplates($templates);
             }
         }
 
-        $this->collTemplatenamessPartial = false;
-        $this->collTemplatenamess = $templatenamess;
+        $this->collTemplatessPartial = false;
+        $this->collTemplatess = $templatess;
 
         return $this;
     }
 
     /**
-     * Gets the number of Templatenames objects related by a many-to-many relationship
+     * Gets the number of Templates objects related by a many-to-many relationship
      * to the current object by way of the R_fieldpostprocessor_forfield cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related Templatenames objects
+     * @return int the number of related Templates objects
      */
-    public function countTemplatenamess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countTemplatess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collTemplatenamessPartial && !$this->isNew();
-        if (null === $this->collTemplatenamess || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collTemplatenamess) {
+        $partial = $this->collTemplatessPartial && !$this->isNew();
+        if (null === $this->collTemplatess || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTemplatess) {
                 return 0;
             } else {
 
                 if ($partial && !$criteria) {
-                    return count($this->getTemplatenamess());
+                    return count($this->getTemplatess());
                 }
 
-                $query = ChildTemplatenamesQuery::create(null, $criteria);
+                $query = ChildTemplatesQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
@@ -1870,27 +1870,27 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                     ->count($con);
             }
         } else {
-            return count($this->collTemplatenamess);
+            return count($this->collTemplatess);
         }
     }
 
     /**
-     * Associate a ChildTemplatenames to this object
+     * Associate a ChildTemplates to this object
      * through the R_fieldpostprocessor_forfield cross reference table.
      *
-     * @param ChildTemplatenames $templatenames
+     * @param ChildTemplates $templates
      * @return ChildFieldpostprocessor The current object (for fluent API support)
      */
-    public function addTemplatenames(ChildTemplatenames $templatenames)
+    public function addTemplates(ChildTemplates $templates)
     {
-        if ($this->collTemplatenamess === null) {
-            $this->initTemplatenamess();
+        if ($this->collTemplatess === null) {
+            $this->initTemplatess();
         }
 
-        if (!$this->getTemplatenamess()->contains($templatenames)) {
+        if (!$this->getTemplatess()->contains($templates)) {
             // only add it if the **same** object is not already associated
-            $this->collTemplatenamess->push($templatenames);
-            $this->doAddTemplatenames($templatenames);
+            $this->collTemplatess->push($templates);
+            $this->doAddTemplates($templates);
         }
 
         return $this;
@@ -1898,13 +1898,13 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
     /**
      *
-     * @param ChildTemplatenames $templatenames
+     * @param ChildTemplates $templates
      */
-    protected function doAddTemplatenames(ChildTemplatenames $templatenames)
+    protected function doAddTemplates(ChildTemplates $templates)
     {
         $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
 
-        $rFieldpostprocessorForfield->setTemplatenames($templatenames);
+        $rFieldpostprocessorForfield->setTemplates($templates);
 
         $rFieldpostprocessorForfield->setFieldpostprocessor($this);
 
@@ -1912,44 +1912,44 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
-        if (!$templatenames->isFieldpostprocessorsLoaded()) {
-            $templatenames->initFieldpostprocessors();
-            $templatenames->getFieldpostprocessors()->push($this);
-        } elseif (!$templatenames->getFieldpostprocessors()->contains($this)) {
-            $templatenames->getFieldpostprocessors()->push($this);
+        if (!$templates->isFieldpostprocessorsLoaded()) {
+            $templates->initFieldpostprocessors();
+            $templates->getFieldpostprocessors()->push($this);
+        } elseif (!$templates->getFieldpostprocessors()->contains($this)) {
+            $templates->getFieldpostprocessors()->push($this);
         }
 
     }
 
     /**
-     * Remove templatenames of this object
+     * Remove templates of this object
      * through the R_fieldpostprocessor_forfield cross reference table.
      *
-     * @param ChildTemplatenames $templatenames
+     * @param ChildTemplates $templates
      * @return ChildFieldpostprocessor The current object (for fluent API support)
      */
-    public function removeTemplatenames(ChildTemplatenames $templatenames)
+    public function removeTemplates(ChildTemplates $templates)
     {
-        if ($this->getTemplatenamess()->contains($templatenames)) { $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
+        if ($this->getTemplatess()->contains($templates)) { $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
 
-            $rFieldpostprocessorForfield->setTemplatenames($templatenames);
-            if ($templatenames->isFieldpostprocessorsLoaded()) {
+            $rFieldpostprocessorForfield->setTemplates($templates);
+            if ($templates->isFieldpostprocessorsLoaded()) {
                 //remove the back reference if available
-                $templatenames->getFieldpostprocessors()->removeObject($this);
+                $templates->getFieldpostprocessors()->removeObject($this);
             }
 
             $rFieldpostprocessorForfield->setFieldpostprocessor($this);
             $this->removeRFieldpostprocessorForfield(clone $rFieldpostprocessorForfield);
             $rFieldpostprocessorForfield->clear();
 
-            $this->collTemplatenamess->remove($this->collTemplatenamess->search($templatenames));
+            $this->collTemplatess->remove($this->collTemplatess->search($templates));
 
-            if (null === $this->templatenamessScheduledForDeletion) {
-                $this->templatenamessScheduledForDeletion = clone $this->collTemplatenamess;
-                $this->templatenamessScheduledForDeletion->clear();
+            if (null === $this->templatessScheduledForDeletion) {
+                $this->templatessScheduledForDeletion = clone $this->collTemplatess;
+                $this->templatessScheduledForDeletion->clear();
             }
 
-            $this->templatenamessScheduledForDeletion->push($templatenames);
+            $this->templatessScheduledForDeletion->push($templates);
         }
 
 
@@ -1994,15 +1994,15 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collTemplatenamess) {
-                foreach ($this->collTemplatenamess as $o) {
+            if ($this->collTemplatess) {
+                foreach ($this->collTemplatess as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
         $this->collRFieldpostprocessorForfields = null;
-        $this->collTemplatenamess = null;
+        $this->collTemplatess = null;
     }
 
     /**
