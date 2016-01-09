@@ -36,24 +36,33 @@ class PropelMigration_1452358516
         $datasets = TemplatesQuery::create()->find();
         $count = 0;
         foreach ($datasets as $field) {
+          
+          $sql = "SELECT * FROM _templates WHERE id = " . $field->getId();
+          $stmt = $pdo->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+          echo "Updating template ".$result['_fieldname']."\n";
+          
           $newconfig = Array (
-            maxlines    => $field->getMaxlines(),
-            textlength  => $field->getTextlength(),
-            imagewidth  => explode(';',$field->getImagewidth()),
-            imageheight => explode(';',$field->getImageheight()),
-            columns     => $field->getCols(),
-            history     => strtolower($field->getHistory()) == "ja",
-            growing     => strtolower($field->getGrowing()) == "ja"
+            maxlines    => $result['_maxlines'],
+            textlength  => $result['_textlength'],
+            imagewidth  => explode(';',$result['_imagewidth']),
+            imageheight => explode(';',$result['_imageheight']),
+            columns     => $result['_cols'],
+            history     => $result['_history'] == "ja",
+            growing     => $result['_growing'] == "ja"
           );
           
-          $newconfig['lengthinfluence'] = $this->_ConvertInfluenceArray($field->getLengthinfluence());
+          $newconfig['lengthinfluence'] = $this->_ConvertInfluenceArray($result['_lengthInfluence']);
           
-          $string = $field->getColnames();
-          switch ($field->getFieldname()) {
+          $string = $result['_colNames'];
+
+          switch ($field->getFieldtype()) {
             case 'Text':
-              $newconfig['fullhistory']  = stristr($string, 'fullhistory=true');
-              $newconfig['rtfeditor']    = !stristr($string, 'rtfeditor=false');
-              $newconfig['codeeditor']   = stristr($string, 'codeeditor=true');
+              $newconfig['fullhistory']  = stristr($string, 'fullhistory=true') ? true : false;
+              $newconfig['rtfeditor']    = !stristr($string, 'rtfeditor=false') && !stristr($string, 'codeeditor=true') && !stristr($string, ';');
+              $newconfig['codeeditor']   = stristr($string, 'codeeditor=true') ? true : false;
               $string = str_ireplace('fullhistory=true', '',$string);
               $string = str_ireplace('rtfeditor=false', '', $string);
               $string = str_ireplace('codeeditor=true', '', $string);
