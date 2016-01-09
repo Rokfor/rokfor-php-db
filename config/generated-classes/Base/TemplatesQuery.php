@@ -26,15 +26,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery orderByHelpdescription($order = Criteria::ASC) Order by the _helpdescription column
  * @method     ChildTemplatesQuery orderByHelpimage($order = Criteria::ASC) Order by the _helpimage column
  * @method     ChildTemplatesQuery orderByFieldtype($order = Criteria::ASC) Order by the _fieldtype column
- * @method     ChildTemplatesQuery orderByMaxlines($order = Criteria::ASC) Order by the _maxlines column
- * @method     ChildTemplatesQuery orderByTextlength($order = Criteria::ASC) Order by the _textlength column
- * @method     ChildTemplatesQuery orderByImagewidth($order = Criteria::ASC) Order by the _imagewidth column
- * @method     ChildTemplatesQuery orderByImageheight($order = Criteria::ASC) Order by the _imageheight column
- * @method     ChildTemplatesQuery orderByCols($order = Criteria::ASC) Order by the _cols column
- * @method     ChildTemplatesQuery orderByColnames($order = Criteria::ASC) Order by the _colNames column
- * @method     ChildTemplatesQuery orderByHistory($order = Criteria::ASC) Order by the _history column
- * @method     ChildTemplatesQuery orderByGrowing($order = Criteria::ASC) Order by the _growing column
- * @method     ChildTemplatesQuery orderByLengthinfluence($order = Criteria::ASC) Order by the _lengthInfluence column
  * @method     ChildTemplatesQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
  * @method     ChildTemplatesQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildTemplatesQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
@@ -47,15 +38,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery groupByHelpdescription() Group by the _helpdescription column
  * @method     ChildTemplatesQuery groupByHelpimage() Group by the _helpimage column
  * @method     ChildTemplatesQuery groupByFieldtype() Group by the _fieldtype column
- * @method     ChildTemplatesQuery groupByMaxlines() Group by the _maxlines column
- * @method     ChildTemplatesQuery groupByTextlength() Group by the _textlength column
- * @method     ChildTemplatesQuery groupByImagewidth() Group by the _imagewidth column
- * @method     ChildTemplatesQuery groupByImageheight() Group by the _imageheight column
- * @method     ChildTemplatesQuery groupByCols() Group by the _cols column
- * @method     ChildTemplatesQuery groupByColnames() Group by the _colNames column
- * @method     ChildTemplatesQuery groupByHistory() Group by the _history column
- * @method     ChildTemplatesQuery groupByGrowing() Group by the _growing column
- * @method     ChildTemplatesQuery groupByLengthinfluence() Group by the _lengthInfluence column
  * @method     ChildTemplatesQuery groupByUserSys() Group by the __user__ column
  * @method     ChildTemplatesQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildTemplatesQuery groupBySplit() Group by the __split__ column
@@ -111,15 +93,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplates findOneByHelpdescription(string $_helpdescription) Return the first ChildTemplates filtered by the _helpdescription column
  * @method     ChildTemplates findOneByHelpimage(string $_helpimage) Return the first ChildTemplates filtered by the _helpimage column
  * @method     ChildTemplates findOneByFieldtype(string $_fieldtype) Return the first ChildTemplates filtered by the _fieldtype column
- * @method     ChildTemplates findOneByMaxlines(int $_maxlines) Return the first ChildTemplates filtered by the _maxlines column
- * @method     ChildTemplates findOneByTextlength(int $_textlength) Return the first ChildTemplates filtered by the _textlength column
- * @method     ChildTemplates findOneByImagewidth(string $_imagewidth) Return the first ChildTemplates filtered by the _imagewidth column
- * @method     ChildTemplates findOneByImageheight(string $_imageheight) Return the first ChildTemplates filtered by the _imageheight column
- * @method     ChildTemplates findOneByCols(int $_cols) Return the first ChildTemplates filtered by the _cols column
- * @method     ChildTemplates findOneByColnames(string $_colNames) Return the first ChildTemplates filtered by the _colNames column
- * @method     ChildTemplates findOneByHistory(string $_history) Return the first ChildTemplates filtered by the _history column
- * @method     ChildTemplates findOneByGrowing(string $_growing) Return the first ChildTemplates filtered by the _growing column
- * @method     ChildTemplates findOneByLengthinfluence(string $_lengthInfluence) Return the first ChildTemplates filtered by the _lengthInfluence column
  * @method     ChildTemplates findOneByUserSys(string $__user__) Return the first ChildTemplates filtered by the __user__ column
  * @method     ChildTemplates findOneByConfigSys(string $__config__) Return the first ChildTemplates filtered by the __config__ column
  * @method     ChildTemplates findOneBySplit(string $__split__) Return the first ChildTemplates filtered by the __split__ column
@@ -135,15 +108,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplates requireOneByHelpdescription(string $_helpdescription) Return the first ChildTemplates filtered by the _helpdescription column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplates requireOneByHelpimage(string $_helpimage) Return the first ChildTemplates filtered by the _helpimage column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplates requireOneByFieldtype(string $_fieldtype) Return the first ChildTemplates filtered by the _fieldtype column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByMaxlines(int $_maxlines) Return the first ChildTemplates filtered by the _maxlines column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByTextlength(int $_textlength) Return the first ChildTemplates filtered by the _textlength column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByImagewidth(string $_imagewidth) Return the first ChildTemplates filtered by the _imagewidth column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByImageheight(string $_imageheight) Return the first ChildTemplates filtered by the _imageheight column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByCols(int $_cols) Return the first ChildTemplates filtered by the _cols column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByColnames(string $_colNames) Return the first ChildTemplates filtered by the _colNames column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByHistory(string $_history) Return the first ChildTemplates filtered by the _history column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByGrowing(string $_growing) Return the first ChildTemplates filtered by the _growing column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplates requireOneByLengthinfluence(string $_lengthInfluence) Return the first ChildTemplates filtered by the _lengthInfluence column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplates requireOneByUserSys(string $__user__) Return the first ChildTemplates filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplates requireOneByConfigSys(string $__config__) Return the first ChildTemplates filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplates requireOneBySplit(string $__split__) Return the first ChildTemplates filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -157,15 +121,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplates[]|ObjectCollection findByHelpdescription(string $_helpdescription) Return ChildTemplates objects filtered by the _helpdescription column
  * @method     ChildTemplates[]|ObjectCollection findByHelpimage(string $_helpimage) Return ChildTemplates objects filtered by the _helpimage column
  * @method     ChildTemplates[]|ObjectCollection findByFieldtype(string $_fieldtype) Return ChildTemplates objects filtered by the _fieldtype column
- * @method     ChildTemplates[]|ObjectCollection findByMaxlines(int $_maxlines) Return ChildTemplates objects filtered by the _maxlines column
- * @method     ChildTemplates[]|ObjectCollection findByTextlength(int $_textlength) Return ChildTemplates objects filtered by the _textlength column
- * @method     ChildTemplates[]|ObjectCollection findByImagewidth(string $_imagewidth) Return ChildTemplates objects filtered by the _imagewidth column
- * @method     ChildTemplates[]|ObjectCollection findByImageheight(string $_imageheight) Return ChildTemplates objects filtered by the _imageheight column
- * @method     ChildTemplates[]|ObjectCollection findByCols(int $_cols) Return ChildTemplates objects filtered by the _cols column
- * @method     ChildTemplates[]|ObjectCollection findByColnames(string $_colNames) Return ChildTemplates objects filtered by the _colNames column
- * @method     ChildTemplates[]|ObjectCollection findByHistory(string $_history) Return ChildTemplates objects filtered by the _history column
- * @method     ChildTemplates[]|ObjectCollection findByGrowing(string $_growing) Return ChildTemplates objects filtered by the _growing column
- * @method     ChildTemplates[]|ObjectCollection findByLengthinfluence(string $_lengthInfluence) Return ChildTemplates objects filtered by the _lengthInfluence column
  * @method     ChildTemplates[]|ObjectCollection findByUserSys(string $__user__) Return ChildTemplates objects filtered by the __user__ column
  * @method     ChildTemplates[]|ObjectCollection findByConfigSys(string $__config__) Return ChildTemplates objects filtered by the __config__ column
  * @method     ChildTemplates[]|ObjectCollection findBySplit(string $__split__) Return ChildTemplates objects filtered by the __split__ column
@@ -263,7 +218,7 @@ abstract class TemplatesQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _fortemplate, _fieldname, _helpdescription, _helpimage, _fieldtype, _maxlines, _textlength, _imagewidth, _imageheight, _cols, _colNames, _history, _growing, _lengthInfluence, __user__, __config__, __split__, __parentnode__, __sort__ FROM _templates WHERE id = :p0';
+        $sql = 'SELECT id, _fortemplate, _fieldname, _helpdescription, _helpimage, _fieldtype, __user__, __config__, __split__, __parentnode__, __sort__ FROM _templates WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -551,303 +506,6 @@ abstract class TemplatesQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TemplatesTableMap::COL__FIELDTYPE, $fieldtype, $comparison);
-    }
-
-    /**
-     * Filter the query on the _maxlines column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByMaxlines(1234); // WHERE _maxlines = 1234
-     * $query->filterByMaxlines(array(12, 34)); // WHERE _maxlines IN (12, 34)
-     * $query->filterByMaxlines(array('min' => 12)); // WHERE _maxlines > 12
-     * </code>
-     *
-     * @param     mixed $maxlines The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByMaxlines($maxlines = null, $comparison = null)
-    {
-        if (is_array($maxlines)) {
-            $useMinMax = false;
-            if (isset($maxlines['min'])) {
-                $this->addUsingAlias(TemplatesTableMap::COL__MAXLINES, $maxlines['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($maxlines['max'])) {
-                $this->addUsingAlias(TemplatesTableMap::COL__MAXLINES, $maxlines['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__MAXLINES, $maxlines, $comparison);
-    }
-
-    /**
-     * Filter the query on the _textlength column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTextlength(1234); // WHERE _textlength = 1234
-     * $query->filterByTextlength(array(12, 34)); // WHERE _textlength IN (12, 34)
-     * $query->filterByTextlength(array('min' => 12)); // WHERE _textlength > 12
-     * </code>
-     *
-     * @param     mixed $textlength The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByTextlength($textlength = null, $comparison = null)
-    {
-        if (is_array($textlength)) {
-            $useMinMax = false;
-            if (isset($textlength['min'])) {
-                $this->addUsingAlias(TemplatesTableMap::COL__TEXTLENGTH, $textlength['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($textlength['max'])) {
-                $this->addUsingAlias(TemplatesTableMap::COL__TEXTLENGTH, $textlength['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__TEXTLENGTH, $textlength, $comparison);
-    }
-
-    /**
-     * Filter the query on the _imagewidth column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByImagewidth('fooValue');   // WHERE _imagewidth = 'fooValue'
-     * $query->filterByImagewidth('%fooValue%'); // WHERE _imagewidth LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $imagewidth The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByImagewidth($imagewidth = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($imagewidth)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $imagewidth)) {
-                $imagewidth = str_replace('*', '%', $imagewidth);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__IMAGEWIDTH, $imagewidth, $comparison);
-    }
-
-    /**
-     * Filter the query on the _imageheight column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByImageheight('fooValue');   // WHERE _imageheight = 'fooValue'
-     * $query->filterByImageheight('%fooValue%'); // WHERE _imageheight LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $imageheight The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByImageheight($imageheight = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($imageheight)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $imageheight)) {
-                $imageheight = str_replace('*', '%', $imageheight);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__IMAGEHEIGHT, $imageheight, $comparison);
-    }
-
-    /**
-     * Filter the query on the _cols column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCols(1234); // WHERE _cols = 1234
-     * $query->filterByCols(array(12, 34)); // WHERE _cols IN (12, 34)
-     * $query->filterByCols(array('min' => 12)); // WHERE _cols > 12
-     * </code>
-     *
-     * @param     mixed $cols The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByCols($cols = null, $comparison = null)
-    {
-        if (is_array($cols)) {
-            $useMinMax = false;
-            if (isset($cols['min'])) {
-                $this->addUsingAlias(TemplatesTableMap::COL__COLS, $cols['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($cols['max'])) {
-                $this->addUsingAlias(TemplatesTableMap::COL__COLS, $cols['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__COLS, $cols, $comparison);
-    }
-
-    /**
-     * Filter the query on the _colNames column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByColnames('fooValue');   // WHERE _colNames = 'fooValue'
-     * $query->filterByColnames('%fooValue%'); // WHERE _colNames LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $colnames The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByColnames($colnames = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($colnames)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $colnames)) {
-                $colnames = str_replace('*', '%', $colnames);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__COLNAMES, $colnames, $comparison);
-    }
-
-    /**
-     * Filter the query on the _history column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByHistory('fooValue');   // WHERE _history = 'fooValue'
-     * $query->filterByHistory('%fooValue%'); // WHERE _history LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $history The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByHistory($history = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($history)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $history)) {
-                $history = str_replace('*', '%', $history);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__HISTORY, $history, $comparison);
-    }
-
-    /**
-     * Filter the query on the _growing column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByGrowing('fooValue');   // WHERE _growing = 'fooValue'
-     * $query->filterByGrowing('%fooValue%'); // WHERE _growing LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $growing The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByGrowing($growing = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($growing)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $growing)) {
-                $growing = str_replace('*', '%', $growing);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__GROWING, $growing, $comparison);
-    }
-
-    /**
-     * Filter the query on the _lengthInfluence column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByLengthinfluence('fooValue');   // WHERE _lengthInfluence = 'fooValue'
-     * $query->filterByLengthinfluence('%fooValue%'); // WHERE _lengthInfluence LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $lengthinfluence The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByLengthinfluence($lengthinfluence = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($lengthinfluence)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $lengthinfluence)) {
-                $lengthinfluence = str_replace('*', '%', $lengthinfluence);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatesTableMap::COL__LENGTHINFLUENCE, $lengthinfluence, $comparison);
     }
 
     /**

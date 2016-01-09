@@ -267,7 +267,7 @@
       <index-column name="_name" size="10"/>
     </index>
     <index name="_forchapter_key">
-      <index-column name="__split__"/>
+      <index-column name="_forchapter"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -439,15 +439,6 @@
     <column name="_helpdescription" phpName="Helpdescription" type="LONGVARCHAR"/>
     <column name="_helpimage" phpName="Helpimage" type="LONGVARCHAR"/>
     <column name="_fieldtype" phpName="Fieldtype" type="LONGVARCHAR"/>
-    <column name="_maxlines" phpName="Maxlines" type="INTEGER" size="32"/>
-    <column name="_textlength" phpName="Textlength" type="INTEGER" size="32"/>
-    <column name="_imagewidth" phpName="Imagewidth" type="LONGVARCHAR"/>
-    <column name="_imageheight" phpName="Imageheight" type="LONGVARCHAR"/>
-    <column name="_cols" phpName="Cols" type="INTEGER" size="32"/>
-    <column name="_colNames" phpName="Colnames" type="LONGVARCHAR"/>
-    <column name="_history" phpName="History" type="LONGVARCHAR"/>
-    <column name="_growing" phpName="Growing" type="LONGVARCHAR"/>
-    <column name="_lengthInfluence" phpName="Lengthinfluence" type="LONGVARCHAR"/>
     <column name="__user__" phpName="UserSys" type="LONGVARCHAR"/>
     <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
     <column name="__split__" phpName="Split" type="LONGVARCHAR"/>

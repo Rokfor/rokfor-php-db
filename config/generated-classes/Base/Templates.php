@@ -112,69 +112,6 @@ abstract class Templates implements ActiveRecordInterface
     protected $_fieldtype;
 
     /**
-     * The value for the _maxlines field.
-     *
-     * @var        int
-     */
-    protected $_maxlines;
-
-    /**
-     * The value for the _textlength field.
-     *
-     * @var        int
-     */
-    protected $_textlength;
-
-    /**
-     * The value for the _imagewidth field.
-     *
-     * @var        string
-     */
-    protected $_imagewidth;
-
-    /**
-     * The value for the _imageheight field.
-     *
-     * @var        string
-     */
-    protected $_imageheight;
-
-    /**
-     * The value for the _cols field.
-     *
-     * @var        int
-     */
-    protected $_cols;
-
-    /**
-     * The value for the _colnames field.
-     *
-     * @var        string
-     */
-    protected $_colnames;
-
-    /**
-     * The value for the _history field.
-     *
-     * @var        string
-     */
-    protected $_history;
-
-    /**
-     * The value for the _growing field.
-     *
-     * @var        string
-     */
-    protected $_growing;
-
-    /**
-     * The value for the _lengthinfluence field.
-     *
-     * @var        string
-     */
-    protected $_lengthinfluence;
-
-    /**
      * The value for the __user__ field.
      *
      * @var        string
@@ -548,96 +485,6 @@ abstract class Templates implements ActiveRecordInterface
     }
 
     /**
-     * Get the [_maxlines] column value.
-     *
-     * @return int
-     */
-    public function getMaxlines()
-    {
-        return $this->_maxlines;
-    }
-
-    /**
-     * Get the [_textlength] column value.
-     *
-     * @return int
-     */
-    public function getTextlength()
-    {
-        return $this->_textlength;
-    }
-
-    /**
-     * Get the [_imagewidth] column value.
-     *
-     * @return string
-     */
-    public function getImagewidth()
-    {
-        return $this->_imagewidth;
-    }
-
-    /**
-     * Get the [_imageheight] column value.
-     *
-     * @return string
-     */
-    public function getImageheight()
-    {
-        return $this->_imageheight;
-    }
-
-    /**
-     * Get the [_cols] column value.
-     *
-     * @return int
-     */
-    public function getCols()
-    {
-        return $this->_cols;
-    }
-
-    /**
-     * Get the [_colnames] column value.
-     *
-     * @return string
-     */
-    public function getColnames()
-    {
-        return $this->_colnames;
-    }
-
-    /**
-     * Get the [_history] column value.
-     *
-     * @return string
-     */
-    public function getHistory()
-    {
-        return $this->_history;
-    }
-
-    /**
-     * Get the [_growing] column value.
-     *
-     * @return string
-     */
-    public function getGrowing()
-    {
-        return $this->_growing;
-    }
-
-    /**
-     * Get the [_lengthinfluence] column value.
-     *
-     * @return string
-     */
-    public function getLengthinfluence()
-    {
-        return $this->_lengthinfluence;
-    }
-
-    /**
      * Get the [__user__] column value.
      *
      * @return string
@@ -812,186 +659,6 @@ abstract class Templates implements ActiveRecordInterface
     } // setFieldtype()
 
     /**
-     * Set the value of [_maxlines] column.
-     *
-     * @param int $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setMaxlines($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->_maxlines !== $v) {
-            $this->_maxlines = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__MAXLINES] = true;
-        }
-
-        return $this;
-    } // setMaxlines()
-
-    /**
-     * Set the value of [_textlength] column.
-     *
-     * @param int $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setTextlength($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->_textlength !== $v) {
-            $this->_textlength = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__TEXTLENGTH] = true;
-        }
-
-        return $this;
-    } // setTextlength()
-
-    /**
-     * Set the value of [_imagewidth] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setImagewidth($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_imagewidth !== $v) {
-            $this->_imagewidth = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__IMAGEWIDTH] = true;
-        }
-
-        return $this;
-    } // setImagewidth()
-
-    /**
-     * Set the value of [_imageheight] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setImageheight($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_imageheight !== $v) {
-            $this->_imageheight = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__IMAGEHEIGHT] = true;
-        }
-
-        return $this;
-    } // setImageheight()
-
-    /**
-     * Set the value of [_cols] column.
-     *
-     * @param int $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setCols($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->_cols !== $v) {
-            $this->_cols = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__COLS] = true;
-        }
-
-        return $this;
-    } // setCols()
-
-    /**
-     * Set the value of [_colnames] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setColnames($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_colnames !== $v) {
-            $this->_colnames = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__COLNAMES] = true;
-        }
-
-        return $this;
-    } // setColnames()
-
-    /**
-     * Set the value of [_history] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setHistory($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_history !== $v) {
-            $this->_history = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__HISTORY] = true;
-        }
-
-        return $this;
-    } // setHistory()
-
-    /**
-     * Set the value of [_growing] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setGrowing($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_growing !== $v) {
-            $this->_growing = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__GROWING] = true;
-        }
-
-        return $this;
-    } // setGrowing()
-
-    /**
-     * Set the value of [_lengthinfluence] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templates The current object (for fluent API support)
-     */
-    public function setLengthinfluence($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->_lengthinfluence !== $v) {
-            $this->_lengthinfluence = $v;
-            $this->modifiedColumns[TemplatesTableMap::COL__LENGTHINFLUENCE] = true;
-        }
-
-        return $this;
-    } // setLengthinfluence()
-
-    /**
      * Set the value of [__user__] column.
      *
      * @param string $v new value
@@ -1145,46 +812,19 @@ abstract class Templates implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TemplatesTableMap::translateFieldName('Fieldtype', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_fieldtype = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TemplatesTableMap::translateFieldName('Maxlines', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_maxlines = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TemplatesTableMap::translateFieldName('Textlength', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_textlength = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TemplatesTableMap::translateFieldName('Imagewidth', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_imagewidth = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TemplatesTableMap::translateFieldName('Imageheight', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_imageheight = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TemplatesTableMap::translateFieldName('Cols', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_cols = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : TemplatesTableMap::translateFieldName('Colnames', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_colnames = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : TemplatesTableMap::translateFieldName('History', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_history = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : TemplatesTableMap::translateFieldName('Growing', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_growing = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : TemplatesTableMap::translateFieldName('Lengthinfluence', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->_lengthinfluence = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : TemplatesTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TemplatesTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__user__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : TemplatesTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TemplatesTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : TemplatesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TemplatesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : TemplatesTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TemplatesTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : TemplatesTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TemplatesTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -1194,7 +834,7 @@ abstract class Templates implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 20; // 20 = TemplatesTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = TemplatesTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Templates'), 0, $e);
@@ -1493,33 +1133,6 @@ abstract class Templates implements ActiveRecordInterface
         if ($this->isColumnModified(TemplatesTableMap::COL__FIELDTYPE)) {
             $modifiedColumns[':p' . $index++]  = '_fieldtype';
         }
-        if ($this->isColumnModified(TemplatesTableMap::COL__MAXLINES)) {
-            $modifiedColumns[':p' . $index++]  = '_maxlines';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__TEXTLENGTH)) {
-            $modifiedColumns[':p' . $index++]  = '_textlength';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__IMAGEWIDTH)) {
-            $modifiedColumns[':p' . $index++]  = '_imagewidth';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__IMAGEHEIGHT)) {
-            $modifiedColumns[':p' . $index++]  = '_imageheight';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__COLS)) {
-            $modifiedColumns[':p' . $index++]  = '_cols';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__COLNAMES)) {
-            $modifiedColumns[':p' . $index++]  = '_colNames';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__HISTORY)) {
-            $modifiedColumns[':p' . $index++]  = '_history';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__GROWING)) {
-            $modifiedColumns[':p' . $index++]  = '_growing';
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__LENGTHINFLUENCE)) {
-            $modifiedColumns[':p' . $index++]  = '_lengthInfluence';
-        }
         if ($this->isColumnModified(TemplatesTableMap::COL___USER__)) {
             $modifiedColumns[':p' . $index++]  = '__user__';
         }
@@ -1563,33 +1176,6 @@ abstract class Templates implements ActiveRecordInterface
                         break;
                     case '_fieldtype':
                         $stmt->bindValue($identifier, $this->_fieldtype, PDO::PARAM_STR);
-                        break;
-                    case '_maxlines':
-                        $stmt->bindValue($identifier, $this->_maxlines, PDO::PARAM_INT);
-                        break;
-                    case '_textlength':
-                        $stmt->bindValue($identifier, $this->_textlength, PDO::PARAM_INT);
-                        break;
-                    case '_imagewidth':
-                        $stmt->bindValue($identifier, $this->_imagewidth, PDO::PARAM_STR);
-                        break;
-                    case '_imageheight':
-                        $stmt->bindValue($identifier, $this->_imageheight, PDO::PARAM_STR);
-                        break;
-                    case '_cols':
-                        $stmt->bindValue($identifier, $this->_cols, PDO::PARAM_INT);
-                        break;
-                    case '_colNames':
-                        $stmt->bindValue($identifier, $this->_colnames, PDO::PARAM_STR);
-                        break;
-                    case '_history':
-                        $stmt->bindValue($identifier, $this->_history, PDO::PARAM_STR);
-                        break;
-                    case '_growing':
-                        $stmt->bindValue($identifier, $this->_growing, PDO::PARAM_STR);
-                        break;
-                    case '_lengthInfluence':
-                        $stmt->bindValue($identifier, $this->_lengthinfluence, PDO::PARAM_STR);
                         break;
                     case '__user__':
                         $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
@@ -1687,45 +1273,18 @@ abstract class Templates implements ActiveRecordInterface
                 return $this->getFieldtype();
                 break;
             case 6:
-                return $this->getMaxlines();
-                break;
-            case 7:
-                return $this->getTextlength();
-                break;
-            case 8:
-                return $this->getImagewidth();
-                break;
-            case 9:
-                return $this->getImageheight();
-                break;
-            case 10:
-                return $this->getCols();
-                break;
-            case 11:
-                return $this->getColnames();
-                break;
-            case 12:
-                return $this->getHistory();
-                break;
-            case 13:
-                return $this->getGrowing();
-                break;
-            case 14:
-                return $this->getLengthinfluence();
-                break;
-            case 15:
                 return $this->getUserSys();
                 break;
-            case 16:
+            case 7:
                 return $this->getConfigSys();
                 break;
-            case 17:
+            case 8:
                 return $this->getSplit();
                 break;
-            case 18:
+            case 9:
                 return $this->getParentnode();
                 break;
-            case 19:
+            case 10:
                 return $this->getSort();
                 break;
             default:
@@ -1764,20 +1323,11 @@ abstract class Templates implements ActiveRecordInterface
             $keys[3] => $this->getHelpdescription(),
             $keys[4] => $this->getHelpimage(),
             $keys[5] => $this->getFieldtype(),
-            $keys[6] => $this->getMaxlines(),
-            $keys[7] => $this->getTextlength(),
-            $keys[8] => $this->getImagewidth(),
-            $keys[9] => $this->getImageheight(),
-            $keys[10] => $this->getCols(),
-            $keys[11] => $this->getColnames(),
-            $keys[12] => $this->getHistory(),
-            $keys[13] => $this->getGrowing(),
-            $keys[14] => $this->getLengthinfluence(),
-            $keys[15] => $this->getUserSys(),
-            $keys[16] => $this->getConfigSys(),
-            $keys[17] => $this->getSplit(),
-            $keys[18] => $this->getParentnode(),
-            $keys[19] => $this->getSort(),
+            $keys[6] => $this->getUserSys(),
+            $keys[7] => $this->getConfigSys(),
+            $keys[8] => $this->getSplit(),
+            $keys[9] => $this->getParentnode(),
+            $keys[10] => $this->getSort(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1883,45 +1433,18 @@ abstract class Templates implements ActiveRecordInterface
                 $this->setFieldtype($value);
                 break;
             case 6:
-                $this->setMaxlines($value);
-                break;
-            case 7:
-                $this->setTextlength($value);
-                break;
-            case 8:
-                $this->setImagewidth($value);
-                break;
-            case 9:
-                $this->setImageheight($value);
-                break;
-            case 10:
-                $this->setCols($value);
-                break;
-            case 11:
-                $this->setColnames($value);
-                break;
-            case 12:
-                $this->setHistory($value);
-                break;
-            case 13:
-                $this->setGrowing($value);
-                break;
-            case 14:
-                $this->setLengthinfluence($value);
-                break;
-            case 15:
                 $this->setUserSys($value);
                 break;
-            case 16:
+            case 7:
                 $this->setConfigSys($value);
                 break;
-            case 17:
+            case 8:
                 $this->setSplit($value);
                 break;
-            case 18:
+            case 9:
                 $this->setParentnode($value);
                 break;
-            case 19:
+            case 10:
                 $this->setSort($value);
                 break;
         } // switch()
@@ -1969,46 +1492,19 @@ abstract class Templates implements ActiveRecordInterface
             $this->setFieldtype($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setMaxlines($arr[$keys[6]]);
+            $this->setUserSys($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setTextlength($arr[$keys[7]]);
+            $this->setConfigSys($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setImagewidth($arr[$keys[8]]);
+            $this->setSplit($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setImageheight($arr[$keys[9]]);
+            $this->setParentnode($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setCols($arr[$keys[10]]);
-        }
-        if (array_key_exists($keys[11], $arr)) {
-            $this->setColnames($arr[$keys[11]]);
-        }
-        if (array_key_exists($keys[12], $arr)) {
-            $this->setHistory($arr[$keys[12]]);
-        }
-        if (array_key_exists($keys[13], $arr)) {
-            $this->setGrowing($arr[$keys[13]]);
-        }
-        if (array_key_exists($keys[14], $arr)) {
-            $this->setLengthinfluence($arr[$keys[14]]);
-        }
-        if (array_key_exists($keys[15], $arr)) {
-            $this->setUserSys($arr[$keys[15]]);
-        }
-        if (array_key_exists($keys[16], $arr)) {
-            $this->setConfigSys($arr[$keys[16]]);
-        }
-        if (array_key_exists($keys[17], $arr)) {
-            $this->setSplit($arr[$keys[17]]);
-        }
-        if (array_key_exists($keys[18], $arr)) {
-            $this->setParentnode($arr[$keys[18]]);
-        }
-        if (array_key_exists($keys[19], $arr)) {
-            $this->setSort($arr[$keys[19]]);
+            $this->setSort($arr[$keys[10]]);
         }
     }
 
@@ -2068,33 +1564,6 @@ abstract class Templates implements ActiveRecordInterface
         }
         if ($this->isColumnModified(TemplatesTableMap::COL__FIELDTYPE)) {
             $criteria->add(TemplatesTableMap::COL__FIELDTYPE, $this->_fieldtype);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__MAXLINES)) {
-            $criteria->add(TemplatesTableMap::COL__MAXLINES, $this->_maxlines);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__TEXTLENGTH)) {
-            $criteria->add(TemplatesTableMap::COL__TEXTLENGTH, $this->_textlength);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__IMAGEWIDTH)) {
-            $criteria->add(TemplatesTableMap::COL__IMAGEWIDTH, $this->_imagewidth);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__IMAGEHEIGHT)) {
-            $criteria->add(TemplatesTableMap::COL__IMAGEHEIGHT, $this->_imageheight);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__COLS)) {
-            $criteria->add(TemplatesTableMap::COL__COLS, $this->_cols);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__COLNAMES)) {
-            $criteria->add(TemplatesTableMap::COL__COLNAMES, $this->_colnames);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__HISTORY)) {
-            $criteria->add(TemplatesTableMap::COL__HISTORY, $this->_history);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__GROWING)) {
-            $criteria->add(TemplatesTableMap::COL__GROWING, $this->_growing);
-        }
-        if ($this->isColumnModified(TemplatesTableMap::COL__LENGTHINFLUENCE)) {
-            $criteria->add(TemplatesTableMap::COL__LENGTHINFLUENCE, $this->_lengthinfluence);
         }
         if ($this->isColumnModified(TemplatesTableMap::COL___USER__)) {
             $criteria->add(TemplatesTableMap::COL___USER__, $this->__user__);
@@ -2202,15 +1671,6 @@ abstract class Templates implements ActiveRecordInterface
         $copyObj->setHelpdescription($this->getHelpdescription());
         $copyObj->setHelpimage($this->getHelpimage());
         $copyObj->setFieldtype($this->getFieldtype());
-        $copyObj->setMaxlines($this->getMaxlines());
-        $copyObj->setTextlength($this->getTextlength());
-        $copyObj->setImagewidth($this->getImagewidth());
-        $copyObj->setImageheight($this->getImageheight());
-        $copyObj->setCols($this->getCols());
-        $copyObj->setColnames($this->getColnames());
-        $copyObj->setHistory($this->getHistory());
-        $copyObj->setGrowing($this->getGrowing());
-        $copyObj->setLengthinfluence($this->getLengthinfluence());
         $copyObj->setUserSys($this->getUserSys());
         $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
@@ -3089,15 +2549,6 @@ abstract class Templates implements ActiveRecordInterface
         $this->_helpdescription = null;
         $this->_helpimage = null;
         $this->_fieldtype = null;
-        $this->_maxlines = null;
-        $this->_textlength = null;
-        $this->_imagewidth = null;
-        $this->_imageheight = null;
-        $this->_cols = null;
-        $this->_colnames = null;
-        $this->_history = null;
-        $this->_growing = null;
-        $this->_lengthinfluence = null;
         $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;

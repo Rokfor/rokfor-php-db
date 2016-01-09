@@ -48,20 +48,20 @@ class DB
     $this->manager->setName('rokfor');
     $this->serviceContainer->setConnectionManager('rokfor', $this->manager);
     $this->serviceContainer->setDefaultDatasource('rokfor');
-    
   }
   
-  function issuesQuery() {
-    return IssuesQuery::create();
+  function ContributionsQuery() {
+    return \ContributionsQuery::create();
   }
-  
-  function getStructure() {
-    
+
+  function IssuesQuery() {
+    return \IssuesQuery::create();
   }
-  
-  function getData($id) {
-    return BooksQuery::create()->find();
+
+  function DataQuery() {
+    return \DataQuery::create();
   }
+
   
 } // END class 
 

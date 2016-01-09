@@ -59,7 +59,7 @@ class TemplatesTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 20;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class TemplatesTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 20;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the id field
@@ -100,51 +100,6 @@ class TemplatesTableMap extends TableMap
      * the column name for the _fieldtype field
      */
     const COL__FIELDTYPE = '_templates._fieldtype';
-
-    /**
-     * the column name for the _maxlines field
-     */
-    const COL__MAXLINES = '_templates._maxlines';
-
-    /**
-     * the column name for the _textlength field
-     */
-    const COL__TEXTLENGTH = '_templates._textlength';
-
-    /**
-     * the column name for the _imagewidth field
-     */
-    const COL__IMAGEWIDTH = '_templates._imagewidth';
-
-    /**
-     * the column name for the _imageheight field
-     */
-    const COL__IMAGEHEIGHT = '_templates._imageheight';
-
-    /**
-     * the column name for the _cols field
-     */
-    const COL__COLS = '_templates._cols';
-
-    /**
-     * the column name for the _colNames field
-     */
-    const COL__COLNAMES = '_templates._colNames';
-
-    /**
-     * the column name for the _history field
-     */
-    const COL__HISTORY = '_templates._history';
-
-    /**
-     * the column name for the _growing field
-     */
-    const COL__GROWING = '_templates._growing';
-
-    /**
-     * the column name for the _lengthInfluence field
-     */
-    const COL__LENGTHINFLUENCE = '_templates._lengthInfluence';
 
     /**
      * the column name for the __user__ field
@@ -183,11 +138,11 @@ class TemplatesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Fieldname', 'Helpdescription', 'Helpimage', 'Fieldtype', 'Maxlines', 'Textlength', 'Imagewidth', 'Imageheight', 'Cols', 'Colnames', 'History', 'Growing', 'Lengthinfluence', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'fieldname', 'helpdescription', 'helpimage', 'fieldtype', 'maxlines', 'textlength', 'imagewidth', 'imageheight', 'cols', 'colnames', 'history', 'growing', 'lengthinfluence', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID, TemplatesTableMap::COL__FORTEMPLATE, TemplatesTableMap::COL__FIELDNAME, TemplatesTableMap::COL__HELPDESCRIPTION, TemplatesTableMap::COL__HELPIMAGE, TemplatesTableMap::COL__FIELDTYPE, TemplatesTableMap::COL__MAXLINES, TemplatesTableMap::COL__TEXTLENGTH, TemplatesTableMap::COL__IMAGEWIDTH, TemplatesTableMap::COL__IMAGEHEIGHT, TemplatesTableMap::COL__COLS, TemplatesTableMap::COL__COLNAMES, TemplatesTableMap::COL__HISTORY, TemplatesTableMap::COL__GROWING, TemplatesTableMap::COL__LENGTHINFLUENCE, TemplatesTableMap::COL___USER__, TemplatesTableMap::COL___CONFIG__, TemplatesTableMap::COL___SPLIT__, TemplatesTableMap::COL___PARENTNODE__, TemplatesTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_fieldname', '_helpdescription', '_helpimage', '_fieldtype', '_maxlines', '_textlength', '_imagewidth', '_imageheight', '_cols', '_colNames', '_history', '_growing', '_lengthInfluence', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
+        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Fieldname', 'Helpdescription', 'Helpimage', 'Fieldtype', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'fieldname', 'helpdescription', 'helpimage', 'fieldtype', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID, TemplatesTableMap::COL__FORTEMPLATE, TemplatesTableMap::COL__FIELDNAME, TemplatesTableMap::COL__HELPDESCRIPTION, TemplatesTableMap::COL__HELPIMAGE, TemplatesTableMap::COL__FIELDTYPE, TemplatesTableMap::COL___USER__, TemplatesTableMap::COL___CONFIG__, TemplatesTableMap::COL___SPLIT__, TemplatesTableMap::COL___PARENTNODE__, TemplatesTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_fieldname', '_helpdescription', '_helpimage', '_fieldtype', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -197,11 +152,11 @@ class TemplatesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Fieldname' => 2, 'Helpdescription' => 3, 'Helpimage' => 4, 'Fieldtype' => 5, 'Maxlines' => 6, 'Textlength' => 7, 'Imagewidth' => 8, 'Imageheight' => 9, 'Cols' => 10, 'Colnames' => 11, 'History' => 12, 'Growing' => 13, 'Lengthinfluence' => 14, 'UserSys' => 15, 'ConfigSys' => 16, 'Split' => 17, 'Parentnode' => 18, 'Sort' => 19, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'fieldname' => 2, 'helpdescription' => 3, 'helpimage' => 4, 'fieldtype' => 5, 'maxlines' => 6, 'textlength' => 7, 'imagewidth' => 8, 'imageheight' => 9, 'cols' => 10, 'colnames' => 11, 'history' => 12, 'growing' => 13, 'lengthinfluence' => 14, 'userSys' => 15, 'configSys' => 16, 'split' => 17, 'parentnode' => 18, 'sort' => 19, ),
-        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID => 0, TemplatesTableMap::COL__FORTEMPLATE => 1, TemplatesTableMap::COL__FIELDNAME => 2, TemplatesTableMap::COL__HELPDESCRIPTION => 3, TemplatesTableMap::COL__HELPIMAGE => 4, TemplatesTableMap::COL__FIELDTYPE => 5, TemplatesTableMap::COL__MAXLINES => 6, TemplatesTableMap::COL__TEXTLENGTH => 7, TemplatesTableMap::COL__IMAGEWIDTH => 8, TemplatesTableMap::COL__IMAGEHEIGHT => 9, TemplatesTableMap::COL__COLS => 10, TemplatesTableMap::COL__COLNAMES => 11, TemplatesTableMap::COL__HISTORY => 12, TemplatesTableMap::COL__GROWING => 13, TemplatesTableMap::COL__LENGTHINFLUENCE => 14, TemplatesTableMap::COL___USER__ => 15, TemplatesTableMap::COL___CONFIG__ => 16, TemplatesTableMap::COL___SPLIT__ => 17, TemplatesTableMap::COL___PARENTNODE__ => 18, TemplatesTableMap::COL___SORT__ => 19, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_fieldname' => 2, '_helpdescription' => 3, '_helpimage' => 4, '_fieldtype' => 5, '_maxlines' => 6, '_textlength' => 7, '_imagewidth' => 8, '_imageheight' => 9, '_cols' => 10, '_colNames' => 11, '_history' => 12, '_growing' => 13, '_lengthInfluence' => 14, '__user__' => 15, '__config__' => 16, '__split__' => 17, '__parentnode__' => 18, '__sort__' => 19, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Fieldname' => 2, 'Helpdescription' => 3, 'Helpimage' => 4, 'Fieldtype' => 5, 'UserSys' => 6, 'ConfigSys' => 7, 'Split' => 8, 'Parentnode' => 9, 'Sort' => 10, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'fieldname' => 2, 'helpdescription' => 3, 'helpimage' => 4, 'fieldtype' => 5, 'userSys' => 6, 'configSys' => 7, 'split' => 8, 'parentnode' => 9, 'sort' => 10, ),
+        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID => 0, TemplatesTableMap::COL__FORTEMPLATE => 1, TemplatesTableMap::COL__FIELDNAME => 2, TemplatesTableMap::COL__HELPDESCRIPTION => 3, TemplatesTableMap::COL__HELPIMAGE => 4, TemplatesTableMap::COL__FIELDTYPE => 5, TemplatesTableMap::COL___USER__ => 6, TemplatesTableMap::COL___CONFIG__ => 7, TemplatesTableMap::COL___SPLIT__ => 8, TemplatesTableMap::COL___PARENTNODE__ => 9, TemplatesTableMap::COL___SORT__ => 10, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_fieldname' => 2, '_helpdescription' => 3, '_helpimage' => 4, '_fieldtype' => 5, '__user__' => 6, '__config__' => 7, '__split__' => 8, '__parentnode__' => 9, '__sort__' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -227,15 +182,6 @@ class TemplatesTableMap extends TableMap
         $this->addColumn('_helpdescription', 'Helpdescription', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_helpimage', 'Helpimage', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_fieldtype', 'Fieldtype', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_maxlines', 'Maxlines', 'INTEGER', false, 32, null);
-        $this->addColumn('_textlength', 'Textlength', 'INTEGER', false, 32, null);
-        $this->addColumn('_imagewidth', 'Imagewidth', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_imageheight', 'Imageheight', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_cols', 'Cols', 'INTEGER', false, 32, null);
-        $this->addColumn('_colNames', 'Colnames', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_history', 'History', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_growing', 'Growing', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_lengthInfluence', 'Lengthinfluence', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
@@ -429,15 +375,6 @@ class TemplatesTableMap extends TableMap
             $criteria->addSelectColumn(TemplatesTableMap::COL__HELPDESCRIPTION);
             $criteria->addSelectColumn(TemplatesTableMap::COL__HELPIMAGE);
             $criteria->addSelectColumn(TemplatesTableMap::COL__FIELDTYPE);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__MAXLINES);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__TEXTLENGTH);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__IMAGEWIDTH);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__IMAGEHEIGHT);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__COLS);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__COLNAMES);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__HISTORY);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__GROWING);
-            $criteria->addSelectColumn(TemplatesTableMap::COL__LENGTHINFLUENCE);
             $criteria->addSelectColumn(TemplatesTableMap::COL___USER__);
             $criteria->addSelectColumn(TemplatesTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(TemplatesTableMap::COL___SPLIT__);
@@ -450,15 +387,6 @@ class TemplatesTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._helpdescription');
             $criteria->addSelectColumn($alias . '._helpimage');
             $criteria->addSelectColumn($alias . '._fieldtype');
-            $criteria->addSelectColumn($alias . '._maxlines');
-            $criteria->addSelectColumn($alias . '._textlength');
-            $criteria->addSelectColumn($alias . '._imagewidth');
-            $criteria->addSelectColumn($alias . '._imageheight');
-            $criteria->addSelectColumn($alias . '._cols');
-            $criteria->addSelectColumn($alias . '._colNames');
-            $criteria->addSelectColumn($alias . '._history');
-            $criteria->addSelectColumn($alias . '._growing');
-            $criteria->addSelectColumn($alias . '._lengthInfluence');
             $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
