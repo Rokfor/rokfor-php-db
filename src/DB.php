@@ -50,6 +50,10 @@ class DB
     $this->serviceContainer->setDefaultDatasource('rokfor');
   }
   
+  function PDO() {
+    return $this->serviceContainer->getConnection()->getWrappedConnection();
+  }
+  
   function ContributionsQuery() {
     return \ContributionsQuery::create();
   }
