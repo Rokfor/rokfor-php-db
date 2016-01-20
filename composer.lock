@@ -4,9 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "84bc9824f2d81041baf1a7027f92b5e3",
-    "content-hash": "7bfd711f59ca578a863d816124e62538",
+    "hash": "2449b2bbace41ec263a1b8a12d113633",
+    "content-hash": "d576db0f33e5b1e50b463fd02cd14c78",
     "packages": [
+        {
+            "name": "eventviva/php-image-resize",
+            "version": "1.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eventviva/php-image-resize.git",
+                "reference": "683a80e76908fd1c53cd2fd7f638df39d6ebfcb5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eventviva/php-image-resize/zipball/683a80e76908fd1c53cd2fd7f638df39d6ebfcb5",
+                "reference": "683a80e76908fd1c53cd2fd7f638df39d6ebfcb5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aditya Patadia",
+                    "homepage": "http://aditya.patadia.org/"
+                }
+            ],
+            "description": "PHP class to re-size and scale images",
+            "homepage": "https://github.com/eventviva/php-image-resize",
+            "keywords": [
+                "image",
+                "php",
+                "resize",
+                "scale"
+            ],
+            "time": "2016-01-06 18:04:49"
+        },
         {
             "name": "gregwar/cache",
             "version": "v1.0.10",
@@ -49,54 +93,6 @@
                 "system"
             ],
             "time": "2014-09-24 11:23:30"
-        },
-        {
-            "name": "gregwar/image",
-            "version": "v2.0.20",
-            "target-dir": "Gregwar/Image",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Gregwar/Image.git",
-                "reference": "2c6bf2fb3b0eb844f0568d6ee55eeb86fc799414"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Gregwar/Image/zipball/2c6bf2fb3b0eb844f0568d6ee55eeb86fc799414",
-                "reference": "2c6bf2fb3b0eb844f0568d6ee55eeb86fc799414",
-                "shasum": ""
-            },
-            "require": {
-                "ext-gd": "*",
-                "gregwar/cache": "1.*",
-                "php": ">=5.3.0"
-            },
-            "suggest": {
-                "behat/transliterator": "Transliterator provides ability to set non-latin1 pretty names"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Gregwar\\Image": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Grégoire Passault",
-                    "email": "g.passault@gmail.com",
-                    "homepage": "http://www.gregwar.com/"
-                }
-            ],
-            "description": "Image handling",
-            "homepage": "https://github.com/Gregwar/Image",
-            "keywords": [
-                "gd",
-                "image"
-            ],
-            "time": "2015-05-30 19:24:37"
         },
         {
             "name": "propel/propel",
