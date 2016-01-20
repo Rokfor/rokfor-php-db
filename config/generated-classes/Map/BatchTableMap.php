@@ -59,7 +59,7 @@ class BatchTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class BatchTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -95,11 +95,6 @@ class BatchTableMap extends TableMap
      * the column name for the _postcode field
      */
     const COL__POSTCODE = '_batch._postcode';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_batch.__user__';
 
     /**
      * the column name for the __config__ field
@@ -133,11 +128,11 @@ class BatchTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Precode', 'Postcode', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'precode', 'postcode', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(BatchTableMap::COL_ID, BatchTableMap::COL__NAME, BatchTableMap::COL__DESCRIPTION, BatchTableMap::COL__PRECODE, BatchTableMap::COL__POSTCODE, BatchTableMap::COL___USER__, BatchTableMap::COL___CONFIG__, BatchTableMap::COL___SPLIT__, BatchTableMap::COL___PARENTNODE__, BatchTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_name', '_description', '_precode', '_postcode', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Description', 'Precode', 'Postcode', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'description', 'precode', 'postcode', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(BatchTableMap::COL_ID, BatchTableMap::COL__NAME, BatchTableMap::COL__DESCRIPTION, BatchTableMap::COL__PRECODE, BatchTableMap::COL__POSTCODE, BatchTableMap::COL___CONFIG__, BatchTableMap::COL___SPLIT__, BatchTableMap::COL___PARENTNODE__, BatchTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_name', '_description', '_precode', '_postcode', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -147,11 +142,11 @@ class BatchTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Precode' => 3, 'Postcode' => 4, 'UserSys' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'precode' => 3, 'postcode' => 4, 'userSys' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, ),
-        self::TYPE_COLNAME       => array(BatchTableMap::COL_ID => 0, BatchTableMap::COL__NAME => 1, BatchTableMap::COL__DESCRIPTION => 2, BatchTableMap::COL__PRECODE => 3, BatchTableMap::COL__POSTCODE => 4, BatchTableMap::COL___USER__ => 5, BatchTableMap::COL___CONFIG__ => 6, BatchTableMap::COL___SPLIT__ => 7, BatchTableMap::COL___PARENTNODE__ => 8, BatchTableMap::COL___SORT__ => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_description' => 2, '_precode' => 3, '_postcode' => 4, '__user__' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Description' => 2, 'Precode' => 3, 'Postcode' => 4, 'ConfigSys' => 5, 'Split' => 6, 'Parentnode' => 7, 'Sort' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'description' => 2, 'precode' => 3, 'postcode' => 4, 'configSys' => 5, 'split' => 6, 'parentnode' => 7, 'sort' => 8, ),
+        self::TYPE_COLNAME       => array(BatchTableMap::COL_ID => 0, BatchTableMap::COL__NAME => 1, BatchTableMap::COL__DESCRIPTION => 2, BatchTableMap::COL__PRECODE => 3, BatchTableMap::COL__POSTCODE => 4, BatchTableMap::COL___CONFIG__ => 5, BatchTableMap::COL___SPLIT__ => 6, BatchTableMap::COL___PARENTNODE__ => 7, BatchTableMap::COL___SORT__ => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_description' => 2, '_precode' => 3, '_postcode' => 4, '__config__' => 5, '__split__' => 6, '__parentnode__' => 7, '__sort__' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -176,7 +171,6 @@ class BatchTableMap extends TableMap
         $this->addColumn('_description', 'Description', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_precode', 'Precode', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_postcode', 'Postcode', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -353,7 +347,6 @@ class BatchTableMap extends TableMap
             $criteria->addSelectColumn(BatchTableMap::COL__DESCRIPTION);
             $criteria->addSelectColumn(BatchTableMap::COL__PRECODE);
             $criteria->addSelectColumn(BatchTableMap::COL__POSTCODE);
-            $criteria->addSelectColumn(BatchTableMap::COL___USER__);
             $criteria->addSelectColumn(BatchTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(BatchTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(BatchTableMap::COL___PARENTNODE__);
@@ -364,7 +357,6 @@ class BatchTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._description');
             $criteria->addSelectColumn($alias . '._precode');
             $criteria->addSelectColumn($alias . '._postcode');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

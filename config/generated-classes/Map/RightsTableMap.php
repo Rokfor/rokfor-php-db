@@ -59,7 +59,7 @@ class RightsTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class RightsTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
@@ -80,11 +80,6 @@ class RightsTableMap extends TableMap
      * the column name for the _group field
      */
     const COL__GROUP = '_rights._group';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_rights.__user__';
 
     /**
      * the column name for the __config__ field
@@ -118,11 +113,11 @@ class RightsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Group', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'group', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(RightsTableMap::COL_ID, RightsTableMap::COL__GROUP, RightsTableMap::COL___USER__, RightsTableMap::COL___CONFIG__, RightsTableMap::COL___SPLIT__, RightsTableMap::COL___PARENTNODE__, RightsTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_group', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Group', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'group', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(RightsTableMap::COL_ID, RightsTableMap::COL__GROUP, RightsTableMap::COL___CONFIG__, RightsTableMap::COL___SPLIT__, RightsTableMap::COL___PARENTNODE__, RightsTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_group', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -132,11 +127,11 @@ class RightsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Group' => 1, 'UserSys' => 2, 'ConfigSys' => 3, 'Split' => 4, 'Parentnode' => 5, 'Sort' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'group' => 1, 'userSys' => 2, 'configSys' => 3, 'split' => 4, 'parentnode' => 5, 'sort' => 6, ),
-        self::TYPE_COLNAME       => array(RightsTableMap::COL_ID => 0, RightsTableMap::COL__GROUP => 1, RightsTableMap::COL___USER__ => 2, RightsTableMap::COL___CONFIG__ => 3, RightsTableMap::COL___SPLIT__ => 4, RightsTableMap::COL___PARENTNODE__ => 5, RightsTableMap::COL___SORT__ => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_group' => 1, '__user__' => 2, '__config__' => 3, '__split__' => 4, '__parentnode__' => 5, '__sort__' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Group' => 1, 'ConfigSys' => 2, 'Split' => 3, 'Parentnode' => 4, 'Sort' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'group' => 1, 'configSys' => 2, 'split' => 3, 'parentnode' => 4, 'sort' => 5, ),
+        self::TYPE_COLNAME       => array(RightsTableMap::COL_ID => 0, RightsTableMap::COL__GROUP => 1, RightsTableMap::COL___CONFIG__ => 2, RightsTableMap::COL___SPLIT__ => 3, RightsTableMap::COL___PARENTNODE__ => 4, RightsTableMap::COL___SORT__ => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_group' => 1, '__config__' => 2, '__split__' => 3, '__parentnode__' => 4, '__sort__' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -158,7 +153,6 @@ class RightsTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_group', 'Group', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -359,7 +353,6 @@ class RightsTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(RightsTableMap::COL_ID);
             $criteria->addSelectColumn(RightsTableMap::COL__GROUP);
-            $criteria->addSelectColumn(RightsTableMap::COL___USER__);
             $criteria->addSelectColumn(RightsTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(RightsTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(RightsTableMap::COL___PARENTNODE__);
@@ -367,7 +360,6 @@ class RightsTableMap extends TableMap
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._group');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

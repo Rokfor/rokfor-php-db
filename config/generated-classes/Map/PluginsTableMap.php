@@ -59,7 +59,7 @@ class PluginsTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PluginsTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -80,11 +80,6 @@ class PluginsTableMap extends TableMap
      * the column name for the _name field
      */
     const COL__NAME = '_plugins._name';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_plugins.__user__';
 
     /**
      * the column name for the __config__ field
@@ -133,11 +128,11 @@ class PluginsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', 'Page', 'Config', 'Callback', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'userSys', 'configSys', 'split', 'parentnode', 'sort', 'page', 'config', 'callback', ),
-        self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID, PluginsTableMap::COL__NAME, PluginsTableMap::COL___USER__, PluginsTableMap::COL___CONFIG__, PluginsTableMap::COL___SPLIT__, PluginsTableMap::COL___PARENTNODE__, PluginsTableMap::COL___SORT__, PluginsTableMap::COL__PAGE, PluginsTableMap::COL__CONFIG, PluginsTableMap::COL__CALLBACK, ),
-        self::TYPE_FIELDNAME     => array('id', '_name', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', '_page', '_config', '_callback', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'ConfigSys', 'Split', 'Parentnode', 'Sort', 'Page', 'Config', 'Callback', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'configSys', 'split', 'parentnode', 'sort', 'page', 'config', 'callback', ),
+        self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID, PluginsTableMap::COL__NAME, PluginsTableMap::COL___CONFIG__, PluginsTableMap::COL___SPLIT__, PluginsTableMap::COL___PARENTNODE__, PluginsTableMap::COL___SORT__, PluginsTableMap::COL__PAGE, PluginsTableMap::COL__CONFIG, PluginsTableMap::COL__CALLBACK, ),
+        self::TYPE_FIELDNAME     => array('id', '_name', '__config__', '__split__', '__parentnode__', '__sort__', '_page', '_config', '_callback', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -147,11 +142,11 @@ class PluginsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'UserSys' => 2, 'ConfigSys' => 3, 'Split' => 4, 'Parentnode' => 5, 'Sort' => 6, 'Page' => 7, 'Config' => 8, 'Callback' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'userSys' => 2, 'configSys' => 3, 'split' => 4, 'parentnode' => 5, 'sort' => 6, 'page' => 7, 'config' => 8, 'callback' => 9, ),
-        self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID => 0, PluginsTableMap::COL__NAME => 1, PluginsTableMap::COL___USER__ => 2, PluginsTableMap::COL___CONFIG__ => 3, PluginsTableMap::COL___SPLIT__ => 4, PluginsTableMap::COL___PARENTNODE__ => 5, PluginsTableMap::COL___SORT__ => 6, PluginsTableMap::COL__PAGE => 7, PluginsTableMap::COL__CONFIG => 8, PluginsTableMap::COL__CALLBACK => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '__user__' => 2, '__config__' => 3, '__split__' => 4, '__parentnode__' => 5, '__sort__' => 6, '_page' => 7, '_config' => 8, '_callback' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'ConfigSys' => 2, 'Split' => 3, 'Parentnode' => 4, 'Sort' => 5, 'Page' => 6, 'Config' => 7, 'Callback' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'configSys' => 2, 'split' => 3, 'parentnode' => 4, 'sort' => 5, 'page' => 6, 'config' => 7, 'callback' => 8, ),
+        self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID => 0, PluginsTableMap::COL__NAME => 1, PluginsTableMap::COL___CONFIG__ => 2, PluginsTableMap::COL___SPLIT__ => 3, PluginsTableMap::COL___PARENTNODE__ => 4, PluginsTableMap::COL___SORT__ => 5, PluginsTableMap::COL__PAGE => 6, PluginsTableMap::COL__CONFIG => 7, PluginsTableMap::COL__CALLBACK => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '__config__' => 2, '__split__' => 3, '__parentnode__' => 4, '__sort__' => 5, '_page' => 6, '_config' => 7, '_callback' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -173,7 +168,6 @@ class PluginsTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -386,7 +380,6 @@ class PluginsTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(PluginsTableMap::COL_ID);
             $criteria->addSelectColumn(PluginsTableMap::COL__NAME);
-            $criteria->addSelectColumn(PluginsTableMap::COL___USER__);
             $criteria->addSelectColumn(PluginsTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(PluginsTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(PluginsTableMap::COL___PARENTNODE__);
@@ -397,7 +390,6 @@ class PluginsTableMap extends TableMap
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._name');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

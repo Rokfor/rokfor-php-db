@@ -59,7 +59,7 @@ class PdfTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PdfTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the id field
@@ -100,11 +100,6 @@ class PdfTableMap extends TableMap
      * the column name for the _pages field
      */
     const COL__PAGES = '_pdf._pages';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_pdf.__user__';
 
     /**
      * the column name for the __config__ field
@@ -138,11 +133,11 @@ class PdfTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'File', 'Date', 'Issue', 'Plugin', 'Pages', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'file', 'date', 'issue', 'plugin', 'pages', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(PdfTableMap::COL_ID, PdfTableMap::COL__FILE, PdfTableMap::COL__DATE, PdfTableMap::COL__ISSUE, PdfTableMap::COL__PLUGIN, PdfTableMap::COL__PAGES, PdfTableMap::COL___USER__, PdfTableMap::COL___CONFIG__, PdfTableMap::COL___SPLIT__, PdfTableMap::COL___PARENTNODE__, PdfTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_file', '_date', '_issue', '_plugin', '_pages', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id', 'File', 'Date', 'Issue', 'Plugin', 'Pages', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'file', 'date', 'issue', 'plugin', 'pages', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(PdfTableMap::COL_ID, PdfTableMap::COL__FILE, PdfTableMap::COL__DATE, PdfTableMap::COL__ISSUE, PdfTableMap::COL__PLUGIN, PdfTableMap::COL__PAGES, PdfTableMap::COL___CONFIG__, PdfTableMap::COL___SPLIT__, PdfTableMap::COL___PARENTNODE__, PdfTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_file', '_date', '_issue', '_plugin', '_pages', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -152,11 +147,11 @@ class PdfTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'File' => 1, 'Date' => 2, 'Issue' => 3, 'Plugin' => 4, 'Pages' => 5, 'UserSys' => 6, 'ConfigSys' => 7, 'Split' => 8, 'Parentnode' => 9, 'Sort' => 10, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'file' => 1, 'date' => 2, 'issue' => 3, 'plugin' => 4, 'pages' => 5, 'userSys' => 6, 'configSys' => 7, 'split' => 8, 'parentnode' => 9, 'sort' => 10, ),
-        self::TYPE_COLNAME       => array(PdfTableMap::COL_ID => 0, PdfTableMap::COL__FILE => 1, PdfTableMap::COL__DATE => 2, PdfTableMap::COL__ISSUE => 3, PdfTableMap::COL__PLUGIN => 4, PdfTableMap::COL__PAGES => 5, PdfTableMap::COL___USER__ => 6, PdfTableMap::COL___CONFIG__ => 7, PdfTableMap::COL___SPLIT__ => 8, PdfTableMap::COL___PARENTNODE__ => 9, PdfTableMap::COL___SORT__ => 10, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_file' => 1, '_date' => 2, '_issue' => 3, '_plugin' => 4, '_pages' => 5, '__user__' => 6, '__config__' => 7, '__split__' => 8, '__parentnode__' => 9, '__sort__' => 10, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'File' => 1, 'Date' => 2, 'Issue' => 3, 'Plugin' => 4, 'Pages' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'file' => 1, 'date' => 2, 'issue' => 3, 'plugin' => 4, 'pages' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, ),
+        self::TYPE_COLNAME       => array(PdfTableMap::COL_ID => 0, PdfTableMap::COL__FILE => 1, PdfTableMap::COL__DATE => 2, PdfTableMap::COL__ISSUE => 3, PdfTableMap::COL__PLUGIN => 4, PdfTableMap::COL__PAGES => 5, PdfTableMap::COL___CONFIG__ => 6, PdfTableMap::COL___SPLIT__ => 7, PdfTableMap::COL___PARENTNODE__ => 8, PdfTableMap::COL___SORT__ => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_file' => 1, '_date' => 2, '_issue' => 3, '_plugin' => 4, '_pages' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -182,7 +177,6 @@ class PdfTableMap extends TableMap
         $this->addColumn('_issue', 'Issue', 'INTEGER', false, 32, null);
         $this->addColumn('_plugin', 'Plugin', 'INTEGER', false, 32, null);
         $this->addColumn('_pages', 'Pages', 'INTEGER', false, 32, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -343,7 +337,6 @@ class PdfTableMap extends TableMap
             $criteria->addSelectColumn(PdfTableMap::COL__ISSUE);
             $criteria->addSelectColumn(PdfTableMap::COL__PLUGIN);
             $criteria->addSelectColumn(PdfTableMap::COL__PAGES);
-            $criteria->addSelectColumn(PdfTableMap::COL___USER__);
             $criteria->addSelectColumn(PdfTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(PdfTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(PdfTableMap::COL___PARENTNODE__);
@@ -355,7 +348,6 @@ class PdfTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._issue');
             $criteria->addSelectColumn($alias . '._plugin');
             $criteria->addSelectColumn($alias . '._pages');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

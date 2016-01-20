@@ -101,13 +101,6 @@ abstract class Batch implements ActiveRecordInterface
     protected $_postcode;
 
     /**
-     * The value for the __user__ field.
-     *
-     * @var        string
-     */
-    protected $__user__;
-
-    /**
      * The value for the __config__ field.
      *
      * @var        string
@@ -447,16 +440,6 @@ abstract class Batch implements ActiveRecordInterface
     }
 
     /**
-     * Get the [__user__] column value.
-     *
-     * @return string
-     */
-    public function getUserSys()
-    {
-        return $this->__user__;
-    }
-
-    /**
      * Get the [__config__] column value.
      *
      * @return string
@@ -597,26 +580,6 @@ abstract class Batch implements ActiveRecordInterface
     } // setPostcode()
 
     /**
-     * Set the value of [__user__] column.
-     *
-     * @param string $v new value
-     * @return $this|\Batch The current object (for fluent API support)
-     */
-    public function setUserSys($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->__user__ !== $v) {
-            $this->__user__ = $v;
-            $this->modifiedColumns[BatchTableMap::COL___USER__] = true;
-        }
-
-        return $this;
-    } // setUserSys()
-
-    /**
      * Set the value of [__config__] column.
      *
      * @param string $v new value
@@ -747,19 +710,16 @@ abstract class Batch implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BatchTableMap::translateFieldName('Postcode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_postcode = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BatchTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BatchTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BatchTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BatchTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BatchTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BatchTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BatchTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : BatchTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BatchTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -769,7 +729,7 @@ abstract class Batch implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = BatchTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = BatchTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Batch'), 0, $e);
@@ -1030,9 +990,6 @@ abstract class Batch implements ActiveRecordInterface
         if ($this->isColumnModified(BatchTableMap::COL__POSTCODE)) {
             $modifiedColumns[':p' . $index++]  = '_postcode';
         }
-        if ($this->isColumnModified(BatchTableMap::COL___USER__)) {
-            $modifiedColumns[':p' . $index++]  = '__user__';
-        }
         if ($this->isColumnModified(BatchTableMap::COL___CONFIG__)) {
             $modifiedColumns[':p' . $index++]  = '__config__';
         }
@@ -1070,9 +1027,6 @@ abstract class Batch implements ActiveRecordInterface
                         break;
                     case '_postcode':
                         $stmt->bindValue($identifier, $this->_postcode, PDO::PARAM_STR);
-                        break;
-                    case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1164,18 +1118,15 @@ abstract class Batch implements ActiveRecordInterface
                 return $this->getPostcode();
                 break;
             case 5:
-                return $this->getUserSys();
-                break;
-            case 6:
                 return $this->getConfigSys();
                 break;
-            case 7:
+            case 6:
                 return $this->getSplit();
                 break;
-            case 8:
+            case 7:
                 return $this->getParentnode();
                 break;
-            case 9:
+            case 8:
                 return $this->getSort();
                 break;
             default:
@@ -1213,11 +1164,10 @@ abstract class Batch implements ActiveRecordInterface
             $keys[2] => $this->getDescription(),
             $keys[3] => $this->getPrecode(),
             $keys[4] => $this->getPostcode(),
-            $keys[5] => $this->getUserSys(),
-            $keys[6] => $this->getConfigSys(),
-            $keys[7] => $this->getSplit(),
-            $keys[8] => $this->getParentnode(),
-            $keys[9] => $this->getSort(),
+            $keys[5] => $this->getConfigSys(),
+            $keys[6] => $this->getSplit(),
+            $keys[7] => $this->getParentnode(),
+            $keys[8] => $this->getSort(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1290,18 +1240,15 @@ abstract class Batch implements ActiveRecordInterface
                 $this->setPostcode($value);
                 break;
             case 5:
-                $this->setUserSys($value);
-                break;
-            case 6:
                 $this->setConfigSys($value);
                 break;
-            case 7:
+            case 6:
                 $this->setSplit($value);
                 break;
-            case 8:
+            case 7:
                 $this->setParentnode($value);
                 break;
-            case 9:
+            case 8:
                 $this->setSort($value);
                 break;
         } // switch()
@@ -1346,19 +1293,16 @@ abstract class Batch implements ActiveRecordInterface
             $this->setPostcode($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setUserSys($arr[$keys[5]]);
+            $this->setConfigSys($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setConfigSys($arr[$keys[6]]);
+            $this->setSplit($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setSplit($arr[$keys[7]]);
+            $this->setParentnode($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setParentnode($arr[$keys[8]]);
-        }
-        if (array_key_exists($keys[9], $arr)) {
-            $this->setSort($arr[$keys[9]]);
+            $this->setSort($arr[$keys[8]]);
         }
     }
 
@@ -1415,9 +1359,6 @@ abstract class Batch implements ActiveRecordInterface
         }
         if ($this->isColumnModified(BatchTableMap::COL__POSTCODE)) {
             $criteria->add(BatchTableMap::COL__POSTCODE, $this->_postcode);
-        }
-        if ($this->isColumnModified(BatchTableMap::COL___USER__)) {
-            $criteria->add(BatchTableMap::COL___USER__, $this->__user__);
         }
         if ($this->isColumnModified(BatchTableMap::COL___CONFIG__)) {
             $criteria->add(BatchTableMap::COL___CONFIG__, $this->__config__);
@@ -1521,7 +1462,6 @@ abstract class Batch implements ActiveRecordInterface
         $copyObj->setDescription($this->getDescription());
         $copyObj->setPrecode($this->getPrecode());
         $copyObj->setPostcode($this->getPostcode());
-        $copyObj->setUserSys($this->getUserSys());
         $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
@@ -2088,7 +2028,6 @@ abstract class Batch implements ActiveRecordInterface
         $this->_description = null;
         $this->_precode = null;
         $this->_postcode = null;
-        $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;
         $this->__parentnode__ = null;

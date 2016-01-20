@@ -59,7 +59,7 @@ class TemplatesTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class TemplatesTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the id field
@@ -100,11 +100,6 @@ class TemplatesTableMap extends TableMap
      * the column name for the _fieldtype field
      */
     const COL__FIELDTYPE = '_templates._fieldtype';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_templates.__user__';
 
     /**
      * the column name for the __config__ field
@@ -138,11 +133,11 @@ class TemplatesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Fieldname', 'Helpdescription', 'Helpimage', 'Fieldtype', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'fieldname', 'helpdescription', 'helpimage', 'fieldtype', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID, TemplatesTableMap::COL__FORTEMPLATE, TemplatesTableMap::COL__FIELDNAME, TemplatesTableMap::COL__HELPDESCRIPTION, TemplatesTableMap::COL__HELPIMAGE, TemplatesTableMap::COL__FIELDTYPE, TemplatesTableMap::COL___USER__, TemplatesTableMap::COL___CONFIG__, TemplatesTableMap::COL___SPLIT__, TemplatesTableMap::COL___PARENTNODE__, TemplatesTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_fieldname', '_helpdescription', '_helpimage', '_fieldtype', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Fieldname', 'Helpdescription', 'Helpimage', 'Fieldtype', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'fieldname', 'helpdescription', 'helpimage', 'fieldtype', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID, TemplatesTableMap::COL__FORTEMPLATE, TemplatesTableMap::COL__FIELDNAME, TemplatesTableMap::COL__HELPDESCRIPTION, TemplatesTableMap::COL__HELPIMAGE, TemplatesTableMap::COL__FIELDTYPE, TemplatesTableMap::COL___CONFIG__, TemplatesTableMap::COL___SPLIT__, TemplatesTableMap::COL___PARENTNODE__, TemplatesTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_fieldname', '_helpdescription', '_helpimage', '_fieldtype', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -152,11 +147,11 @@ class TemplatesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Fieldname' => 2, 'Helpdescription' => 3, 'Helpimage' => 4, 'Fieldtype' => 5, 'UserSys' => 6, 'ConfigSys' => 7, 'Split' => 8, 'Parentnode' => 9, 'Sort' => 10, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'fieldname' => 2, 'helpdescription' => 3, 'helpimage' => 4, 'fieldtype' => 5, 'userSys' => 6, 'configSys' => 7, 'split' => 8, 'parentnode' => 9, 'sort' => 10, ),
-        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID => 0, TemplatesTableMap::COL__FORTEMPLATE => 1, TemplatesTableMap::COL__FIELDNAME => 2, TemplatesTableMap::COL__HELPDESCRIPTION => 3, TemplatesTableMap::COL__HELPIMAGE => 4, TemplatesTableMap::COL__FIELDTYPE => 5, TemplatesTableMap::COL___USER__ => 6, TemplatesTableMap::COL___CONFIG__ => 7, TemplatesTableMap::COL___SPLIT__ => 8, TemplatesTableMap::COL___PARENTNODE__ => 9, TemplatesTableMap::COL___SORT__ => 10, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_fieldname' => 2, '_helpdescription' => 3, '_helpimage' => 4, '_fieldtype' => 5, '__user__' => 6, '__config__' => 7, '__split__' => 8, '__parentnode__' => 9, '__sort__' => 10, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Fieldname' => 2, 'Helpdescription' => 3, 'Helpimage' => 4, 'Fieldtype' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'fieldname' => 2, 'helpdescription' => 3, 'helpimage' => 4, 'fieldtype' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, ),
+        self::TYPE_COLNAME       => array(TemplatesTableMap::COL_ID => 0, TemplatesTableMap::COL__FORTEMPLATE => 1, TemplatesTableMap::COL__FIELDNAME => 2, TemplatesTableMap::COL__HELPDESCRIPTION => 3, TemplatesTableMap::COL__HELPIMAGE => 4, TemplatesTableMap::COL__FIELDTYPE => 5, TemplatesTableMap::COL___CONFIG__ => 6, TemplatesTableMap::COL___SPLIT__ => 7, TemplatesTableMap::COL___PARENTNODE__ => 8, TemplatesTableMap::COL___SORT__ => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_fieldname' => 2, '_helpdescription' => 3, '_helpimage' => 4, '_fieldtype' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -182,7 +177,6 @@ class TemplatesTableMap extends TableMap
         $this->addColumn('_helpdescription', 'Helpdescription', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_helpimage', 'Helpimage', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_fieldtype', 'Fieldtype', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -375,7 +369,6 @@ class TemplatesTableMap extends TableMap
             $criteria->addSelectColumn(TemplatesTableMap::COL__HELPDESCRIPTION);
             $criteria->addSelectColumn(TemplatesTableMap::COL__HELPIMAGE);
             $criteria->addSelectColumn(TemplatesTableMap::COL__FIELDTYPE);
-            $criteria->addSelectColumn(TemplatesTableMap::COL___USER__);
             $criteria->addSelectColumn(TemplatesTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(TemplatesTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(TemplatesTableMap::COL___PARENTNODE__);
@@ -387,7 +380,6 @@ class TemplatesTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._helpdescription');
             $criteria->addSelectColumn($alias . '._helpimage');
             $criteria->addSelectColumn($alias . '._fieldtype');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

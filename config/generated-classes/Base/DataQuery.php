@@ -50,6 +50,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildDataQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildDataQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
+ * @method     ChildDataQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
+ * @method     ChildDataQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildDataQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildDataQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildDataQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildDataQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
+ *
  * @method     ChildDataQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildDataQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildDataQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
@@ -70,7 +80,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataQuery rightJoinWithTemplates() Adds a RIGHT JOIN clause and with to the query using the Templates relation
  * @method     ChildDataQuery innerJoinWithTemplates() Adds a INNER JOIN clause and with to the query using the Templates relation
  *
- * @method     \ContributionsQuery|\TemplatesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\ContributionsQuery|\TemplatesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildData findOne(ConnectionInterface $con = null) Return the first ChildData matching the query
  * @method     ChildData findOneOrCreate(ConnectionInterface $con = null) Return the first ChildData matching the query, or a new ChildData object populated from the query conditions when no match is found
@@ -80,7 +90,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildData findOneByFortemplatefield(int $_fortemplatefield) Return the first ChildData filtered by the _fortemplatefield column
  * @method     ChildData findOneByContent(string $_content) Return the first ChildData filtered by the _content column
  * @method     ChildData findOneByIsjson(boolean $_isjson) Return the first ChildData filtered by the _isjson column
- * @method     ChildData findOneByUserSys(string $__user__) Return the first ChildData filtered by the __user__ column
+ * @method     ChildData findOneByUserSys(int $__user__) Return the first ChildData filtered by the __user__ column
  * @method     ChildData findOneByConfigSys(string $__config__) Return the first ChildData filtered by the __config__ column
  * @method     ChildData findOneBySplit(string $__split__) Return the first ChildData filtered by the __split__ column
  * @method     ChildData findOneByParentnode(int $__parentnode__) Return the first ChildData filtered by the __parentnode__ column
@@ -94,7 +104,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildData requireOneByFortemplatefield(int $_fortemplatefield) Return the first ChildData filtered by the _fortemplatefield column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByContent(string $_content) Return the first ChildData filtered by the _content column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByIsjson(boolean $_isjson) Return the first ChildData filtered by the _isjson column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildData requireOneByUserSys(string $__user__) Return the first ChildData filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildData requireOneByUserSys(int $__user__) Return the first ChildData filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByConfigSys(string $__config__) Return the first ChildData filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneBySplit(string $__split__) Return the first ChildData filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildData requireOneByParentnode(int $__parentnode__) Return the first ChildData filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -106,7 +116,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildData[]|ObjectCollection findByFortemplatefield(int $_fortemplatefield) Return ChildData objects filtered by the _fortemplatefield column
  * @method     ChildData[]|ObjectCollection findByContent(string $_content) Return ChildData objects filtered by the _content column
  * @method     ChildData[]|ObjectCollection findByIsjson(boolean $_isjson) Return ChildData objects filtered by the _isjson column
- * @method     ChildData[]|ObjectCollection findByUserSys(string $__user__) Return ChildData objects filtered by the __user__ column
+ * @method     ChildData[]|ObjectCollection findByUserSys(int $__user__) Return ChildData objects filtered by the __user__ column
  * @method     ChildData[]|ObjectCollection findByConfigSys(string $__config__) Return ChildData objects filtered by the __config__ column
  * @method     ChildData[]|ObjectCollection findBySplit(string $__split__) Return ChildData objects filtered by the __split__ column
  * @method     ChildData[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildData objects filtered by the __parentnode__ column
@@ -481,24 +491,38 @@ abstract class DataQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys(1234); // WHERE __user__ = 1234
+     * $query->filterByUserSys(array(12, 34)); // WHERE __user__ IN (12, 34)
+     * $query->filterByUserSys(array('min' => 12)); // WHERE __user__ > 12
      * </code>
      *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @see       filterByuserSysRef()
+     *
+     * @param     mixed $userSys The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
      */
     public function filterByUserSys($userSys = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
+        if (is_array($userSys)) {
+            $useMinMax = false;
+            if (isset($userSys['min'])) {
+                $this->addUsingAlias(DataTableMap::COL___USER__, $userSys['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($userSys['max'])) {
+                $this->addUsingAlias(DataTableMap::COL___USER__, $userSys['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -643,6 +667,83 @@ abstract class DataQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(DataTableMap::COL___SORT__, $sort, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Users object
+     *
+     * @param \Users|ObjectCollection $users The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByuserSysRef($users, $comparison = null)
+    {
+        if ($users instanceof \Users) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL___USER__, $users->getId(), $comparison);
+        } elseif ($users instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(DataTableMap::COL___USER__, $users->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByuserSysRef() only accepts arguments of type \Users or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the userSysRef relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinuserSysRef($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('userSysRef');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'userSysRef');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the userSysRef relation Users object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UsersQuery A secondary query class using the current class as primary query
+     */
+    public function useuserSysRefQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinuserSysRef($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'userSysRef', '\UsersQuery');
     }
 
     /**

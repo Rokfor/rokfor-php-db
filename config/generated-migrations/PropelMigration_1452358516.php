@@ -89,21 +89,41 @@ class PropelMigration_1452358516
             }
             else {
               $init = parse_ini_string ($string,true);
+              echo "Parsed String\n";
               print_r($init);
+              echo "\n---\n";
               if (is_array($init)) {
             		foreach ($init as $type=>$row) {
-                  $newconfig['default']             = explode(';',trim($row['legends']));
-                  $newconfig['history_command']     = $row['history'];
-                  $newconfig['dateformat']          = $row['dateformat'];
-                  $newconfig['fromtemplate']        = $row['fromtemplate'];
-                  $newconfig['fromfield']           = $row['fromfield'];
-                  $newconfig['frombook']            = $row['frombook'];                  
-                  $newconfig['fixedvalues']         = explode(';',trim($row['values']));	
-                  $newconfig['restrict_to_open']    = $row['restrict_to_open'] ? true : false;
-                  $newconfig['restrict_to_issue']   = $row['restrict_to_issue'];
-                  $newconfig['restrict_to_chapter'] = $row['restrict_to_chapter'];
-                  $newconfig['restrict_to_book']    = $row['restrict_to_book'] ? true : false;
-                  $newconfig['threeDee']            = $row['3d'] ? true : false;
+                  if ($type == 'integer')
+                    $newconfig['integer']             = $row ? true : false;
+                  if ($type == 'resolve_foreign')
+                    $newconfig['resolve_foreign']     = $row ? true : false;
+                  if ($type == 'multiple')
+                    $newconfig['multiple']            = $row ? true : false;
+                  if ($type == 'legends')
+                    $newconfig['default']             = explode(';',trim($row));
+                  if ($type == 'history')
+                    $newconfig['history_command']     = $row;
+                  if ($type == 'dateformat')
+                    $newconfig['dateformat']          = $row;
+                  if ($type == 'fromtemplate')
+                    $newconfig['fromtemplate']        = $row;
+                  if ($type == 'fromfield')
+                    $newconfig['fromfield']           = $row;
+                  if ($type == 'frombook')
+                    $newconfig['frombook']            = $row;
+                  if ($type == 'values')
+                    $newconfig['fixedvalues']         = explode(';',trim($row));	
+                  if ($type == 'restrict_to_open')
+                    $newconfig['restrict_to_open']    = $row ? true : false;
+                  if ($type == 'restrict_to_issue')
+                    $newconfig['restrict_to_issue']   = $row;
+                  if ($type == 'restrict_to_chapter')
+                    $newconfig['restrict_to_chapter'] = $row;
+                  if ($type == 'restrict_to_book')
+                    $newconfig['restrict_to_book']    = $row ? true : false;
+                  if ($type == '3d')
+                    $newconfig['threeDee']            = $row ? true : false;
                 }
               }
             }

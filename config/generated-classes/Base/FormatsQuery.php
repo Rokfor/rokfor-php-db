@@ -46,6 +46,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildFormatsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildFormatsQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
+ * @method     ChildFormatsQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
+ * @method     ChildFormatsQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildFormatsQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildFormatsQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildFormatsQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
+ *
  * @method     ChildFormatsQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildFormatsQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildFormatsQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
@@ -76,7 +86,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
  * @method     ChildFormatsQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
- * @method     \BooksQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\BooksQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildFormats findOne(ConnectionInterface $con = null) Return the first ChildFormats matching the query
  * @method     ChildFormats findOneOrCreate(ConnectionInterface $con = null) Return the first ChildFormats matching the query, or a new ChildFormats object populated from the query conditions when no match is found
@@ -84,7 +94,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormats findOneById(int $id) Return the first ChildFormats filtered by the id column
  * @method     ChildFormats findOneByName(string $_name) Return the first ChildFormats filtered by the _name column
  * @method     ChildFormats findOneByForbook(int $_forbook) Return the first ChildFormats filtered by the _forbook column
- * @method     ChildFormats findOneByUserSys(string $__user__) Return the first ChildFormats filtered by the __user__ column
+ * @method     ChildFormats findOneByUserSys(int $__user__) Return the first ChildFormats filtered by the __user__ column
  * @method     ChildFormats findOneByConfigSys(string $__config__) Return the first ChildFormats filtered by the __config__ column
  * @method     ChildFormats findOneBySplit(string $__split__) Return the first ChildFormats filtered by the __split__ column
  * @method     ChildFormats findOneBySort(int $__sort__) Return the first ChildFormats filtered by the __sort__ column
@@ -96,7 +106,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormats requireOneById(int $id) Return the first ChildFormats filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneByName(string $_name) Return the first ChildFormats filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneByForbook(int $_forbook) Return the first ChildFormats filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildFormats requireOneByUserSys(string $__user__) Return the first ChildFormats filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildFormats requireOneByUserSys(int $__user__) Return the first ChildFormats filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneByConfigSys(string $__config__) Return the first ChildFormats filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneBySplit(string $__split__) Return the first ChildFormats filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildFormats requireOneBySort(int $__sort__) Return the first ChildFormats filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -106,7 +116,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormats[]|ObjectCollection findById(int $id) Return ChildFormats objects filtered by the id column
  * @method     ChildFormats[]|ObjectCollection findByName(string $_name) Return ChildFormats objects filtered by the _name column
  * @method     ChildFormats[]|ObjectCollection findByForbook(int $_forbook) Return ChildFormats objects filtered by the _forbook column
- * @method     ChildFormats[]|ObjectCollection findByUserSys(string $__user__) Return ChildFormats objects filtered by the __user__ column
+ * @method     ChildFormats[]|ObjectCollection findByUserSys(int $__user__) Return ChildFormats objects filtered by the __user__ column
  * @method     ChildFormats[]|ObjectCollection findByConfigSys(string $__config__) Return ChildFormats objects filtered by the __config__ column
  * @method     ChildFormats[]|ObjectCollection findBySplit(string $__split__) Return ChildFormats objects filtered by the __split__ column
  * @method     ChildFormats[]|ObjectCollection findBySort(int $__sort__) Return ChildFormats objects filtered by the __sort__ column
@@ -411,24 +421,38 @@ abstract class FormatsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys(1234); // WHERE __user__ = 1234
+     * $query->filterByUserSys(array(12, 34)); // WHERE __user__ IN (12, 34)
+     * $query->filterByUserSys(array('min' => 12)); // WHERE __user__ > 12
      * </code>
      *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @see       filterByuserSysRef()
+     *
+     * @param     mixed $userSys The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormatsQuery The current query, for fluid interface
      */
     public function filterByUserSys($userSys = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
+        if (is_array($userSys)) {
+            $useMinMax = false;
+            if (isset($userSys['min'])) {
+                $this->addUsingAlias(FormatsTableMap::COL___USER__, $userSys['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($userSys['max'])) {
+                $this->addUsingAlias(FormatsTableMap::COL___USER__, $userSys['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -573,6 +597,83 @@ abstract class FormatsQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(FormatsTableMap::COL___PARENTNODE__, $parentnode, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Users object
+     *
+     * @param \Users|ObjectCollection $users The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildFormatsQuery The current query, for fluid interface
+     */
+    public function filterByuserSysRef($users, $comparison = null)
+    {
+        if ($users instanceof \Users) {
+            return $this
+                ->addUsingAlias(FormatsTableMap::COL___USER__, $users->getId(), $comparison);
+        } elseif ($users instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(FormatsTableMap::COL___USER__, $users->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByuserSysRef() only accepts arguments of type \Users or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the userSysRef relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildFormatsQuery The current query, for fluid interface
+     */
+    public function joinuserSysRef($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('userSysRef');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'userSysRef');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the userSysRef relation Users object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UsersQuery A secondary query class using the current class as primary query
+     */
+    public function useuserSysRefQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinuserSysRef($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'userSysRef', '\UsersQuery');
     }
 
     /**

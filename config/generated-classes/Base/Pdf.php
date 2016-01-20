@@ -102,13 +102,6 @@ abstract class Pdf implements ActiveRecordInterface
     protected $_pages;
 
     /**
-     * The value for the __user__ field.
-     *
-     * @var        string
-     */
-    protected $__user__;
-
-    /**
      * The value for the __config__ field.
      *
      * @var        string
@@ -430,16 +423,6 @@ abstract class Pdf implements ActiveRecordInterface
     }
 
     /**
-     * Get the [__user__] column value.
-     *
-     * @return string
-     */
-    public function getUserSys()
-    {
-        return $this->__user__;
-    }
-
-    /**
      * Get the [__config__] column value.
      *
      * @return string
@@ -600,26 +583,6 @@ abstract class Pdf implements ActiveRecordInterface
     } // setPages()
 
     /**
-     * Set the value of [__user__] column.
-     *
-     * @param string $v new value
-     * @return $this|\Pdf The current object (for fluent API support)
-     */
-    public function setUserSys($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->__user__ !== $v) {
-            $this->__user__ = $v;
-            $this->modifiedColumns[PdfTableMap::COL___USER__] = true;
-        }
-
-        return $this;
-    } // setUserSys()
-
-    /**
      * Set the value of [__config__] column.
      *
      * @param string $v new value
@@ -753,19 +716,16 @@ abstract class Pdf implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PdfTableMap::translateFieldName('Pages', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_pages = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PdfTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PdfTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PdfTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PdfTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : PdfTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PdfTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : PdfTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : PdfTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : PdfTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -775,7 +735,7 @@ abstract class Pdf implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = PdfTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = PdfTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Pdf'), 0, $e);
@@ -990,9 +950,6 @@ abstract class Pdf implements ActiveRecordInterface
         if ($this->isColumnModified(PdfTableMap::COL__PAGES)) {
             $modifiedColumns[':p' . $index++]  = '_pages';
         }
-        if ($this->isColumnModified(PdfTableMap::COL___USER__)) {
-            $modifiedColumns[':p' . $index++]  = '__user__';
-        }
         if ($this->isColumnModified(PdfTableMap::COL___CONFIG__)) {
             $modifiedColumns[':p' . $index++]  = '__config__';
         }
@@ -1033,9 +990,6 @@ abstract class Pdf implements ActiveRecordInterface
                         break;
                     case '_pages':
                         $stmt->bindValue($identifier, $this->_pages, PDO::PARAM_INT);
-                        break;
-                    case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1130,18 +1084,15 @@ abstract class Pdf implements ActiveRecordInterface
                 return $this->getPages();
                 break;
             case 6:
-                return $this->getUserSys();
-                break;
-            case 7:
                 return $this->getConfigSys();
                 break;
-            case 8:
+            case 7:
                 return $this->getSplit();
                 break;
-            case 9:
+            case 8:
                 return $this->getParentnode();
                 break;
-            case 10:
+            case 9:
                 return $this->getSort();
                 break;
             default:
@@ -1179,11 +1130,10 @@ abstract class Pdf implements ActiveRecordInterface
             $keys[3] => $this->getIssue(),
             $keys[4] => $this->getPlugin(),
             $keys[5] => $this->getPages(),
-            $keys[6] => $this->getUserSys(),
-            $keys[7] => $this->getConfigSys(),
-            $keys[8] => $this->getSplit(),
-            $keys[9] => $this->getParentnode(),
-            $keys[10] => $this->getSort(),
+            $keys[6] => $this->getConfigSys(),
+            $keys[7] => $this->getSplit(),
+            $keys[8] => $this->getParentnode(),
+            $keys[9] => $this->getSort(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1242,18 +1192,15 @@ abstract class Pdf implements ActiveRecordInterface
                 $this->setPages($value);
                 break;
             case 6:
-                $this->setUserSys($value);
-                break;
-            case 7:
                 $this->setConfigSys($value);
                 break;
-            case 8:
+            case 7:
                 $this->setSplit($value);
                 break;
-            case 9:
+            case 8:
                 $this->setParentnode($value);
                 break;
-            case 10:
+            case 9:
                 $this->setSort($value);
                 break;
         } // switch()
@@ -1301,19 +1248,16 @@ abstract class Pdf implements ActiveRecordInterface
             $this->setPages($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUserSys($arr[$keys[6]]);
+            $this->setConfigSys($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setConfigSys($arr[$keys[7]]);
+            $this->setSplit($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setSplit($arr[$keys[8]]);
+            $this->setParentnode($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setParentnode($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setSort($arr[$keys[10]]);
+            $this->setSort($arr[$keys[9]]);
         }
     }
 
@@ -1373,9 +1317,6 @@ abstract class Pdf implements ActiveRecordInterface
         }
         if ($this->isColumnModified(PdfTableMap::COL__PAGES)) {
             $criteria->add(PdfTableMap::COL__PAGES, $this->_pages);
-        }
-        if ($this->isColumnModified(PdfTableMap::COL___USER__)) {
-            $criteria->add(PdfTableMap::COL___USER__, $this->__user__);
         }
         if ($this->isColumnModified(PdfTableMap::COL___CONFIG__)) {
             $criteria->add(PdfTableMap::COL___CONFIG__, $this->__config__);
@@ -1480,7 +1421,6 @@ abstract class Pdf implements ActiveRecordInterface
         $copyObj->setIssue($this->getIssue());
         $copyObj->setPlugin($this->getPlugin());
         $copyObj->setPages($this->getPages());
-        $copyObj->setUserSys($this->getUserSys());
         $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
@@ -1526,7 +1466,6 @@ abstract class Pdf implements ActiveRecordInterface
         $this->_issue = null;
         $this->_plugin = null;
         $this->_pages = null;
-        $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;
         $this->__parentnode__ = null;

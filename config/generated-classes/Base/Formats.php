@@ -12,6 +12,8 @@ use \RTemplatenamesInchapter as ChildRTemplatenamesInchapter;
 use \RTemplatenamesInchapterQuery as ChildRTemplatenamesInchapterQuery;
 use \Templatenames as ChildTemplatenames;
 use \TemplatenamesQuery as ChildTemplatenamesQuery;
+use \Users as ChildUsers;
+use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
 use Map\FormatsTableMap;
@@ -93,7 +95,7 @@ abstract class Formats implements ActiveRecordInterface
     /**
      * The value for the __user__ field.
      *
-     * @var        string
+     * @var        int
      */
     protected $__user__;
 
@@ -124,6 +126,11 @@ abstract class Formats implements ActiveRecordInterface
      * @var        int
      */
     protected $__parentnode__;
+
+    /**
+     * @var        ChildUsers
+     */
+    protected $auserSysRef;
 
     /**
      * @var        ChildBooks
@@ -436,7 +443,7 @@ abstract class Formats implements ActiveRecordInterface
     /**
      * Get the [__user__] column value.
      *
-     * @return string
+     * @return int
      */
     public function getUserSys()
     {
@@ -550,18 +557,22 @@ abstract class Formats implements ActiveRecordInterface
     /**
      * Set the value of [__user__] column.
      *
-     * @param string $v new value
+     * @param int $v new value
      * @return $this|\Formats The current object (for fluent API support)
      */
     public function setUserSys($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
         if ($this->__user__ !== $v) {
             $this->__user__ = $v;
             $this->modifiedColumns[FormatsTableMap::COL___USER__] = true;
+        }
+
+        if ($this->auserSysRef !== null && $this->auserSysRef->getId() !== $v) {
+            $this->auserSysRef = null;
         }
 
         return $this;
@@ -693,7 +704,7 @@ abstract class Formats implements ActiveRecordInterface
             $this->_forbook = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FormatsTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
+            $this->__user__ = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FormatsTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
@@ -739,6 +750,9 @@ abstract class Formats implements ActiveRecordInterface
         if ($this->aBooks !== null && $this->_forbook !== $this->aBooks->getId()) {
             $this->aBooks = null;
         }
+        if ($this->auserSysRef !== null && $this->__user__ !== $this->auserSysRef->getId()) {
+            $this->auserSysRef = null;
+        }
     } // ensureConsistency
 
     /**
@@ -778,6 +792,7 @@ abstract class Formats implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->auserSysRef = null;
             $this->aBooks = null;
             $this->collRTemplatenamesInchapters = null;
 
@@ -887,6 +902,13 @@ abstract class Formats implements ActiveRecordInterface
             // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
+
+            if ($this->auserSysRef !== null) {
+                if ($this->auserSysRef->isModified() || $this->auserSysRef->isNew()) {
+                    $affectedRows += $this->auserSysRef->save($con);
+                }
+                $this->setuserSysRef($this->auserSysRef);
+            }
 
             if ($this->aBooks !== null) {
                 if ($this->aBooks->isModified() || $this->aBooks->isNew()) {
@@ -1040,7 +1062,7 @@ abstract class Formats implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->_forbook, PDO::PARAM_INT);
                         break;
                     case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_INT);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1185,6 +1207,21 @@ abstract class Formats implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->auserSysRef) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'users';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'users';
+                        break;
+                    default:
+                        $key = 'Users';
+                }
+
+                $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aBooks) {
 
                 switch ($keyType) {
@@ -1542,6 +1579,57 @@ abstract class Formats implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUsers object.
+     *
+     * @param  ChildUsers $v
+     * @return $this|\Formats The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setuserSysRef(ChildUsers $v = null)
+    {
+        if ($v === null) {
+            $this->setUserSys(NULL);
+        } else {
+            $this->setUserSys($v->getId());
+        }
+
+        $this->auserSysRef = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUsers object, it will not be re-added.
+        if ($v !== null) {
+            $v->addFormats($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUsers object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUsers The associated ChildUsers object.
+     * @throws PropelException
+     */
+    public function getuserSysRef(ConnectionInterface $con = null)
+    {
+        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+            $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->auserSysRef->addFormatss($this);
+             */
+        }
+
+        return $this->auserSysRef;
     }
 
     /**
@@ -2103,6 +2191,31 @@ abstract class Formats implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
      */
+    public function getContributionssJoinuserSysRef(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildContributionsQuery::create(null, $criteria);
+        $query->joinWith('userSysRef', $joinBehavior);
+
+        return $this->getContributionss($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Formats is new, it will return
+     * an empty collection; or if this Formats has previously
+     * been saved, it will retrieve related Contributionss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Formats.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     */
     public function getContributionssJoinIssues(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildContributionsQuery::create(null, $criteria);
@@ -2385,6 +2498,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->auserSysRef) {
+            $this->auserSysRef->removeFormats($this);
+        }
         if (null !== $this->aBooks) {
             $this->aBooks->removeFormats($this);
         }
@@ -2434,6 +2550,7 @@ abstract class Formats implements ActiveRecordInterface
         $this->collRTemplatenamesInchapters = null;
         $this->collContributionss = null;
         $this->collTemplatenamess = null;
+        $this->auserSysRef = null;
         $this->aBooks = null;
     }
 

@@ -7,6 +7,8 @@ use \ContributionsQuery as ChildContributionsQuery;
 use \DataQuery as ChildDataQuery;
 use \Templates as ChildTemplates;
 use \TemplatesQuery as ChildTemplatesQuery;
+use \Users as ChildUsers;
+use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
 use Map\DataTableMap;
@@ -101,7 +103,7 @@ abstract class Data implements ActiveRecordInterface
     /**
      * The value for the __user__ field.
      *
-     * @var        string
+     * @var        int
      */
     protected $__user__;
 
@@ -132,6 +134,11 @@ abstract class Data implements ActiveRecordInterface
      * @var        int
      */
     protected $__sort__;
+
+    /**
+     * @var        ChildUsers
+     */
+    protected $auserSysRef;
 
     /**
      * @var        ChildContributions
@@ -439,7 +446,7 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Get the [__user__] column value.
      *
-     * @return string
+     * @return int
      */
     public function getUserSys()
     {
@@ -605,18 +612,22 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Set the value of [__user__] column.
      *
-     * @param string $v new value
+     * @param int $v new value
      * @return $this|\Data The current object (for fluent API support)
      */
     public function setUserSys($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
         if ($this->__user__ !== $v) {
             $this->__user__ = $v;
             $this->modifiedColumns[DataTableMap::COL___USER__] = true;
+        }
+
+        if ($this->auserSysRef !== null && $this->auserSysRef->getId() !== $v) {
+            $this->auserSysRef = null;
         }
 
         return $this;
@@ -754,7 +765,7 @@ abstract class Data implements ActiveRecordInterface
             $this->_isjson = (null !== $col) ? (boolean) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DataTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
+            $this->__user__ = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DataTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
@@ -803,6 +814,9 @@ abstract class Data implements ActiveRecordInterface
         if ($this->aTemplates !== null && $this->_fortemplatefield !== $this->aTemplates->getId()) {
             $this->aTemplates = null;
         }
+        if ($this->auserSysRef !== null && $this->__user__ !== $this->auserSysRef->getId()) {
+            $this->auserSysRef = null;
+        }
     } // ensureConsistency
 
     /**
@@ -842,6 +856,7 @@ abstract class Data implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->auserSysRef = null;
             $this->aContributions = null;
             $this->aTemplates = null;
         } // if (deep)
@@ -947,6 +962,13 @@ abstract class Data implements ActiveRecordInterface
             // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
+
+            if ($this->auserSysRef !== null) {
+                if ($this->auserSysRef->isModified() || $this->auserSysRef->isNew()) {
+                    $affectedRows += $this->auserSysRef->save($con);
+                }
+                $this->setuserSysRef($this->auserSysRef);
+            }
 
             if ($this->aContributions !== null) {
                 if ($this->aContributions->isModified() || $this->aContributions->isNew()) {
@@ -1056,7 +1078,7 @@ abstract class Data implements ActiveRecordInterface
                         $stmt->bindValue($identifier, (int) $this->_isjson, PDO::PARAM_INT);
                         break;
                     case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_INT);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1209,6 +1231,21 @@ abstract class Data implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->auserSysRef) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'users';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'users';
+                        break;
+                    default:
+                        $key = 'Users';
+                }
+
+                $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aContributions) {
 
                 switch ($keyType) {
@@ -1554,6 +1591,57 @@ abstract class Data implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildUsers object.
+     *
+     * @param  ChildUsers $v
+     * @return $this|\Data The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setuserSysRef(ChildUsers $v = null)
+    {
+        if ($v === null) {
+            $this->setUserSys(NULL);
+        } else {
+            $this->setUserSys($v->getId());
+        }
+
+        $this->auserSysRef = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUsers object, it will not be re-added.
+        if ($v !== null) {
+            $v->addData($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUsers object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUsers The associated ChildUsers object.
+     * @throws PropelException
+     */
+    public function getuserSysRef(ConnectionInterface $con = null)
+    {
+        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+            $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->auserSysRef->addDatas($this);
+             */
+        }
+
+        return $this->auserSysRef;
+    }
+
+    /**
      * Declares an association between this object and a ChildContributions object.
      *
      * @param  ChildContributions $v
@@ -1662,6 +1750,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->auserSysRef) {
+            $this->auserSysRef->removeData($this);
+        }
         if (null !== $this->aContributions) {
             $this->aContributions->removeData($this);
         }
@@ -1698,6 +1789,7 @@ abstract class Data implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->auserSysRef = null;
         $this->aContributions = null;
         $this->aTemplates = null;
     }

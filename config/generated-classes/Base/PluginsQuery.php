@@ -22,7 +22,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPluginsQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPluginsQuery orderByName($order = Criteria::ASC) Order by the _name column
- * @method     ChildPluginsQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
  * @method     ChildPluginsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildPluginsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildPluginsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
@@ -33,7 +32,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPluginsQuery groupById() Group by the id column
  * @method     ChildPluginsQuery groupByName() Group by the _name column
- * @method     ChildPluginsQuery groupByUserSys() Group by the __user__ column
  * @method     ChildPluginsQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildPluginsQuery groupBySplit() Group by the __split__ column
  * @method     ChildPluginsQuery groupByParentnode() Group by the __parentnode__ column
@@ -107,7 +105,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPlugins findOneById(int $id) Return the first ChildPlugins filtered by the id column
  * @method     ChildPlugins findOneByName(string $_name) Return the first ChildPlugins filtered by the _name column
- * @method     ChildPlugins findOneByUserSys(string $__user__) Return the first ChildPlugins filtered by the __user__ column
  * @method     ChildPlugins findOneByConfigSys(string $__config__) Return the first ChildPlugins filtered by the __config__ column
  * @method     ChildPlugins findOneBySplit(string $__split__) Return the first ChildPlugins filtered by the __split__ column
  * @method     ChildPlugins findOneByParentnode(int $__parentnode__) Return the first ChildPlugins filtered by the __parentnode__ column
@@ -121,7 +118,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPlugins requireOneById(int $id) Return the first ChildPlugins filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPlugins requireOneByName(string $_name) Return the first ChildPlugins filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneByUserSys(string $__user__) Return the first ChildPlugins filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPlugins requireOneByConfigSys(string $__config__) Return the first ChildPlugins filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPlugins requireOneBySplit(string $__split__) Return the first ChildPlugins filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPlugins requireOneByParentnode(int $__parentnode__) Return the first ChildPlugins filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -133,7 +129,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPlugins[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPlugins objects based on current ModelCriteria
  * @method     ChildPlugins[]|ObjectCollection findById(int $id) Return ChildPlugins objects filtered by the id column
  * @method     ChildPlugins[]|ObjectCollection findByName(string $_name) Return ChildPlugins objects filtered by the _name column
- * @method     ChildPlugins[]|ObjectCollection findByUserSys(string $__user__) Return ChildPlugins objects filtered by the __user__ column
  * @method     ChildPlugins[]|ObjectCollection findByConfigSys(string $__config__) Return ChildPlugins objects filtered by the __config__ column
  * @method     ChildPlugins[]|ObjectCollection findBySplit(string $__split__) Return ChildPlugins objects filtered by the __split__ column
  * @method     ChildPlugins[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildPlugins objects filtered by the __parentnode__ column
@@ -233,7 +228,7 @@ abstract class PluginsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, __user__, __config__, __split__, __parentnode__, __sort__, _page, _config, _callback FROM _plugins WHERE id = :p0';
+        $sql = 'SELECT id, _name, __config__, __split__, __parentnode__, __sort__, _page, _config, _callback FROM _plugins WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -391,35 +386,6 @@ abstract class PluginsQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PluginsTableMap::COL__NAME, $name, $comparison);
-    }
-
-    /**
-     * Filter the query on the __user__ column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPluginsQuery The current query, for fluid interface
-     */
-    public function filterByUserSys($userSys = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(PluginsTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**

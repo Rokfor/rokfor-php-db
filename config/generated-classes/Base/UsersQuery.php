@@ -52,7 +52,57 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsersQuery rightJoinWithRRightsForuser() Adds a RIGHT JOIN clause and with to the query using the RRightsForuser relation
  * @method     ChildUsersQuery innerJoinWithRRightsForuser() Adds a INNER JOIN clause and with to the query using the RRightsForuser relation
  *
- * @method     \RRightsForuserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildUsersQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
+ * @method     ChildUsersQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
+ * @method     ChildUsersQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
+ *
+ * @method     ChildUsersQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
+ *
+ * @method     ChildUsersQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
+ * @method     ChildUsersQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
+ * @method     ChildUsersQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
+ *
+ * @method     ChildUsersQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
+ * @method     ChildUsersQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
+ * @method     ChildUsersQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
+ *
+ * @method     ChildUsersQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildUsersQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildUsersQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildUsersQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
+ *
+ * @method     ChildUsersQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
+ * @method     ChildUsersQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
+ * @method     ChildUsersQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
+ *
+ * @method     ChildUsersQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
+ *
+ * @method     ChildUsersQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
+ * @method     ChildUsersQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
+ * @method     ChildUsersQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
+ *
+ * @method     ChildUsersQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
+ * @method     ChildUsersQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
+ * @method     ChildUsersQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
+ *
+ * @method     ChildUsersQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
+ *
+ * @method     ChildUsersQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
+ * @method     ChildUsersQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
+ * @method     ChildUsersQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
+ *
+ * @method     ChildUsersQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
+ * @method     ChildUsersQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
+ * @method     ChildUsersQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ *
+ * @method     ChildUsersQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ *
+ * @method     ChildUsersQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
+ * @method     ChildUsersQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
+ * @method     ChildUsersQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
+ *
+ * @method     \RRightsForuserQuery|\BooksQuery|\ContributionsQuery|\DataQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUsers findOne(ConnectionInterface $con = null) Return the first ChildUsers matching the query
  * @method     ChildUsers findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUsers matching the query, or a new ChildUsers object populated from the query conditions when no match is found
@@ -520,6 +570,371 @@ abstract class UsersQuery extends ModelCriteria
         return $this
             ->joinRRightsForuser($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'RRightsForuser', '\RRightsForuserQuery');
+    }
+
+    /**
+     * Filter the query by a related \Books object
+     *
+     * @param \Books|ObjectCollection $books the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByBooks($books, $comparison = null)
+    {
+        if ($books instanceof \Books) {
+            return $this
+                ->addUsingAlias(UsersTableMap::COL_ID, $books->getUserSys(), $comparison);
+        } elseif ($books instanceof ObjectCollection) {
+            return $this
+                ->useBooksQuery()
+                ->filterByPrimaryKeys($books->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBooks() only accepts arguments of type \Books or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Books relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function joinBooks($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Books');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Books');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Books relation Books object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \BooksQuery A secondary query class using the current class as primary query
+     */
+    public function useBooksQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBooks($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Books', '\BooksQuery');
+    }
+
+    /**
+     * Filter the query by a related \Contributions object
+     *
+     * @param \Contributions|ObjectCollection $contributions the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByContributions($contributions, $comparison = null)
+    {
+        if ($contributions instanceof \Contributions) {
+            return $this
+                ->addUsingAlias(UsersTableMap::COL_ID, $contributions->getUserSys(), $comparison);
+        } elseif ($contributions instanceof ObjectCollection) {
+            return $this
+                ->useContributionsQuery()
+                ->filterByPrimaryKeys($contributions->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByContributions() only accepts arguments of type \Contributions or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Contributions relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function joinContributions($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Contributions');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Contributions');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Contributions relation Contributions object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ContributionsQuery A secondary query class using the current class as primary query
+     */
+    public function useContributionsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinContributions($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Contributions', '\ContributionsQuery');
+    }
+
+    /**
+     * Filter the query by a related \Data object
+     *
+     * @param \Data|ObjectCollection $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByData($data, $comparison = null)
+    {
+        if ($data instanceof \Data) {
+            return $this
+                ->addUsingAlias(UsersTableMap::COL_ID, $data->getUserSys(), $comparison);
+        } elseif ($data instanceof ObjectCollection) {
+            return $this
+                ->useDataQuery()
+                ->filterByPrimaryKeys($data->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByData() only accepts arguments of type \Data or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Data relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function joinData($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Data');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Data');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Data relation Data object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \DataQuery A secondary query class using the current class as primary query
+     */
+    public function useDataQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinData($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Data', '\DataQuery');
+    }
+
+    /**
+     * Filter the query by a related \Formats object
+     *
+     * @param \Formats|ObjectCollection $formats the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByFormats($formats, $comparison = null)
+    {
+        if ($formats instanceof \Formats) {
+            return $this
+                ->addUsingAlias(UsersTableMap::COL_ID, $formats->getUserSys(), $comparison);
+        } elseif ($formats instanceof ObjectCollection) {
+            return $this
+                ->useFormatsQuery()
+                ->filterByPrimaryKeys($formats->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByFormats() only accepts arguments of type \Formats or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Formats relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function joinFormats($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Formats');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Formats');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Formats relation Formats object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \FormatsQuery A secondary query class using the current class as primary query
+     */
+    public function useFormatsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinFormats($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Formats', '\FormatsQuery');
+    }
+
+    /**
+     * Filter the query by a related \Issues object
+     *
+     * @param \Issues|ObjectCollection $issues the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByIssues($issues, $comparison = null)
+    {
+        if ($issues instanceof \Issues) {
+            return $this
+                ->addUsingAlias(UsersTableMap::COL_ID, $issues->getUserSys(), $comparison);
+        } elseif ($issues instanceof ObjectCollection) {
+            return $this
+                ->useIssuesQuery()
+                ->filterByPrimaryKeys($issues->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByIssues() only accepts arguments of type \Issues or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Issues relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function joinIssues($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Issues');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Issues');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Issues relation Issues object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \IssuesQuery A secondary query class using the current class as primary query
+     */
+    public function useIssuesQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinIssues($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Issues', '\IssuesQuery');
     }
 
     /**

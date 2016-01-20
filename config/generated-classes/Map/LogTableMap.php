@@ -59,7 +59,7 @@ class LogTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class LogTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -95,11 +95,6 @@ class LogTableMap extends TableMap
      * the column name for the _date field
      */
     const COL__DATE = '_log._date';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_log.__user__';
 
     /**
      * the column name for the __config__ field
@@ -133,11 +128,11 @@ class LogTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Ip', 'Agent', 'User', 'Date', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'ip', 'agent', 'user', 'date', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(LogTableMap::COL_ID, LogTableMap::COL__IP, LogTableMap::COL__AGENT, LogTableMap::COL__USER, LogTableMap::COL__DATE, LogTableMap::COL___USER__, LogTableMap::COL___CONFIG__, LogTableMap::COL___SPLIT__, LogTableMap::COL___PARENTNODE__, LogTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_ip', '_agent', '_user', '_date', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'Ip', 'Agent', 'User', 'Date', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'ip', 'agent', 'user', 'date', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(LogTableMap::COL_ID, LogTableMap::COL__IP, LogTableMap::COL__AGENT, LogTableMap::COL__USER, LogTableMap::COL__DATE, LogTableMap::COL___CONFIG__, LogTableMap::COL___SPLIT__, LogTableMap::COL___PARENTNODE__, LogTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_ip', '_agent', '_user', '_date', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -147,11 +142,11 @@ class LogTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Ip' => 1, 'Agent' => 2, 'User' => 3, 'Date' => 4, 'UserSys' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'ip' => 1, 'agent' => 2, 'user' => 3, 'date' => 4, 'userSys' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, ),
-        self::TYPE_COLNAME       => array(LogTableMap::COL_ID => 0, LogTableMap::COL__IP => 1, LogTableMap::COL__AGENT => 2, LogTableMap::COL__USER => 3, LogTableMap::COL__DATE => 4, LogTableMap::COL___USER__ => 5, LogTableMap::COL___CONFIG__ => 6, LogTableMap::COL___SPLIT__ => 7, LogTableMap::COL___PARENTNODE__ => 8, LogTableMap::COL___SORT__ => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_ip' => 1, '_agent' => 2, '_user' => 3, '_date' => 4, '__user__' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Ip' => 1, 'Agent' => 2, 'User' => 3, 'Date' => 4, 'ConfigSys' => 5, 'Split' => 6, 'Parentnode' => 7, 'Sort' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'ip' => 1, 'agent' => 2, 'user' => 3, 'date' => 4, 'configSys' => 5, 'split' => 6, 'parentnode' => 7, 'sort' => 8, ),
+        self::TYPE_COLNAME       => array(LogTableMap::COL_ID => 0, LogTableMap::COL__IP => 1, LogTableMap::COL__AGENT => 2, LogTableMap::COL__USER => 3, LogTableMap::COL__DATE => 4, LogTableMap::COL___CONFIG__ => 5, LogTableMap::COL___SPLIT__ => 6, LogTableMap::COL___PARENTNODE__ => 7, LogTableMap::COL___SORT__ => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_ip' => 1, '_agent' => 2, '_user' => 3, '_date' => 4, '__config__' => 5, '__split__' => 6, '__parentnode__' => 7, '__sort__' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -176,7 +171,6 @@ class LogTableMap extends TableMap
         $this->addColumn('_agent', 'Agent', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_user', 'User', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_date', 'Date', 'INTEGER', false, 40, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -336,7 +330,6 @@ class LogTableMap extends TableMap
             $criteria->addSelectColumn(LogTableMap::COL__AGENT);
             $criteria->addSelectColumn(LogTableMap::COL__USER);
             $criteria->addSelectColumn(LogTableMap::COL__DATE);
-            $criteria->addSelectColumn(LogTableMap::COL___USER__);
             $criteria->addSelectColumn(LogTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(LogTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(LogTableMap::COL___PARENTNODE__);
@@ -347,7 +340,6 @@ class LogTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._agent');
             $criteria->addSelectColumn($alias . '._user');
             $criteria->addSelectColumn($alias . '._date');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

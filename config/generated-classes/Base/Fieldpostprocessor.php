@@ -87,13 +87,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     protected $_code;
 
     /**
-     * The value for the __user__ field.
-     *
-     * @var        string
-     */
-    protected $__user__;
-
-    /**
      * The value for the __config__ field.
      *
      * @var        string
@@ -413,16 +406,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     }
 
     /**
-     * Get the [__user__] column value.
-     *
-     * @return string
-     */
-    public function getUserSys()
-    {
-        return $this->__user__;
-    }
-
-    /**
      * Get the [__config__] column value.
      *
      * @return string
@@ -521,26 +504,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
         return $this;
     } // setCode()
-
-    /**
-     * Set the value of [__user__] column.
-     *
-     * @param string $v new value
-     * @return $this|\Fieldpostprocessor The current object (for fluent API support)
-     */
-    public function setUserSys($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->__user__ !== $v) {
-            $this->__user__ = $v;
-            $this->modifiedColumns[FieldpostprocessorTableMap::COL___USER__] = true;
-        }
-
-        return $this;
-    } // setUserSys()
 
     /**
      * Set the value of [__config__] column.
@@ -667,19 +630,16 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : FieldpostprocessorTableMap::translateFieldName('Code', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_code = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FieldpostprocessorTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FieldpostprocessorTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : FieldpostprocessorTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : FieldpostprocessorTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : FieldpostprocessorTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : FieldpostprocessorTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : FieldpostprocessorTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : FieldpostprocessorTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : FieldpostprocessorTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -689,7 +649,7 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = FieldpostprocessorTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = FieldpostprocessorTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Fieldpostprocessor'), 0, $e);
@@ -944,9 +904,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
         if ($this->isColumnModified(FieldpostprocessorTableMap::COL__CODE)) {
             $modifiedColumns[':p' . $index++]  = '_code';
         }
-        if ($this->isColumnModified(FieldpostprocessorTableMap::COL___USER__)) {
-            $modifiedColumns[':p' . $index++]  = '__user__';
-        }
         if ($this->isColumnModified(FieldpostprocessorTableMap::COL___CONFIG__)) {
             $modifiedColumns[':p' . $index++]  = '__config__';
         }
@@ -978,9 +935,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                         break;
                     case '_code':
                         $stmt->bindValue($identifier, $this->_code, PDO::PARAM_STR);
-                        break;
-                    case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1066,18 +1020,15 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                 return $this->getCode();
                 break;
             case 3:
-                return $this->getUserSys();
-                break;
-            case 4:
                 return $this->getConfigSys();
                 break;
-            case 5:
+            case 4:
                 return $this->getSplit();
                 break;
-            case 6:
+            case 5:
                 return $this->getParentnode();
                 break;
-            case 7:
+            case 6:
                 return $this->getSort();
                 break;
             default:
@@ -1113,11 +1064,10 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getCode(),
-            $keys[3] => $this->getUserSys(),
-            $keys[4] => $this->getConfigSys(),
-            $keys[5] => $this->getSplit(),
-            $keys[6] => $this->getParentnode(),
-            $keys[7] => $this->getSort(),
+            $keys[3] => $this->getConfigSys(),
+            $keys[4] => $this->getSplit(),
+            $keys[5] => $this->getParentnode(),
+            $keys[6] => $this->getSort(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1184,18 +1134,15 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                 $this->setCode($value);
                 break;
             case 3:
-                $this->setUserSys($value);
-                break;
-            case 4:
                 $this->setConfigSys($value);
                 break;
-            case 5:
+            case 4:
                 $this->setSplit($value);
                 break;
-            case 6:
+            case 5:
                 $this->setParentnode($value);
                 break;
-            case 7:
+            case 6:
                 $this->setSort($value);
                 break;
         } // switch()
@@ -1234,19 +1181,16 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
             $this->setCode($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setUserSys($arr[$keys[3]]);
+            $this->setConfigSys($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setConfigSys($arr[$keys[4]]);
+            $this->setSplit($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setSplit($arr[$keys[5]]);
+            $this->setParentnode($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setParentnode($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setSort($arr[$keys[7]]);
+            $this->setSort($arr[$keys[6]]);
         }
     }
 
@@ -1297,9 +1241,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
         }
         if ($this->isColumnModified(FieldpostprocessorTableMap::COL__CODE)) {
             $criteria->add(FieldpostprocessorTableMap::COL__CODE, $this->_code);
-        }
-        if ($this->isColumnModified(FieldpostprocessorTableMap::COL___USER__)) {
-            $criteria->add(FieldpostprocessorTableMap::COL___USER__, $this->__user__);
         }
         if ($this->isColumnModified(FieldpostprocessorTableMap::COL___CONFIG__)) {
             $criteria->add(FieldpostprocessorTableMap::COL___CONFIG__, $this->__config__);
@@ -1401,7 +1342,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setCode($this->getCode());
-        $copyObj->setUserSys($this->getUserSys());
         $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
@@ -1966,7 +1906,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
         $this->id = null;
         $this->_name = null;
         $this->_code = null;
-        $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;
         $this->__parentnode__ = null;

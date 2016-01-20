@@ -188,7 +188,7 @@ class IssuesTableMap extends TableMap
         $this->addColumn('_status', 'Status', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_infotext', 'Infotext', 'LONGVARCHAR', false, null, null);
         $this->addForeignKey('_forbook', 'Forbook', 'INTEGER', '_books', 'id', false, 32, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addForeignKey('__user__', 'UserSys', 'INTEGER', 'users', 'id', false, 4, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -200,6 +200,13 @@ class IssuesTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('userSysRef', '\\Users', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', null, false);
         $this->addRelation('Books', '\\Books', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (

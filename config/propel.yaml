@@ -9,7 +9,7 @@ propel:
           rokfor:
               adapter: mysql
               classname: Propel\Runtime\Connection\DebugPDO
-              dsn: mysql:host=localhost;dbname=dbname;unix_socket=/tmp/mysql.sock;
+              dsn: mysql:host=localhost;dbname=db;unix_socket=/tmp/mysql.sock;
               user: root
               password: 
               attributes:

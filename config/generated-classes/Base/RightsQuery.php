@@ -22,7 +22,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRightsQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildRightsQuery orderByGroup($order = Criteria::ASC) Order by the _group column
- * @method     ChildRightsQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
  * @method     ChildRightsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildRightsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildRightsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
@@ -30,7 +29,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRightsQuery groupById() Group by the id column
  * @method     ChildRightsQuery groupByGroup() Group by the _group column
- * @method     ChildRightsQuery groupByUserSys() Group by the __user__ column
  * @method     ChildRightsQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildRightsQuery groupBySplit() Group by the __split__ column
  * @method     ChildRightsQuery groupByParentnode() Group by the __parentnode__ column
@@ -91,7 +89,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRights findOneById(int $id) Return the first ChildRights filtered by the id column
  * @method     ChildRights findOneByGroup(string $_group) Return the first ChildRights filtered by the _group column
- * @method     ChildRights findOneByUserSys(string $__user__) Return the first ChildRights filtered by the __user__ column
  * @method     ChildRights findOneByConfigSys(string $__config__) Return the first ChildRights filtered by the __config__ column
  * @method     ChildRights findOneBySplit(string $__split__) Return the first ChildRights filtered by the __split__ column
  * @method     ChildRights findOneByParentnode(int $__parentnode__) Return the first ChildRights filtered by the __parentnode__ column
@@ -102,7 +99,6 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildRights requireOneById(int $id) Return the first ChildRights filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneByGroup(string $_group) Return the first ChildRights filtered by the _group column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRights requireOneByUserSys(string $__user__) Return the first ChildRights filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneByConfigSys(string $__config__) Return the first ChildRights filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneBySplit(string $__split__) Return the first ChildRights filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRights requireOneByParentnode(int $__parentnode__) Return the first ChildRights filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -111,7 +107,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRights[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRights objects based on current ModelCriteria
  * @method     ChildRights[]|ObjectCollection findById(int $id) Return ChildRights objects filtered by the id column
  * @method     ChildRights[]|ObjectCollection findByGroup(string $_group) Return ChildRights objects filtered by the _group column
- * @method     ChildRights[]|ObjectCollection findByUserSys(string $__user__) Return ChildRights objects filtered by the __user__ column
  * @method     ChildRights[]|ObjectCollection findByConfigSys(string $__config__) Return ChildRights objects filtered by the __config__ column
  * @method     ChildRights[]|ObjectCollection findBySplit(string $__split__) Return ChildRights objects filtered by the __split__ column
  * @method     ChildRights[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildRights objects filtered by the __parentnode__ column
@@ -208,7 +203,7 @@ abstract class RightsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _group, __user__, __config__, __split__, __parentnode__, __sort__ FROM _rights WHERE id = :p0';
+        $sql = 'SELECT id, _group, __config__, __split__, __parentnode__, __sort__ FROM _rights WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -366,35 +361,6 @@ abstract class RightsQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(RightsTableMap::COL__GROUP, $group, $comparison);
-    }
-
-    /**
-     * Filter the query on the __user__ column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRightsQuery The current query, for fluid interface
-     */
-    public function filterByUserSys($userSys = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(RightsTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**

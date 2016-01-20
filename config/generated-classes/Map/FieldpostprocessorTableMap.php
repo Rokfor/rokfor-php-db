@@ -59,7 +59,7 @@ class FieldpostprocessorTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class FieldpostprocessorTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -85,11 +85,6 @@ class FieldpostprocessorTableMap extends TableMap
      * the column name for the _code field
      */
     const COL__CODE = '_fieldpostprocessor._code';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_fieldpostprocessor.__user__';
 
     /**
      * the column name for the __config__ field
@@ -123,11 +118,11 @@ class FieldpostprocessorTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Code', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'code', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(FieldpostprocessorTableMap::COL_ID, FieldpostprocessorTableMap::COL__NAME, FieldpostprocessorTableMap::COL__CODE, FieldpostprocessorTableMap::COL___USER__, FieldpostprocessorTableMap::COL___CONFIG__, FieldpostprocessorTableMap::COL___SPLIT__, FieldpostprocessorTableMap::COL___PARENTNODE__, FieldpostprocessorTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_name', '_code', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Code', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'code', 'configSys', 'split', 'parentnode', 'sort', ),
+        self::TYPE_COLNAME       => array(FieldpostprocessorTableMap::COL_ID, FieldpostprocessorTableMap::COL__NAME, FieldpostprocessorTableMap::COL__CODE, FieldpostprocessorTableMap::COL___CONFIG__, FieldpostprocessorTableMap::COL___SPLIT__, FieldpostprocessorTableMap::COL___PARENTNODE__, FieldpostprocessorTableMap::COL___SORT__, ),
+        self::TYPE_FIELDNAME     => array('id', '_name', '_code', '__config__', '__split__', '__parentnode__', '__sort__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -137,11 +132,11 @@ class FieldpostprocessorTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Code' => 2, 'UserSys' => 3, 'ConfigSys' => 4, 'Split' => 5, 'Parentnode' => 6, 'Sort' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'userSys' => 3, 'configSys' => 4, 'split' => 5, 'parentnode' => 6, 'sort' => 7, ),
-        self::TYPE_COLNAME       => array(FieldpostprocessorTableMap::COL_ID => 0, FieldpostprocessorTableMap::COL__NAME => 1, FieldpostprocessorTableMap::COL__CODE => 2, FieldpostprocessorTableMap::COL___USER__ => 3, FieldpostprocessorTableMap::COL___CONFIG__ => 4, FieldpostprocessorTableMap::COL___SPLIT__ => 5, FieldpostprocessorTableMap::COL___PARENTNODE__ => 6, FieldpostprocessorTableMap::COL___SORT__ => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_code' => 2, '__user__' => 3, '__config__' => 4, '__split__' => 5, '__parentnode__' => 6, '__sort__' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Code' => 2, 'ConfigSys' => 3, 'Split' => 4, 'Parentnode' => 5, 'Sort' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'code' => 2, 'configSys' => 3, 'split' => 4, 'parentnode' => 5, 'sort' => 6, ),
+        self::TYPE_COLNAME       => array(FieldpostprocessorTableMap::COL_ID => 0, FieldpostprocessorTableMap::COL__NAME => 1, FieldpostprocessorTableMap::COL__CODE => 2, FieldpostprocessorTableMap::COL___CONFIG__ => 3, FieldpostprocessorTableMap::COL___SPLIT__ => 4, FieldpostprocessorTableMap::COL___PARENTNODE__ => 5, FieldpostprocessorTableMap::COL___SORT__ => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_code' => 2, '__config__' => 3, '__split__' => 4, '__parentnode__' => 5, '__sort__' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -164,7 +159,6 @@ class FieldpostprocessorTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_code', 'Code', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -339,7 +333,6 @@ class FieldpostprocessorTableMap extends TableMap
             $criteria->addSelectColumn(FieldpostprocessorTableMap::COL_ID);
             $criteria->addSelectColumn(FieldpostprocessorTableMap::COL__NAME);
             $criteria->addSelectColumn(FieldpostprocessorTableMap::COL__CODE);
-            $criteria->addSelectColumn(FieldpostprocessorTableMap::COL___USER__);
             $criteria->addSelectColumn(FieldpostprocessorTableMap::COL___CONFIG__);
             $criteria->addSelectColumn(FieldpostprocessorTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(FieldpostprocessorTableMap::COL___PARENTNODE__);
@@ -348,7 +341,6 @@ class FieldpostprocessorTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._name');
             $criteria->addSelectColumn($alias . '._code');
-            $criteria->addSelectColumn($alias . '.__user__');
             $criteria->addSelectColumn($alias . '.__config__');
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');

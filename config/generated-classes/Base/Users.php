@@ -2,6 +2,16 @@
 
 namespace Base;
 
+use \Books as ChildBooks;
+use \BooksQuery as ChildBooksQuery;
+use \Contributions as ChildContributions;
+use \ContributionsQuery as ChildContributionsQuery;
+use \Data as ChildData;
+use \DataQuery as ChildDataQuery;
+use \Formats as ChildFormats;
+use \FormatsQuery as ChildFormatsQuery;
+use \Issues as ChildIssues;
+use \IssuesQuery as ChildIssuesQuery;
 use \RRightsForuser as ChildRRightsForuser;
 use \RRightsForuserQuery as ChildRRightsForuserQuery;
 use \Rights as ChildRights;
@@ -114,6 +124,36 @@ abstract class Users implements ActiveRecordInterface
     protected $collRRightsForusersPartial;
 
     /**
+     * @var        ObjectCollection|ChildBooks[] Collection to store aggregation of ChildBooks objects.
+     */
+    protected $collBookss;
+    protected $collBookssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildContributions[] Collection to store aggregation of ChildContributions objects.
+     */
+    protected $collContributionss;
+    protected $collContributionssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildData[] Collection to store aggregation of ChildData objects.
+     */
+    protected $collDatas;
+    protected $collDatasPartial;
+
+    /**
+     * @var        ObjectCollection|ChildFormats[] Collection to store aggregation of ChildFormats objects.
+     */
+    protected $collFormatss;
+    protected $collFormatssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collIssuess;
+    protected $collIssuessPartial;
+
+    /**
      * @var        ObjectCollection|ChildRights[] Cross Collection to store aggregation of ChildRights objects.
      */
     protected $collRightss;
@@ -142,6 +182,36 @@ abstract class Users implements ActiveRecordInterface
      * @var ObjectCollection|ChildRRightsForuser[]
      */
     protected $rRightsForusersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBooks[]
+     */
+    protected $bookssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildContributions[]
+     */
+    protected $contributionssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
+    protected $datasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildFormats[]
+     */
+    protected $formatssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildIssues[]
+     */
+    protected $issuessScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Users object.
@@ -672,6 +742,16 @@ abstract class Users implements ActiveRecordInterface
 
             $this->collRRightsForusers = null;
 
+            $this->collBookss = null;
+
+            $this->collContributionss = null;
+
+            $this->collDatas = null;
+
+            $this->collFormatss = null;
+
+            $this->collIssuess = null;
+
             $this->collRightss = null;
         } // if (deep)
     }
@@ -823,6 +903,96 @@ abstract class Users implements ActiveRecordInterface
 
             if ($this->collRRightsForusers !== null) {
                 foreach ($this->collRRightsForusers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->bookssScheduledForDeletion !== null) {
+                if (!$this->bookssScheduledForDeletion->isEmpty()) {
+                    foreach ($this->bookssScheduledForDeletion as $books) {
+                        // need to save related object because we set the relation to null
+                        $books->save($con);
+                    }
+                    $this->bookssScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBookss !== null) {
+                foreach ($this->collBookss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->contributionssScheduledForDeletion !== null) {
+                if (!$this->contributionssScheduledForDeletion->isEmpty()) {
+                    foreach ($this->contributionssScheduledForDeletion as $contributions) {
+                        // need to save related object because we set the relation to null
+                        $contributions->save($con);
+                    }
+                    $this->contributionssScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collContributionss !== null) {
+                foreach ($this->collContributionss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->datasScheduledForDeletion !== null) {
+                if (!$this->datasScheduledForDeletion->isEmpty()) {
+                    foreach ($this->datasScheduledForDeletion as $data) {
+                        // need to save related object because we set the relation to null
+                        $data->save($con);
+                    }
+                    $this->datasScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDatas !== null) {
+                foreach ($this->collDatas as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->formatssScheduledForDeletion !== null) {
+                if (!$this->formatssScheduledForDeletion->isEmpty()) {
+                    foreach ($this->formatssScheduledForDeletion as $formats) {
+                        // need to save related object because we set the relation to null
+                        $formats->save($con);
+                    }
+                    $this->formatssScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collFormatss !== null) {
+                foreach ($this->collFormatss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->issuessScheduledForDeletion !== null) {
+                if (!$this->issuessScheduledForDeletion->isEmpty()) {
+                    foreach ($this->issuessScheduledForDeletion as $issues) {
+                        // need to save related object because we set the relation to null
+                        $issues->save($con);
+                    }
+                    $this->issuessScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collIssuess !== null) {
+                foreach ($this->collIssuess as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1039,6 +1209,81 @@ abstract class Users implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collRRightsForusers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBookss) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'bookss';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_bookss';
+                        break;
+                    default:
+                        $key = 'Bookss';
+                }
+
+                $result[$key] = $this->collBookss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collContributionss) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'contributionss';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_contributionss';
+                        break;
+                    default:
+                        $key = 'Contributionss';
+                }
+
+                $result[$key] = $this->collContributionss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collDatas) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'datas';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_datas';
+                        break;
+                    default:
+                        $key = 'Datas';
+                }
+
+                $result[$key] = $this->collDatas->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collFormatss) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'formatss';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_formatss';
+                        break;
+                    default:
+                        $key = 'Formatss';
+                }
+
+                $result[$key] = $this->collFormatss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collIssuess) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'issuess';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_issuess';
+                        break;
+                    default:
+                        $key = 'Issuess';
+                }
+
+                $result[$key] = $this->collIssuess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1298,6 +1543,36 @@ abstract class Users implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getBookss() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBooks($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getContributionss() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addContributions($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getDatas() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addData($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getFormatss() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addFormats($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getIssuess() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addIssues($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1341,6 +1616,21 @@ abstract class Users implements ActiveRecordInterface
     {
         if ('RRightsForuser' == $relationName) {
             return $this->initRRightsForusers();
+        }
+        if ('Books' == $relationName) {
+            return $this->initBookss();
+        }
+        if ('Contributions' == $relationName) {
+            return $this->initContributionss();
+        }
+        if ('Data' == $relationName) {
+            return $this->initDatas();
+        }
+        if ('Formats' == $relationName) {
+            return $this->initFormatss();
+        }
+        if ('Issues' == $relationName) {
+            return $this->initIssuess();
         }
     }
 
@@ -1592,6 +1882,1291 @@ abstract class Users implements ActiveRecordInterface
         $query->joinWith('Rights', $joinBehavior);
 
         return $this->getRRightsForusers($query, $con);
+    }
+
+    /**
+     * Clears out the collBookss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addBookss()
+     */
+    public function clearBookss()
+    {
+        $this->collBookss = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collBookss collection loaded partially.
+     */
+    public function resetPartialBookss($v = true)
+    {
+        $this->collBookssPartial = $v;
+    }
+
+    /**
+     * Initializes the collBookss collection.
+     *
+     * By default this just sets the collBookss collection to an empty array (like clearcollBookss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBookss($overrideExisting = true)
+    {
+        if (null !== $this->collBookss && !$overrideExisting) {
+            return;
+        }
+        $this->collBookss = new ObjectCollection();
+        $this->collBookss->setModel('\Books');
+    }
+
+    /**
+     * Gets an array of ChildBooks objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUsers is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildBooks[] List of ChildBooks objects
+     * @throws PropelException
+     */
+    public function getBookss(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBookssPartial && !$this->isNew();
+        if (null === $this->collBookss || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBookss) {
+                // return empty collection
+                $this->initBookss();
+            } else {
+                $collBookss = ChildBooksQuery::create(null, $criteria)
+                    ->filterByuserSysRef($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collBookssPartial && count($collBookss)) {
+                        $this->initBookss(false);
+
+                        foreach ($collBookss as $obj) {
+                            if (false == $this->collBookss->contains($obj)) {
+                                $this->collBookss->append($obj);
+                            }
+                        }
+
+                        $this->collBookssPartial = true;
+                    }
+
+                    return $collBookss;
+                }
+
+                if ($partial && $this->collBookss) {
+                    foreach ($this->collBookss as $obj) {
+                        if ($obj->isNew()) {
+                            $collBookss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBookss = $collBookss;
+                $this->collBookssPartial = false;
+            }
+        }
+
+        return $this->collBookss;
+    }
+
+    /**
+     * Sets a collection of ChildBooks objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $bookss A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function setBookss(Collection $bookss, ConnectionInterface $con = null)
+    {
+        /** @var ChildBooks[] $bookssToDelete */
+        $bookssToDelete = $this->getBookss(new Criteria(), $con)->diff($bookss);
+
+
+        $this->bookssScheduledForDeletion = $bookssToDelete;
+
+        foreach ($bookssToDelete as $booksRemoved) {
+            $booksRemoved->setuserSysRef(null);
+        }
+
+        $this->collBookss = null;
+        foreach ($bookss as $books) {
+            $this->addBooks($books);
+        }
+
+        $this->collBookss = $bookss;
+        $this->collBookssPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Books objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Books objects.
+     * @throws PropelException
+     */
+    public function countBookss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBookssPartial && !$this->isNew();
+        if (null === $this->collBookss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBookss) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBookss());
+            }
+
+            $query = ChildBooksQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByuserSysRef($this)
+                ->count($con);
+        }
+
+        return count($this->collBookss);
+    }
+
+    /**
+     * Method called to associate a ChildBooks object to this object
+     * through the ChildBooks foreign key attribute.
+     *
+     * @param  ChildBooks $l ChildBooks
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function addBooks(ChildBooks $l)
+    {
+        if ($this->collBookss === null) {
+            $this->initBookss();
+            $this->collBookssPartial = true;
+        }
+
+        if (!$this->collBookss->contains($l)) {
+            $this->doAddBooks($l);
+
+            if ($this->bookssScheduledForDeletion and $this->bookssScheduledForDeletion->contains($l)) {
+                $this->bookssScheduledForDeletion->remove($this->bookssScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildBooks $books The ChildBooks object to add.
+     */
+    protected function doAddBooks(ChildBooks $books)
+    {
+        $this->collBookss[]= $books;
+        $books->setuserSysRef($this);
+    }
+
+    /**
+     * @param  ChildBooks $books The ChildBooks object to remove.
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function removeBooks(ChildBooks $books)
+    {
+        if ($this->getBookss()->contains($books)) {
+            $pos = $this->collBookss->search($books);
+            $this->collBookss->remove($pos);
+            if (null === $this->bookssScheduledForDeletion) {
+                $this->bookssScheduledForDeletion = clone $this->collBookss;
+                $this->bookssScheduledForDeletion->clear();
+            }
+            $this->bookssScheduledForDeletion[]= $books;
+            $books->setuserSysRef(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collContributionss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addContributionss()
+     */
+    public function clearContributionss()
+    {
+        $this->collContributionss = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collContributionss collection loaded partially.
+     */
+    public function resetPartialContributionss($v = true)
+    {
+        $this->collContributionssPartial = $v;
+    }
+
+    /**
+     * Initializes the collContributionss collection.
+     *
+     * By default this just sets the collContributionss collection to an empty array (like clearcollContributionss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initContributionss($overrideExisting = true)
+    {
+        if (null !== $this->collContributionss && !$overrideExisting) {
+            return;
+        }
+        $this->collContributionss = new ObjectCollection();
+        $this->collContributionss->setModel('\Contributions');
+    }
+
+    /**
+     * Gets an array of ChildContributions objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUsers is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     * @throws PropelException
+     */
+    public function getContributionss(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collContributionssPartial && !$this->isNew();
+        if (null === $this->collContributionss || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collContributionss) {
+                // return empty collection
+                $this->initContributionss();
+            } else {
+                $collContributionss = ChildContributionsQuery::create(null, $criteria)
+                    ->filterByuserSysRef($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collContributionssPartial && count($collContributionss)) {
+                        $this->initContributionss(false);
+
+                        foreach ($collContributionss as $obj) {
+                            if (false == $this->collContributionss->contains($obj)) {
+                                $this->collContributionss->append($obj);
+                            }
+                        }
+
+                        $this->collContributionssPartial = true;
+                    }
+
+                    return $collContributionss;
+                }
+
+                if ($partial && $this->collContributionss) {
+                    foreach ($this->collContributionss as $obj) {
+                        if ($obj->isNew()) {
+                            $collContributionss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collContributionss = $collContributionss;
+                $this->collContributionssPartial = false;
+            }
+        }
+
+        return $this->collContributionss;
+    }
+
+    /**
+     * Sets a collection of ChildContributions objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $contributionss A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function setContributionss(Collection $contributionss, ConnectionInterface $con = null)
+    {
+        /** @var ChildContributions[] $contributionssToDelete */
+        $contributionssToDelete = $this->getContributionss(new Criteria(), $con)->diff($contributionss);
+
+
+        $this->contributionssScheduledForDeletion = $contributionssToDelete;
+
+        foreach ($contributionssToDelete as $contributionsRemoved) {
+            $contributionsRemoved->setuserSysRef(null);
+        }
+
+        $this->collContributionss = null;
+        foreach ($contributionss as $contributions) {
+            $this->addContributions($contributions);
+        }
+
+        $this->collContributionss = $contributionss;
+        $this->collContributionssPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Contributions objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Contributions objects.
+     * @throws PropelException
+     */
+    public function countContributionss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collContributionssPartial && !$this->isNew();
+        if (null === $this->collContributionss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collContributionss) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getContributionss());
+            }
+
+            $query = ChildContributionsQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByuserSysRef($this)
+                ->count($con);
+        }
+
+        return count($this->collContributionss);
+    }
+
+    /**
+     * Method called to associate a ChildContributions object to this object
+     * through the ChildContributions foreign key attribute.
+     *
+     * @param  ChildContributions $l ChildContributions
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function addContributions(ChildContributions $l)
+    {
+        if ($this->collContributionss === null) {
+            $this->initContributionss();
+            $this->collContributionssPartial = true;
+        }
+
+        if (!$this->collContributionss->contains($l)) {
+            $this->doAddContributions($l);
+
+            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
+                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildContributions $contributions The ChildContributions object to add.
+     */
+    protected function doAddContributions(ChildContributions $contributions)
+    {
+        $this->collContributionss[]= $contributions;
+        $contributions->setuserSysRef($this);
+    }
+
+    /**
+     * @param  ChildContributions $contributions The ChildContributions object to remove.
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function removeContributions(ChildContributions $contributions)
+    {
+        if ($this->getContributionss()->contains($contributions)) {
+            $pos = $this->collContributionss->search($contributions);
+            $this->collContributionss->remove($pos);
+            if (null === $this->contributionssScheduledForDeletion) {
+                $this->contributionssScheduledForDeletion = clone $this->collContributionss;
+                $this->contributionssScheduledForDeletion->clear();
+            }
+            $this->contributionssScheduledForDeletion[]= $contributions;
+            $contributions->setuserSysRef(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Contributionss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     */
+    public function getContributionssJoinFormats(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildContributionsQuery::create(null, $criteria);
+        $query->joinWith('Formats', $joinBehavior);
+
+        return $this->getContributionss($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Contributionss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     */
+    public function getContributionssJoinIssues(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildContributionsQuery::create(null, $criteria);
+        $query->joinWith('Issues', $joinBehavior);
+
+        return $this->getContributionss($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Contributionss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     */
+    public function getContributionssJoinTemplatenames(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildContributionsQuery::create(null, $criteria);
+        $query->joinWith('Templatenames', $joinBehavior);
+
+        return $this->getContributionss($query, $con);
+    }
+
+    /**
+     * Clears out the collDatas collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addDatas()
+     */
+    public function clearDatas()
+    {
+        $this->collDatas = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collDatas collection loaded partially.
+     */
+    public function resetPartialDatas($v = true)
+    {
+        $this->collDatasPartial = $v;
+    }
+
+    /**
+     * Initializes the collDatas collection.
+     *
+     * By default this just sets the collDatas collection to an empty array (like clearcollDatas());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDatas($overrideExisting = true)
+    {
+        if (null !== $this->collDatas && !$overrideExisting) {
+            return;
+        }
+        $this->collDatas = new ObjectCollection();
+        $this->collDatas->setModel('\Data');
+    }
+
+    /**
+     * Gets an array of ChildData objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUsers is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     * @throws PropelException
+     */
+    public function getDatas(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDatasPartial && !$this->isNew();
+        if (null === $this->collDatas || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collDatas) {
+                // return empty collection
+                $this->initDatas();
+            } else {
+                $collDatas = ChildDataQuery::create(null, $criteria)
+                    ->filterByuserSysRef($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDatasPartial && count($collDatas)) {
+                        $this->initDatas(false);
+
+                        foreach ($collDatas as $obj) {
+                            if (false == $this->collDatas->contains($obj)) {
+                                $this->collDatas->append($obj);
+                            }
+                        }
+
+                        $this->collDatasPartial = true;
+                    }
+
+                    return $collDatas;
+                }
+
+                if ($partial && $this->collDatas) {
+                    foreach ($this->collDatas as $obj) {
+                        if ($obj->isNew()) {
+                            $collDatas[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDatas = $collDatas;
+                $this->collDatasPartial = false;
+            }
+        }
+
+        return $this->collDatas;
+    }
+
+    /**
+     * Sets a collection of ChildData objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $datas A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function setDatas(Collection $datas, ConnectionInterface $con = null)
+    {
+        /** @var ChildData[] $datasToDelete */
+        $datasToDelete = $this->getDatas(new Criteria(), $con)->diff($datas);
+
+
+        $this->datasScheduledForDeletion = $datasToDelete;
+
+        foreach ($datasToDelete as $dataRemoved) {
+            $dataRemoved->setuserSysRef(null);
+        }
+
+        $this->collDatas = null;
+        foreach ($datas as $data) {
+            $this->addData($data);
+        }
+
+        $this->collDatas = $datas;
+        $this->collDatasPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Data objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Data objects.
+     * @throws PropelException
+     */
+    public function countDatas(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDatasPartial && !$this->isNew();
+        if (null === $this->collDatas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDatas) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDatas());
+            }
+
+            $query = ChildDataQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByuserSysRef($this)
+                ->count($con);
+        }
+
+        return count($this->collDatas);
+    }
+
+    /**
+     * Method called to associate a ChildData object to this object
+     * through the ChildData foreign key attribute.
+     *
+     * @param  ChildData $l ChildData
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function addData(ChildData $l)
+    {
+        if ($this->collDatas === null) {
+            $this->initDatas();
+            $this->collDatasPartial = true;
+        }
+
+        if (!$this->collDatas->contains($l)) {
+            $this->doAddData($l);
+
+            if ($this->datasScheduledForDeletion and $this->datasScheduledForDeletion->contains($l)) {
+                $this->datasScheduledForDeletion->remove($this->datasScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildData $data The ChildData object to add.
+     */
+    protected function doAddData(ChildData $data)
+    {
+        $this->collDatas[]= $data;
+        $data->setuserSysRef($this);
+    }
+
+    /**
+     * @param  ChildData $data The ChildData object to remove.
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function removeData(ChildData $data)
+    {
+        if ($this->getDatas()->contains($data)) {
+            $pos = $this->collDatas->search($data);
+            $this->collDatas->remove($pos);
+            if (null === $this->datasScheduledForDeletion) {
+                $this->datasScheduledForDeletion = clone $this->collDatas;
+                $this->datasScheduledForDeletion->clear();
+            }
+            $this->datasScheduledForDeletion[]= $data;
+            $data->setuserSysRef(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Datas from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getDatasJoinContributions(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildDataQuery::create(null, $criteria);
+        $query->joinWith('Contributions', $joinBehavior);
+
+        return $this->getDatas($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Datas from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getDatasJoinTemplates(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildDataQuery::create(null, $criteria);
+        $query->joinWith('Templates', $joinBehavior);
+
+        return $this->getDatas($query, $con);
+    }
+
+    /**
+     * Clears out the collFormatss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addFormatss()
+     */
+    public function clearFormatss()
+    {
+        $this->collFormatss = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collFormatss collection loaded partially.
+     */
+    public function resetPartialFormatss($v = true)
+    {
+        $this->collFormatssPartial = $v;
+    }
+
+    /**
+     * Initializes the collFormatss collection.
+     *
+     * By default this just sets the collFormatss collection to an empty array (like clearcollFormatss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initFormatss($overrideExisting = true)
+    {
+        if (null !== $this->collFormatss && !$overrideExisting) {
+            return;
+        }
+        $this->collFormatss = new ObjectCollection();
+        $this->collFormatss->setModel('\Formats');
+    }
+
+    /**
+     * Gets an array of ChildFormats objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUsers is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildFormats[] List of ChildFormats objects
+     * @throws PropelException
+     */
+    public function getFormatss(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collFormatssPartial && !$this->isNew();
+        if (null === $this->collFormatss || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collFormatss) {
+                // return empty collection
+                $this->initFormatss();
+            } else {
+                $collFormatss = ChildFormatsQuery::create(null, $criteria)
+                    ->filterByuserSysRef($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collFormatssPartial && count($collFormatss)) {
+                        $this->initFormatss(false);
+
+                        foreach ($collFormatss as $obj) {
+                            if (false == $this->collFormatss->contains($obj)) {
+                                $this->collFormatss->append($obj);
+                            }
+                        }
+
+                        $this->collFormatssPartial = true;
+                    }
+
+                    return $collFormatss;
+                }
+
+                if ($partial && $this->collFormatss) {
+                    foreach ($this->collFormatss as $obj) {
+                        if ($obj->isNew()) {
+                            $collFormatss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collFormatss = $collFormatss;
+                $this->collFormatssPartial = false;
+            }
+        }
+
+        return $this->collFormatss;
+    }
+
+    /**
+     * Sets a collection of ChildFormats objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $formatss A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function setFormatss(Collection $formatss, ConnectionInterface $con = null)
+    {
+        /** @var ChildFormats[] $formatssToDelete */
+        $formatssToDelete = $this->getFormatss(new Criteria(), $con)->diff($formatss);
+
+
+        $this->formatssScheduledForDeletion = $formatssToDelete;
+
+        foreach ($formatssToDelete as $formatsRemoved) {
+            $formatsRemoved->setuserSysRef(null);
+        }
+
+        $this->collFormatss = null;
+        foreach ($formatss as $formats) {
+            $this->addFormats($formats);
+        }
+
+        $this->collFormatss = $formatss;
+        $this->collFormatssPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Formats objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Formats objects.
+     * @throws PropelException
+     */
+    public function countFormatss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collFormatssPartial && !$this->isNew();
+        if (null === $this->collFormatss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collFormatss) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getFormatss());
+            }
+
+            $query = ChildFormatsQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByuserSysRef($this)
+                ->count($con);
+        }
+
+        return count($this->collFormatss);
+    }
+
+    /**
+     * Method called to associate a ChildFormats object to this object
+     * through the ChildFormats foreign key attribute.
+     *
+     * @param  ChildFormats $l ChildFormats
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function addFormats(ChildFormats $l)
+    {
+        if ($this->collFormatss === null) {
+            $this->initFormatss();
+            $this->collFormatssPartial = true;
+        }
+
+        if (!$this->collFormatss->contains($l)) {
+            $this->doAddFormats($l);
+
+            if ($this->formatssScheduledForDeletion and $this->formatssScheduledForDeletion->contains($l)) {
+                $this->formatssScheduledForDeletion->remove($this->formatssScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildFormats $formats The ChildFormats object to add.
+     */
+    protected function doAddFormats(ChildFormats $formats)
+    {
+        $this->collFormatss[]= $formats;
+        $formats->setuserSysRef($this);
+    }
+
+    /**
+     * @param  ChildFormats $formats The ChildFormats object to remove.
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function removeFormats(ChildFormats $formats)
+    {
+        if ($this->getFormatss()->contains($formats)) {
+            $pos = $this->collFormatss->search($formats);
+            $this->collFormatss->remove($pos);
+            if (null === $this->formatssScheduledForDeletion) {
+                $this->formatssScheduledForDeletion = clone $this->collFormatss;
+                $this->formatssScheduledForDeletion->clear();
+            }
+            $this->formatssScheduledForDeletion[]= $formats;
+            $formats->setuserSysRef(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Formatss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildFormats[] List of ChildFormats objects
+     */
+    public function getFormatssJoinBooks(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildFormatsQuery::create(null, $criteria);
+        $query->joinWith('Books', $joinBehavior);
+
+        return $this->getFormatss($query, $con);
+    }
+
+    /**
+     * Clears out the collIssuess collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addIssuess()
+     */
+    public function clearIssuess()
+    {
+        $this->collIssuess = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collIssuess collection loaded partially.
+     */
+    public function resetPartialIssuess($v = true)
+    {
+        $this->collIssuessPartial = $v;
+    }
+
+    /**
+     * Initializes the collIssuess collection.
+     *
+     * By default this just sets the collIssuess collection to an empty array (like clearcollIssuess());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initIssuess($overrideExisting = true)
+    {
+        if (null !== $this->collIssuess && !$overrideExisting) {
+            return;
+        }
+        $this->collIssuess = new ObjectCollection();
+        $this->collIssuess->setModel('\Issues');
+    }
+
+    /**
+     * Gets an array of ChildIssues objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUsers is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     * @throws PropelException
+     */
+    public function getIssuess(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collIssuessPartial && !$this->isNew();
+        if (null === $this->collIssuess || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collIssuess) {
+                // return empty collection
+                $this->initIssuess();
+            } else {
+                $collIssuess = ChildIssuesQuery::create(null, $criteria)
+                    ->filterByuserSysRef($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collIssuessPartial && count($collIssuess)) {
+                        $this->initIssuess(false);
+
+                        foreach ($collIssuess as $obj) {
+                            if (false == $this->collIssuess->contains($obj)) {
+                                $this->collIssuess->append($obj);
+                            }
+                        }
+
+                        $this->collIssuessPartial = true;
+                    }
+
+                    return $collIssuess;
+                }
+
+                if ($partial && $this->collIssuess) {
+                    foreach ($this->collIssuess as $obj) {
+                        if ($obj->isNew()) {
+                            $collIssuess[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collIssuess = $collIssuess;
+                $this->collIssuessPartial = false;
+            }
+        }
+
+        return $this->collIssuess;
+    }
+
+    /**
+     * Sets a collection of ChildIssues objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $issuess A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function setIssuess(Collection $issuess, ConnectionInterface $con = null)
+    {
+        /** @var ChildIssues[] $issuessToDelete */
+        $issuessToDelete = $this->getIssuess(new Criteria(), $con)->diff($issuess);
+
+
+        $this->issuessScheduledForDeletion = $issuessToDelete;
+
+        foreach ($issuessToDelete as $issuesRemoved) {
+            $issuesRemoved->setuserSysRef(null);
+        }
+
+        $this->collIssuess = null;
+        foreach ($issuess as $issues) {
+            $this->addIssues($issues);
+        }
+
+        $this->collIssuess = $issuess;
+        $this->collIssuessPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Issues objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Issues objects.
+     * @throws PropelException
+     */
+    public function countIssuess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collIssuessPartial && !$this->isNew();
+        if (null === $this->collIssuess || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collIssuess) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getIssuess());
+            }
+
+            $query = ChildIssuesQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByuserSysRef($this)
+                ->count($con);
+        }
+
+        return count($this->collIssuess);
+    }
+
+    /**
+     * Method called to associate a ChildIssues object to this object
+     * through the ChildIssues foreign key attribute.
+     *
+     * @param  ChildIssues $l ChildIssues
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function addIssues(ChildIssues $l)
+    {
+        if ($this->collIssuess === null) {
+            $this->initIssuess();
+            $this->collIssuessPartial = true;
+        }
+
+        if (!$this->collIssuess->contains($l)) {
+            $this->doAddIssues($l);
+
+            if ($this->issuessScheduledForDeletion and $this->issuessScheduledForDeletion->contains($l)) {
+                $this->issuessScheduledForDeletion->remove($this->issuessScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildIssues $issues The ChildIssues object to add.
+     */
+    protected function doAddIssues(ChildIssues $issues)
+    {
+        $this->collIssuess[]= $issues;
+        $issues->setuserSysRef($this);
+    }
+
+    /**
+     * @param  ChildIssues $issues The ChildIssues object to remove.
+     * @return $this|ChildUsers The current object (for fluent API support)
+     */
+    public function removeIssues(ChildIssues $issues)
+    {
+        if ($this->getIssuess()->contains($issues)) {
+            $pos = $this->collIssuess->search($issues);
+            $this->collIssuess->remove($pos);
+            if (null === $this->issuessScheduledForDeletion) {
+                $this->issuessScheduledForDeletion = clone $this->collIssuess;
+                $this->issuessScheduledForDeletion->clear();
+            }
+            $this->issuessScheduledForDeletion[]= $issues;
+            $issues->setuserSysRef(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Users is new, it will return
+     * an empty collection; or if this Users has previously
+     * been saved, it will retrieve related Issuess from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Users.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getIssuessJoinBooks(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildIssuesQuery::create(null, $criteria);
+        $query->joinWith('Books', $joinBehavior);
+
+        return $this->getIssuess($query, $con);
     }
 
     /**
@@ -1872,6 +3447,31 @@ abstract class Users implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collBookss) {
+                foreach ($this->collBookss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collContributionss) {
+                foreach ($this->collContributionss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collDatas) {
+                foreach ($this->collDatas as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collFormatss) {
+                foreach ($this->collFormatss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collIssuess) {
+                foreach ($this->collIssuess as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRightss) {
                 foreach ($this->collRightss as $o) {
                     $o->clearAllReferences($deep);
@@ -1880,6 +3480,11 @@ abstract class Users implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collRRightsForusers = null;
+        $this->collBookss = null;
+        $this->collContributionss = null;
+        $this->collDatas = null;
+        $this->collFormatss = null;
+        $this->collIssuess = null;
         $this->collRightss = null;
     }
 

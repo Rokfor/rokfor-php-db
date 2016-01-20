@@ -176,7 +176,7 @@ class DataTableMap extends TableMap
         $this->addForeignKey('_fortemplatefield', 'Fortemplatefield', 'INTEGER', '_templates', 'id', false, 32, null);
         $this->addColumn('_content', 'Content', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_isjson', 'Isjson', 'BOOLEAN', false, 1, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addForeignKey('__user__', 'UserSys', 'INTEGER', 'users', 'id', false, 4, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -188,6 +188,13 @@ class DataTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('userSysRef', '\\Users', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', null, false);
         $this->addRelation('Contributions', '\\Contributions', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (

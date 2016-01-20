@@ -171,6 +171,41 @@ class UsersTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RRightsForusers', false);
+        $this->addRelation('Books', '\\Books', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', 'Bookss', false);
+        $this->addRelation('Contributions', '\\Contributions', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', 'Contributionss', false);
+        $this->addRelation('Data', '\\Data', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', 'Datas', false);
+        $this->addRelation('Formats', '\\Formats', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', 'Formatss', false);
+        $this->addRelation('Issues', '\\Issues', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', 'Issuess', false);
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
     } // buildRelations()
     /**
@@ -181,6 +216,11 @@ class UsersTableMap extends TableMap
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         RRightsForuserTableMap::clearInstancePool();
+        BooksTableMap::clearInstancePool();
+        ContributionsTableMap::clearInstancePool();
+        DataTableMap::clearInstancePool();
+        FormatsTableMap::clearInstancePool();
+        IssuesTableMap::clearInstancePool();
     }
 
     /**

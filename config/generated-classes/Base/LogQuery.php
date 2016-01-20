@@ -24,7 +24,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLogQuery orderByAgent($order = Criteria::ASC) Order by the _agent column
  * @method     ChildLogQuery orderByUser($order = Criteria::ASC) Order by the _user column
  * @method     ChildLogQuery orderByDate($order = Criteria::ASC) Order by the _date column
- * @method     ChildLogQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
  * @method     ChildLogQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildLogQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildLogQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
@@ -35,7 +34,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLogQuery groupByAgent() Group by the _agent column
  * @method     ChildLogQuery groupByUser() Group by the _user column
  * @method     ChildLogQuery groupByDate() Group by the _date column
- * @method     ChildLogQuery groupByUserSys() Group by the __user__ column
  * @method     ChildLogQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildLogQuery groupBySplit() Group by the __split__ column
  * @method     ChildLogQuery groupByParentnode() Group by the __parentnode__ column
@@ -57,7 +55,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLog findOneByAgent(string $_agent) Return the first ChildLog filtered by the _agent column
  * @method     ChildLog findOneByUser(string $_user) Return the first ChildLog filtered by the _user column
  * @method     ChildLog findOneByDate(int $_date) Return the first ChildLog filtered by the _date column
- * @method     ChildLog findOneByUserSys(string $__user__) Return the first ChildLog filtered by the __user__ column
  * @method     ChildLog findOneByConfigSys(string $__config__) Return the first ChildLog filtered by the __config__ column
  * @method     ChildLog findOneBySplit(string $__split__) Return the first ChildLog filtered by the __split__ column
  * @method     ChildLog findOneByParentnode(int $__parentnode__) Return the first ChildLog filtered by the __parentnode__ column
@@ -71,7 +68,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLog requireOneByAgent(string $_agent) Return the first ChildLog filtered by the _agent column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLog requireOneByUser(string $_user) Return the first ChildLog filtered by the _user column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLog requireOneByDate(int $_date) Return the first ChildLog filtered by the _date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildLog requireOneByUserSys(string $__user__) Return the first ChildLog filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLog requireOneByConfigSys(string $__config__) Return the first ChildLog filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLog requireOneBySplit(string $__split__) Return the first ChildLog filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLog requireOneByParentnode(int $__parentnode__) Return the first ChildLog filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -83,7 +79,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLog[]|ObjectCollection findByAgent(string $_agent) Return ChildLog objects filtered by the _agent column
  * @method     ChildLog[]|ObjectCollection findByUser(string $_user) Return ChildLog objects filtered by the _user column
  * @method     ChildLog[]|ObjectCollection findByDate(int $_date) Return ChildLog objects filtered by the _date column
- * @method     ChildLog[]|ObjectCollection findByUserSys(string $__user__) Return ChildLog objects filtered by the __user__ column
  * @method     ChildLog[]|ObjectCollection findByConfigSys(string $__config__) Return ChildLog objects filtered by the __config__ column
  * @method     ChildLog[]|ObjectCollection findBySplit(string $__split__) Return ChildLog objects filtered by the __split__ column
  * @method     ChildLog[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildLog objects filtered by the __parentnode__ column
@@ -180,7 +175,7 @@ abstract class LogQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _ip, _agent, _user, _date, __user__, __config__, __split__, __parentnode__, __sort__ FROM _log WHERE id = :p0';
+        $sql = 'SELECT id, _ip, _agent, _user, _date, __config__, __split__, __parentnode__, __sort__ FROM _log WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -437,35 +432,6 @@ abstract class LogQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(LogTableMap::COL__DATE, $date, $comparison);
-    }
-
-    /**
-     * Filter the query on the __user__ column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildLogQuery The current query, for fluid interface
-     */
-    public function filterByUserSys($userSys = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(LogTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**

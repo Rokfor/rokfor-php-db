@@ -120,13 +120,6 @@ abstract class Templatenames implements ActiveRecordInterface
     protected $_public;
 
     /**
-     * The value for the __user__ field.
-     *
-     * @var        string
-     */
-    protected $__user__;
-
-    /**
      * The value for the __config__ field.
      *
      * @var        string
@@ -556,16 +549,6 @@ abstract class Templatenames implements ActiveRecordInterface
     }
 
     /**
-     * Get the [__user__] column value.
-     *
-     * @return string
-     */
-    public function getUserSys()
-    {
-        return $this->__user__;
-    }
-
-    /**
      * Get the [__config__] column value.
      *
      * @return string
@@ -726,26 +709,6 @@ abstract class Templatenames implements ActiveRecordInterface
     } // setPublic()
 
     /**
-     * Set the value of [__user__] column.
-     *
-     * @param string $v new value
-     * @return $this|\Templatenames The current object (for fluent API support)
-     */
-    public function setUserSys($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->__user__ !== $v) {
-            $this->__user__ = $v;
-            $this->modifiedColumns[TemplatenamesTableMap::COL___USER__] = true;
-        }
-
-        return $this;
-    } // setUserSys()
-
-    /**
      * Set the value of [__config__] column.
      *
      * @param string $v new value
@@ -879,19 +842,16 @@ abstract class Templatenames implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TemplatenamesTableMap::translateFieldName('Public', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_public = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TemplatenamesTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TemplatenamesTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TemplatenamesTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TemplatenamesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TemplatenamesTableMap::translateFieldName('Split', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__split__ = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TemplatenamesTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TemplatenamesTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TemplatenamesTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TemplatenamesTableMap::translateFieldName('Parentnode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__parentnode__ = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -901,7 +861,7 @@ abstract class Templatenames implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 11; // 11 = TemplatenamesTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = TemplatenamesTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Templatenames'), 0, $e);
@@ -1301,9 +1261,6 @@ abstract class Templatenames implements ActiveRecordInterface
         if ($this->isColumnModified(TemplatenamesTableMap::COL__PUBLIC)) {
             $modifiedColumns[':p' . $index++]  = '_public';
         }
-        if ($this->isColumnModified(TemplatenamesTableMap::COL___USER__)) {
-            $modifiedColumns[':p' . $index++]  = '__user__';
-        }
         if ($this->isColumnModified(TemplatenamesTableMap::COL___CONFIG__)) {
             $modifiedColumns[':p' . $index++]  = '__config__';
         }
@@ -1344,9 +1301,6 @@ abstract class Templatenames implements ActiveRecordInterface
                         break;
                     case '_public':
                         $stmt->bindValue($identifier, $this->_public, PDO::PARAM_STR);
-                        break;
-                    case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1441,18 +1395,15 @@ abstract class Templatenames implements ActiveRecordInterface
                 return $this->getPublic();
                 break;
             case 6:
-                return $this->getUserSys();
-                break;
-            case 7:
                 return $this->getConfigSys();
                 break;
-            case 8:
+            case 7:
                 return $this->getSplit();
                 break;
-            case 9:
+            case 8:
                 return $this->getSort();
                 break;
-            case 10:
+            case 9:
                 return $this->getParentnode();
                 break;
             default:
@@ -1491,11 +1442,10 @@ abstract class Templatenames implements ActiveRecordInterface
             $keys[3] => $this->getHelpimage(),
             $keys[4] => $this->getCategory(),
             $keys[5] => $this->getPublic(),
-            $keys[6] => $this->getUserSys(),
-            $keys[7] => $this->getConfigSys(),
-            $keys[8] => $this->getSplit(),
-            $keys[9] => $this->getSort(),
-            $keys[10] => $this->getParentnode(),
+            $keys[6] => $this->getConfigSys(),
+            $keys[7] => $this->getSplit(),
+            $keys[8] => $this->getSort(),
+            $keys[9] => $this->getParentnode(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1631,18 +1581,15 @@ abstract class Templatenames implements ActiveRecordInterface
                 $this->setPublic($value);
                 break;
             case 6:
-                $this->setUserSys($value);
-                break;
-            case 7:
                 $this->setConfigSys($value);
                 break;
-            case 8:
+            case 7:
                 $this->setSplit($value);
                 break;
-            case 9:
+            case 8:
                 $this->setSort($value);
                 break;
-            case 10:
+            case 9:
                 $this->setParentnode($value);
                 break;
         } // switch()
@@ -1690,19 +1637,16 @@ abstract class Templatenames implements ActiveRecordInterface
             $this->setPublic($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUserSys($arr[$keys[6]]);
+            $this->setConfigSys($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setConfigSys($arr[$keys[7]]);
+            $this->setSplit($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setSplit($arr[$keys[8]]);
+            $this->setSort($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setSort($arr[$keys[9]]);
-        }
-        if (array_key_exists($keys[10], $arr)) {
-            $this->setParentnode($arr[$keys[10]]);
+            $this->setParentnode($arr[$keys[9]]);
         }
     }
 
@@ -1762,9 +1706,6 @@ abstract class Templatenames implements ActiveRecordInterface
         }
         if ($this->isColumnModified(TemplatenamesTableMap::COL__PUBLIC)) {
             $criteria->add(TemplatenamesTableMap::COL__PUBLIC, $this->_public);
-        }
-        if ($this->isColumnModified(TemplatenamesTableMap::COL___USER__)) {
-            $criteria->add(TemplatenamesTableMap::COL___USER__, $this->__user__);
         }
         if ($this->isColumnModified(TemplatenamesTableMap::COL___CONFIG__)) {
             $criteria->add(TemplatenamesTableMap::COL___CONFIG__, $this->__config__);
@@ -1869,7 +1810,6 @@ abstract class Templatenames implements ActiveRecordInterface
         $copyObj->setHelpimage($this->getHelpimage());
         $copyObj->setCategory($this->getCategory());
         $copyObj->setPublic($this->getPublic());
-        $copyObj->setUserSys($this->getUserSys());
         $copyObj->setConfigSys($this->getConfigSys());
         $copyObj->setSplit($this->getSplit());
         $copyObj->setSort($this->getSort());
@@ -2957,6 +2897,31 @@ abstract class Templatenames implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
      */
+    public function getContributionssJoinuserSysRef(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildContributionsQuery::create(null, $criteria);
+        $query->joinWith('userSysRef', $joinBehavior);
+
+        return $this->getContributionss($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Templatenames is new, it will return
+     * an empty collection; or if this Templatenames has previously
+     * been saved, it will retrieve related Contributionss from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Templatenames.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     */
     public function getContributionssJoinFormats(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildContributionsQuery::create(null, $criteria);
@@ -3951,7 +3916,6 @@ abstract class Templatenames implements ActiveRecordInterface
         $this->_helpimage = null;
         $this->_category = null;
         $this->_public = null;
-        $this->__user__ = null;
         $this->__config__ = null;
         $this->__split__ = null;
         $this->__sort__ = null;

@@ -164,7 +164,7 @@ class FormatsTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', true, null, null);
         $this->addForeignKey('_forbook', 'Forbook', 'INTEGER', '_books', 'id', false, 32, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addForeignKey('__user__', 'UserSys', 'INTEGER', 'users', 'id', false, 4, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
@@ -176,6 +176,13 @@ class FormatsTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('userSysRef', '\\Users', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', null, false);
         $this->addRelation('Books', '\\Books', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (

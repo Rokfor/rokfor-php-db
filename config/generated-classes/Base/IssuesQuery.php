@@ -54,6 +54,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildIssuesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildIssuesQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
+ * @method     ChildIssuesQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
+ * @method     ChildIssuesQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildIssuesQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildIssuesQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildIssuesQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
+ *
  * @method     ChildIssuesQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
@@ -134,7 +144,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
  * @method     ChildIssuesQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
- * @method     \BooksQuery|\RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery|\RRightsForissueQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\BooksQuery|\RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery|\RRightsForissueQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildIssues findOne(ConnectionInterface $con = null) Return the first ChildIssues matching the query
  * @method     ChildIssues findOneOrCreate(ConnectionInterface $con = null) Return the first ChildIssues matching the query, or a new ChildIssues object populated from the query conditions when no match is found
@@ -146,7 +156,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssues findOneByStatus(string $_status) Return the first ChildIssues filtered by the _status column
  * @method     ChildIssues findOneByInfotext(string $_infotext) Return the first ChildIssues filtered by the _infotext column
  * @method     ChildIssues findOneByForbook(int $_forbook) Return the first ChildIssues filtered by the _forbook column
- * @method     ChildIssues findOneByUserSys(string $__user__) Return the first ChildIssues filtered by the __user__ column
+ * @method     ChildIssues findOneByUserSys(int $__user__) Return the first ChildIssues filtered by the __user__ column
  * @method     ChildIssues findOneByConfigSys(string $__config__) Return the first ChildIssues filtered by the __config__ column
  * @method     ChildIssues findOneBySplit(string $__split__) Return the first ChildIssues filtered by the __split__ column
  * @method     ChildIssues findOneByParentnode(int $__parentnode__) Return the first ChildIssues filtered by the __parentnode__ column
@@ -162,7 +172,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssues requireOneByStatus(string $_status) Return the first ChildIssues filtered by the _status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByInfotext(string $_infotext) Return the first ChildIssues filtered by the _infotext column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByForbook(int $_forbook) Return the first ChildIssues filtered by the _forbook column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildIssues requireOneByUserSys(string $__user__) Return the first ChildIssues filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildIssues requireOneByUserSys(int $__user__) Return the first ChildIssues filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByConfigSys(string $__config__) Return the first ChildIssues filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneBySplit(string $__split__) Return the first ChildIssues filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildIssues requireOneByParentnode(int $__parentnode__) Return the first ChildIssues filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -176,7 +186,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssues[]|ObjectCollection findByStatus(string $_status) Return ChildIssues objects filtered by the _status column
  * @method     ChildIssues[]|ObjectCollection findByInfotext(string $_infotext) Return ChildIssues objects filtered by the _infotext column
  * @method     ChildIssues[]|ObjectCollection findByForbook(int $_forbook) Return ChildIssues objects filtered by the _forbook column
- * @method     ChildIssues[]|ObjectCollection findByUserSys(string $__user__) Return ChildIssues objects filtered by the __user__ column
+ * @method     ChildIssues[]|ObjectCollection findByUserSys(int $__user__) Return ChildIssues objects filtered by the __user__ column
  * @method     ChildIssues[]|ObjectCollection findByConfigSys(string $__config__) Return ChildIssues objects filtered by the __config__ column
  * @method     ChildIssues[]|ObjectCollection findBySplit(string $__split__) Return ChildIssues objects filtered by the __split__ column
  * @method     ChildIssues[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildIssues objects filtered by the __parentnode__ column
@@ -621,24 +631,38 @@ abstract class IssuesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
+     * $query->filterByUserSys(1234); // WHERE __user__ = 1234
+     * $query->filterByUserSys(array(12, 34)); // WHERE __user__ IN (12, 34)
+     * $query->filterByUserSys(array('min' => 12)); // WHERE __user__ > 12
      * </code>
      *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @see       filterByuserSysRef()
+     *
+     * @param     mixed $userSys The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
      */
     public function filterByUserSys($userSys = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
+        if (is_array($userSys)) {
+            $useMinMax = false;
+            if (isset($userSys['min'])) {
+                $this->addUsingAlias(IssuesTableMap::COL___USER__, $userSys['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($userSys['max'])) {
+                $this->addUsingAlias(IssuesTableMap::COL___USER__, $userSys['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -783,6 +807,83 @@ abstract class IssuesQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(IssuesTableMap::COL___SORT__, $sort, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Users object
+     *
+     * @param \Users|ObjectCollection $users The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByuserSysRef($users, $comparison = null)
+    {
+        if ($users instanceof \Users) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL___USER__, $users->getId(), $comparison);
+        } elseif ($users instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL___USER__, $users->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByuserSysRef() only accepts arguments of type \Users or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the userSysRef relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinuserSysRef($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('userSysRef');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'userSysRef');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the userSysRef relation Users object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UsersQuery A secondary query class using the current class as primary query
+     */
+    public function useuserSysRefQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinuserSysRef($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'userSysRef', '\UsersQuery');
     }
 
     /**

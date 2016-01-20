@@ -158,7 +158,7 @@ class BooksTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__user__', 'UserSys', 'LONGVARCHAR', false, null, null);
+        $this->addForeignKey('__user__', 'UserSys', 'INTEGER', 'users', 'id', false, 4, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
@@ -170,6 +170,13 @@ class BooksTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('userSysRef', '\\Users', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':__user__',
+    1 => ':id',
+  ),
+), 'SET NULL', 'SET NULL', null, false);
         $this->addRelation('RBatchForbook', '\\RBatchForbook', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

@@ -26,7 +26,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenamesQuery orderByHelpimage($order = Criteria::ASC) Order by the _helpimage column
  * @method     ChildTemplatenamesQuery orderByCategory($order = Criteria::ASC) Order by the _category column
  * @method     ChildTemplatenamesQuery orderByPublic($order = Criteria::ASC) Order by the _public column
- * @method     ChildTemplatenamesQuery orderByUserSys($order = Criteria::ASC) Order by the __user__ column
  * @method     ChildTemplatenamesQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  * @method     ChildTemplatenamesQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
  * @method     ChildTemplatenamesQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
@@ -38,7 +37,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenamesQuery groupByHelpimage() Group by the _helpimage column
  * @method     ChildTemplatenamesQuery groupByCategory() Group by the _category column
  * @method     ChildTemplatenamesQuery groupByPublic() Group by the _public column
- * @method     ChildTemplatenamesQuery groupByUserSys() Group by the __user__ column
  * @method     ChildTemplatenamesQuery groupByConfigSys() Group by the __config__ column
  * @method     ChildTemplatenamesQuery groupBySplit() Group by the __split__ column
  * @method     ChildTemplatenamesQuery groupBySort() Group by the __sort__ column
@@ -113,7 +111,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenames findOneByHelpimage(string $_helpimage) Return the first ChildTemplatenames filtered by the _helpimage column
  * @method     ChildTemplatenames findOneByCategory(string $_category) Return the first ChildTemplatenames filtered by the _category column
  * @method     ChildTemplatenames findOneByPublic(string $_public) Return the first ChildTemplatenames filtered by the _public column
- * @method     ChildTemplatenames findOneByUserSys(string $__user__) Return the first ChildTemplatenames filtered by the __user__ column
  * @method     ChildTemplatenames findOneByConfigSys(string $__config__) Return the first ChildTemplatenames filtered by the __config__ column
  * @method     ChildTemplatenames findOneBySplit(string $__split__) Return the first ChildTemplatenames filtered by the __split__ column
  * @method     ChildTemplatenames findOneBySort(int $__sort__) Return the first ChildTemplatenames filtered by the __sort__ column
@@ -128,7 +125,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenames requireOneByHelpimage(string $_helpimage) Return the first ChildTemplatenames filtered by the _helpimage column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByCategory(string $_category) Return the first ChildTemplatenames filtered by the _category column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByPublic(string $_public) Return the first ChildTemplatenames filtered by the _public column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTemplatenames requireOneByUserSys(string $__user__) Return the first ChildTemplatenames filtered by the __user__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneByConfigSys(string $__config__) Return the first ChildTemplatenames filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneBySplit(string $__split__) Return the first ChildTemplatenames filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTemplatenames requireOneBySort(int $__sort__) Return the first ChildTemplatenames filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -141,7 +137,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenames[]|ObjectCollection findByHelpimage(string $_helpimage) Return ChildTemplatenames objects filtered by the _helpimage column
  * @method     ChildTemplatenames[]|ObjectCollection findByCategory(string $_category) Return ChildTemplatenames objects filtered by the _category column
  * @method     ChildTemplatenames[]|ObjectCollection findByPublic(string $_public) Return ChildTemplatenames objects filtered by the _public column
- * @method     ChildTemplatenames[]|ObjectCollection findByUserSys(string $__user__) Return ChildTemplatenames objects filtered by the __user__ column
  * @method     ChildTemplatenames[]|ObjectCollection findByConfigSys(string $__config__) Return ChildTemplatenames objects filtered by the __config__ column
  * @method     ChildTemplatenames[]|ObjectCollection findBySplit(string $__split__) Return ChildTemplatenames objects filtered by the __split__ column
  * @method     ChildTemplatenames[]|ObjectCollection findBySort(int $__sort__) Return ChildTemplatenames objects filtered by the __sort__ column
@@ -238,7 +233,7 @@ abstract class TemplatenamesQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, _helptext, _helpimage, _category, _public, __user__, __config__, __split__, __sort__, __parentnode__ FROM _templatenames WHERE id = :p0';
+        $sql = 'SELECT id, _name, _helptext, _helpimage, _category, _public, __config__, __split__, __sort__, __parentnode__ FROM _templatenames WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -512,35 +507,6 @@ abstract class TemplatenamesQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TemplatenamesTableMap::COL__PUBLIC, $public, $comparison);
-    }
-
-    /**
-     * Filter the query on the __user__ column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUserSys('fooValue');   // WHERE __user__ = 'fooValue'
-     * $query->filterByUserSys('%fooValue%'); // WHERE __user__ LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $userSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTemplatenamesQuery The current query, for fluid interface
-     */
-    public function filterByUserSys($userSys = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($userSys)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $userSys)) {
-                $userSys = str_replace('*', '%', $userSys);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(TemplatenamesTableMap::COL___USER__, $userSys, $comparison);
     }
 
     /**

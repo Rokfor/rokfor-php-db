@@ -12,6 +12,8 @@ use \Issues as ChildIssues;
 use \IssuesQuery as ChildIssuesQuery;
 use \Templatenames as ChildTemplatenames;
 use \TemplatenamesQuery as ChildTemplatenamesQuery;
+use \Users as ChildUsers;
+use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
 use Map\ContributionsTableMap;
@@ -121,7 +123,7 @@ abstract class Contributions implements ActiveRecordInterface
     /**
      * The value for the __user__ field.
      *
-     * @var        string
+     * @var        int
      */
     protected $__user__;
 
@@ -152,6 +154,11 @@ abstract class Contributions implements ActiveRecordInterface
      * @var        int
      */
     protected $__sort__;
+
+    /**
+     * @var        ChildUsers
+     */
+    protected $auserSysRef;
 
     /**
      * @var        ChildFormats
@@ -486,7 +493,7 @@ abstract class Contributions implements ActiveRecordInterface
     /**
      * Get the [__user__] column value.
      *
-     * @return string
+     * @return int
      */
     public function getUserSys()
     {
@@ -684,18 +691,22 @@ abstract class Contributions implements ActiveRecordInterface
     /**
      * Set the value of [__user__] column.
      *
-     * @param string $v new value
+     * @param int $v new value
      * @return $this|\Contributions The current object (for fluent API support)
      */
     public function setUserSys($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
         if ($this->__user__ !== $v) {
             $this->__user__ = $v;
             $this->modifiedColumns[ContributionsTableMap::COL___USER__] = true;
+        }
+
+        if ($this->auserSysRef !== null && $this->auserSysRef->getId() !== $v) {
+            $this->auserSysRef = null;
         }
 
         return $this;
@@ -843,7 +854,7 @@ abstract class Contributions implements ActiveRecordInterface
             $this->_moddate = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ContributionsTableMap::translateFieldName('UserSys', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->__user__ = (null !== $col) ? (string) $col : null;
+            $this->__user__ = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ContributionsTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__config__ = (null !== $col) ? (string) $col : null;
@@ -892,6 +903,9 @@ abstract class Contributions implements ActiveRecordInterface
         if ($this->aIssues !== null && $this->_forissue !== $this->aIssues->getId()) {
             $this->aIssues = null;
         }
+        if ($this->auserSysRef !== null && $this->__user__ !== $this->auserSysRef->getId()) {
+            $this->auserSysRef = null;
+        }
         if ($this->aFormats !== null && $this->_forchapter !== $this->aFormats->getId()) {
             $this->aFormats = null;
         }
@@ -934,6 +948,7 @@ abstract class Contributions implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->auserSysRef = null;
             $this->aFormats = null;
             $this->aIssues = null;
             $this->aTemplatenames = null;
@@ -1042,6 +1057,13 @@ abstract class Contributions implements ActiveRecordInterface
             // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
+
+            if ($this->auserSysRef !== null) {
+                if ($this->auserSysRef->isModified() || $this->auserSysRef->isNew()) {
+                    $affectedRows += $this->auserSysRef->save($con);
+                }
+                $this->setuserSysRef($this->auserSysRef);
+            }
 
             if ($this->aFormats !== null) {
                 if ($this->aFormats->isModified() || $this->aFormats->isNew()) {
@@ -1187,7 +1209,7 @@ abstract class Contributions implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->_moddate, PDO::PARAM_INT);
                         break;
                     case '__user__':
-                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->__user__, PDO::PARAM_INT);
                         break;
                     case '__config__':
                         $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
@@ -1348,6 +1370,21 @@ abstract class Contributions implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->auserSysRef) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'users';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'users';
+                        break;
+                    default:
+                        $key = 'Users';
+                }
+
+                $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aFormats) {
 
                 switch ($keyType) {
@@ -1754,6 +1791,57 @@ abstract class Contributions implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUsers object.
+     *
+     * @param  ChildUsers $v
+     * @return $this|\Contributions The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setuserSysRef(ChildUsers $v = null)
+    {
+        if ($v === null) {
+            $this->setUserSys(NULL);
+        } else {
+            $this->setUserSys($v->getId());
+        }
+
+        $this->auserSysRef = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUsers object, it will not be re-added.
+        if ($v !== null) {
+            $v->addContributions($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUsers object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUsers The associated ChildUsers object.
+     * @throws PropelException
+     */
+    public function getuserSysRef(ConnectionInterface $con = null)
+    {
+        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+            $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->auserSysRef->addContributionss($this);
+             */
+        }
+
+        return $this->auserSysRef;
     }
 
     /**
@@ -2164,6 +2252,31 @@ abstract class Contributions implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildData[] List of ChildData objects
      */
+    public function getDatasJoinuserSysRef(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildDataQuery::create(null, $criteria);
+        $query->joinWith('userSysRef', $joinBehavior);
+
+        return $this->getDatas($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contributions is new, it will return
+     * an empty collection; or if this Contributions has previously
+     * been saved, it will retrieve related Datas from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contributions.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
     public function getDatasJoinTemplates(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildDataQuery::create(null, $criteria);
@@ -2179,6 +2292,9 @@ abstract class Contributions implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->auserSysRef) {
+            $this->auserSysRef->removeContributions($this);
+        }
         if (null !== $this->aFormats) {
             $this->aFormats->removeContributions($this);
         }
@@ -2226,6 +2342,7 @@ abstract class Contributions implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collDatas = null;
+        $this->auserSysRef = null;
         $this->aFormats = null;
         $this->aIssues = null;
         $this->aTemplatenames = null;
