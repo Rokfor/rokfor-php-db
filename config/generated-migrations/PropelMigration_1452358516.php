@@ -17,8 +17,13 @@ class PropelMigration_1452358516
     function 	_ConvertInfluenceArray($_inf) {
   		// Transform Influence Array
   		$_inf_array = [];
-  		foreach (explode('<::::::>', $_inf) as $_value) {
-  			array_push($_inf_array, explode("%%%%%", $_value));
+  		foreach (explode('%%%%%%%%%%', $_inf) as $_value) {
+        $row = [];
+        list($row["factor"], $row["fieldname"]) = explode("%%%%%", $_value);
+        if ($row["fieldname"]) {
+          $row["fieldname"] = TemplatesQuery::create()->filterByFieldname($row["fieldname"])->findOne()->getId();
+          array_push($_inf_array, $row);
+        }
   		}
   		return ($_inf_array);				
 	  }
@@ -43,12 +48,18 @@ class PropelMigration_1452358516
           $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
           echo "Updating template ".$result['_fieldname']."\n";
+
+          $_sizes = [];
+          $_heights = explode(';',$result['_imageheight']);
+          foreach (explode(';',$result['_imagewidth']) as $key => $value) {
+            array_push($_sizes, [width=>$value, height=>$_heights[$key]]);
+          }
+
           
           $newconfig = Array (
             maxlines    => $result['_maxlines'],
             textlength  => $result['_textlength'],
-            imagewidth  => explode(';',$result['_imagewidth']),
-            imageheight => explode(';',$result['_imageheight']),
+            imagesize   => $_sizes,
             columns     => $result['_cols'],
             history     => $result['_history'] == "ja",
             growing     => $result['_growing'] == "ja"
@@ -74,7 +85,7 @@ class PropelMigration_1452358516
                   preg_match("/<(.*)>(.*)/", $_colName, $_LengthName);
                   if ($_LengthName[1] == 0)
                     $_LengthName[1] = 1;
-                  array_push($newconfig['editorcolumns'], [$_LengthName[1], $_LengthName[2]]);
+                  array_push($newconfig['editorcolumns'], ["lines" => $_LengthName[1], "label" => $_LengthName[2]]);
                 }
               }
               break;
@@ -89,19 +100,16 @@ class PropelMigration_1452358516
             }
             else {
               $init = parse_ini_string ($string,true);
-              echo "Parsed String\n";
-              print_r($init);
-              echo "\n---\n";
               if (is_array($init)) {
             		foreach ($init as $type=>$row) {
                   if ($type == 'integer')
-                    $newconfig['integer']             = $row ? true : false;
+                    $newconfig['integer']             = $row  ? true : false;
                   if ($type == 'resolve_foreign')
                     $newconfig['resolve_foreign']     = $row ? true : false;
                   if ($type == 'multiple')
                     $newconfig['multiple']            = $row ? true : false;
                   if ($type == 'legends')
-                    $newconfig['default']             = explode(';',trim($row));
+                    $newconfig['legends']             = explode(';',trim($row));
                   if ($type == 'history')
                     $newconfig['history_command']     = $row;
                   if ($type == 'dateformat')
@@ -116,15 +124,58 @@ class PropelMigration_1452358516
                     $newconfig['fixedvalues']         = explode(';',trim($row));	
                   if ($type == 'restrict_to_open')
                     $newconfig['restrict_to_open']    = $row ? true : false;
-                  if ($type == 'restrict_to_issue')
-                    $newconfig['restrict_to_issue']   = $row;
-                  if ($type == 'restrict_to_chapter')
-                    $newconfig['restrict_to_chapter'] = $row;
-                  if ($type == 'restrict_to_book')
-                    $newconfig['restrict_to_book']    = $row ? true : false;
+
+                  if ($type == 'restrict_to_issue') {
+                    if ($newconfig['restrict_to_issue'] === "true") $newconfig['restrict_to_issue']   = true;
+                    else if ($newconfig['restrict_to_issue'] === "false") $newconfig['restrict_to_issue']   = false;                    
+                    else {
+                      $newconfig['restrict_to_issue']   = true;
+                      $newconfig['fromissue']   = $row;
+                    }
+                  }
+
+                  if ($type == 'restrict_to_chapter') {
+                    if ($newconfig['restrict_to_chapter'] === "true") $newconfig['restrict_to_chapter']   = true;
+                    else if ($newconfig['restrict_to_chapter'] === "false") $newconfig['restrict_to_chapter']   = false;                    
+                    else {
+                      $newconfig['restrict_to_chapter']   = true;
+                      $newconfig['fromchapter']   = $row;
+                    }
+                  }
+                  
+                  if ($type == 'restrict_to_book') {
+                    if ($newconfig['restrict_to_book'] === "true") $newconfig['restrict_to_book']   = true;
+                    else if ($newconfig['restrict_to_book'] === "false") $newconfig['restrict_to_book']   = false;                    
+                    else {
+                      $newconfig['restrict_to_book']   = true;
+                      $newconfig['frombook']   = $row;
+                    }                    
+                  }
                   if ($type == '3d')
                     $newconfig['threeDee']            = $row ? true : false;
                 }
+                
+                if ($newconfig['frombook']) {
+                  $newconfig['frombook'] = BooksQuery::create()->filterByName($newconfig['frombook'])->findOne()->getId();
+                }
+                if ($newconfig['fromchapter']) {
+                  $newconfig['fromchapter'] = FormatsQuery::create()->filterByName($newconfig['fromchapter'])->findOne()->getId();
+                }
+                if ($newconfig['fromissue']) {
+                  $newconfig['fromissue'] = IssuesQuery::create()->filterByName($newconfig['fromissue'])->findOne()->getId();       
+                }
+                if ($newconfig['fromtemplate']) {
+                  $newconfig['fromtemplate'] = TemplatenamesQuery::create()->filterByName($newconfig['fromtemplate'])->findOne()->getId();
+                }
+                if ($newconfig['fromfield']) {
+                  $newconfig['fromfield']= TemplatesQuery::create()->filterByFieldname($newconfig['fromfield'])->findOne()->getId();
+                }
+                  
+/*                echo "Parsed String\n";
+                print_r($init);
+                echo "\n---\n";
+                print_r($newconfig);
+                echo "\n---\n";              */
               }
             }
             break;

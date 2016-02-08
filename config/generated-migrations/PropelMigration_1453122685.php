@@ -12,6 +12,17 @@ class PropelMigration_1453122685
     public function preUp($manager)
     {
         // add the pre-migration code here
+        $pdo = $manager->getAdapterConnection('rokfor');
+
+        $sql = "DELETE FROM _contributions WHERE _forissue NOT IN (SELECT id from _issues)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        
+        $sql = "DELETE FROM _contributions WHERE _forchapter NOT IN (SELECT id from _formats)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        
+        
     }
 
     public function postUp($manager)
@@ -106,7 +117,17 @@ ALTER TABLE `_templatenames`
 ALTER TABLE `_templates`
 
   DROP `__user__`;
+  
+ALTER TABLE `_templatenames` 
 
+  CHANGE `_helpimage` `_helpimage` TEXT NULL;
+
+ALTER TABLE `users` 
+  CHANGE `filerights` `filerights` TEXT NULL;
+
+ALTER TABLE `users` 
+  CHANGE `pluginrights` `pluginrights` TEXT NULL;
+  
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
@@ -176,6 +197,17 @@ ALTER TABLE `_templatenames`
 ALTER TABLE `_templates`
 
   ADD `__user__` INTEGER(4) AFTER `_fieldtype`;
+  
+ALTER TABLE `_templatenames` 
+
+  CHANGE `_helpimage` `_helpimage` NULL;  
+
+ALTER TABLE `users` 
+  CHANGE `filerights` `filerights` NULL;
+
+ALTER TABLE `users` 
+  CHANGE `pluginrights` `pluginrights` NULL;
+
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

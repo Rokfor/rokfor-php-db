@@ -11,7 +11,30 @@ class PropelMigration_1453121154
 
     public function preUp($manager)
     {
-        // add the pre-migration code here
+      // add the pre-migration code here
+      $pdo = $manager->getAdapterConnection('rokfor');
+      $sql = "SELECT id FROM users";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+      $valid_id = [] ;
+      foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $id) {
+        $valid_id[] = $id[id];
+      }
+      $update_id = reset($valid_id);
+      $tables = [_batch, _books, _contributions, _data, _fieldpostprocessor, _formats, _issues, _log, _pdf, _plugins, _rights, _templatenames, _templates];
+      foreach ($tables as $table) {
+        $sql = "SELECT id, __user__ FROM $table";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
+          if (!in_array($value['__user__'], $valid_id)) {
+            $sql = "UPDATE $table SET __user__ = $update_id WHERE id = ".$value['id'];
+            $st = $pdo->prepare($sql);
+            $st->execute();
+            echo "$sql\n";
+          }
+        }
+      }
     }
 
     public function postUp($manager)

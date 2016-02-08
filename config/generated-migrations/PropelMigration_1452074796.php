@@ -286,10 +286,11 @@ class PropelMigration_1452074796
         // migrate data into new content field, set json to true if it is jsonized.
         $datasets = DataQuery::create()->find();
         $count = 0;
+        echo "\n";
+        echo "Updating " . count($datasets) . " Fields: ";
+
         foreach ($datasets as $data) {
-          echo "\n";
-          echo "Field " . ($count) . " of " . count($datasets);
-          echo "\n";
+          echo ".";
           $count++;
           $_parsed_text = "";    
           $_is_json = false;      
@@ -345,6 +346,7 @@ class PropelMigration_1452074796
           $data->setIsjson($_is_json);
           $data->save($pdo);
         }
+        echo "\nDone\n";
     }
 
     public function preDown($manager)

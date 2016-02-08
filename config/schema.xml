@@ -444,7 +444,7 @@
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_name" phpName="Name" type="LONGVARCHAR" required="true"/>
     <column name="_helptext" phpName="Helptext" type="LONGVARCHAR"/>
-    <column name="_helpimage" phpName="Helpimage" type="LONGVARCHAR" required="true"/>
+    <column name="_helpimage" phpName="Helpimage" type="LONGVARCHAR"/>
     <column name="_category" phpName="Category" type="LONGVARCHAR"/>
     <column name="_public" phpName="Public" type="LONGVARCHAR"/>
     <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
@@ -491,8 +491,8 @@
     <column name="username" phpName="Username" type="LONGVARCHAR" required="true"/>
     <column name="password" phpName="Password" type="LONGVARCHAR" required="true"/>
     <column name="usergroup" phpName="Usergroup" type="LONGVARCHAR" required="true"/>
-    <column name="filerights" phpName="Filerights" type="LONGVARCHAR" required="true"/>
-    <column name="pluginrights" phpName="Pluginrights" type="LONGVARCHAR" required="true"/>
+    <column name="filerights" phpName="Filerights" type="LONGVARCHAR"/>
+    <column name="pluginrights" phpName="Pluginrights" type="LONGVARCHAR"/>
     <index name="id">
       <index-column name="id"/>
     </index>
