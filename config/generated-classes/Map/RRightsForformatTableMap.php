@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Formats;
-use \FormatsQuery;
+use \RRightsForformat;
+use \RRightsForformatQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the '_formats' table.
+ * This class defines the structure of the 'R_rights_forformat' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class FormatsTableMap extends TableMap
+class RRightsForformatTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class FormatsTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.FormatsTableMap';
+    const CLASS_NAME = '.Map.RRightsForformatTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class FormatsTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = '_formats';
+    const TABLE_NAME = 'R_rights_forformat';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Formats';
+    const OM_CLASS = '\\RRightsForformat';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Formats';
+    const CLASS_DEFAULT = 'RRightsForformat';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 2;
 
     /**
      * The number of lazy-loaded columns
@@ -69,47 +69,17 @@ class FormatsTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the id field
+     * the column name for the _rightid field
      */
-    const COL_ID = '_formats.id';
+    const COL__RIGHTID = 'R_rights_forformat._rightid';
 
     /**
-     * the column name for the _name field
+     * the column name for the _formatid field
      */
-    const COL__NAME = '_formats._name';
-
-    /**
-     * the column name for the _forbook field
-     */
-    const COL__FORBOOK = '_formats._forbook';
-
-    /**
-     * the column name for the __user__ field
-     */
-    const COL___USER__ = '_formats.__user__';
-
-    /**
-     * the column name for the __config__ field
-     */
-    const COL___CONFIG__ = '_formats.__config__';
-
-    /**
-     * the column name for the __split__ field
-     */
-    const COL___SPLIT__ = '_formats.__split__';
-
-    /**
-     * the column name for the __sort__ field
-     */
-    const COL___SORT__ = '_formats.__sort__';
-
-    /**
-     * the column name for the __parentnode__ field
-     */
-    const COL___PARENTNODE__ = '_formats.__parentnode__';
+    const COL__FORMATID = 'R_rights_forformat._formatid';
 
     /**
      * The default string format for model objects of the related table
@@ -123,11 +93,11 @@ class FormatsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Forbook', 'UserSys', 'ConfigSys', 'Split', 'Sort', 'Parentnode', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'forbook', 'userSys', 'configSys', 'split', 'sort', 'parentnode', ),
-        self::TYPE_COLNAME       => array(FormatsTableMap::COL_ID, FormatsTableMap::COL__NAME, FormatsTableMap::COL__FORBOOK, FormatsTableMap::COL___USER__, FormatsTableMap::COL___CONFIG__, FormatsTableMap::COL___SPLIT__, FormatsTableMap::COL___SORT__, FormatsTableMap::COL___PARENTNODE__, ),
-        self::TYPE_FIELDNAME     => array('id', '_name', '_forbook', '__user__', '__config__', '__split__', '__sort__', '__parentnode__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Rightid', 'Formatid', ),
+        self::TYPE_CAMELNAME     => array('rightid', 'formatid', ),
+        self::TYPE_COLNAME       => array(RRightsForformatTableMap::COL__RIGHTID, RRightsForformatTableMap::COL__FORMATID, ),
+        self::TYPE_FIELDNAME     => array('_rightid', '_formatid', ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -137,11 +107,11 @@ class FormatsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Forbook' => 2, 'UserSys' => 3, 'ConfigSys' => 4, 'Split' => 5, 'Sort' => 6, 'Parentnode' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'forbook' => 2, 'userSys' => 3, 'configSys' => 4, 'split' => 5, 'sort' => 6, 'parentnode' => 7, ),
-        self::TYPE_COLNAME       => array(FormatsTableMap::COL_ID => 0, FormatsTableMap::COL__NAME => 1, FormatsTableMap::COL__FORBOOK => 2, FormatsTableMap::COL___USER__ => 3, FormatsTableMap::COL___CONFIG__ => 4, FormatsTableMap::COL___SPLIT__ => 5, FormatsTableMap::COL___SORT__ => 6, FormatsTableMap::COL___PARENTNODE__ => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_forbook' => 2, '__user__' => 3, '__config__' => 4, '__split__' => 5, '__sort__' => 6, '__parentnode__' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Rightid' => 0, 'Formatid' => 1, ),
+        self::TYPE_CAMELNAME     => array('rightid' => 0, 'formatid' => 1, ),
+        self::TYPE_COLNAME       => array(RRightsForformatTableMap::COL__RIGHTID => 0, RRightsForformatTableMap::COL__FORMATID => 1, ),
+        self::TYPE_FIELDNAME     => array('_rightid' => 0, '_formatid' => 1, ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -154,21 +124,16 @@ class FormatsTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('_formats');
-        $this->setPhpName('Formats');
+        $this->setName('R_rights_forformat');
+        $this->setPhpName('RRightsForformat');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Formats');
+        $this->setClassName('\\RRightsForformat');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
-        $this->addColumn('_name', 'Name', 'LONGVARCHAR', true, null, null);
-        $this->addForeignKey('_forbook', 'Forbook', 'INTEGER', '_books', 'id', false, 32, null);
-        $this->addForeignKey('__user__', 'UserSys', 'INTEGER', 'users', 'id', false, 4, null);
-        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
-        $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
+        $this->addForeignPrimaryKey('_rightid', 'Rightid', 'INTEGER' , '_rights', 'id', true, null, null);
+        $this->addForeignPrimaryKey('_formatid', 'Formatid', 'INTEGER' , '_formats', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -176,54 +141,73 @@ class FormatsTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('userSysRef', '\\Users', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':__user__',
-    1 => ':id',
-  ),
-), 'SET NULL', 'SET NULL', null, false);
-        $this->addRelation('Books', '\\Books', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':_forbook',
+    0 => ':_rightid',
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
-        $this->addRelation('RRightsForformat', '\\RRightsForformat', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Formats', '\\Formats', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_formatid',
     1 => ':id',
   ),
-), 'CASCADE', 'CASCADE', 'RRightsForformats', false);
-        $this->addRelation('RTemplatenamesInchapter', '\\RTemplatenamesInchapter', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':_chapterid',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'RTemplatenamesInchapters', false);
-        $this->addRelation('Contributions', '\\Contributions', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':_forchapter',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'Contributionss', false);
-        $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
-        $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatenamess');
+), 'CASCADE', 'CASCADE', null, false);
     } // buildRelations()
+
     /**
-     * Method to invalidate the instance pool of all tables related to _formats     * by a foreign key with ON DELETE CASCADE
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \RRightsForformat $obj A \RRightsForformat object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
-    public static function clearRelatedInstancePool()
+    public static function addInstanceToPool($obj, $key = null)
     {
-        // Invalidate objects in related instance pools,
-        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        RRightsForformatTableMap::clearInstancePool();
-        RTemplatenamesInchapterTableMap::clearInstancePool();
-        ContributionsTableMap::clearInstancePool();
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getRightid() || is_scalar($obj->getRightid()) || is_callable([$obj->getRightid(), '__toString']) ? (string) $obj->getRightid() : $obj->getRightid()), (null === $obj->getFormatid() || is_scalar($obj->getFormatid()) || is_callable([$obj->getFormatid(), '__toString']) ? (string) $obj->getFormatid() : $obj->getFormatid())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \RRightsForformat object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \RRightsForformat) {
+                $key = serialize([(null === $value->getRightid() || is_scalar($value->getRightid()) || is_callable([$value->getRightid(), '__toString']) ? (string) $value->getRightid() : $value->getRightid()), (null === $value->getFormatid() || is_scalar($value->getFormatid()) || is_callable([$value->getFormatid(), '__toString']) ? (string) $value->getFormatid() : $value->getFormatid())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \RRightsForformat object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
     }
 
     /**
@@ -242,11 +226,11 @@ class FormatsTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -263,11 +247,20 @@ class FormatsTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('Rightid', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -283,7 +276,7 @@ class FormatsTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? FormatsTableMap::CLASS_DEFAULT : FormatsTableMap::OM_CLASS;
+        return $withPrefix ? RRightsForformatTableMap::CLASS_DEFAULT : RRightsForformatTableMap::OM_CLASS;
     }
 
     /**
@@ -297,22 +290,22 @@ class FormatsTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Formats object, last column rank)
+     * @return array           (RRightsForformat object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = FormatsTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = FormatsTableMap::getInstanceFromPool($key))) {
+        $key = RRightsForformatTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = RRightsForformatTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + FormatsTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + RRightsForformatTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = FormatsTableMap::OM_CLASS;
-            /** @var Formats $obj */
+            $cls = RRightsForformatTableMap::OM_CLASS;
+            /** @var RRightsForformat $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            FormatsTableMap::addInstanceToPool($obj, $key);
+            RRightsForformatTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -335,18 +328,18 @@ class FormatsTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = FormatsTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = FormatsTableMap::getInstanceFromPool($key))) {
+            $key = RRightsForformatTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = RRightsForformatTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Formats $obj */
+                /** @var RRightsForformat $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                FormatsTableMap::addInstanceToPool($obj, $key);
+                RRightsForformatTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -367,23 +360,11 @@ class FormatsTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(FormatsTableMap::COL_ID);
-            $criteria->addSelectColumn(FormatsTableMap::COL__NAME);
-            $criteria->addSelectColumn(FormatsTableMap::COL__FORBOOK);
-            $criteria->addSelectColumn(FormatsTableMap::COL___USER__);
-            $criteria->addSelectColumn(FormatsTableMap::COL___CONFIG__);
-            $criteria->addSelectColumn(FormatsTableMap::COL___SPLIT__);
-            $criteria->addSelectColumn(FormatsTableMap::COL___SORT__);
-            $criteria->addSelectColumn(FormatsTableMap::COL___PARENTNODE__);
+            $criteria->addSelectColumn(RRightsForformatTableMap::COL__RIGHTID);
+            $criteria->addSelectColumn(RRightsForformatTableMap::COL__FORMATID);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '._name');
-            $criteria->addSelectColumn($alias . '._forbook');
-            $criteria->addSelectColumn($alias . '.__user__');
-            $criteria->addSelectColumn($alias . '.__config__');
-            $criteria->addSelectColumn($alias . '.__split__');
-            $criteria->addSelectColumn($alias . '.__sort__');
-            $criteria->addSelectColumn($alias . '.__parentnode__');
+            $criteria->addSelectColumn($alias . '._rightid');
+            $criteria->addSelectColumn($alias . '._formatid');
         }
     }
 
@@ -396,7 +377,7 @@ class FormatsTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(FormatsTableMap::DATABASE_NAME)->getTable(FormatsTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(RRightsForformatTableMap::DATABASE_NAME)->getTable(RRightsForformatTableMap::TABLE_NAME);
     }
 
     /**
@@ -404,16 +385,16 @@ class FormatsTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(FormatsTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(FormatsTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new FormatsTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(RRightsForformatTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(RRightsForformatTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new RRightsForformatTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Formats or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a RRightsForformat or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Formats object or primary key or array of primary keys
+     * @param mixed               $values Criteria or RRightsForformat object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -424,27 +405,37 @@ class FormatsTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FormatsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RRightsForformatTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Formats) { // it's a model object
+        } elseif ($values instanceof \RRightsForformat) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(FormatsTableMap::DATABASE_NAME);
-            $criteria->add(FormatsTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(RRightsForformatTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(RRightsForformatTableMap::COL__RIGHTID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(RRightsForformatTableMap::COL__FORMATID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
-        $query = FormatsQuery::create()->mergeWith($criteria);
+        $query = RRightsForformatQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            FormatsTableMap::clearInstancePool();
+            RRightsForformatTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                FormatsTableMap::removeInstanceFromPool($singleval);
+                RRightsForformatTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -452,20 +443,20 @@ class FormatsTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the _formats table.
+     * Deletes all rows from the R_rights_forformat table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return FormatsQuery::create()->doDeleteAll($con);
+        return RRightsForformatQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Formats or Criteria object.
+     * Performs an INSERT on the database, given a RRightsForformat or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Formats object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or RRightsForformat object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -474,22 +465,18 @@ class FormatsTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(FormatsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RRightsForformatTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Formats object
-        }
-
-        if ($criteria->containsKey(FormatsTableMap::COL_ID) && $criteria->keyContainsValue(FormatsTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.FormatsTableMap::COL_ID.')');
+            $criteria = $criteria->buildCriteria(); // build Criteria from RRightsForformat object
         }
 
 
         // Set the correct dbName
-        $query = FormatsQuery::create()->mergeWith($criteria);
+        $query = RRightsForformatQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -498,7 +485,7 @@ class FormatsTableMap extends TableMap
         });
     }
 
-} // FormatsTableMap
+} // RRightsForformatTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-FormatsTableMap::buildTableMap();
+RRightsForformatTableMap::buildTableMap();

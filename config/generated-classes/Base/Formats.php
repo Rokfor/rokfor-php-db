@@ -8,8 +8,12 @@ use \Contributions as ChildContributions;
 use \ContributionsQuery as ChildContributionsQuery;
 use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
+use \RRightsForformat as ChildRRightsForformat;
+use \RRightsForformatQuery as ChildRRightsForformatQuery;
 use \RTemplatenamesInchapter as ChildRTemplatenamesInchapter;
 use \RTemplatenamesInchapterQuery as ChildRTemplatenamesInchapterQuery;
+use \Rights as ChildRights;
+use \RightsQuery as ChildRightsQuery;
 use \Templatenames as ChildTemplatenames;
 use \TemplatenamesQuery as ChildTemplatenamesQuery;
 use \Users as ChildUsers;
@@ -138,6 +142,12 @@ abstract class Formats implements ActiveRecordInterface
     protected $aBooks;
 
     /**
+     * @var        ObjectCollection|ChildRRightsForformat[] Collection to store aggregation of ChildRRightsForformat objects.
+     */
+    protected $collRRightsForformats;
+    protected $collRRightsForformatsPartial;
+
+    /**
      * @var        ObjectCollection|ChildRTemplatenamesInchapter[] Collection to store aggregation of ChildRTemplatenamesInchapter objects.
      */
     protected $collRTemplatenamesInchapters;
@@ -148,6 +158,16 @@ abstract class Formats implements ActiveRecordInterface
      */
     protected $collContributionss;
     protected $collContributionssPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRights[] Cross Collection to store aggregation of ChildRights objects.
+     */
+    protected $collRightss;
+
+    /**
+     * @var bool
+     */
+    protected $collRightssPartial;
 
     /**
      * @var        ObjectCollection|ChildTemplatenames[] Cross Collection to store aggregation of ChildTemplatenames objects.
@@ -169,9 +189,21 @@ abstract class Formats implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRights[]
+     */
+    protected $rightssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildTemplatenames[]
      */
     protected $templatenamessScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRRightsForformat[]
+     */
+    protected $rRightsForformatsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -794,10 +826,13 @@ abstract class Formats implements ActiveRecordInterface
 
             $this->auserSysRef = null;
             $this->aBooks = null;
+            $this->collRRightsForformats = null;
+
             $this->collRTemplatenamesInchapters = null;
 
             $this->collContributionss = null;
 
+            $this->collRightss = null;
             $this->collTemplatenamess = null;
         } // if (deep)
     }
@@ -928,6 +963,35 @@ abstract class Formats implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->rightssScheduledForDeletion !== null) {
+                if (!$this->rightssScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rightssScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RRightsForformatQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rightssScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRightss) {
+                foreach ($this->collRightss as $rights) {
+                    if (!$rights->isDeleted() && ($rights->isNew() || $rights->isModified())) {
+                        $rights->save($con);
+                    }
+                }
+            }
+
+
             if ($this->templatenamessScheduledForDeletion !== null) {
                 if (!$this->templatenamessScheduledForDeletion->isEmpty()) {
                     $pks = array();
@@ -956,6 +1020,23 @@ abstract class Formats implements ActiveRecordInterface
                 }
             }
 
+
+            if ($this->rRightsForformatsScheduledForDeletion !== null) {
+                if (!$this->rRightsForformatsScheduledForDeletion->isEmpty()) {
+                    \RRightsForformatQuery::create()
+                        ->filterByPrimaryKeys($this->rRightsForformatsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rRightsForformatsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRRightsForformats !== null) {
+                foreach ($this->collRRightsForformats as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
 
             if ($this->rTemplatenamesInchaptersScheduledForDeletion !== null) {
                 if (!$this->rTemplatenamesInchaptersScheduledForDeletion->isEmpty()) {
@@ -1236,6 +1317,21 @@ abstract class Formats implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aBooks->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collRRightsForformats) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rRightsForformats';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_rights_forformats';
+                        break;
+                    default:
+                        $key = 'RRightsForformats';
+                }
+
+                $result[$key] = $this->collRRightsForformats->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collRTemplatenamesInchapters) {
 
@@ -1539,6 +1635,12 @@ abstract class Formats implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getRRightsForformats() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRRightsForformat($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getRTemplatenamesInchapters() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addRTemplatenamesInchapter($relObj->copy($deepCopy));
@@ -1694,12 +1796,265 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('RRightsForformat' == $relationName) {
+            return $this->initRRightsForformats();
+        }
         if ('RTemplatenamesInchapter' == $relationName) {
             return $this->initRTemplatenamesInchapters();
         }
         if ('Contributions' == $relationName) {
             return $this->initContributionss();
         }
+    }
+
+    /**
+     * Clears out the collRRightsForformats collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRRightsForformats()
+     */
+    public function clearRRightsForformats()
+    {
+        $this->collRRightsForformats = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRRightsForformats collection loaded partially.
+     */
+    public function resetPartialRRightsForformats($v = true)
+    {
+        $this->collRRightsForformatsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRRightsForformats collection.
+     *
+     * By default this just sets the collRRightsForformats collection to an empty array (like clearcollRRightsForformats());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRRightsForformats($overrideExisting = true)
+    {
+        if (null !== $this->collRRightsForformats && !$overrideExisting) {
+            return;
+        }
+        $this->collRRightsForformats = new ObjectCollection();
+        $this->collRRightsForformats->setModel('\RRightsForformat');
+    }
+
+    /**
+     * Gets an array of ChildRRightsForformat objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFormats is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRRightsForformat[] List of ChildRRightsForformat objects
+     * @throws PropelException
+     */
+    public function getRRightsForformats(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRRightsForformatsPartial && !$this->isNew();
+        if (null === $this->collRRightsForformats || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRRightsForformats) {
+                // return empty collection
+                $this->initRRightsForformats();
+            } else {
+                $collRRightsForformats = ChildRRightsForformatQuery::create(null, $criteria)
+                    ->filterByFormats($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRRightsForformatsPartial && count($collRRightsForformats)) {
+                        $this->initRRightsForformats(false);
+
+                        foreach ($collRRightsForformats as $obj) {
+                            if (false == $this->collRRightsForformats->contains($obj)) {
+                                $this->collRRightsForformats->append($obj);
+                            }
+                        }
+
+                        $this->collRRightsForformatsPartial = true;
+                    }
+
+                    return $collRRightsForformats;
+                }
+
+                if ($partial && $this->collRRightsForformats) {
+                    foreach ($this->collRRightsForformats as $obj) {
+                        if ($obj->isNew()) {
+                            $collRRightsForformats[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRRightsForformats = $collRRightsForformats;
+                $this->collRRightsForformatsPartial = false;
+            }
+        }
+
+        return $this->collRRightsForformats;
+    }
+
+    /**
+     * Sets a collection of ChildRRightsForformat objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rRightsForformats A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function setRRightsForformats(Collection $rRightsForformats, ConnectionInterface $con = null)
+    {
+        /** @var ChildRRightsForformat[] $rRightsForformatsToDelete */
+        $rRightsForformatsToDelete = $this->getRRightsForformats(new Criteria(), $con)->diff($rRightsForformats);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rRightsForformatsScheduledForDeletion = clone $rRightsForformatsToDelete;
+
+        foreach ($rRightsForformatsToDelete as $rRightsForformatRemoved) {
+            $rRightsForformatRemoved->setFormats(null);
+        }
+
+        $this->collRRightsForformats = null;
+        foreach ($rRightsForformats as $rRightsForformat) {
+            $this->addRRightsForformat($rRightsForformat);
+        }
+
+        $this->collRRightsForformats = $rRightsForformats;
+        $this->collRRightsForformatsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RRightsForformat objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RRightsForformat objects.
+     * @throws PropelException
+     */
+    public function countRRightsForformats(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRRightsForformatsPartial && !$this->isNew();
+        if (null === $this->collRRightsForformats || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRRightsForformats) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRRightsForformats());
+            }
+
+            $query = ChildRRightsForformatQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByFormats($this)
+                ->count($con);
+        }
+
+        return count($this->collRRightsForformats);
+    }
+
+    /**
+     * Method called to associate a ChildRRightsForformat object to this object
+     * through the ChildRRightsForformat foreign key attribute.
+     *
+     * @param  ChildRRightsForformat $l ChildRRightsForformat
+     * @return $this|\Formats The current object (for fluent API support)
+     */
+    public function addRRightsForformat(ChildRRightsForformat $l)
+    {
+        if ($this->collRRightsForformats === null) {
+            $this->initRRightsForformats();
+            $this->collRRightsForformatsPartial = true;
+        }
+
+        if (!$this->collRRightsForformats->contains($l)) {
+            $this->doAddRRightsForformat($l);
+
+            if ($this->rRightsForformatsScheduledForDeletion and $this->rRightsForformatsScheduledForDeletion->contains($l)) {
+                $this->rRightsForformatsScheduledForDeletion->remove($this->rRightsForformatsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRRightsForformat $rRightsForformat The ChildRRightsForformat object to add.
+     */
+    protected function doAddRRightsForformat(ChildRRightsForformat $rRightsForformat)
+    {
+        $this->collRRightsForformats[]= $rRightsForformat;
+        $rRightsForformat->setFormats($this);
+    }
+
+    /**
+     * @param  ChildRRightsForformat $rRightsForformat The ChildRRightsForformat object to remove.
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function removeRRightsForformat(ChildRRightsForformat $rRightsForformat)
+    {
+        if ($this->getRRightsForformats()->contains($rRightsForformat)) {
+            $pos = $this->collRRightsForformats->search($rRightsForformat);
+            $this->collRRightsForformats->remove($pos);
+            if (null === $this->rRightsForformatsScheduledForDeletion) {
+                $this->rRightsForformatsScheduledForDeletion = clone $this->collRRightsForformats;
+                $this->rRightsForformatsScheduledForDeletion->clear();
+            }
+            $this->rRightsForformatsScheduledForDeletion[]= clone $rRightsForformat;
+            $rRightsForformat->setFormats(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Formats is new, it will return
+     * an empty collection; or if this Formats has previously
+     * been saved, it will retrieve related RRightsForformats from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Formats.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRRightsForformat[] List of ChildRRightsForformat objects
+     */
+    public function getRRightsForformatsJoinRights(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRRightsForformatQuery::create(null, $criteria);
+        $query->joinWith('Rights', $joinBehavior);
+
+        return $this->getRRightsForformats($query, $con);
     }
 
     /**
@@ -2250,6 +2605,248 @@ abstract class Formats implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRightss collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRightss()
+     */
+    public function clearRightss()
+    {
+        $this->collRightss = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRightss crossRef collection.
+     *
+     * By default this just sets the collRightss collection to an empty collection (like clearRightss());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRightss()
+    {
+        $this->collRightss = new ObjectCollection();
+        $this->collRightssPartial = true;
+
+        $this->collRightss->setModel('\Rights');
+    }
+
+    /**
+     * Checks if the collRightss collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRightssLoaded()
+    {
+        return null !== $this->collRightss;
+    }
+
+    /**
+     * Gets a collection of ChildRights objects related by a many-to-many relationship
+     * to the current object by way of the R_rights_forformat cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFormats is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildRights[] List of ChildRights objects
+     */
+    public function getRightss(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRightssPartial && !$this->isNew();
+        if (null === $this->collRightss || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRightss) {
+                    $this->initRightss();
+                }
+            } else {
+
+                $query = ChildRightsQuery::create(null, $criteria)
+                    ->filterByFormats($this);
+                $collRightss = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRightss;
+                }
+
+                if ($partial && $this->collRightss) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRightss as $obj) {
+                        if (!$collRightss->contains($obj)) {
+                            $collRightss[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRightss = $collRightss;
+                $this->collRightssPartial = false;
+            }
+        }
+
+        return $this->collRightss;
+    }
+
+    /**
+     * Sets a collection of Rights objects related by a many-to-many relationship
+     * to the current object by way of the R_rights_forformat cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rightss A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function setRightss(Collection $rightss, ConnectionInterface $con = null)
+    {
+        $this->clearRightss();
+        $currentRightss = $this->getRightss();
+
+        $rightssScheduledForDeletion = $currentRightss->diff($rightss);
+
+        foreach ($rightssScheduledForDeletion as $toDelete) {
+            $this->removeRights($toDelete);
+        }
+
+        foreach ($rightss as $rights) {
+            if (!$currentRightss->contains($rights)) {
+                $this->doAddRights($rights);
+            }
+        }
+
+        $this->collRightssPartial = false;
+        $this->collRightss = $rightss;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Rights objects related by a many-to-many relationship
+     * to the current object by way of the R_rights_forformat cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Rights objects
+     */
+    public function countRightss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRightssPartial && !$this->isNew();
+        if (null === $this->collRightss || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRightss) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRightss());
+                }
+
+                $query = ChildRightsQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByFormats($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRightss);
+        }
+    }
+
+    /**
+     * Associate a ChildRights to this object
+     * through the R_rights_forformat cross reference table.
+     *
+     * @param ChildRights $rights
+     * @return ChildFormats The current object (for fluent API support)
+     */
+    public function addRights(ChildRights $rights)
+    {
+        if ($this->collRightss === null) {
+            $this->initRightss();
+        }
+
+        if (!$this->getRightss()->contains($rights)) {
+            // only add it if the **same** object is not already associated
+            $this->collRightss->push($rights);
+            $this->doAddRights($rights);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildRights $rights
+     */
+    protected function doAddRights(ChildRights $rights)
+    {
+        $rRightsForformat = new ChildRRightsForformat();
+
+        $rRightsForformat->setRights($rights);
+
+        $rRightsForformat->setFormats($this);
+
+        $this->addRRightsForformat($rRightsForformat);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rights->isFormatssLoaded()) {
+            $rights->initFormatss();
+            $rights->getFormatss()->push($this);
+        } elseif (!$rights->getFormatss()->contains($this)) {
+            $rights->getFormatss()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rights of this object
+     * through the R_rights_forformat cross reference table.
+     *
+     * @param ChildRights $rights
+     * @return ChildFormats The current object (for fluent API support)
+     */
+    public function removeRights(ChildRights $rights)
+    {
+        if ($this->getRightss()->contains($rights)) { $rRightsForformat = new ChildRRightsForformat();
+
+            $rRightsForformat->setRights($rights);
+            if ($rights->isFormatssLoaded()) {
+                //remove the back reference if available
+                $rights->getFormatss()->removeObject($this);
+            }
+
+            $rRightsForformat->setFormats($this);
+            $this->removeRRightsForformat(clone $rRightsForformat);
+            $rRightsForformat->clear();
+
+            $this->collRightss->remove($this->collRightss->search($rights));
+
+            if (null === $this->rightssScheduledForDeletion) {
+                $this->rightssScheduledForDeletion = clone $this->collRightss;
+                $this->rightssScheduledForDeletion->clear();
+            }
+
+            $this->rightssScheduledForDeletion->push($rights);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears out the collTemplatenamess collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -2530,6 +3127,11 @@ abstract class Formats implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collRRightsForformats) {
+                foreach ($this->collRRightsForformats as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRTemplatenamesInchapters) {
                 foreach ($this->collRTemplatenamesInchapters as $o) {
                     $o->clearAllReferences($deep);
@@ -2540,6 +3142,11 @@ abstract class Formats implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRightss) {
+                foreach ($this->collRightss as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collTemplatenamess) {
                 foreach ($this->collTemplatenamess as $o) {
                     $o->clearAllReferences($deep);
@@ -2547,8 +3154,10 @@ abstract class Formats implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collRRightsForformats = null;
         $this->collRTemplatenamesInchapters = null;
         $this->collContributionss = null;
+        $this->collRightss = null;
         $this->collTemplatenamess = null;
         $this->auserSysRef = null;
         $this->aBooks = null;

@@ -185,6 +185,13 @@ class RightsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RRightsFortemplates', false);
+        $this->addRelation('RRightsForformat', '\\RRightsForformat', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_rightid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RRightsForformats', false);
         $this->addRelation('RRightsForuser', '\\RRightsForuser', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -195,6 +202,7 @@ class RightsTableMap extends TableMap
         $this->addRelation('Books', '\\Books', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Bookss');
         $this->addRelation('Issues', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Issuess');
         $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatenamess');
+        $this->addRelation('Formats', '\\Formats', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Formatss');
         $this->addRelation('Users', '\\Users', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Userss');
     } // buildRelations()
     /**
@@ -207,6 +215,7 @@ class RightsTableMap extends TableMap
         RRightsForbookTableMap::clearInstancePool();
         RRightsForissueTableMap::clearInstancePool();
         RRightsFortemplateTableMap::clearInstancePool();
+        RRightsForformatTableMap::clearInstancePool();
         RRightsForuserTableMap::clearInstancePool();
     }
 

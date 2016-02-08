@@ -72,6 +72,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRightsQuery rightJoinWithRRightsFortemplate() Adds a RIGHT JOIN clause and with to the query using the RRightsFortemplate relation
  * @method     ChildRightsQuery innerJoinWithRRightsFortemplate() Adds a INNER JOIN clause and with to the query using the RRightsFortemplate relation
  *
+ * @method     ChildRightsQuery leftJoinRRightsForformat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForformat relation
+ * @method     ChildRightsQuery rightJoinRRightsForformat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForformat relation
+ * @method     ChildRightsQuery innerJoinRRightsForformat($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForformat relation
+ *
+ * @method     ChildRightsQuery joinWithRRightsForformat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForformat relation
+ *
+ * @method     ChildRightsQuery leftJoinWithRRightsForformat() Adds a LEFT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildRightsQuery rightJoinWithRRightsForformat() Adds a RIGHT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildRightsQuery innerJoinWithRRightsForformat() Adds a INNER JOIN clause and with to the query using the RRightsForformat relation
+ *
  * @method     ChildRightsQuery leftJoinRRightsForuser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildRightsQuery rightJoinRRightsForuser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildRightsQuery innerJoinRRightsForuser($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForuser relation
@@ -82,7 +92,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRightsQuery rightJoinWithRRightsForuser() Adds a RIGHT JOIN clause and with to the query using the RRightsForuser relation
  * @method     ChildRightsQuery innerJoinWithRRightsForuser() Adds a INNER JOIN clause and with to the query using the RRightsForuser relation
  *
- * @method     \RRightsForbookQuery|\RRightsForissueQuery|\RRightsFortemplateQuery|\RRightsForuserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \RRightsForbookQuery|\RRightsForissueQuery|\RRightsFortemplateQuery|\RRightsForformatQuery|\RRightsForuserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildRights findOne(ConnectionInterface $con = null) Return the first ChildRights matching the query
  * @method     ChildRights findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRights matching the query, or a new ChildRights object populated from the query conditions when no match is found
@@ -723,6 +733,79 @@ abstract class RightsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RRightsForformat object
+     *
+     * @param \RRightsForformat|ObjectCollection $rRightsForformat the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildRightsQuery The current query, for fluid interface
+     */
+    public function filterByRRightsForformat($rRightsForformat, $comparison = null)
+    {
+        if ($rRightsForformat instanceof \RRightsForformat) {
+            return $this
+                ->addUsingAlias(RightsTableMap::COL_ID, $rRightsForformat->getRightid(), $comparison);
+        } elseif ($rRightsForformat instanceof ObjectCollection) {
+            return $this
+                ->useRRightsForformatQuery()
+                ->filterByPrimaryKeys($rRightsForformat->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRRightsForformat() only accepts arguments of type \RRightsForformat or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RRightsForformat relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildRightsQuery The current query, for fluid interface
+     */
+    public function joinRRightsForformat($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RRightsForformat');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RRightsForformat');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RRightsForformat relation RRightsForformat object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RRightsForformatQuery A secondary query class using the current class as primary query
+     */
+    public function useRRightsForformatQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRRightsForformat($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RRightsForformat', '\RRightsForformatQuery');
+    }
+
+    /**
      * Filter the query by a related \RRightsForuser object
      *
      * @param \RRightsForuser|ObjectCollection $rRightsForuser the related object to use as filter
@@ -843,6 +926,23 @@ abstract class RightsQuery extends ModelCriteria
         return $this
             ->useRRightsFortemplateQuery()
             ->filterByTemplatenames($templatenames, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Formats object
+     * using the R_rights_forformat table as cross reference
+     *
+     * @param Formats $formats the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildRightsQuery The current query, for fluid interface
+     */
+    public function filterByFormats($formats, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRRightsForformatQuery()
+            ->filterByFormats($formats, $comparison)
             ->endUse();
     }
 

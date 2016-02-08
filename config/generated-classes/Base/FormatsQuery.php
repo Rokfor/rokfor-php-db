@@ -66,6 +66,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
  * @method     ChildFormatsQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
  *
+ * @method     ChildFormatsQuery leftJoinRRightsForformat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForformat relation
+ * @method     ChildFormatsQuery rightJoinRRightsForformat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForformat relation
+ * @method     ChildFormatsQuery innerJoinRRightsForformat($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForformat relation
+ *
+ * @method     ChildFormatsQuery joinWithRRightsForformat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForformat relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithRRightsForformat() Adds a LEFT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildFormatsQuery rightJoinWithRRightsForformat() Adds a RIGHT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildFormatsQuery innerJoinWithRRightsForformat() Adds a INNER JOIN clause and with to the query using the RRightsForformat relation
+ *
  * @method     ChildFormatsQuery leftJoinRTemplatenamesInchapter($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildFormatsQuery rightJoinRTemplatenamesInchapter($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildFormatsQuery innerJoinRTemplatenamesInchapter($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesInchapter relation
@@ -86,7 +96,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
  * @method     ChildFormatsQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
- * @method     \UsersQuery|\BooksQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\BooksQuery|\RRightsForformatQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildFormats findOne(ConnectionInterface $con = null) Return the first ChildFormats matching the query
  * @method     ChildFormats findOneOrCreate(ConnectionInterface $con = null) Return the first ChildFormats matching the query, or a new ChildFormats object populated from the query conditions when no match is found
@@ -754,6 +764,79 @@ abstract class FormatsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RRightsForformat object
+     *
+     * @param \RRightsForformat|ObjectCollection $rRightsForformat the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFormatsQuery The current query, for fluid interface
+     */
+    public function filterByRRightsForformat($rRightsForformat, $comparison = null)
+    {
+        if ($rRightsForformat instanceof \RRightsForformat) {
+            return $this
+                ->addUsingAlias(FormatsTableMap::COL_ID, $rRightsForformat->getFormatid(), $comparison);
+        } elseif ($rRightsForformat instanceof ObjectCollection) {
+            return $this
+                ->useRRightsForformatQuery()
+                ->filterByPrimaryKeys($rRightsForformat->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRRightsForformat() only accepts arguments of type \RRightsForformat or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RRightsForformat relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildFormatsQuery The current query, for fluid interface
+     */
+    public function joinRRightsForformat($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RRightsForformat');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RRightsForformat');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RRightsForformat relation RRightsForformat object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RRightsForformatQuery A secondary query class using the current class as primary query
+     */
+    public function useRRightsForformatQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRRightsForformat($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RRightsForformat', '\RRightsForformatQuery');
+    }
+
+    /**
      * Filter the query by a related \RTemplatenamesInchapter object
      *
      * @param \RTemplatenamesInchapter|ObjectCollection $rTemplatenamesInchapter the related object to use as filter
@@ -897,6 +980,23 @@ abstract class FormatsQuery extends ModelCriteria
         return $this
             ->joinContributions($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Contributions', '\ContributionsQuery');
+    }
+
+    /**
+     * Filter the query by a related Rights object
+     * using the R_rights_forformat table as cross reference
+     *
+     * @param Rights $rights the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFormatsQuery The current query, for fluid interface
+     */
+    public function filterByRights($rights, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRRightsForformatQuery()
+            ->filterByRights($rights, $comparison)
+            ->endUse();
     }
 
     /**

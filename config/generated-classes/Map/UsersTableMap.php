@@ -155,8 +155,8 @@ class UsersTableMap extends TableMap
         $this->addColumn('username', 'Username', 'LONGVARCHAR', true, null, null);
         $this->addColumn('password', 'Password', 'LONGVARCHAR', true, null, null);
         $this->addColumn('usergroup', 'Usergroup', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('filerights', 'Filerights', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('pluginrights', 'Pluginrights', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('filerights', 'Filerights', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('pluginrights', 'Pluginrights', 'LONGVARCHAR', false, null, null);
     } // initialize()
 
     /**

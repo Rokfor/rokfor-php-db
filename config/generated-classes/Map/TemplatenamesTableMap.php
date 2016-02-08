@@ -174,7 +174,7 @@ class TemplatenamesTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addColumn('_name', 'Name', 'LONGVARCHAR', true, null, null);
         $this->addColumn('_helptext', 'Helptext', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_helpimage', 'Helpimage', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('_helpimage', 'Helpimage', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_category', 'Category', 'LONGVARCHAR', false, null, null);
         $this->addColumn('_public', 'Public', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);

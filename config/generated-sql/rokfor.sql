@@ -244,6 +244,30 @@ CREATE TABLE `R_rights_fortemplate`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- R_rights_forformat
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_rights_forformat`;
+
+CREATE TABLE `R_rights_forformat`
+(
+    `_rightid` INTEGER NOT NULL,
+    `_formatid` INTEGER NOT NULL,
+    PRIMARY KEY (`_rightid`,`_formatid`),
+    INDEX `r_rights5_b` (`_formatid`),
+    CONSTRAINT `r_rights5_a`
+        FOREIGN KEY (`_rightid`)
+        REFERENCES `_rights` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_rights5_b`
+        FOREIGN KEY (`_formatid`)
+        REFERENCES `_formats` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- R_rights_foruser
 -- ---------------------------------------------------------------------
 
