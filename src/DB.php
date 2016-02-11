@@ -241,7 +241,32 @@ class DB
       "api"       => $this->currentUser->getPluginrights(), 
       "group"     => $this->currentUser->getRightss()->toArray()
     ];
+    
   }
+  
+  
+  /**
+   * returns all users - only if logged in as root
+   *
+   * @return void
+   * @author Urs Hofer
+   */
+  function getUsers() {
+    if ($this->currentUser->getUsergroup() == "root")
+      return $this->usersQuery();
+    else 
+      return false;
+  }
+  
+  /**
+   * creates a new user
+   *
+   * @return void
+   * @author Urs Hofer
+   */
+  function newUser() {
+    return new \Users();
+  }  
   
   /**
    * checks the password of the current user
@@ -353,14 +378,15 @@ class DB
             "role"  =>  $user->getUsergroup(),
             "books"     => true,
             "issues"    => true,
-            "templates" => true
+            "templates" => true,
+            "formats"   => true
           ];
           break;
         case 'user':
           // Rights Classes for current user
           $rights = $this->RightsQuery()
                                 ->useRRightsForuserQuery()
-                                  ->filterByUserid($identity['id'])
+                                  ->filterByUserid($userid)
                                 ->endUse()
                                 ->find(); 
           foreach ($rights as $right) {
@@ -368,7 +394,8 @@ class DB
                 "role"  =>  $user->getUsergroup(),
                 "books"     => $right->getBookss(),
                 "issues"    => $right->getIssuess(),
-                "templates" => $right->getTemplatenamess()
+                "templates" => $right->getTemplatenamess(),
+                "formats"   => $right->getFormatss()
             ];
           } 
           break;
@@ -376,10 +403,12 @@ class DB
           $this->rights = null;
           break;
       }
+      return true;
     }
     else {
       $this->currentUser = false;
       $this->rights = null;      
+      return false;
     }
   }
   
@@ -436,6 +465,16 @@ class DB
   function getRight($id) {
     return $this->RightsQuery()->findPk($id);
   }
+
+  /**
+   * adds a right
+   *
+   * @return void
+   * @author Urs Hofer
+   */
+  function newRight() {
+    return new \Rights();
+  }  
   
   /**
    * returns a whole book/issue/chapter structure according to the
@@ -459,25 +498,27 @@ class DB
                     ->filterById($bookid)
                   ->_endif()
                   ->orderBySort('asc');
-
+        
     foreach ($books as $book) {
       $i = [];
-      if ($this->rights["books"] === true || (is_array($this->rights["books"]) && in_array($book, $this->rights["books"]))) {
+      if ($this->rights["books"] === true || (is_object($this->rights["books"]) && in_array($book->getId(), $this->rights["books"]->getPrimaryKeys()))) {
         foreach ($book->getIssuess($criteria) as $issue) {
           $c = [];
-          if ($this->rights["issues"] === true || (is_array($this->rights["issues"]) && in_array($issues, $this->rights["issues"]))) {
+          if ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issue->getId(), $this->rights["issues"]->getPrimaryKeys()))) {
             foreach ($book->getFormatss($criteria) as $chapter) {
-              $c[] = [
-                "chapter" => $chapter,
-                "name"    => $chapter->getName(),
-                "url"     => $url_prefix.$book->getId().'/'.$issue->getId().'/'.$chapter->getId()
-              ];
-              $valid_paths[md5($url_prefix.$book->getId().'/'.$issue->getId().'/'.$chapter->getId())] = [
-                "chapter" => $chapter->getName(),
-                "book"    => $book->getName(),
-                "issue"   => $issue->getName(),
-                "url"     => $url_prefix.$book->getId().'/'.$issue->getId().'/'.$chapter->getId()
-              ];
+              if ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapter->getId(), $this->rights["formats"]->getPrimaryKeys()))) {
+                $c[] = [
+                  "chapter" => $chapter,
+                  "name"    => $chapter->getName(),
+                  "url"     => $url_prefix.$book->getId().'/'.$issue->getId().'/'.$chapter->getId()
+                ];
+                $valid_paths[md5($url_prefix.$book->getId().'/'.$issue->getId().'/'.$chapter->getId())] = [
+                  "chapter" => $chapter->getName(),
+                  "book"    => $book->getName(),
+                  "issue"   => $issue->getName(),
+                  "url"     => $url_prefix.$book->getId().'/'.$issue->getId().'/'.$chapter->getId()
+                ];
+              }
             }
             $i[]  = [
               "issue"     => $issue,
@@ -509,7 +550,7 @@ class DB
   function getTemplates($format) {
     $retval = [];
     foreach ($this->TemplatenamesQuery()->filterByFormats($format) as $template) {
-      if ($this->rights["templates"]=== true || is_array($this->rights["templates"]) && in_array($template, $this->rights["templates"])) {
+      if ($this->rights["templates"]=== true || (is_object($this->rights["templates"]) && in_array($template->getId(), $this->rights["templates"]->getPrimaryKeys()))) {
         $retval[] = [
           "id"    => $template->getId(),
           "name"  => $template->getName()
@@ -1076,6 +1117,7 @@ class DB
    * @author Urs Hofer
    */
   function getRecentLog($type = 'get_contributions', $callback = false, $limit = 4) {
+    if (!$this->currentUser) return false;
     // SELECT __config__, MAX(_date) as date FROM _log GROUP BY __config__ ORDER BY date DESC
     $log = $this->LogQuery()
          ->filterByAgent($type)
@@ -1096,6 +1138,8 @@ class DB
    * @author Urs Hofer
    */  
   function getFavouriteLog($type = 'get_contributions', $callback = false, $limit = 10) {
+    if (!$this->currentUser) return false;
+
     //SELECT __config__, count(__config__) AS count FROM _log WHERE _agent ="get_contributions" GROUP BY __config__ ORDER BY count DESC
     $log = $this->LogQuery()
            ->filterByAgent($type)
@@ -1374,7 +1418,6 @@ class DB
    * @author Urs Hofer
    */  
   function rightsChapter($id, $rights) {
-    return false;
     $b = $this->getFormat($id);
     foreach($b->getRightss() as $f) {$b->removeRights($f);}
 
