@@ -715,5 +715,9 @@ CREATE TABLE `users`
     INDEX `id` (`id`)
 ) ENGINE=InnoDB;
 
+INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
+
+
