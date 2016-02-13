@@ -709,15 +709,15 @@ CREATE TABLE `users`
     `username` TEXT NOT NULL,
     `password` TEXT NOT NULL,
     `usergroup` TEXT NOT NULL,
-    `filerights` TEXT,
-    `pluginrights` TEXT,
+    `email` TEXT,
+    `roapikey` TEXT,
+    `rwapikey` TEXT,
     PRIMARY KEY (`id`),
     INDEX `id` (`id`)
 ) ENGINE=InnoDB;
 
 INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
 
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
-
-

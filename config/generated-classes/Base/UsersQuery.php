@@ -24,15 +24,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsersQuery orderByUsername($order = Criteria::ASC) Order by the username column
  * @method     ChildUsersQuery orderByPassword($order = Criteria::ASC) Order by the password column
  * @method     ChildUsersQuery orderByUsergroup($order = Criteria::ASC) Order by the usergroup column
- * @method     ChildUsersQuery orderByFilerights($order = Criteria::ASC) Order by the filerights column
- * @method     ChildUsersQuery orderByPluginrights($order = Criteria::ASC) Order by the pluginrights column
+ * @method     ChildUsersQuery orderByEmail($order = Criteria::ASC) Order by the email column
+ * @method     ChildUsersQuery orderByRoapikey($order = Criteria::ASC) Order by the roapikey column
+ * @method     ChildUsersQuery orderByRwapikey($order = Criteria::ASC) Order by the rwapikey column
  *
  * @method     ChildUsersQuery groupById() Group by the id column
  * @method     ChildUsersQuery groupByUsername() Group by the username column
  * @method     ChildUsersQuery groupByPassword() Group by the password column
  * @method     ChildUsersQuery groupByUsergroup() Group by the usergroup column
- * @method     ChildUsersQuery groupByFilerights() Group by the filerights column
- * @method     ChildUsersQuery groupByPluginrights() Group by the pluginrights column
+ * @method     ChildUsersQuery groupByEmail() Group by the email column
+ * @method     ChildUsersQuery groupByRoapikey() Group by the roapikey column
+ * @method     ChildUsersQuery groupByRwapikey() Group by the rwapikey column
  *
  * @method     ChildUsersQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUsersQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -111,8 +113,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsers findOneByUsername(string $username) Return the first ChildUsers filtered by the username column
  * @method     ChildUsers findOneByPassword(string $password) Return the first ChildUsers filtered by the password column
  * @method     ChildUsers findOneByUsergroup(string $usergroup) Return the first ChildUsers filtered by the usergroup column
- * @method     ChildUsers findOneByFilerights(string $filerights) Return the first ChildUsers filtered by the filerights column
- * @method     ChildUsers findOneByPluginrights(string $pluginrights) Return the first ChildUsers filtered by the pluginrights column *
+ * @method     ChildUsers findOneByEmail(string $email) Return the first ChildUsers filtered by the email column
+ * @method     ChildUsers findOneByRoapikey(string $roapikey) Return the first ChildUsers filtered by the roapikey column
+ * @method     ChildUsers findOneByRwapikey(string $rwapikey) Return the first ChildUsers filtered by the rwapikey column *
 
  * @method     ChildUsers requirePk($key, ConnectionInterface $con = null) Return the ChildUsers by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUsers requireOne(ConnectionInterface $con = null) Return the first ChildUsers matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -121,16 +124,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsers requireOneByUsername(string $username) Return the first ChildUsers filtered by the username column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUsers requireOneByPassword(string $password) Return the first ChildUsers filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUsers requireOneByUsergroup(string $usergroup) Return the first ChildUsers filtered by the usergroup column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUsers requireOneByFilerights(string $filerights) Return the first ChildUsers filtered by the filerights column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUsers requireOneByPluginrights(string $pluginrights) Return the first ChildUsers filtered by the pluginrights column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUsers requireOneByEmail(string $email) Return the first ChildUsers filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUsers requireOneByRoapikey(string $roapikey) Return the first ChildUsers filtered by the roapikey column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUsers requireOneByRwapikey(string $rwapikey) Return the first ChildUsers filtered by the rwapikey column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUsers[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUsers objects based on current ModelCriteria
  * @method     ChildUsers[]|ObjectCollection findById(int $id) Return ChildUsers objects filtered by the id column
  * @method     ChildUsers[]|ObjectCollection findByUsername(string $username) Return ChildUsers objects filtered by the username column
  * @method     ChildUsers[]|ObjectCollection findByPassword(string $password) Return ChildUsers objects filtered by the password column
  * @method     ChildUsers[]|ObjectCollection findByUsergroup(string $usergroup) Return ChildUsers objects filtered by the usergroup column
- * @method     ChildUsers[]|ObjectCollection findByFilerights(string $filerights) Return ChildUsers objects filtered by the filerights column
- * @method     ChildUsers[]|ObjectCollection findByPluginrights(string $pluginrights) Return ChildUsers objects filtered by the pluginrights column
+ * @method     ChildUsers[]|ObjectCollection findByEmail(string $email) Return ChildUsers objects filtered by the email column
+ * @method     ChildUsers[]|ObjectCollection findByRoapikey(string $roapikey) Return ChildUsers objects filtered by the roapikey column
+ * @method     ChildUsers[]|ObjectCollection findByRwapikey(string $rwapikey) Return ChildUsers objects filtered by the rwapikey column
  * @method     ChildUsers[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -223,7 +228,7 @@ abstract class UsersQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, username, password, usergroup, filerights, pluginrights FROM users WHERE id = :p0';
+        $sql = 'SELECT id, username, password, usergroup, email, roapikey, rwapikey FROM users WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -442,61 +447,90 @@ abstract class UsersQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the filerights column
+     * Filter the query on the email column
      *
      * Example usage:
      * <code>
-     * $query->filterByFilerights('fooValue');   // WHERE filerights = 'fooValue'
-     * $query->filterByFilerights('%fooValue%'); // WHERE filerights LIKE '%fooValue%'
+     * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $filerights The value to use as filter.
+     * @param     string $email The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
      */
-    public function filterByFilerights($filerights = null, $comparison = null)
+    public function filterByEmail($email = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($filerights)) {
+            if (is_array($email)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $filerights)) {
-                $filerights = str_replace('*', '%', $filerights);
+            } elseif (preg_match('/[\%\*]/', $email)) {
+                $email = str_replace('*', '%', $email);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UsersTableMap::COL_FILERIGHTS, $filerights, $comparison);
+        return $this->addUsingAlias(UsersTableMap::COL_EMAIL, $email, $comparison);
     }
 
     /**
-     * Filter the query on the pluginrights column
+     * Filter the query on the roapikey column
      *
      * Example usage:
      * <code>
-     * $query->filterByPluginrights('fooValue');   // WHERE pluginrights = 'fooValue'
-     * $query->filterByPluginrights('%fooValue%'); // WHERE pluginrights LIKE '%fooValue%'
+     * $query->filterByRoapikey('fooValue');   // WHERE roapikey = 'fooValue'
+     * $query->filterByRoapikey('%fooValue%'); // WHERE roapikey LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $pluginrights The value to use as filter.
+     * @param     string $roapikey The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
      */
-    public function filterByPluginrights($pluginrights = null, $comparison = null)
+    public function filterByRoapikey($roapikey = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($pluginrights)) {
+            if (is_array($roapikey)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $pluginrights)) {
-                $pluginrights = str_replace('*', '%', $pluginrights);
+            } elseif (preg_match('/[\%\*]/', $roapikey)) {
+                $roapikey = str_replace('*', '%', $roapikey);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UsersTableMap::COL_PLUGINRIGHTS, $pluginrights, $comparison);
+        return $this->addUsingAlias(UsersTableMap::COL_ROAPIKEY, $roapikey, $comparison);
+    }
+
+    /**
+     * Filter the query on the rwapikey column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRwapikey('fooValue');   // WHERE rwapikey = 'fooValue'
+     * $query->filterByRwapikey('%fooValue%'); // WHERE rwapikey LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $rwapikey The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByRwapikey($rwapikey = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($rwapikey)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $rwapikey)) {
+                $rwapikey = str_replace('*', '%', $rwapikey);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UsersTableMap::COL_RWAPIKEY, $rwapikey, $comparison);
     }
 
     /**

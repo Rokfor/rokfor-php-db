@@ -508,8 +508,9 @@
     <column name="username" phpName="Username" type="LONGVARCHAR" required="true"/>
     <column name="password" phpName="Password" type="LONGVARCHAR" required="true"/>
     <column name="usergroup" phpName="Usergroup" type="LONGVARCHAR" required="true"/>
-    <column name="filerights" phpName="Filerights" type="LONGVARCHAR"/>
-    <column name="pluginrights" phpName="Pluginrights" type="LONGVARCHAR"/>
+    <column name="email" phpName="Email" type="LONGVARCHAR"/>
+    <column name="roapikey" phpName="Roapikey" type="LONGVARCHAR"/>
+    <column name="rwapikey" phpName="Rwapikey" type="LONGVARCHAR"/>
     <index name="id">
       <index-column name="id"/>
     </index>

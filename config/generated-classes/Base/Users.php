@@ -104,18 +104,25 @@ abstract class Users implements ActiveRecordInterface
     protected $usergroup;
 
     /**
-     * The value for the filerights field.
+     * The value for the email field.
      *
      * @var        string
      */
-    protected $filerights;
+    protected $email;
 
     /**
-     * The value for the pluginrights field.
+     * The value for the roapikey field.
      *
      * @var        string
      */
-    protected $pluginrights;
+    protected $roapikey;
+
+    /**
+     * The value for the rwapikey field.
+     *
+     * @var        string
+     */
+    protected $rwapikey;
 
     /**
      * @var        ObjectCollection|ChildRRightsForuser[] Collection to store aggregation of ChildRRightsForuser objects.
@@ -479,23 +486,33 @@ abstract class Users implements ActiveRecordInterface
     }
 
     /**
-     * Get the [filerights] column value.
+     * Get the [email] column value.
      *
      * @return string
      */
-    public function getFilerights()
+    public function getEmail()
     {
-        return $this->filerights;
+        return $this->email;
     }
 
     /**
-     * Get the [pluginrights] column value.
+     * Get the [roapikey] column value.
      *
      * @return string
      */
-    public function getPluginrights()
+    public function getRoapikey()
     {
-        return $this->pluginrights;
+        return $this->roapikey;
+    }
+
+    /**
+     * Get the [rwapikey] column value.
+     *
+     * @return string
+     */
+    public function getRwapikey()
+    {
+        return $this->rwapikey;
     }
 
     /**
@@ -579,44 +596,64 @@ abstract class Users implements ActiveRecordInterface
     } // setUsergroup()
 
     /**
-     * Set the value of [filerights] column.
+     * Set the value of [email] column.
      *
      * @param string $v new value
      * @return $this|\Users The current object (for fluent API support)
      */
-    public function setFilerights($v)
+    public function setEmail($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->filerights !== $v) {
-            $this->filerights = $v;
-            $this->modifiedColumns[UsersTableMap::COL_FILERIGHTS] = true;
+        if ($this->email !== $v) {
+            $this->email = $v;
+            $this->modifiedColumns[UsersTableMap::COL_EMAIL] = true;
         }
 
         return $this;
-    } // setFilerights()
+    } // setEmail()
 
     /**
-     * Set the value of [pluginrights] column.
+     * Set the value of [roapikey] column.
      *
      * @param string $v new value
      * @return $this|\Users The current object (for fluent API support)
      */
-    public function setPluginrights($v)
+    public function setRoapikey($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->pluginrights !== $v) {
-            $this->pluginrights = $v;
-            $this->modifiedColumns[UsersTableMap::COL_PLUGINRIGHTS] = true;
+        if ($this->roapikey !== $v) {
+            $this->roapikey = $v;
+            $this->modifiedColumns[UsersTableMap::COL_ROAPIKEY] = true;
         }
 
         return $this;
-    } // setPluginrights()
+    } // setRoapikey()
+
+    /**
+     * Set the value of [rwapikey] column.
+     *
+     * @param string $v new value
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function setRwapikey($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->rwapikey !== $v) {
+            $this->rwapikey = $v;
+            $this->modifiedColumns[UsersTableMap::COL_RWAPIKEY] = true;
+        }
+
+        return $this;
+    } // setRwapikey()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -666,11 +703,14 @@ abstract class Users implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UsersTableMap::translateFieldName('Usergroup', TableMap::TYPE_PHPNAME, $indexType)];
             $this->usergroup = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UsersTableMap::translateFieldName('Filerights', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->filerights = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UsersTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->email = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UsersTableMap::translateFieldName('Pluginrights', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->pluginrights = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UsersTableMap::translateFieldName('Roapikey', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->roapikey = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UsersTableMap::translateFieldName('Rwapikey', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->rwapikey = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -679,7 +719,7 @@ abstract class Users implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = UsersTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = UsersTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Users'), 0, $e);
@@ -1037,11 +1077,14 @@ abstract class Users implements ActiveRecordInterface
         if ($this->isColumnModified(UsersTableMap::COL_USERGROUP)) {
             $modifiedColumns[':p' . $index++]  = 'usergroup';
         }
-        if ($this->isColumnModified(UsersTableMap::COL_FILERIGHTS)) {
-            $modifiedColumns[':p' . $index++]  = 'filerights';
+        if ($this->isColumnModified(UsersTableMap::COL_EMAIL)) {
+            $modifiedColumns[':p' . $index++]  = 'email';
         }
-        if ($this->isColumnModified(UsersTableMap::COL_PLUGINRIGHTS)) {
-            $modifiedColumns[':p' . $index++]  = 'pluginrights';
+        if ($this->isColumnModified(UsersTableMap::COL_ROAPIKEY)) {
+            $modifiedColumns[':p' . $index++]  = 'roapikey';
+        }
+        if ($this->isColumnModified(UsersTableMap::COL_RWAPIKEY)) {
+            $modifiedColumns[':p' . $index++]  = 'rwapikey';
         }
 
         $sql = sprintf(
@@ -1066,11 +1109,14 @@ abstract class Users implements ActiveRecordInterface
                     case 'usergroup':
                         $stmt->bindValue($identifier, $this->usergroup, PDO::PARAM_STR);
                         break;
-                    case 'filerights':
-                        $stmt->bindValue($identifier, $this->filerights, PDO::PARAM_STR);
+                    case 'email':
+                        $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
                         break;
-                    case 'pluginrights':
-                        $stmt->bindValue($identifier, $this->pluginrights, PDO::PARAM_STR);
+                    case 'roapikey':
+                        $stmt->bindValue($identifier, $this->roapikey, PDO::PARAM_STR);
+                        break;
+                    case 'rwapikey':
+                        $stmt->bindValue($identifier, $this->rwapikey, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1147,10 +1193,13 @@ abstract class Users implements ActiveRecordInterface
                 return $this->getUsergroup();
                 break;
             case 4:
-                return $this->getFilerights();
+                return $this->getEmail();
                 break;
             case 5:
-                return $this->getPluginrights();
+                return $this->getRoapikey();
+                break;
+            case 6:
+                return $this->getRwapikey();
                 break;
             default:
                 return null;
@@ -1186,8 +1235,9 @@ abstract class Users implements ActiveRecordInterface
             $keys[1] => $this->getUsername(),
             $keys[2] => $this->getPassword(),
             $keys[3] => $this->getUsergroup(),
-            $keys[4] => $this->getFilerights(),
-            $keys[5] => $this->getPluginrights(),
+            $keys[4] => $this->getEmail(),
+            $keys[5] => $this->getRoapikey(),
+            $keys[6] => $this->getRwapikey(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1332,10 +1382,13 @@ abstract class Users implements ActiveRecordInterface
                 $this->setUsergroup($value);
                 break;
             case 4:
-                $this->setFilerights($value);
+                $this->setEmail($value);
                 break;
             case 5:
-                $this->setPluginrights($value);
+                $this->setRoapikey($value);
+                break;
+            case 6:
+                $this->setRwapikey($value);
                 break;
         } // switch()
 
@@ -1376,10 +1429,13 @@ abstract class Users implements ActiveRecordInterface
             $this->setUsergroup($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setFilerights($arr[$keys[4]]);
+            $this->setEmail($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setPluginrights($arr[$keys[5]]);
+            $this->setRoapikey($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setRwapikey($arr[$keys[6]]);
         }
     }
 
@@ -1434,11 +1490,14 @@ abstract class Users implements ActiveRecordInterface
         if ($this->isColumnModified(UsersTableMap::COL_USERGROUP)) {
             $criteria->add(UsersTableMap::COL_USERGROUP, $this->usergroup);
         }
-        if ($this->isColumnModified(UsersTableMap::COL_FILERIGHTS)) {
-            $criteria->add(UsersTableMap::COL_FILERIGHTS, $this->filerights);
+        if ($this->isColumnModified(UsersTableMap::COL_EMAIL)) {
+            $criteria->add(UsersTableMap::COL_EMAIL, $this->email);
         }
-        if ($this->isColumnModified(UsersTableMap::COL_PLUGINRIGHTS)) {
-            $criteria->add(UsersTableMap::COL_PLUGINRIGHTS, $this->pluginrights);
+        if ($this->isColumnModified(UsersTableMap::COL_ROAPIKEY)) {
+            $criteria->add(UsersTableMap::COL_ROAPIKEY, $this->roapikey);
+        }
+        if ($this->isColumnModified(UsersTableMap::COL_RWAPIKEY)) {
+            $criteria->add(UsersTableMap::COL_RWAPIKEY, $this->rwapikey);
         }
 
         return $criteria;
@@ -1529,8 +1588,9 @@ abstract class Users implements ActiveRecordInterface
         $copyObj->setUsername($this->getUsername());
         $copyObj->setPassword($this->getPassword());
         $copyObj->setUsergroup($this->getUsergroup());
-        $copyObj->setFilerights($this->getFilerights());
-        $copyObj->setPluginrights($this->getPluginrights());
+        $copyObj->setEmail($this->getEmail());
+        $copyObj->setRoapikey($this->getRoapikey());
+        $copyObj->setRwapikey($this->getRwapikey());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -3422,8 +3482,9 @@ abstract class Users implements ActiveRecordInterface
         $this->username = null;
         $this->password = null;
         $this->usergroup = null;
-        $this->filerights = null;
-        $this->pluginrights = null;
+        $this->email = null;
+        $this->roapikey = null;
+        $this->rwapikey = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();

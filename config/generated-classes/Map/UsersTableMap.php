@@ -59,7 +59,7 @@ class UsersTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UsersTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -92,14 +92,19 @@ class UsersTableMap extends TableMap
     const COL_USERGROUP = 'users.usergroup';
 
     /**
-     * the column name for the filerights field
+     * the column name for the email field
      */
-    const COL_FILERIGHTS = 'users.filerights';
+    const COL_EMAIL = 'users.email';
 
     /**
-     * the column name for the pluginrights field
+     * the column name for the roapikey field
      */
-    const COL_PLUGINRIGHTS = 'users.pluginrights';
+    const COL_ROAPIKEY = 'users.roapikey';
+
+    /**
+     * the column name for the rwapikey field
+     */
+    const COL_RWAPIKEY = 'users.rwapikey';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +118,11 @@ class UsersTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Username', 'Password', 'Usergroup', 'Filerights', 'Pluginrights', ),
-        self::TYPE_CAMELNAME     => array('id', 'username', 'password', 'usergroup', 'filerights', 'pluginrights', ),
-        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID, UsersTableMap::COL_USERNAME, UsersTableMap::COL_PASSWORD, UsersTableMap::COL_USERGROUP, UsersTableMap::COL_FILERIGHTS, UsersTableMap::COL_PLUGINRIGHTS, ),
-        self::TYPE_FIELDNAME     => array('id', 'username', 'password', 'usergroup', 'filerights', 'pluginrights', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'Username', 'Password', 'Usergroup', 'Email', 'Roapikey', 'Rwapikey', ),
+        self::TYPE_CAMELNAME     => array('id', 'username', 'password', 'usergroup', 'email', 'roapikey', 'rwapikey', ),
+        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID, UsersTableMap::COL_USERNAME, UsersTableMap::COL_PASSWORD, UsersTableMap::COL_USERGROUP, UsersTableMap::COL_EMAIL, UsersTableMap::COL_ROAPIKEY, UsersTableMap::COL_RWAPIKEY, ),
+        self::TYPE_FIELDNAME     => array('id', 'username', 'password', 'usergroup', 'email', 'roapikey', 'rwapikey', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -127,11 +132,11 @@ class UsersTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Username' => 1, 'Password' => 2, 'Usergroup' => 3, 'Filerights' => 4, 'Pluginrights' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'filerights' => 4, 'pluginrights' => 5, ),
-        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID => 0, UsersTableMap::COL_USERNAME => 1, UsersTableMap::COL_PASSWORD => 2, UsersTableMap::COL_USERGROUP => 3, UsersTableMap::COL_FILERIGHTS => 4, UsersTableMap::COL_PLUGINRIGHTS => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'filerights' => 4, 'pluginrights' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Username' => 1, 'Password' => 2, 'Usergroup' => 3, 'Email' => 4, 'Roapikey' => 5, 'Rwapikey' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'email' => 4, 'roapikey' => 5, 'rwapikey' => 6, ),
+        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID => 0, UsersTableMap::COL_USERNAME => 1, UsersTableMap::COL_PASSWORD => 2, UsersTableMap::COL_USERGROUP => 3, UsersTableMap::COL_EMAIL => 4, UsersTableMap::COL_ROAPIKEY => 5, UsersTableMap::COL_RWAPIKEY => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'email' => 4, 'roapikey' => 5, 'rwapikey' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -155,8 +160,9 @@ class UsersTableMap extends TableMap
         $this->addColumn('username', 'Username', 'LONGVARCHAR', true, null, null);
         $this->addColumn('password', 'Password', 'LONGVARCHAR', true, null, null);
         $this->addColumn('usergroup', 'Usergroup', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('filerights', 'Filerights', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('pluginrights', 'Pluginrights', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('email', 'Email', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('roapikey', 'Roapikey', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('rwapikey', 'Rwapikey', 'LONGVARCHAR', false, null, null);
     } // initialize()
 
     /**
@@ -368,15 +374,17 @@ class UsersTableMap extends TableMap
             $criteria->addSelectColumn(UsersTableMap::COL_USERNAME);
             $criteria->addSelectColumn(UsersTableMap::COL_PASSWORD);
             $criteria->addSelectColumn(UsersTableMap::COL_USERGROUP);
-            $criteria->addSelectColumn(UsersTableMap::COL_FILERIGHTS);
-            $criteria->addSelectColumn(UsersTableMap::COL_PLUGINRIGHTS);
+            $criteria->addSelectColumn(UsersTableMap::COL_EMAIL);
+            $criteria->addSelectColumn(UsersTableMap::COL_ROAPIKEY);
+            $criteria->addSelectColumn(UsersTableMap::COL_RWAPIKEY);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.username');
             $criteria->addSelectColumn($alias . '.password');
             $criteria->addSelectColumn($alias . '.usergroup');
-            $criteria->addSelectColumn($alias . '.filerights');
-            $criteria->addSelectColumn($alias . '.pluginrights');
+            $criteria->addSelectColumn($alias . '.email');
+            $criteria->addSelectColumn($alias . '.roapikey');
+            $criteria->addSelectColumn($alias . '.rwapikey');
         }
     }
 
