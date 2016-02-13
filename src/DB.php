@@ -237,8 +237,9 @@ class DB
       "username"  => $this->currentUser->getUsername(), 
       "level"     => $level,
       "role"      => $this->currentUser->getUsergroup(), 
-      "email"     => $this->currentUser->getFilerights(), 
-      "api"       => $this->currentUser->getPluginrights(), 
+      "email"     => $this->currentUser->getEmail(), 
+      "api"       => $this->currentUser->getRoapikey(), 
+      "rwapi"     => $this->currentUser->getRwapikey(), 
       "group"     => $this->currentUser->getRightss()->toArray()
     ];
     
@@ -353,8 +354,8 @@ class DB
     $this
       ->currentUser
       ->setUsername($name)
-      ->setFilerights($mail)
-      ->setPluginrights($api)
+      ->setEmail($mail)
+      ->setRoapikey($api)
       ->save();
     return true;
   }  
