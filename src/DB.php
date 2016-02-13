@@ -338,7 +338,7 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  function updateProfile($name, $mail, $api,  &$error) {
+  function updateProfile($name, $mail, $api, &$error, $rwapi = false) {
     if (strlen($name) < 3) {
       $error[] = 'profile_error_nameempty';
       return false;
@@ -356,6 +356,7 @@ class DB
       ->setUsername($name)
       ->setEmail($mail)
       ->setRoapikey($api)
+      ->setRwapikey($rwapi)
       ->save();
     return true;
   }  
