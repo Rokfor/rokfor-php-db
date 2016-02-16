@@ -253,10 +253,7 @@ class DB
    * @author Urs Hofer
    */
   function getUsers() {
-    if ($this->currentUser->getUsergroup() == "root")
-      return $this->usersQuery();
-    else 
-      return false;
+    return $this->usersQuery();
   }
   
   /**
@@ -483,14 +480,15 @@ class DB
    * rights of the current user.
    * valid_paths is an array containing the md5 checksum as a key and
    * the corresponding chapter/issue/book name as value.
-   * it can be used to check log file entries and to keep them up to date
-   * even if the naming changed afterwards.
+   * valid_paths are used to check if latest log entries are still pointing
+   * to existing chapters and issues.
+   * 
    *
    * @param string $url_prefix 
    * @return array
    * @author Urs Hofer
    */
-  function getStructure($url_prefix, $bookid = false, &$valid_paths = []) {
+  function getStructure($url_prefix = "", $bookid = false, &$valid_paths = []) {
     $criteria = new \Propel\Runtime\ActiveQuery\Criteria();
     $criteria->addAscendingOrderByColumn(__sort__);  
     $retval = [];
@@ -1036,10 +1034,16 @@ class DB
    * @author Urs Hofer
    */  
   function getContributions($issueid, $chapterid, $sort = 'asc') {
-    return $this->ContributionsQuery()
+
+    if (
+      ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))) ||
+      ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())))
+    ) {
+      return $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
                 ->orderBySort($sort);
+    }
   }
   
   /**
