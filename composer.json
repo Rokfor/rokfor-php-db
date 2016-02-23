@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-      "propel/propel": "~2.0",
+      "propel/propel": "~2.0@dev",
       "eventviva/php-image-resize": "^1.5"
     },
     "autoload": {
