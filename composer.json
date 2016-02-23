@@ -11,8 +11,8 @@
         }
     ],
     "require": {
-      "propel/propel": "~2.0@dev",
-        "eventviva/php-image-resize": "^1.5"
+      "propel/propel": "~2.0.0-alpha5",
+      "eventviva/php-image-resize": "^1.5"
     },
     "autoload": {
         "psr-4": {"Rokfor\\": "src/"},
