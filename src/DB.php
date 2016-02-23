@@ -137,6 +137,19 @@ class DB
   function PDO() {
     return $this->serviceContainer->getConnection()->getWrappedConnection();
   }
+  
+  /**
+   * returns true if the field has to be stores as json encoded string
+   *
+   * @param string $field 
+   * @return void
+   * @author Urs Hofer
+   */
+  private function _determineJsonForField($field) {
+    $_json = $field->getTemplates()->getFieldtype() == 'Zahl' || 
+              ($field->getTemplates()->getFieldtype() == 'Text' && ($settings['rtfeditor'] || !$settings['arrayeditor']));
+    return !$_json;
+  }
 
   /**
    * deletes an array of files, inclusive possible thumbs and previews
@@ -671,6 +684,7 @@ class DB
         ->setTemplates($templatefield)
         ->setUserSysRef($this->currentUser)
         ->setSort($_sort)
+        ->setIsjson($d)
         ->save();
       $_sort++;
     }
@@ -867,7 +881,9 @@ class DB
       // Attach to Data, Store
       
       array_push($oldVal, [$caption, $original_url]);
-      $field->setContent(json_encode($oldVal))->save();
+      $field->setContent(json_encode($oldVal))
+        ->setIsjson(true)
+        ->save();
 
 
 
@@ -907,13 +923,16 @@ class DB
 //      print_r($delete);
 //      print_r($newdata);      
 //      print_r($olddata);      
-      $field->setContent(json_encode($tabledata))->save();
+      $field->setContent(json_encode($tabledata))
+        ->setIsjson(true)
+        ->save();
       return true;
     }
     else
       return false;
   }
   
+
   /**
    * setField
    * 
@@ -934,9 +953,13 @@ class DB
       $tname = $field->getTemplates()->getTemplatenames();
       $access = ($this->rights["templates"]=== true || is_array($this->rights["templates"]) && in_array($tname, $this->rights["templates"]));
       if ($access) {
-        if ($field->getIsjson() == true && (is_array($data) || is_object($data))) {
+        if ((is_array($data) || is_object($data))) {
           $data = json_encode($data);
         }
+        // Json is always true unless it is a number or a plain text field
+        $settings = json_decode($field->getTemplates()->getConfigSys(), true);
+        
+        $field->setIsjson($this->_determineJsonForField($field));
         $field->setContent($data)->save();
         return true;
       }
@@ -1033,8 +1056,33 @@ class DB
    * @return Childcollection\ContributionsQuery()
    * @author Urs Hofer
    */  
-  function getContributions($issueid, $chapterid, $sort = 'asc') {
-
+  function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false) {
+    if (!$sortmode) $sortmode = "asc";
+    if ($sortmode == "asc" || $sortmode == "desc") {
+      $direction = $sortmode;
+      $sort = 'orderBySort';
+    }
+    else {
+      list($sort,$direction) = explode(":", $sortmode);
+      if ($direction == "") {
+        $direction == "asc";
+      }
+      switch ($sort) {
+        case 'date':
+          $sort = 'orderByNewdate';
+          break;
+        case 'name':
+          $sort = 'orderByName';
+          break;
+        case 'id':
+          $sort = 'orderById';
+          break;
+        default:
+          $sort = 'orderBySort';
+          break;
+      }
+    }
+    
     if (
       ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))) ||
       ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())))
@@ -1042,8 +1090,17 @@ class DB
       return $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
-                ->orderBySort($sort);
-    }
+                ->_if($status)
+                  ->filterByStatus($status)
+                ->_endif()
+                ->$sort($direction)
+                ->_if($offset)
+                  ->offset((int)$offset)
+                ->_endif()
+                ->_if($limit)
+                  ->limit((int)$limit)
+                ->_endif();
+      }
   }
   
   /**
@@ -1053,15 +1110,38 @@ class DB
    * @return ChildCollection\ContributionsQuery()
    * @author Urs Hofer
    */
-  function searchContributions($string) {
+  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false) {
+  
     return $this->ContributionsQuery()
+                ->_if($issueid)
+                  ->filterByForissue($issueid)
+                ->_endif()
+                ->_if($chapterid)
+                  ->filterByForchapter($chapterid)
+                ->_endif()
+                ->_if($status)
+                  ->filterByStatus($status)
+                ->_endif()
                 ->distinct()
                 ->filterByName('%'.$string.'%')
                 ->_or()
                   ->useDataQuery()
                   ->filterByContent('%'.$string.'%')
                   ->endUse()
-                ->orderByName();
+                ->orderByName()
+                ->_if($limit)
+                  ->limit((int)$limit)
+                ->_endif()
+                ->_if($offset)
+                  ->offset((int)$offset)
+                ->_endif()
+                ->_if($offset)
+                  ->offset((int)$offset)
+                ->_endif()
+                ->_if($limit)
+                  ->limit((int)$limit)
+                ->_endif();
+;
   }
 
   /**
