@@ -76,7 +76,9 @@ class Data extends BaseData
         // Returns issues of a book
         //
         case 'issues':
-          $issues = \IssuesQuery::create()->filterByBooks($book)
+          $issues = \IssuesQuery::create()->_if($settings['restrict_to_book'])
+                                            ->filterByBooks($book)
+                                          ->_endif()
                                           ->_if($settings['restrict_to_open'])
                                             ->filterByStatus('open')
                                           ->_endif();
@@ -90,7 +92,10 @@ class Data extends BaseData
         // Returns chapters of a book
         //
         case 'chapters':
-          foreach(\FormatsQuery::create()->filterByBooks($book) as $_b) {
+          $formats = \FormatsQuery::create()->_if($settings['restrict_to_book'])
+                                              ->filterByBooks($book)
+                                            ->_endif();
+          foreach($formats as $_b) {
             array_push($retval, ["id"=>$_b->getId(),"value"=>$_b->getName()]);
           }      
           break;
@@ -181,7 +186,9 @@ class Data extends BaseData
                                                 ->_if($settings['restrict_to_chapter'])
                                                   ->filterByFormats($chapter)
                                                 ->_endif()
-                                                ->filterByTemplatenames($template);
+                                                ->_if($settings['restrict_to_template'])
+                                                  ->filterByTemplatenames($template)
+                                                ->_endif();
           foreach($_data as $_b) {
             array_push($retval, ["id"=>$_b->getId(),"value"=>$_b->getName()]);
           }        
