@@ -80,7 +80,7 @@ class DB
       'thmbsuffix'=> '-thmb.jpg',
       'scaled'    => '-preview[*].jpg',
       'quality'   =>  75,
-      'process'   => ['image/jpg', 'image/png', 'image/gif', 'image/tiff'],
+      'process'   => ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/tiff'],
       'store'     => ['application/zip', 'video/quicktime', 'video/mp4', 'video/webm', 'audio/mp3'],
       'icon'      => 'thumb.jpg'
     ];
