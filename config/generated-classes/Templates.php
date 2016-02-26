@@ -29,12 +29,13 @@ class Templates extends BaseTemplates
       'Tabelle',          // 6
       'Bild',             // 7
       'Text',             // 8
-      'Locationpicker',
+      'Locationpicker',   // 9
       '*Ausgeschaltet*',
     ];
     $params = [
       'lengthinfluence'    => [                8, ],
       'imagesize'          => [              7,   ],
+      'caption_variants'   => [              7,   ],
       'history'            => [                8, ],
       'growing'            => [            6,7,   ],
       'maxlines'           => [              7,8, ],
@@ -63,6 +64,8 @@ class Templates extends BaseTemplates
       'fromtemplate'       => [0,1,2,             ],
       'fromfield'          => [0,1,2,             ],
       'threeDee'           => [0                  ],
+      'latitude'           => [                  9],
+      'longitude'          => [                  9],
     ];
     
     $typekey = array_search($this->getFieldtype(), $fieldtypes);
