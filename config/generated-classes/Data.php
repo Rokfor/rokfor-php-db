@@ -215,19 +215,12 @@ class Data extends BaseData
             array_push($retval, ["id"=>$key,"value"=>$value]);
           }
           break;
-      
-        default:
-          $retval = [["id"=>-1,"value"=>"Not Set"]];
-          break;
+
       } 
+
+      // Always add a disabled state
     
-  /*       
-          [restrict_to_chapter] => Zielgruppen
-          [restrict_to_issue] => Modul 1: Portal
-          [fromtemplate] => Translation
-          [resolve_foreign] =
-  */    
-    
+      array_push($retval, ["id"=>-1,"value"=>"* Disabled *"]);
     
     }
     return $retval;
