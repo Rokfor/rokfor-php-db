@@ -52,7 +52,7 @@ class DB
    */
   private $paths;
     
-  function __construct($host, $user, $pass, $dbname, $log)
+  function __construct($host, $user, $pass, $dbname, $log, $level)
   {
     $this->serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
     $this->serviceContainer->checkVersion('2.0.0-dev');
@@ -86,7 +86,7 @@ class DB
     ];
     
     $defaultLogger = new \Monolog\Logger('defaultLogger');
-    $defaultLogger->pushHandler(new \Monolog\Handler\StreamHandler($log, \Monolog\Logger::ERROR));
+    $defaultLogger->pushHandler(new \Monolog\Handler\StreamHandler($log, $level));
     $this->serviceContainer->setLogger('defaultLogger', $defaultLogger);
   }
   
@@ -951,7 +951,7 @@ class DB
     $field = $this->getField($fieldid);
     if ($field) {
       $tname = $field->getTemplates()->getTemplatenames();
-      $access = ($this->rights["templates"]=== true || is_array($this->rights["templates"]) && in_array($tname, $this->rights["templates"]));
+      $access = ($this->rights["templates"]=== true || is_object($this->rights["templates"]) && in_array($tname->getId(), $this->rights["templates"]->getPrimaryKeys()));
       if ($access) {
         if ((is_array($data) || is_object($data))) {
           $data = json_encode($data);
@@ -963,6 +963,7 @@ class DB
         $field->setContent($data)->save();
         return true;
       }
+      else return "access failed";
     }
     else
       return false;
