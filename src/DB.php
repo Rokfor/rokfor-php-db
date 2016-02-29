@@ -52,21 +52,22 @@ class DB
    */
   private $paths;
     
-  function __construct($host, $user, $pass, $dbname, $log, $level, $socket = false)
+  function __construct($host, $user, $pass, $dbname, $log, $level, $socket = false, $port = false)
   {
-    if ($socket && is_file($socket)) {
-      $socket = "unix_socket=".$socket.";";
-    }
-    else {
-      $socket = "";
-    }
+    $socket = $socket 
+              ? "unix_socket=".$socket.";" 
+              : "";
+    $port = $port 
+            ? "port=".$port.";" 
+            : "";
+
     $this->serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
     $this->serviceContainer->checkVersion('2.0.0-dev');
     $this->serviceContainer->setAdapterClass('rokfor', 'mysql');
     $this->manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
     $this->manager->setConfiguration(array (
       'classname' => 'Propel\\Runtime\\Connection\\DebugPDO',
-      'dsn' => 'mysql:host='.$host.';dbname='.$dbname.';'.$socket,
+      'dsn' => 'mysql:host='.$host.';'.$port.'dbname='.$dbname.';'.$socket,
       'user' => $user,
       'password' => $pass,
       'attributes' =>
