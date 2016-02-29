@@ -1,4 +1,4 @@
-<?
+<?php
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 namespace Rokfor;
@@ -52,15 +52,21 @@ class DB
    */
   private $paths;
     
-  function __construct($host, $user, $pass, $dbname, $log, $level)
+  function __construct($host, $user, $pass, $dbname, $log, $level, $socket = false)
   {
+    if ($socket && is_file($socket)) {
+      $socket = "unix_socket=".$socket.";";
+    }
+    else {
+      $socket = "";
+    }
     $this->serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
     $this->serviceContainer->checkVersion('2.0.0-dev');
     $this->serviceContainer->setAdapterClass('rokfor', 'mysql');
     $this->manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
     $this->manager->setConfiguration(array (
       'classname' => 'Propel\\Runtime\\Connection\\DebugPDO',
-      'dsn' => 'mysql:host='.$host.';dbname='.$dbname.';unix_socket=/tmp/mysql.sock;',
+      'dsn' => 'mysql:host='.$host.';dbname='.$dbname.';'.$socket,
       'user' => $user,
       'password' => $pass,
       'attributes' =>
