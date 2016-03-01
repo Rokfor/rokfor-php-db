@@ -12,7 +12,7 @@
     ],
     "require": {
       "propel/propel": "~2.0.0-alpha5",
-      "eventviva/php-image-resize": "^1.5"
+        "intervention/image": "^2.3"
     },
     "autoload": {
         "psr-4": {"Rokfor\\": "src/"},
