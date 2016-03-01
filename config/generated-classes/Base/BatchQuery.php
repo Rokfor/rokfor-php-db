@@ -44,19 +44,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatchQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildBatchQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildBatchQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildBatchQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildBatchQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildBatchQuery leftJoinRBatchForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RBatchForbook relation
  * @method     ChildBatchQuery rightJoinRBatchForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RBatchForbook relation
  * @method     ChildBatchQuery innerJoinRBatchForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RBatchForbook relation
- *
- * @method     ChildBatchQuery joinWithRBatchForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RBatchForbook relation
- *
- * @method     ChildBatchQuery leftJoinWithRBatchForbook() Adds a LEFT JOIN clause and with to the query using the RBatchForbook relation
- * @method     ChildBatchQuery rightJoinWithRBatchForbook() Adds a RIGHT JOIN clause and with to the query using the RBatchForbook relation
- * @method     ChildBatchQuery innerJoinWithRBatchForbook() Adds a INNER JOIN clause and with to the query using the RBatchForbook relation
  *
  * @method     \RBatchForbookQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -158,7 +148,7 @@ abstract class BatchQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = BatchTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = BatchTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -202,7 +192,7 @@ abstract class BatchQuery extends ModelCriteria
             /** @var ChildBatch $obj */
             $obj = new ChildBatch();
             $obj->hydrate($row);
-            BatchTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            BatchTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

@@ -403,6 +403,10 @@ CREATE TABLE `_contributions`
     `_forchapter` INTEGER(32),
     `__parentnode__` INTEGER(32),
     `__sort__` INTEGER(32),
+    `version` INTEGER DEFAULT 0,
+    `version_created_at` DATETIME,
+    `version_created_by` VARCHAR(100),
+    `version_comment` VARCHAR(255),
     PRIMARY KEY (`id`),
     INDEX `_user_index` (`__user__`),
     INDEX `_contributionfortemplate_index` (`_fortemplate`),
@@ -449,6 +453,10 @@ CREATE TABLE `_data`
     `__split__` TEXT,
     `__parentnode__` INTEGER(32),
     `__sort__` INTEGER(32),
+    `version` INTEGER DEFAULT 0,
+    `version_created_at` DATETIME,
+    `version_created_by` VARCHAR(100),
+    `version_comment` VARCHAR(255),
     PRIMARY KEY (`id`),
     INDEX `_user_index` (`__user__`),
     INDEX `_dataforcontribution_index` (`_forcontribution`),
@@ -718,6 +726,68 @@ CREATE TABLE `users`
 
 INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
 
+-- ---------------------------------------------------------------------
+-- _contributions_version
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `_contributions_version`;
+
+CREATE TABLE `_contributions_version`
+(
+    `id` INTEGER(4) NOT NULL,
+    `_fortemplate` INTEGER(32),
+    `_forissue` INTEGER(32),
+    `_name` TEXT,
+    `_status` TEXT,
+    `_newdate` INTEGER(40),
+    `_moddate` INTEGER(40),
+    `__user__` INTEGER(4),
+    `__config__` TEXT,
+    `_forchapter` INTEGER(32),
+    `__parentnode__` INTEGER(32),
+    `__sort__` INTEGER(32),
+    `version` INTEGER DEFAULT 0 NOT NULL,
+    `version_created_at` DATETIME,
+    `version_created_by` VARCHAR(100),
+    `version_comment` VARCHAR(255),
+    `_data_ids` TEXT,
+    `_data_versions` TEXT,
+    PRIMARY KEY (`id`,`version`),
+    CONSTRAINT `_contributions_version_fk_58714c`
+        FOREIGN KEY (`id`)
+        REFERENCES `_contributions` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- _data_version
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `_data_version`;
+
+CREATE TABLE `_data_version`
+(
+    `id` INTEGER(4) NOT NULL,
+    `_forcontribution` INTEGER(4),
+    `_fortemplatefield` INTEGER(32),
+    `_content` TEXT,
+    `_isjson` TINYINT(1),
+    `__user__` INTEGER(4),
+    `__config__` TEXT,
+    `__split__` TEXT,
+    `__parentnode__` INTEGER(32),
+    `__sort__` INTEGER(32),
+    `version` INTEGER DEFAULT 0 NOT NULL,
+    `version_created_at` DATETIME,
+    `version_created_by` VARCHAR(100),
+    `version_comment` VARCHAR(255),
+    `_forcontribution_version` INTEGER DEFAULT 0,
+    PRIMARY KEY (`id`,`version`),
+    CONSTRAINT `_data_version_fk_32c4d1`
+        FOREIGN KEY (`id`)
+        REFERENCES `_data` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

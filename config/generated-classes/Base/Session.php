@@ -61,14 +61,12 @@ abstract class Session implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        string
      */
     protected $id;
 
     /**
      * The value for the session field.
-     *
      * Note: this column has a database default value of: '0'
      * @var        string
      */
@@ -76,7 +74,6 @@ abstract class Session implements ActiveRecordInterface
 
     /**
      * The value for the userid field.
-     *
      * Note: this column has a database default value of: 0
      * @var        int
      */
@@ -84,7 +81,6 @@ abstract class Session implements ActiveRecordInterface
 
     /**
      * The value for the starttime field.
-     *
      * Note: this column has a database default value of: '0'
      * @var        string
      */
@@ -92,7 +88,6 @@ abstract class Session implements ActiveRecordInterface
 
     /**
      * The value for the currenttime field.
-     *
      * Note: this column has a database default value of: '0'
      * @var        string
      */
@@ -336,15 +331,7 @@ abstract class Session implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**

@@ -59,7 +59,7 @@ class DataTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 14;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class DataTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 14;
 
     /**
      * the column name for the id field
@@ -122,6 +122,26 @@ class DataTableMap extends TableMap
     const COL___SORT__ = '_data.__sort__';
 
     /**
+     * the column name for the version field
+     */
+    const COL_VERSION = '_data.version';
+
+    /**
+     * the column name for the version_created_at field
+     */
+    const COL_VERSION_CREATED_AT = '_data.version_created_at';
+
+    /**
+     * the column name for the version_created_by field
+     */
+    const COL_VERSION_CREATED_BY = '_data.version_created_by';
+
+    /**
+     * the column name for the version_comment field
+     */
+    const COL_VERSION_COMMENT = '_data.version_comment';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -133,11 +153,11 @@ class DataTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Forcontribution', 'Fortemplatefield', 'Content', 'Isjson', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'forcontribution', 'fortemplatefield', 'content', 'isjson', 'userSys', 'configSys', 'split', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(DataTableMap::COL_ID, DataTableMap::COL__FORCONTRIBUTION, DataTableMap::COL__FORTEMPLATEFIELD, DataTableMap::COL__CONTENT, DataTableMap::COL__ISJSON, DataTableMap::COL___USER__, DataTableMap::COL___CONFIG__, DataTableMap::COL___SPLIT__, DataTableMap::COL___PARENTNODE__, DataTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_forcontribution', '_fortemplatefield', '_content', '_isjson', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'Forcontribution', 'Fortemplatefield', 'Content', 'Isjson', 'UserSys', 'ConfigSys', 'Split', 'Parentnode', 'Sort', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', 'VersionComment', ),
+        self::TYPE_CAMELNAME     => array('id', 'forcontribution', 'fortemplatefield', 'content', 'isjson', 'userSys', 'configSys', 'split', 'parentnode', 'sort', 'version', 'versionCreatedAt', 'versionCreatedBy', 'versionComment', ),
+        self::TYPE_COLNAME       => array(DataTableMap::COL_ID, DataTableMap::COL__FORCONTRIBUTION, DataTableMap::COL__FORTEMPLATEFIELD, DataTableMap::COL__CONTENT, DataTableMap::COL__ISJSON, DataTableMap::COL___USER__, DataTableMap::COL___CONFIG__, DataTableMap::COL___SPLIT__, DataTableMap::COL___PARENTNODE__, DataTableMap::COL___SORT__, DataTableMap::COL_VERSION, DataTableMap::COL_VERSION_CREATED_AT, DataTableMap::COL_VERSION_CREATED_BY, DataTableMap::COL_VERSION_COMMENT, ),
+        self::TYPE_FIELDNAME     => array('id', '_forcontribution', '_fortemplatefield', '_content', '_isjson', '__user__', '__config__', '__split__', '__parentnode__', '__sort__', 'version', 'version_created_at', 'version_created_by', 'version_comment', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -147,11 +167,11 @@ class DataTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Forcontribution' => 1, 'Fortemplatefield' => 2, 'Content' => 3, 'Isjson' => 4, 'UserSys' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'forcontribution' => 1, 'fortemplatefield' => 2, 'content' => 3, 'isjson' => 4, 'userSys' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, ),
-        self::TYPE_COLNAME       => array(DataTableMap::COL_ID => 0, DataTableMap::COL__FORCONTRIBUTION => 1, DataTableMap::COL__FORTEMPLATEFIELD => 2, DataTableMap::COL__CONTENT => 3, DataTableMap::COL__ISJSON => 4, DataTableMap::COL___USER__ => 5, DataTableMap::COL___CONFIG__ => 6, DataTableMap::COL___SPLIT__ => 7, DataTableMap::COL___PARENTNODE__ => 8, DataTableMap::COL___SORT__ => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_forcontribution' => 1, '_fortemplatefield' => 2, '_content' => 3, '_isjson' => 4, '__user__' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Forcontribution' => 1, 'Fortemplatefield' => 2, 'Content' => 3, 'Isjson' => 4, 'UserSys' => 5, 'ConfigSys' => 6, 'Split' => 7, 'Parentnode' => 8, 'Sort' => 9, 'Version' => 10, 'VersionCreatedAt' => 11, 'VersionCreatedBy' => 12, 'VersionComment' => 13, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'forcontribution' => 1, 'fortemplatefield' => 2, 'content' => 3, 'isjson' => 4, 'userSys' => 5, 'configSys' => 6, 'split' => 7, 'parentnode' => 8, 'sort' => 9, 'version' => 10, 'versionCreatedAt' => 11, 'versionCreatedBy' => 12, 'versionComment' => 13, ),
+        self::TYPE_COLNAME       => array(DataTableMap::COL_ID => 0, DataTableMap::COL__FORCONTRIBUTION => 1, DataTableMap::COL__FORTEMPLATEFIELD => 2, DataTableMap::COL__CONTENT => 3, DataTableMap::COL__ISJSON => 4, DataTableMap::COL___USER__ => 5, DataTableMap::COL___CONFIG__ => 6, DataTableMap::COL___SPLIT__ => 7, DataTableMap::COL___PARENTNODE__ => 8, DataTableMap::COL___SORT__ => 9, DataTableMap::COL_VERSION => 10, DataTableMap::COL_VERSION_CREATED_AT => 11, DataTableMap::COL_VERSION_CREATED_BY => 12, DataTableMap::COL_VERSION_COMMENT => 13, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_forcontribution' => 1, '_fortemplatefield' => 2, '_content' => 3, '_isjson' => 4, '__user__' => 5, '__config__' => 6, '__split__' => 7, '__parentnode__' => 8, '__sort__' => 9, 'version' => 10, 'version_created_at' => 11, 'version_created_by' => 12, 'version_comment' => 13, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
     );
 
     /**
@@ -181,6 +201,10 @@ class DataTableMap extends TableMap
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
+        $this->addColumn('version', 'Version', 'INTEGER', false, null, 0);
+        $this->addColumn('version_created_at', 'VersionCreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('version_created_by', 'VersionCreatedBy', 'VARCHAR', false, 100, null);
+        $this->addColumn('version_comment', 'VersionComment', 'VARCHAR', false, 255, null);
     } // initialize()
 
     /**
@@ -209,7 +233,36 @@ class DataTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
+        $this->addRelation('DataVersion', '\\DataVersion', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'DataVersions', false);
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'versionable' => array('version_column' => 'version', 'version_table' => '', 'log_created_at' => 'true', 'log_created_by' => 'true', 'log_comment' => 'true', 'version_created_at_column' => 'version_created_at', 'version_created_by_column' => 'version_created_by', 'version_comment_column' => 'version_comment', 'indices' => 'false', ),
+        );
+    } // getBehaviors()
+    /**
+     * Method to invalidate the instance pool of all tables related to _data     * by a foreign key with ON DELETE CASCADE
+     */
+    public static function clearRelatedInstancePool()
+    {
+        // Invalidate objects in related instance pools,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        DataVersionTableMap::clearInstancePool();
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -231,7 +284,7 @@ class DataTableMap extends TableMap
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -362,6 +415,10 @@ class DataTableMap extends TableMap
             $criteria->addSelectColumn(DataTableMap::COL___SPLIT__);
             $criteria->addSelectColumn(DataTableMap::COL___PARENTNODE__);
             $criteria->addSelectColumn(DataTableMap::COL___SORT__);
+            $criteria->addSelectColumn(DataTableMap::COL_VERSION);
+            $criteria->addSelectColumn(DataTableMap::COL_VERSION_CREATED_AT);
+            $criteria->addSelectColumn(DataTableMap::COL_VERSION_CREATED_BY);
+            $criteria->addSelectColumn(DataTableMap::COL_VERSION_COMMENT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._forcontribution');
@@ -373,6 +430,10 @@ class DataTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.__split__');
             $criteria->addSelectColumn($alias . '.__parentnode__');
             $criteria->addSelectColumn($alias . '.__sort__');
+            $criteria->addSelectColumn($alias . '.version');
+            $criteria->addSelectColumn($alias . '.version_created_at');
+            $criteria->addSelectColumn($alias . '.version_created_by');
+            $criteria->addSelectColumn($alias . '.version_comment');
         }
     }
 

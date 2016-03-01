@@ -35,10 +35,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSessionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildSessionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildSessionQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildSessionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildSessionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildSession findOne(ConnectionInterface $con = null) Return the first ChildSession matching the query
  * @method     ChildSession findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSession matching the query, or a new ChildSession object populated from the query conditions when no match is found
  *
@@ -125,7 +121,7 @@ abstract class SessionQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = SessionTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = SessionTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -169,7 +165,7 @@ abstract class SessionQuery extends ModelCriteria
             /** @var ChildSession $obj */
             $obj = new ChildSession();
             $obj->hydrate($row);
-            SessionTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            SessionTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

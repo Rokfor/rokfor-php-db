@@ -32,6 +32,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery orderByForchapter($order = Criteria::ASC) Order by the _forchapter column
  * @method     ChildContributionsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
  * @method     ChildContributionsQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
+ * @method     ChildContributionsQuery orderByVersion($order = Criteria::ASC) Order by the version column
+ * @method     ChildContributionsQuery orderByVersionCreatedAt($order = Criteria::ASC) Order by the version_created_at column
+ * @method     ChildContributionsQuery orderByVersionCreatedBy($order = Criteria::ASC) Order by the version_created_by column
+ * @method     ChildContributionsQuery orderByVersionComment($order = Criteria::ASC) Order by the version_comment column
  *
  * @method     ChildContributionsQuery groupById() Group by the id column
  * @method     ChildContributionsQuery groupByFortemplate() Group by the _fortemplate column
@@ -45,66 +49,40 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery groupByForchapter() Group by the _forchapter column
  * @method     ChildContributionsQuery groupByParentnode() Group by the __parentnode__ column
  * @method     ChildContributionsQuery groupBySort() Group by the __sort__ column
+ * @method     ChildContributionsQuery groupByVersion() Group by the version column
+ * @method     ChildContributionsQuery groupByVersionCreatedAt() Group by the version_created_at column
+ * @method     ChildContributionsQuery groupByVersionCreatedBy() Group by the version_created_by column
+ * @method     ChildContributionsQuery groupByVersionComment() Group by the version_comment column
  *
  * @method     ChildContributionsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildContributionsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildContributionsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildContributionsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildContributionsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildContributionsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildContributionsQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildContributionsQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildContributionsQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
- *
- * @method     ChildContributionsQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
- *
- * @method     ChildContributionsQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
- * @method     ChildContributionsQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
- * @method     ChildContributionsQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildContributionsQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildContributionsQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildContributionsQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
  *
- * @method     ChildContributionsQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
- *
- * @method     ChildContributionsQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
- * @method     ChildContributionsQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
- * @method     ChildContributionsQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
- *
  * @method     ChildContributionsQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
  * @method     ChildContributionsQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildContributionsQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
- *
- * @method     ChildContributionsQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
- *
- * @method     ChildContributionsQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
- * @method     ChildContributionsQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
- * @method     ChildContributionsQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
  *
  * @method     ChildContributionsQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
  * @method     ChildContributionsQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildContributionsQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
  *
- * @method     ChildContributionsQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
- *
- * @method     ChildContributionsQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildContributionsQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildContributionsQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
- *
  * @method     ChildContributionsQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildContributionsQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildContributionsQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
  *
- * @method     ChildContributionsQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
+ * @method     ChildContributionsQuery leftJoinContributionsVersion($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContributionsVersion relation
+ * @method     ChildContributionsQuery rightJoinContributionsVersion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContributionsVersion relation
+ * @method     ChildContributionsQuery innerJoinContributionsVersion($relationAlias = null) Adds a INNER JOIN clause to the query using the ContributionsVersion relation
  *
- * @method     ChildContributionsQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
- * @method     ChildContributionsQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
- * @method     ChildContributionsQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
- *
- * @method     \UsersQuery|\FormatsQuery|\IssuesQuery|\TemplatenamesQuery|\DataQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\FormatsQuery|\IssuesQuery|\TemplatenamesQuery|\DataQuery|\ContributionsVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildContributions findOne(ConnectionInterface $con = null) Return the first ChildContributions matching the query
  * @method     ChildContributions findOneOrCreate(ConnectionInterface $con = null) Return the first ChildContributions matching the query, or a new ChildContributions object populated from the query conditions when no match is found
@@ -120,7 +98,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions findOneByConfigSys(string $__config__) Return the first ChildContributions filtered by the __config__ column
  * @method     ChildContributions findOneByForchapter(int $_forchapter) Return the first ChildContributions filtered by the _forchapter column
  * @method     ChildContributions findOneByParentnode(int $__parentnode__) Return the first ChildContributions filtered by the __parentnode__ column
- * @method     ChildContributions findOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column *
+ * @method     ChildContributions findOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column
+ * @method     ChildContributions findOneByVersion(int $version) Return the first ChildContributions filtered by the version column
+ * @method     ChildContributions findOneByVersionCreatedAt(string $version_created_at) Return the first ChildContributions filtered by the version_created_at column
+ * @method     ChildContributions findOneByVersionCreatedBy(string $version_created_by) Return the first ChildContributions filtered by the version_created_by column
+ * @method     ChildContributions findOneByVersionComment(string $version_comment) Return the first ChildContributions filtered by the version_comment column *
 
  * @method     ChildContributions requirePk($key, ConnectionInterface $con = null) Return the ChildContributions by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOne(ConnectionInterface $con = null) Return the first ChildContributions matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -137,6 +119,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions requireOneByForchapter(int $_forchapter) Return the first ChildContributions filtered by the _forchapter column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneByParentnode(int $__parentnode__) Return the first ChildContributions filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributions requireOneBySort(int $__sort__) Return the first ChildContributions filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByVersion(int $version) Return the first ChildContributions filtered by the version column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByVersionCreatedAt(string $version_created_at) Return the first ChildContributions filtered by the version_created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByVersionCreatedBy(string $version_created_by) Return the first ChildContributions filtered by the version_created_by column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributions requireOneByVersionComment(string $version_comment) Return the first ChildContributions filtered by the version_comment column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildContributions[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildContributions objects based on current ModelCriteria
  * @method     ChildContributions[]|ObjectCollection findById(int $id) Return ChildContributions objects filtered by the id column
@@ -151,12 +137,23 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributions[]|ObjectCollection findByForchapter(int $_forchapter) Return ChildContributions objects filtered by the _forchapter column
  * @method     ChildContributions[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildContributions objects filtered by the __parentnode__ column
  * @method     ChildContributions[]|ObjectCollection findBySort(int $__sort__) Return ChildContributions objects filtered by the __sort__ column
+ * @method     ChildContributions[]|ObjectCollection findByVersion(int $version) Return ChildContributions objects filtered by the version column
+ * @method     ChildContributions[]|ObjectCollection findByVersionCreatedAt(string $version_created_at) Return ChildContributions objects filtered by the version_created_at column
+ * @method     ChildContributions[]|ObjectCollection findByVersionCreatedBy(string $version_created_by) Return ChildContributions objects filtered by the version_created_by column
+ * @method     ChildContributions[]|ObjectCollection findByVersionComment(string $version_comment) Return ChildContributions objects filtered by the version_comment column
  * @method     ChildContributions[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
 abstract class ContributionsQuery extends ModelCriteria
 {
-    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
+
+    // versionable behavior
+
+    /**
+     * Whether the versioning is enabled
+     */
+    static $isVersioningEnabled = true;
+protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Base\ContributionsQuery object.
@@ -213,7 +210,7 @@ abstract class ContributionsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = ContributionsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = ContributionsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -243,7 +240,7 @@ abstract class ContributionsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _fortemplate, _forissue, _name, _status, _newdate, _moddate, __user__, __config__, _forchapter, __parentnode__, __sort__ FROM _contributions WHERE id = :p0';
+        $sql = 'SELECT id, _fortemplate, _forissue, _name, _status, _newdate, _moddate, __user__, __config__, _forchapter, __parentnode__, __sort__, version, version_created_at, version_created_by, version_comment FROM _contributions WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -257,7 +254,7 @@ abstract class ContributionsQuery extends ModelCriteria
             /** @var ChildContributions $obj */
             $obj = new ChildContributions();
             $obj->hydrate($row);
-            ContributionsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            ContributionsTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 
@@ -798,6 +795,148 @@ abstract class ContributionsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the version column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVersion(1234); // WHERE version = 1234
+     * $query->filterByVersion(array(12, 34)); // WHERE version IN (12, 34)
+     * $query->filterByVersion(array('min' => 12)); // WHERE version > 12
+     * </code>
+     *
+     * @param     mixed $version The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByVersion($version = null, $comparison = null)
+    {
+        if (is_array($version)) {
+            $useMinMax = false;
+            if (isset($version['min'])) {
+                $this->addUsingAlias(ContributionsTableMap::COL_VERSION, $version['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($version['max'])) {
+                $this->addUsingAlias(ContributionsTableMap::COL_VERSION, $version['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionsTableMap::COL_VERSION, $version, $comparison);
+    }
+
+    /**
+     * Filter the query on the version_created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVersionCreatedAt('2011-03-14'); // WHERE version_created_at = '2011-03-14'
+     * $query->filterByVersionCreatedAt('now'); // WHERE version_created_at = '2011-03-14'
+     * $query->filterByVersionCreatedAt(array('max' => 'yesterday')); // WHERE version_created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $versionCreatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByVersionCreatedAt($versionCreatedAt = null, $comparison = null)
+    {
+        if (is_array($versionCreatedAt)) {
+            $useMinMax = false;
+            if (isset($versionCreatedAt['min'])) {
+                $this->addUsingAlias(ContributionsTableMap::COL_VERSION_CREATED_AT, $versionCreatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($versionCreatedAt['max'])) {
+                $this->addUsingAlias(ContributionsTableMap::COL_VERSION_CREATED_AT, $versionCreatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionsTableMap::COL_VERSION_CREATED_AT, $versionCreatedAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the version_created_by column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
+     * $query->filterByVersionCreatedBy('%fooValue%'); // WHERE version_created_by LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $versionCreatedBy The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByVersionCreatedBy($versionCreatedBy = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($versionCreatedBy)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $versionCreatedBy)) {
+                $versionCreatedBy = str_replace('*', '%', $versionCreatedBy);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionsTableMap::COL_VERSION_CREATED_BY, $versionCreatedBy, $comparison);
+    }
+
+    /**
+     * Filter the query on the version_comment column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByVersionComment('fooValue');   // WHERE version_comment = 'fooValue'
+     * $query->filterByVersionComment('%fooValue%'); // WHERE version_comment LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $versionComment The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByVersionComment($versionComment = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($versionComment)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $versionComment)) {
+                $versionComment = str_replace('*', '%', $versionComment);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionsTableMap::COL_VERSION_COMMENT, $versionComment, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Users object
      *
      * @param \Users|ObjectCollection $users The related object(s) to use as filter
@@ -1179,6 +1318,79 @@ abstract class ContributionsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \ContributionsVersion object
+     *
+     * @param \ContributionsVersion|ObjectCollection $contributionsVersion the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByContributionsVersion($contributionsVersion, $comparison = null)
+    {
+        if ($contributionsVersion instanceof \ContributionsVersion) {
+            return $this
+                ->addUsingAlias(ContributionsTableMap::COL_ID, $contributionsVersion->getId(), $comparison);
+        } elseif ($contributionsVersion instanceof ObjectCollection) {
+            return $this
+                ->useContributionsVersionQuery()
+                ->filterByPrimaryKeys($contributionsVersion->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByContributionsVersion() only accepts arguments of type \ContributionsVersion or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ContributionsVersion relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function joinContributionsVersion($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ContributionsVersion');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ContributionsVersion');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ContributionsVersion relation ContributionsVersion object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ContributionsVersionQuery A secondary query class using the current class as primary query
+     */
+    public function useContributionsVersionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinContributionsVersion($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ContributionsVersion', '\ContributionsVersionQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildContributions $contributions Object to remove from the list of results
@@ -1253,6 +1465,34 @@ abstract class ContributionsQuery extends ModelCriteria
 
             return $affectedRows;
         });
+    }
+
+    // versionable behavior
+
+    /**
+     * Checks whether versioning is enabled
+     *
+     * @return boolean
+     */
+    static public function isVersioningEnabled()
+    {
+        return self::$isVersioningEnabled;
+    }
+
+    /**
+     * Enables versioning
+     */
+    static public function enableVersioning()
+    {
+        self::$isVersioningEnabled = true;
+    }
+
+    /**
+     * Disables versioning
+     */
+    static public function disableVersioning()
+    {
+        self::$isVersioningEnabled = false;
     }
 
 } // ContributionsQuery

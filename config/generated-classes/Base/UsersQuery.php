@@ -40,69 +40,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsersQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildUsersQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildUsersQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildUsersQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildUsersQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildUsersQuery leftJoinRRightsForuser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildUsersQuery rightJoinRRightsForuser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildUsersQuery innerJoinRRightsForuser($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForuser relation
- *
- * @method     ChildUsersQuery joinWithRRightsForuser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForuser relation
- *
- * @method     ChildUsersQuery leftJoinWithRRightsForuser() Adds a LEFT JOIN clause and with to the query using the RRightsForuser relation
- * @method     ChildUsersQuery rightJoinWithRRightsForuser() Adds a RIGHT JOIN clause and with to the query using the RRightsForuser relation
- * @method     ChildUsersQuery innerJoinWithRRightsForuser() Adds a INNER JOIN clause and with to the query using the RRightsForuser relation
  *
  * @method     ChildUsersQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildUsersQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildUsersQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
- * @method     ChildUsersQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
- *
- * @method     ChildUsersQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
- * @method     ChildUsersQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
- * @method     ChildUsersQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
- *
  * @method     ChildUsersQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildUsersQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildUsersQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
- *
- * @method     ChildUsersQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
- *
- * @method     ChildUsersQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
- * @method     ChildUsersQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
- * @method     ChildUsersQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     ChildUsersQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildUsersQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildUsersQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
  *
- * @method     ChildUsersQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
- *
- * @method     ChildUsersQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
- * @method     ChildUsersQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
- * @method     ChildUsersQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
- *
  * @method     ChildUsersQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildUsersQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildUsersQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
  *
- * @method     ChildUsersQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
- *
- * @method     ChildUsersQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
- * @method     ChildUsersQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
- * @method     ChildUsersQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
- *
  * @method     ChildUsersQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
  * @method     ChildUsersQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildUsersQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
- *
- * @method     ChildUsersQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
- *
- * @method     ChildUsersQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
- * @method     ChildUsersQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
- * @method     ChildUsersQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
  *
  * @method     \RRightsForuserQuery|\BooksQuery|\ContributionsQuery|\DataQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -198,7 +158,7 @@ abstract class UsersQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = UsersTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = UsersTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -242,7 +202,7 @@ abstract class UsersQuery extends ModelCriteria
             /** @var ChildUsers $obj */
             $obj = new ChildUsers();
             $obj->hydrate($row);
-            UsersTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            UsersTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

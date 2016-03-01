@@ -61,63 +61,54 @@ abstract class Log implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _ip field.
-     *
      * @var        string
      */
     protected $_ip;
 
     /**
      * The value for the _agent field.
-     *
      * @var        string
      */
     protected $_agent;
 
     /**
      * The value for the _user field.
-     *
      * @var        string
      */
     protected $_user;
 
     /**
      * The value for the _date field.
-     *
      * @var        int
      */
     protected $_date;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
@@ -344,15 +335,7 @@ abstract class Log implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**

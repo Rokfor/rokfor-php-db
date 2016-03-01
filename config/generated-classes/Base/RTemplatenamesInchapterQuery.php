@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRTemplatenamesInchapterQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRTemplatenamesInchapterQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRTemplatenamesInchapterQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRTemplatenamesInchapterQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRTemplatenamesInchapterQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRTemplatenamesInchapterQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
  * @method     ChildRTemplatenamesInchapterQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildRTemplatenamesInchapterQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
  *
- * @method     ChildRTemplatenamesInchapterQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
- *
- * @method     ChildRTemplatenamesInchapterQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildRTemplatenamesInchapterQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildRTemplatenamesInchapterQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
- *
  * @method     ChildRTemplatenamesInchapterQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildRTemplatenamesInchapterQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildRTemplatenamesInchapterQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
- *
- * @method     ChildRTemplatenamesInchapterQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
- *
- * @method     ChildRTemplatenamesInchapterQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
- * @method     ChildRTemplatenamesInchapterQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
- * @method     ChildRTemplatenamesInchapterQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
  *
  * @method     \TemplatenamesQuery|\FormatsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RTemplatenamesInchapterQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RTemplatenamesInchapterTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RTemplatenamesInchapterTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RTemplatenamesInchapterQuery extends ModelCriteria
             /** @var ChildRTemplatenamesInchapter $obj */
             $obj = new ChildRTemplatenamesInchapter();
             $obj->hydrate($row);
-            RTemplatenamesInchapterTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RTemplatenamesInchapterTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

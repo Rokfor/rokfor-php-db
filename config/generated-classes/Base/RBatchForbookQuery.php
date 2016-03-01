@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRBatchForbookQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRBatchForbookQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRBatchForbookQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRBatchForbookQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRBatchForbookQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRBatchForbookQuery leftJoinBatch($relationAlias = null) Adds a LEFT JOIN clause to the query using the Batch relation
  * @method     ChildRBatchForbookQuery rightJoinBatch($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Batch relation
  * @method     ChildRBatchForbookQuery innerJoinBatch($relationAlias = null) Adds a INNER JOIN clause to the query using the Batch relation
  *
- * @method     ChildRBatchForbookQuery joinWithBatch($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Batch relation
- *
- * @method     ChildRBatchForbookQuery leftJoinWithBatch() Adds a LEFT JOIN clause and with to the query using the Batch relation
- * @method     ChildRBatchForbookQuery rightJoinWithBatch() Adds a RIGHT JOIN clause and with to the query using the Batch relation
- * @method     ChildRBatchForbookQuery innerJoinWithBatch() Adds a INNER JOIN clause and with to the query using the Batch relation
- *
  * @method     ChildRBatchForbookQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildRBatchForbookQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildRBatchForbookQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
- *
- * @method     ChildRBatchForbookQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
- *
- * @method     ChildRBatchForbookQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
- * @method     ChildRBatchForbookQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
- * @method     ChildRBatchForbookQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
  *
  * @method     \BatchQuery|\BooksQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RBatchForbookQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RBatchForbookTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RBatchForbookTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RBatchForbookQuery extends ModelCriteria
             /** @var ChildRBatchForbook $obj */
             $obj = new ChildRBatchForbook();
             $obj->hydrate($row);
-            RBatchForbookTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RBatchForbookTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

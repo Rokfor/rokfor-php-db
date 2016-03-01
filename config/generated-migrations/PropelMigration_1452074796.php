@@ -141,6 +141,7 @@ class PropelMigration_1452074796
     public function postUp($manager)
     {
       $pdo = $manager->getAdapterConnection('rokfor');
+      date_default_timezone_set('UTC');
               
       // populate relative fields: _issues
       
@@ -290,7 +291,7 @@ class PropelMigration_1452074796
         echo "Updating " . count($datasets) . " Fields: ";
 
         foreach ($datasets as $data) {
-          echo ".";
+          echo "$count\n";
           $count++;
           $_parsed_text = "";    
           $_is_json = false;      
@@ -478,7 +479,12 @@ ALTER TABLE `_templates` ADD CONSTRAINT `t_template_fk`
 
 ALTER TABLE `users`
 
-  CHANGE `id` `id` INTEGER(4) NOT NULL AUTO_INCREMENT;
+  CHANGE `id` `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
+  CHANGE `filerights` `email` TEXT,
+  CHANGE `pluginrights` `roapikey` TEXT,
+  ADD `rwapikey` TEXT AFTER `roapikey`;
+
+
 
 CREATE TABLE `R_batch_forbook`
 (
@@ -814,6 +820,10 @@ DROP INDEX `_fortemplate_key` ON `_templates`;
 ALTER TABLE `users`
 
   CHANGE `id` `id` INTEGER(32) NOT NULL AUTO_INCREMENT;
+  CHANGE `email` `filerights` TEXT,
+  CHANGE `roapikey` `pluginrights` TEXT,
+  DROP `rwapikey`;
+  
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

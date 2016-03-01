@@ -71,70 +71,60 @@ abstract class Templates implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _fortemplate field.
-     *
      * @var        int
      */
     protected $_fortemplate;
 
     /**
      * The value for the _fieldname field.
-     *
      * @var        string
      */
     protected $_fieldname;
 
     /**
      * The value for the _helpdescription field.
-     *
      * @var        string
      */
     protected $_helpdescription;
 
     /**
      * The value for the _helpimage field.
-     *
      * @var        string
      */
     protected $_helpimage;
 
     /**
      * The value for the _fieldtype field.
-     *
      * @var        string
      */
     protected $_fieldtype;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
@@ -406,15 +396,7 @@ abstract class Templates implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -1921,10 +1903,6 @@ abstract class Templates implements ActiveRecordInterface
 
         if (!$this->collRFieldpostprocessorForfields->contains($l)) {
             $this->doAddRFieldpostprocessorForfield($l);
-
-            if ($this->rFieldpostprocessorForfieldsScheduledForDeletion and $this->rFieldpostprocessorForfieldsScheduledForDeletion->contains($l)) {
-                $this->rFieldpostprocessorForfieldsScheduledForDeletion->remove($this->rFieldpostprocessorForfieldsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2168,10 +2146,6 @@ abstract class Templates implements ActiveRecordInterface
 
         if (!$this->collDatas->contains($l)) {
             $this->doAddData($l);
-
-            if ($this->datasScheduledForDeletion and $this->datasScheduledForDeletion->contains($l)) {
-                $this->datasScheduledForDeletion->remove($this->datasScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

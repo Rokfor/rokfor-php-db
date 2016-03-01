@@ -67,49 +67,42 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
-     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _code field.
-     *
      * @var        string
      */
     protected $_code;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
@@ -364,15 +357,7 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -1591,10 +1576,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
         if (!$this->collRFieldpostprocessorForfields->contains($l)) {
             $this->doAddRFieldpostprocessorForfield($l);
-
-            if ($this->rFieldpostprocessorForfieldsScheduledForDeletion and $this->rFieldpostprocessorForfieldsScheduledForDeletion->contains($l)) {
-                $this->rFieldpostprocessorForfieldsScheduledForDeletion->remove($this->rFieldpostprocessorForfieldsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

@@ -40,19 +40,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFieldpostprocessorQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildFieldpostprocessorQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildFieldpostprocessorQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildFieldpostprocessorQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildFieldpostprocessorQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildFieldpostprocessorQuery leftJoinRFieldpostprocessorForfield($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildFieldpostprocessorQuery rightJoinRFieldpostprocessorForfield($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildFieldpostprocessorQuery innerJoinRFieldpostprocessorForfield($relationAlias = null) Adds a INNER JOIN clause to the query using the RFieldpostprocessorForfield relation
- *
- * @method     ChildFieldpostprocessorQuery joinWithRFieldpostprocessorForfield($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFieldpostprocessorForfield relation
- *
- * @method     ChildFieldpostprocessorQuery leftJoinWithRFieldpostprocessorForfield() Adds a LEFT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
- * @method     ChildFieldpostprocessorQuery rightJoinWithRFieldpostprocessorForfield() Adds a RIGHT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
- * @method     ChildFieldpostprocessorQuery innerJoinWithRFieldpostprocessorForfield() Adds a INNER JOIN clause and with to the query using the RFieldpostprocessorForfield relation
  *
  * @method     \RFieldpostprocessorForfieldQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -148,7 +138,7 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = FieldpostprocessorTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = FieldpostprocessorTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -192,7 +182,7 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
             /** @var ChildFieldpostprocessor $obj */
             $obj = new ChildFieldpostprocessor();
             $obj->hydrate($row);
-            FieldpostprocessorTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            FieldpostprocessorTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

@@ -43,10 +43,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLogQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildLogQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildLogQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildLogQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildLogQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildLog findOne(ConnectionInterface $con = null) Return the first ChildLog matching the query
  * @method     ChildLog findOneOrCreate(ConnectionInterface $con = null) Return the first ChildLog matching the query, or a new ChildLog object populated from the query conditions when no match is found
  *
@@ -145,7 +141,7 @@ abstract class LogQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = LogTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = LogTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -189,7 +185,7 @@ abstract class LogQuery extends ModelCriteria
             /** @var ChildLog $obj */
             $obj = new ChildLog();
             $obj->hydrate($row);
-            LogTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            LogTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

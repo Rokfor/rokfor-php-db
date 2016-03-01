@@ -45,10 +45,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPdfQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildPdfQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildPdfQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildPdfQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildPdf findOne(ConnectionInterface $con = null) Return the first ChildPdf matching the query
  * @method     ChildPdf findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPdf matching the query, or a new ChildPdf object populated from the query conditions when no match is found
  *
@@ -150,7 +146,7 @@ abstract class PdfQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = PdfTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = PdfTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -194,7 +190,7 @@ abstract class PdfQuery extends ModelCriteria
             /** @var ChildPdf $obj */
             $obj = new ChildPdf();
             $obj->hydrate($row);
-            PdfTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            PdfTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

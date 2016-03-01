@@ -83,42 +83,36 @@ abstract class Rights implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _group field.
-     *
      * @var        string
      */
     protected $_group;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
@@ -485,15 +479,7 @@ abstract class Rights implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -1951,10 +1937,6 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForbooks->contains($l)) {
             $this->doAddRRightsForbook($l);
-
-            if ($this->rRightsForbooksScheduledForDeletion and $this->rRightsForbooksScheduledForDeletion->contains($l)) {
-                $this->rRightsForbooksScheduledForDeletion->remove($this->rRightsForbooksScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2201,10 +2183,6 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForissues->contains($l)) {
             $this->doAddRRightsForissue($l);
-
-            if ($this->rRightsForissuesScheduledForDeletion and $this->rRightsForissuesScheduledForDeletion->contains($l)) {
-                $this->rRightsForissuesScheduledForDeletion->remove($this->rRightsForissuesScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2451,10 +2429,6 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsFortemplates->contains($l)) {
             $this->doAddRRightsFortemplate($l);
-
-            if ($this->rRightsFortemplatesScheduledForDeletion and $this->rRightsFortemplatesScheduledForDeletion->contains($l)) {
-                $this->rRightsFortemplatesScheduledForDeletion->remove($this->rRightsFortemplatesScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2701,10 +2675,6 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForformats->contains($l)) {
             $this->doAddRRightsForformat($l);
-
-            if ($this->rRightsForformatsScheduledForDeletion and $this->rRightsForformatsScheduledForDeletion->contains($l)) {
-                $this->rRightsForformatsScheduledForDeletion->remove($this->rRightsForformatsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2951,10 +2921,6 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForusers->contains($l)) {
             $this->doAddRRightsForuser($l);
-
-            if ($this->rRightsForusersScheduledForDeletion and $this->rRightsForusersScheduledForDeletion->contains($l)) {
-                $this->rRightsForusersScheduledForDeletion->remove($this->rRightsForusersScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

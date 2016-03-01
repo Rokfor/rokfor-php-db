@@ -65,14 +65,12 @@ abstract class RBatchForbook implements ActiveRecordInterface
 
     /**
      * The value for the _batchid field.
-     *
      * @var        int
      */
     protected $_batchid;
 
     /**
      * The value for the _bookid field.
-     *
      * @var        int
      */
     protected $_bookid;
@@ -309,15 +307,7 @@ abstract class RBatchForbook implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**

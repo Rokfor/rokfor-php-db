@@ -122,12 +122,6 @@ ALTER TABLE `_templatenames`
 
   CHANGE `_helpimage` `_helpimage` TEXT NULL;
 
-ALTER TABLE `users` 
-  CHANGE `filerights` `filerights` TEXT NULL;
-
-ALTER TABLE `users` 
-  CHANGE `pluginrights` `pluginrights` TEXT NULL;
-  
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
@@ -201,12 +195,6 @@ ALTER TABLE `_templates`
 ALTER TABLE `_templatenames` 
 
   CHANGE `_helpimage` `_helpimage` NULL;  
-
-ALTER TABLE `users` 
-  CHANGE `filerights` `filerights` NULL;
-
-ALTER TABLE `users` 
-  CHANGE `pluginrights` `pluginrights` NULL;
 
 
 # This restores the fkey checks, after having unset them earlier

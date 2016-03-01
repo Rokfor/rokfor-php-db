@@ -59,7 +59,7 @@ class ContributionsTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 12;
+    const NUM_COLUMNS = 16;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ContributionsTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 12;
+    const NUM_HYDRATE_COLUMNS = 16;
 
     /**
      * the column name for the id field
@@ -132,6 +132,26 @@ class ContributionsTableMap extends TableMap
     const COL___SORT__ = '_contributions.__sort__';
 
     /**
+     * the column name for the version field
+     */
+    const COL_VERSION = '_contributions.version';
+
+    /**
+     * the column name for the version_created_at field
+     */
+    const COL_VERSION_CREATED_AT = '_contributions.version_created_at';
+
+    /**
+     * the column name for the version_created_by field
+     */
+    const COL_VERSION_CREATED_BY = '_contributions.version_created_by';
+
+    /**
+     * the column name for the version_comment field
+     */
+    const COL_VERSION_COMMENT = '_contributions.version_comment';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -143,11 +163,11 @@ class ContributionsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Forissue', 'Name', 'Status', 'Newdate', 'Moddate', 'UserSys', 'ConfigSys', 'Forchapter', 'Parentnode', 'Sort', ),
-        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'forissue', 'name', 'status', 'newdate', 'moddate', 'userSys', 'configSys', 'forchapter', 'parentnode', 'sort', ),
-        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID, ContributionsTableMap::COL__FORTEMPLATE, ContributionsTableMap::COL__FORISSUE, ContributionsTableMap::COL__NAME, ContributionsTableMap::COL__STATUS, ContributionsTableMap::COL__NEWDATE, ContributionsTableMap::COL__MODDATE, ContributionsTableMap::COL___USER__, ContributionsTableMap::COL___CONFIG__, ContributionsTableMap::COL__FORCHAPTER, ContributionsTableMap::COL___PARENTNODE__, ContributionsTableMap::COL___SORT__, ),
-        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_forissue', '_name', '_status', '_newdate', '_moddate', '__user__', '__config__', '_forchapter', '__parentnode__', '__sort__', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id', 'Fortemplate', 'Forissue', 'Name', 'Status', 'Newdate', 'Moddate', 'UserSys', 'ConfigSys', 'Forchapter', 'Parentnode', 'Sort', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', 'VersionComment', ),
+        self::TYPE_CAMELNAME     => array('id', 'fortemplate', 'forissue', 'name', 'status', 'newdate', 'moddate', 'userSys', 'configSys', 'forchapter', 'parentnode', 'sort', 'version', 'versionCreatedAt', 'versionCreatedBy', 'versionComment', ),
+        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID, ContributionsTableMap::COL__FORTEMPLATE, ContributionsTableMap::COL__FORISSUE, ContributionsTableMap::COL__NAME, ContributionsTableMap::COL__STATUS, ContributionsTableMap::COL__NEWDATE, ContributionsTableMap::COL__MODDATE, ContributionsTableMap::COL___USER__, ContributionsTableMap::COL___CONFIG__, ContributionsTableMap::COL__FORCHAPTER, ContributionsTableMap::COL___PARENTNODE__, ContributionsTableMap::COL___SORT__, ContributionsTableMap::COL_VERSION, ContributionsTableMap::COL_VERSION_CREATED_AT, ContributionsTableMap::COL_VERSION_CREATED_BY, ContributionsTableMap::COL_VERSION_COMMENT, ),
+        self::TYPE_FIELDNAME     => array('id', '_fortemplate', '_forissue', '_name', '_status', '_newdate', '_moddate', '__user__', '__config__', '_forchapter', '__parentnode__', '__sort__', 'version', 'version_created_at', 'version_created_by', 'version_comment', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -157,11 +177,11 @@ class ContributionsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Forissue' => 2, 'Name' => 3, 'Status' => 4, 'Newdate' => 5, 'Moddate' => 6, 'UserSys' => 7, 'ConfigSys' => 8, 'Forchapter' => 9, 'Parentnode' => 10, 'Sort' => 11, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'forissue' => 2, 'name' => 3, 'status' => 4, 'newdate' => 5, 'moddate' => 6, 'userSys' => 7, 'configSys' => 8, 'forchapter' => 9, 'parentnode' => 10, 'sort' => 11, ),
-        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID => 0, ContributionsTableMap::COL__FORTEMPLATE => 1, ContributionsTableMap::COL__FORISSUE => 2, ContributionsTableMap::COL__NAME => 3, ContributionsTableMap::COL__STATUS => 4, ContributionsTableMap::COL__NEWDATE => 5, ContributionsTableMap::COL__MODDATE => 6, ContributionsTableMap::COL___USER__ => 7, ContributionsTableMap::COL___CONFIG__ => 8, ContributionsTableMap::COL__FORCHAPTER => 9, ContributionsTableMap::COL___PARENTNODE__ => 10, ContributionsTableMap::COL___SORT__ => 11, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_forissue' => 2, '_name' => 3, '_status' => 4, '_newdate' => 5, '_moddate' => 6, '__user__' => 7, '__config__' => 8, '_forchapter' => 9, '__parentnode__' => 10, '__sort__' => 11, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Fortemplate' => 1, 'Forissue' => 2, 'Name' => 3, 'Status' => 4, 'Newdate' => 5, 'Moddate' => 6, 'UserSys' => 7, 'ConfigSys' => 8, 'Forchapter' => 9, 'Parentnode' => 10, 'Sort' => 11, 'Version' => 12, 'VersionCreatedAt' => 13, 'VersionCreatedBy' => 14, 'VersionComment' => 15, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'fortemplate' => 1, 'forissue' => 2, 'name' => 3, 'status' => 4, 'newdate' => 5, 'moddate' => 6, 'userSys' => 7, 'configSys' => 8, 'forchapter' => 9, 'parentnode' => 10, 'sort' => 11, 'version' => 12, 'versionCreatedAt' => 13, 'versionCreatedBy' => 14, 'versionComment' => 15, ),
+        self::TYPE_COLNAME       => array(ContributionsTableMap::COL_ID => 0, ContributionsTableMap::COL__FORTEMPLATE => 1, ContributionsTableMap::COL__FORISSUE => 2, ContributionsTableMap::COL__NAME => 3, ContributionsTableMap::COL__STATUS => 4, ContributionsTableMap::COL__NEWDATE => 5, ContributionsTableMap::COL__MODDATE => 6, ContributionsTableMap::COL___USER__ => 7, ContributionsTableMap::COL___CONFIG__ => 8, ContributionsTableMap::COL__FORCHAPTER => 9, ContributionsTableMap::COL___PARENTNODE__ => 10, ContributionsTableMap::COL___SORT__ => 11, ContributionsTableMap::COL_VERSION => 12, ContributionsTableMap::COL_VERSION_CREATED_AT => 13, ContributionsTableMap::COL_VERSION_CREATED_BY => 14, ContributionsTableMap::COL_VERSION_COMMENT => 15, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_fortemplate' => 1, '_forissue' => 2, '_name' => 3, '_status' => 4, '_newdate' => 5, '_moddate' => 6, '__user__' => 7, '__config__' => 8, '_forchapter' => 9, '__parentnode__' => 10, '__sort__' => 11, 'version' => 12, 'version_created_at' => 13, 'version_created_by' => 14, 'version_comment' => 15, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -193,6 +213,10 @@ class ContributionsTableMap extends TableMap
         $this->addForeignKey('_forchapter', 'Forchapter', 'INTEGER', '_formats', 'id', false, 32, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
+        $this->addColumn('version', 'Version', 'INTEGER', false, null, 0);
+        $this->addColumn('version_created_at', 'VersionCreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('version_created_by', 'VersionCreatedBy', 'VARCHAR', false, 100, null);
+        $this->addColumn('version_comment', 'VersionComment', 'VARCHAR', false, 255, null);
     } // initialize()
 
     /**
@@ -235,7 +259,27 @@ class ContributionsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Datas', false);
+        $this->addRelation('ContributionsVersion', '\\ContributionsVersion', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'ContributionsVersions', false);
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'versionable' => array('version_column' => 'version', 'version_table' => '', 'log_created_at' => 'true', 'log_created_by' => 'true', 'log_comment' => 'true', 'version_created_at_column' => 'version_created_at', 'version_created_by_column' => 'version_created_by', 'version_comment_column' => 'version_comment', 'indices' => 'false', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to _contributions     * by a foreign key with ON DELETE CASCADE
      */
@@ -244,6 +288,7 @@ class ContributionsTableMap extends TableMap
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         DataTableMap::clearInstancePool();
+        ContributionsVersionTableMap::clearInstancePool();
     }
 
     /**
@@ -266,7 +311,7 @@ class ContributionsTableMap extends TableMap
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -399,6 +444,10 @@ class ContributionsTableMap extends TableMap
             $criteria->addSelectColumn(ContributionsTableMap::COL__FORCHAPTER);
             $criteria->addSelectColumn(ContributionsTableMap::COL___PARENTNODE__);
             $criteria->addSelectColumn(ContributionsTableMap::COL___SORT__);
+            $criteria->addSelectColumn(ContributionsTableMap::COL_VERSION);
+            $criteria->addSelectColumn(ContributionsTableMap::COL_VERSION_CREATED_AT);
+            $criteria->addSelectColumn(ContributionsTableMap::COL_VERSION_CREATED_BY);
+            $criteria->addSelectColumn(ContributionsTableMap::COL_VERSION_COMMENT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._fortemplate');
@@ -412,6 +461,10 @@ class ContributionsTableMap extends TableMap
             $criteria->addSelectColumn($alias . '._forchapter');
             $criteria->addSelectColumn($alias . '.__parentnode__');
             $criteria->addSelectColumn($alias . '.__sort__');
+            $criteria->addSelectColumn($alias . '.version');
+            $criteria->addSelectColumn($alias . '.version_created_at');
+            $criteria->addSelectColumn($alias . '.version_created_by');
+            $criteria->addSelectColumn($alias . '.version_comment');
         }
     }
 

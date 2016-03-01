@@ -65,14 +65,12 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
 
     /**
      * The value for the _issueid field.
-     *
      * @var        int
      */
     protected $_issueid;
 
     /**
      * The value for the _pluginid field.
-     *
      * @var        int
      */
     protected $_pluginid;
@@ -309,15 +307,7 @@ abstract class RIssuesSingleplugin implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**

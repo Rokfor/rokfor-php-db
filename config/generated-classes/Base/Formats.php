@@ -77,56 +77,48 @@ abstract class Formats implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
-     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _forbook field.
-     *
      * @var        int
      */
     protected $_forbook;
 
     /**
      * The value for the __user__ field.
-     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
@@ -431,15 +423,7 @@ abstract class Formats implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -1994,10 +1978,6 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collRRightsForformats->contains($l)) {
             $this->doAddRRightsForformat($l);
-
-            if ($this->rRightsForformatsScheduledForDeletion and $this->rRightsForformatsScheduledForDeletion->contains($l)) {
-                $this->rRightsForformatsScheduledForDeletion->remove($this->rRightsForformatsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2244,10 +2224,6 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesInchapters->contains($l)) {
             $this->doAddRTemplatenamesInchapter($l);
-
-            if ($this->rTemplatenamesInchaptersScheduledForDeletion and $this->rTemplatenamesInchaptersScheduledForDeletion->contains($l)) {
-                $this->rTemplatenamesInchaptersScheduledForDeletion->remove($this->rTemplatenamesInchaptersScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2491,10 +2467,6 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
-
-            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
-                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

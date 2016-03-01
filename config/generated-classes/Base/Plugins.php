@@ -75,63 +75,54 @@ abstract class Plugins implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
-     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the _page field.
-     *
      * @var        string
      */
     protected $_page;
 
     /**
      * The value for the _config field.
-     *
      * @var        string
      */
     protected $_config;
 
     /**
      * The value for the _callback field.
-     *
      * @var        string
      */
     protected $_callback;
@@ -498,15 +489,7 @@ abstract class Plugins implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -2123,10 +2106,6 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRIssuesAllplugins->contains($l)) {
             $this->doAddRIssuesAllplugin($l);
-
-            if ($this->rIssuesAllpluginsScheduledForDeletion and $this->rIssuesAllpluginsScheduledForDeletion->contains($l)) {
-                $this->rIssuesAllpluginsScheduledForDeletion->remove($this->rIssuesAllpluginsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2373,10 +2352,6 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRIssuesNarrationplugins->contains($l)) {
             $this->doAddRIssuesNarrationplugin($l);
-
-            if ($this->rIssuesNarrationpluginsScheduledForDeletion and $this->rIssuesNarrationpluginsScheduledForDeletion->contains($l)) {
-                $this->rIssuesNarrationpluginsScheduledForDeletion->remove($this->rIssuesNarrationpluginsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2623,10 +2598,6 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRIssuesRtfplugins->contains($l)) {
             $this->doAddRIssuesRtfplugin($l);
-
-            if ($this->rIssuesRtfpluginsScheduledForDeletion and $this->rIssuesRtfpluginsScheduledForDeletion->contains($l)) {
-                $this->rIssuesRtfpluginsScheduledForDeletion->remove($this->rIssuesRtfpluginsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2873,10 +2844,6 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRIssuesSingleplugins->contains($l)) {
             $this->doAddRIssuesSingleplugin($l);
-
-            if ($this->rIssuesSinglepluginsScheduledForDeletion and $this->rIssuesSinglepluginsScheduledForDeletion->contains($l)) {
-                $this->rIssuesSinglepluginsScheduledForDeletion->remove($this->rIssuesSinglepluginsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -3123,10 +3090,6 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRIssuesXmlplugins->contains($l)) {
             $this->doAddRIssuesXmlplugin($l);
-
-            if ($this->rIssuesXmlpluginsScheduledForDeletion and $this->rIssuesXmlpluginsScheduledForDeletion->contains($l)) {
-                $this->rIssuesXmlpluginsScheduledForDeletion->remove($this->rIssuesXmlpluginsScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

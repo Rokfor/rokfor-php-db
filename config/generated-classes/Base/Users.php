@@ -77,49 +77,42 @@ abstract class Users implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the username field.
-     *
      * @var        string
      */
     protected $username;
 
     /**
      * The value for the password field.
-     *
      * @var        string
      */
     protected $password;
 
     /**
      * The value for the usergroup field.
-     *
      * @var        string
      */
     protected $usergroup;
 
     /**
      * The value for the email field.
-     *
      * @var        string
      */
     protected $email;
 
     /**
      * The value for the roapikey field.
-     *
      * @var        string
      */
     protected $roapikey;
 
     /**
      * The value for the rwapikey field.
-     *
      * @var        string
      */
     protected $rwapikey;
@@ -434,15 +427,7 @@ abstract class Users implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -1881,10 +1866,6 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collRRightsForusers->contains($l)) {
             $this->doAddRRightsForuser($l);
-
-            if ($this->rRightsForusersScheduledForDeletion and $this->rRightsForusersScheduledForDeletion->contains($l)) {
-                $this->rRightsForusersScheduledForDeletion->remove($this->rRightsForusersScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2128,10 +2109,6 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collBookss->contains($l)) {
             $this->doAddBooks($l);
-
-            if ($this->bookssScheduledForDeletion and $this->bookssScheduledForDeletion->contains($l)) {
-                $this->bookssScheduledForDeletion->remove($this->bookssScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2350,10 +2327,6 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
-
-            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
-                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2647,10 +2620,6 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collDatas->contains($l)) {
             $this->doAddData($l);
-
-            if ($this->datasScheduledForDeletion and $this->datasScheduledForDeletion->contains($l)) {
-                $this->datasScheduledForDeletion->remove($this->datasScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2919,10 +2888,6 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collFormatss->contains($l)) {
             $this->doAddFormats($l);
-
-            if ($this->formatssScheduledForDeletion and $this->formatssScheduledForDeletion->contains($l)) {
-                $this->formatssScheduledForDeletion->remove($this->formatssScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -3166,10 +3131,6 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collIssuess->contains($l)) {
             $this->doAddIssues($l);
-
-            if ($this->issuessScheduledForDeletion and $this->issuessScheduledForDeletion->contains($l)) {
-                $this->issuessScheduledForDeletion->remove($this->issuessScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

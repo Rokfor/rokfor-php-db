@@ -52,7 +52,7 @@ class DB
    */
   private $paths;
     
-  function __construct($host, $user, $pass, $dbname, $log, $level, $socket = false, $port = false)
+  function __construct($host, $user, $pass, $dbname, $log, $level, $socket = false, $port = false, $versioning = false)
   {
     $socket = $socket 
               ? "unix_socket=".$socket.";" 
@@ -95,6 +95,10 @@ class DB
     $defaultLogger = new \Monolog\Logger('defaultLogger');
     $defaultLogger->pushHandler(new \Monolog\Handler\StreamHandler($log, $level));
     $this->serviceContainer->setLogger('defaultLogger', $defaultLogger);
+    if (!$versioning) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+    }
   }
   
   private function RightsQuery() {

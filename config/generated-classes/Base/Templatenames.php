@@ -79,70 +79,60 @@ abstract class Templatenames implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
-     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _helptext field.
-     *
      * @var        string
      */
     protected $_helptext;
 
     /**
      * The value for the _helpimage field.
-     *
      * @var        string
      */
     protected $_helpimage;
 
     /**
      * The value for the _category field.
-     *
      * @var        string
      */
     protected $_category;
 
     /**
      * The value for the _public field.
-     *
      * @var        string
      */
     protected $_public;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
@@ -477,15 +467,7 @@ abstract class Templatenames implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -2095,10 +2077,6 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRRightsFortemplates->contains($l)) {
             $this->doAddRRightsFortemplate($l);
-
-            if ($this->rRightsFortemplatesScheduledForDeletion and $this->rRightsFortemplatesScheduledForDeletion->contains($l)) {
-                $this->rRightsFortemplatesScheduledForDeletion->remove($this->rRightsFortemplatesScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2345,10 +2323,6 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesForbooks->contains($l)) {
             $this->doAddRTemplatenamesForbook($l);
-
-            if ($this->rTemplatenamesForbooksScheduledForDeletion and $this->rTemplatenamesForbooksScheduledForDeletion->contains($l)) {
-                $this->rTemplatenamesForbooksScheduledForDeletion->remove($this->rTemplatenamesForbooksScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2595,10 +2569,6 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesInchapters->contains($l)) {
             $this->doAddRTemplatenamesInchapter($l);
-
-            if ($this->rTemplatenamesInchaptersScheduledForDeletion and $this->rTemplatenamesInchaptersScheduledForDeletion->contains($l)) {
-                $this->rTemplatenamesInchaptersScheduledForDeletion->remove($this->rTemplatenamesInchaptersScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2842,10 +2812,6 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
-
-            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
-                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -3139,10 +3105,6 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collTemplatess->contains($l)) {
             $this->doAddTemplates($l);
-
-            if ($this->templatessScheduledForDeletion and $this->templatessScheduledForDeletion->contains($l)) {
-                $this->templatessScheduledForDeletion->remove($this->templatessScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

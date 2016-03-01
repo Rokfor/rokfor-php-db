@@ -44,59 +44,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPluginsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPluginsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildPluginsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildPluginsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildPluginsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildPluginsQuery leftJoinRIssuesAllplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesAllplugin relation
  * @method     ChildPluginsQuery rightJoinRIssuesAllplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesAllplugin relation
  * @method     ChildPluginsQuery innerJoinRIssuesAllplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesAllplugin relation
- *
- * @method     ChildPluginsQuery joinWithRIssuesAllplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesAllplugin relation
- *
- * @method     ChildPluginsQuery leftJoinWithRIssuesAllplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesAllplugin relation
- * @method     ChildPluginsQuery rightJoinWithRIssuesAllplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesAllplugin relation
- * @method     ChildPluginsQuery innerJoinWithRIssuesAllplugin() Adds a INNER JOIN clause and with to the query using the RIssuesAllplugin relation
  *
  * @method     ChildPluginsQuery leftJoinRIssuesNarrationplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesNarrationplugin relation
  * @method     ChildPluginsQuery rightJoinRIssuesNarrationplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesNarrationplugin relation
  * @method     ChildPluginsQuery innerJoinRIssuesNarrationplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesNarrationplugin relation
  *
- * @method     ChildPluginsQuery joinWithRIssuesNarrationplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesNarrationplugin relation
- *
- * @method     ChildPluginsQuery leftJoinWithRIssuesNarrationplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesNarrationplugin relation
- * @method     ChildPluginsQuery rightJoinWithRIssuesNarrationplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesNarrationplugin relation
- * @method     ChildPluginsQuery innerJoinWithRIssuesNarrationplugin() Adds a INNER JOIN clause and with to the query using the RIssuesNarrationplugin relation
- *
  * @method     ChildPluginsQuery leftJoinRIssuesRtfplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesRtfplugin relation
  * @method     ChildPluginsQuery rightJoinRIssuesRtfplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesRtfplugin relation
  * @method     ChildPluginsQuery innerJoinRIssuesRtfplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesRtfplugin relation
- *
- * @method     ChildPluginsQuery joinWithRIssuesRtfplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesRtfplugin relation
- *
- * @method     ChildPluginsQuery leftJoinWithRIssuesRtfplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesRtfplugin relation
- * @method     ChildPluginsQuery rightJoinWithRIssuesRtfplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesRtfplugin relation
- * @method     ChildPluginsQuery innerJoinWithRIssuesRtfplugin() Adds a INNER JOIN clause and with to the query using the RIssuesRtfplugin relation
  *
  * @method     ChildPluginsQuery leftJoinRIssuesSingleplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesSingleplugin relation
  * @method     ChildPluginsQuery rightJoinRIssuesSingleplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesSingleplugin relation
  * @method     ChildPluginsQuery innerJoinRIssuesSingleplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesSingleplugin relation
  *
- * @method     ChildPluginsQuery joinWithRIssuesSingleplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesSingleplugin relation
- *
- * @method     ChildPluginsQuery leftJoinWithRIssuesSingleplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesSingleplugin relation
- * @method     ChildPluginsQuery rightJoinWithRIssuesSingleplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesSingleplugin relation
- * @method     ChildPluginsQuery innerJoinWithRIssuesSingleplugin() Adds a INNER JOIN clause and with to the query using the RIssuesSingleplugin relation
- *
  * @method     ChildPluginsQuery leftJoinRIssuesXmlplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesXmlplugin relation
  * @method     ChildPluginsQuery rightJoinRIssuesXmlplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesXmlplugin relation
  * @method     ChildPluginsQuery innerJoinRIssuesXmlplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesXmlplugin relation
- *
- * @method     ChildPluginsQuery joinWithRIssuesXmlplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesXmlplugin relation
- *
- * @method     ChildPluginsQuery leftJoinWithRIssuesXmlplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesXmlplugin relation
- * @method     ChildPluginsQuery rightJoinWithRIssuesXmlplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesXmlplugin relation
- * @method     ChildPluginsQuery innerJoinWithRIssuesXmlplugin() Adds a INNER JOIN clause and with to the query using the RIssuesXmlplugin relation
  *
  * @method     \RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -198,7 +164,7 @@ abstract class PluginsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = PluginsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = PluginsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -242,7 +208,7 @@ abstract class PluginsQuery extends ModelCriteria
             /** @var ChildPlugins $obj */
             $obj = new ChildPlugins();
             $obj->hydrate($row);
-            PluginsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            PluginsTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

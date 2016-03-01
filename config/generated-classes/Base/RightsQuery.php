@@ -38,59 +38,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRightsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRightsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRightsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRightsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRightsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRightsQuery leftJoinRRightsForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForbook relation
  * @method     ChildRightsQuery rightJoinRRightsForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForbook relation
  * @method     ChildRightsQuery innerJoinRRightsForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForbook relation
- *
- * @method     ChildRightsQuery joinWithRRightsForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForbook relation
- *
- * @method     ChildRightsQuery leftJoinWithRRightsForbook() Adds a LEFT JOIN clause and with to the query using the RRightsForbook relation
- * @method     ChildRightsQuery rightJoinWithRRightsForbook() Adds a RIGHT JOIN clause and with to the query using the RRightsForbook relation
- * @method     ChildRightsQuery innerJoinWithRRightsForbook() Adds a INNER JOIN clause and with to the query using the RRightsForbook relation
  *
  * @method     ChildRightsQuery leftJoinRRightsForissue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildRightsQuery rightJoinRRightsForissue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildRightsQuery innerJoinRRightsForissue($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForissue relation
  *
- * @method     ChildRightsQuery joinWithRRightsForissue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForissue relation
- *
- * @method     ChildRightsQuery leftJoinWithRRightsForissue() Adds a LEFT JOIN clause and with to the query using the RRightsForissue relation
- * @method     ChildRightsQuery rightJoinWithRRightsForissue() Adds a RIGHT JOIN clause and with to the query using the RRightsForissue relation
- * @method     ChildRightsQuery innerJoinWithRRightsForissue() Adds a INNER JOIN clause and with to the query using the RRightsForissue relation
- *
  * @method     ChildRightsQuery leftJoinRRightsFortemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsFortemplate relation
  * @method     ChildRightsQuery rightJoinRRightsFortemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsFortemplate relation
  * @method     ChildRightsQuery innerJoinRRightsFortemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsFortemplate relation
- *
- * @method     ChildRightsQuery joinWithRRightsFortemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsFortemplate relation
- *
- * @method     ChildRightsQuery leftJoinWithRRightsFortemplate() Adds a LEFT JOIN clause and with to the query using the RRightsFortemplate relation
- * @method     ChildRightsQuery rightJoinWithRRightsFortemplate() Adds a RIGHT JOIN clause and with to the query using the RRightsFortemplate relation
- * @method     ChildRightsQuery innerJoinWithRRightsFortemplate() Adds a INNER JOIN clause and with to the query using the RRightsFortemplate relation
  *
  * @method     ChildRightsQuery leftJoinRRightsForformat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildRightsQuery rightJoinRRightsForformat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildRightsQuery innerJoinRRightsForformat($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForformat relation
  *
- * @method     ChildRightsQuery joinWithRRightsForformat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForformat relation
- *
- * @method     ChildRightsQuery leftJoinWithRRightsForformat() Adds a LEFT JOIN clause and with to the query using the RRightsForformat relation
- * @method     ChildRightsQuery rightJoinWithRRightsForformat() Adds a RIGHT JOIN clause and with to the query using the RRightsForformat relation
- * @method     ChildRightsQuery innerJoinWithRRightsForformat() Adds a INNER JOIN clause and with to the query using the RRightsForformat relation
- *
  * @method     ChildRightsQuery leftJoinRRightsForuser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildRightsQuery rightJoinRRightsForuser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildRightsQuery innerJoinRRightsForuser($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForuser relation
- *
- * @method     ChildRightsQuery joinWithRRightsForuser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForuser relation
- *
- * @method     ChildRightsQuery leftJoinWithRRightsForuser() Adds a LEFT JOIN clause and with to the query using the RRightsForuser relation
- * @method     ChildRightsQuery rightJoinWithRRightsForuser() Adds a RIGHT JOIN clause and with to the query using the RRightsForuser relation
- * @method     ChildRightsQuery innerJoinWithRRightsForuser() Adds a INNER JOIN clause and with to the query using the RRightsForuser relation
  *
  * @method     \RRightsForbookQuery|\RRightsForissueQuery|\RRightsFortemplateQuery|\RRightsForformatQuery|\RRightsForuserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -183,7 +149,7 @@ abstract class RightsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RightsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = RightsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -227,7 +193,7 @@ abstract class RightsQuery extends ModelCriteria
             /** @var ChildRights $obj */
             $obj = new ChildRights();
             $obj->hydrate($row);
-            RightsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            RightsTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

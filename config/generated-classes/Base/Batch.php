@@ -67,63 +67,54 @@ abstract class Batch implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
-     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _description field.
-     *
      * @var        string
      */
     protected $_description;
 
     /**
      * The value for the _precode field.
-     *
      * @var        string
      */
     protected $_precode;
 
     /**
      * The value for the _postcode field.
-     *
      * @var        string
      */
     protected $_postcode;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
@@ -378,15 +369,7 @@ abstract class Batch implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -1711,10 +1694,6 @@ abstract class Batch implements ActiveRecordInterface
 
         if (!$this->collRBatchForbooks->contains($l)) {
             $this->doAddRBatchForbook($l);
-
-            if ($this->rBatchForbooksScheduledForDeletion and $this->rBatchForbooksScheduledForDeletion->contains($l)) {
-                $this->rBatchForbooksScheduledForDeletion->remove($this->rBatchForbooksScheduledForDeletion->search($l));
-            }
         }
 
         return $this;

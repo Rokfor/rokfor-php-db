@@ -46,59 +46,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatenamesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildTemplatenamesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildTemplatenamesQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildTemplatenamesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildTemplatenamesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildTemplatenamesQuery leftJoinRRightsFortemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsFortemplate relation
  * @method     ChildTemplatenamesQuery rightJoinRRightsFortemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsFortemplate relation
  * @method     ChildTemplatenamesQuery innerJoinRRightsFortemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsFortemplate relation
- *
- * @method     ChildTemplatenamesQuery joinWithRRightsFortemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsFortemplate relation
- *
- * @method     ChildTemplatenamesQuery leftJoinWithRRightsFortemplate() Adds a LEFT JOIN clause and with to the query using the RRightsFortemplate relation
- * @method     ChildTemplatenamesQuery rightJoinWithRRightsFortemplate() Adds a RIGHT JOIN clause and with to the query using the RRightsFortemplate relation
- * @method     ChildTemplatenamesQuery innerJoinWithRRightsFortemplate() Adds a INNER JOIN clause and with to the query using the RRightsFortemplate relation
  *
  * @method     ChildTemplatenamesQuery leftJoinRTemplatenamesForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplatenamesForbook relation
  * @method     ChildTemplatenamesQuery rightJoinRTemplatenamesForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesForbook relation
  * @method     ChildTemplatenamesQuery innerJoinRTemplatenamesForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesForbook relation
  *
- * @method     ChildTemplatenamesQuery joinWithRTemplatenamesForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RTemplatenamesForbook relation
- *
- * @method     ChildTemplatenamesQuery leftJoinWithRTemplatenamesForbook() Adds a LEFT JOIN clause and with to the query using the RTemplatenamesForbook relation
- * @method     ChildTemplatenamesQuery rightJoinWithRTemplatenamesForbook() Adds a RIGHT JOIN clause and with to the query using the RTemplatenamesForbook relation
- * @method     ChildTemplatenamesQuery innerJoinWithRTemplatenamesForbook() Adds a INNER JOIN clause and with to the query using the RTemplatenamesForbook relation
- *
  * @method     ChildTemplatenamesQuery leftJoinRTemplatenamesInchapter($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildTemplatenamesQuery rightJoinRTemplatenamesInchapter($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildTemplatenamesQuery innerJoinRTemplatenamesInchapter($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesInchapter relation
- *
- * @method     ChildTemplatenamesQuery joinWithRTemplatenamesInchapter($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RTemplatenamesInchapter relation
- *
- * @method     ChildTemplatenamesQuery leftJoinWithRTemplatenamesInchapter() Adds a LEFT JOIN clause and with to the query using the RTemplatenamesInchapter relation
- * @method     ChildTemplatenamesQuery rightJoinWithRTemplatenamesInchapter() Adds a RIGHT JOIN clause and with to the query using the RTemplatenamesInchapter relation
- * @method     ChildTemplatenamesQuery innerJoinWithRTemplatenamesInchapter() Adds a INNER JOIN clause and with to the query using the RTemplatenamesInchapter relation
  *
  * @method     ChildTemplatenamesQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildTemplatenamesQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildTemplatenamesQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
  *
- * @method     ChildTemplatenamesQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
- *
- * @method     ChildTemplatenamesQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
- * @method     ChildTemplatenamesQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
- * @method     ChildTemplatenamesQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
- *
  * @method     ChildTemplatenamesQuery leftJoinTemplates($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templates relation
  * @method     ChildTemplatenamesQuery rightJoinTemplates($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templates relation
  * @method     ChildTemplatenamesQuery innerJoinTemplates($relationAlias = null) Adds a INNER JOIN clause to the query using the Templates relation
- *
- * @method     ChildTemplatenamesQuery joinWithTemplates($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templates relation
- *
- * @method     ChildTemplatenamesQuery leftJoinWithTemplates() Adds a LEFT JOIN clause and with to the query using the Templates relation
- * @method     ChildTemplatenamesQuery rightJoinWithTemplates() Adds a RIGHT JOIN clause and with to the query using the Templates relation
- * @method     ChildTemplatenamesQuery innerJoinWithTemplates() Adds a INNER JOIN clause and with to the query using the Templates relation
  *
  * @method     \RRightsFortemplateQuery|\RTemplatenamesForbookQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery|\TemplatesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -203,7 +169,7 @@ abstract class TemplatenamesQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = TemplatenamesTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = TemplatenamesTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -247,7 +213,7 @@ abstract class TemplatenamesQuery extends ModelCriteria
             /** @var ChildTemplatenames $obj */
             $obj = new ChildTemplatenames();
             $obj->hydrate($row);
-            TemplatenamesTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            TemplatenamesTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

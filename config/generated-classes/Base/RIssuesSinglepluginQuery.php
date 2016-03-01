@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesSinglepluginQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRIssuesSinglepluginQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRIssuesSinglepluginQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRIssuesSinglepluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRIssuesSinglepluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRIssuesSinglepluginQuery leftJoinSingleIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the SingleIssue relation
  * @method     ChildRIssuesSinglepluginQuery rightJoinSingleIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SingleIssue relation
  * @method     ChildRIssuesSinglepluginQuery innerJoinSingleIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the SingleIssue relation
  *
- * @method     ChildRIssuesSinglepluginQuery joinWithSingleIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SingleIssue relation
- *
- * @method     ChildRIssuesSinglepluginQuery leftJoinWithSingleIssue() Adds a LEFT JOIN clause and with to the query using the SingleIssue relation
- * @method     ChildRIssuesSinglepluginQuery rightJoinWithSingleIssue() Adds a RIGHT JOIN clause and with to the query using the SingleIssue relation
- * @method     ChildRIssuesSinglepluginQuery innerJoinWithSingleIssue() Adds a INNER JOIN clause and with to the query using the SingleIssue relation
- *
  * @method     ChildRIssuesSinglepluginQuery leftJoinSinglePlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the SinglePlugin relation
  * @method     ChildRIssuesSinglepluginQuery rightJoinSinglePlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SinglePlugin relation
  * @method     ChildRIssuesSinglepluginQuery innerJoinSinglePlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the SinglePlugin relation
- *
- * @method     ChildRIssuesSinglepluginQuery joinWithSinglePlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SinglePlugin relation
- *
- * @method     ChildRIssuesSinglepluginQuery leftJoinWithSinglePlugin() Adds a LEFT JOIN clause and with to the query using the SinglePlugin relation
- * @method     ChildRIssuesSinglepluginQuery rightJoinWithSinglePlugin() Adds a RIGHT JOIN clause and with to the query using the SinglePlugin relation
- * @method     ChildRIssuesSinglepluginQuery innerJoinWithSinglePlugin() Adds a INNER JOIN clause and with to the query using the SinglePlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RIssuesSinglepluginTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RIssuesSinglepluginTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RIssuesSinglepluginQuery extends ModelCriteria
             /** @var ChildRIssuesSingleplugin $obj */
             $obj = new ChildRIssuesSingleplugin();
             $obj->hydrate($row);
-            RIssuesSinglepluginTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RIssuesSinglepluginTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

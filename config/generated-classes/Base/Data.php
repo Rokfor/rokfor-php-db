@@ -4,25 +4,33 @@ namespace Base;
 
 use \Contributions as ChildContributions;
 use \ContributionsQuery as ChildContributionsQuery;
+use \ContributionsVersionQuery as ChildContributionsVersionQuery;
+use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
+use \DataVersion as ChildDataVersion;
+use \DataVersionQuery as ChildDataVersionQuery;
 use \Templates as ChildTemplates;
 use \TemplatesQuery as ChildTemplatesQuery;
 use \Users as ChildUsers;
 use \UsersQuery as ChildUsersQuery;
+use \DateTime;
 use \Exception;
 use \PDO;
 use Map\DataTableMap;
+use Map\DataVersionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the '_data' table.
@@ -67,73 +75,88 @@ abstract class Data implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _forcontribution field.
-     *
      * @var        int
      */
     protected $_forcontribution;
 
     /**
      * The value for the _fortemplatefield field.
-     *
      * @var        int
      */
     protected $_fortemplatefield;
 
     /**
      * The value for the _content field.
-     *
      * @var        string
      */
     protected $_content;
 
     /**
      * The value for the _isjson field.
-     *
      * @var        boolean
      */
     protected $_isjson;
 
     /**
      * The value for the __user__ field.
-     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
+
+    /**
+     * The value for the version field.
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $version;
+
+    /**
+     * The value for the version_created_at field.
+     * @var        \DateTime
+     */
+    protected $version_created_at;
+
+    /**
+     * The value for the version_created_by field.
+     * @var        string
+     */
+    protected $version_created_by;
+
+    /**
+     * The value for the version_comment field.
+     * @var        string
+     */
+    protected $version_comment;
 
     /**
      * @var        ChildUsers
@@ -151,6 +174,12 @@ abstract class Data implements ActiveRecordInterface
     protected $aTemplates;
 
     /**
+     * @var        ObjectCollection|ChildDataVersion[] Collection to store aggregation of ChildDataVersion objects.
+     */
+    protected $collDataVersions;
+    protected $collDataVersionsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -158,11 +187,38 @@ abstract class Data implements ActiveRecordInterface
      */
     protected $alreadyInSave = false;
 
+    // versionable behavior
+
+
+    /**
+     * @var bool
+     */
+    protected $enforceVersion = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildDataVersion[]
+     */
+    protected $dataVersionsScheduledForDeletion = null;
+
+    /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->version = 0;
+    }
+
     /**
      * Initializes internal state of Base\Data object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -372,15 +428,7 @@ abstract class Data implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -491,6 +539,56 @@ abstract class Data implements ActiveRecordInterface
     public function getSort()
     {
         return $this->__sort__;
+    }
+
+    /**
+     * Get the [version] column value.
+     *
+     * @return int
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [version_created_at] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getVersionCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->version_created_at;
+        } else {
+            return $this->version_created_at instanceof \DateTime ? $this->version_created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [version_created_by] column value.
+     *
+     * @return string
+     */
+    public function getVersionCreatedBy()
+    {
+        return $this->version_created_by;
+    }
+
+    /**
+     * Get the [version_comment] column value.
+     *
+     * @return string
+     */
+    public function getVersionComment()
+    {
+        return $this->version_comment;
     }
 
     /**
@@ -714,6 +812,86 @@ abstract class Data implements ActiveRecordInterface
     } // setSort()
 
     /**
+     * Set the value of [version] column.
+     *
+     * @param int $v new value
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function setVersion($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->version !== $v) {
+            $this->version = $v;
+            $this->modifiedColumns[DataTableMap::COL_VERSION] = true;
+        }
+
+        return $this;
+    } // setVersion()
+
+    /**
+     * Sets the value of [version_created_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function setVersionCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->version_created_at !== null || $dt !== null) {
+            if ($this->version_created_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->version_created_at->format("Y-m-d H:i:s")) {
+                $this->version_created_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[DataTableMap::COL_VERSION_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setVersionCreatedAt()
+
+    /**
+     * Set the value of [version_created_by] column.
+     *
+     * @param string $v new value
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function setVersionCreatedBy($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->version_created_by !== $v) {
+            $this->version_created_by = $v;
+            $this->modifiedColumns[DataTableMap::COL_VERSION_CREATED_BY] = true;
+        }
+
+        return $this;
+    } // setVersionCreatedBy()
+
+    /**
+     * Set the value of [version_comment] column.
+     *
+     * @param string $v new value
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function setVersionComment($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->version_comment !== $v) {
+            $this->version_comment = $v;
+            $this->modifiedColumns[DataTableMap::COL_VERSION_COMMENT] = true;
+        }
+
+        return $this;
+    } // setVersionComment()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -723,6 +901,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->version !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -778,6 +960,21 @@ abstract class Data implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : DataTableMap::translateFieldName('Sort', TableMap::TYPE_PHPNAME, $indexType)];
             $this->__sort__ = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : DataTableMap::translateFieldName('Version', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->version = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : DataTableMap::translateFieldName('VersionCreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->version_created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : DataTableMap::translateFieldName('VersionCreatedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->version_created_by = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : DataTableMap::translateFieldName('VersionComment', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->version_comment = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -786,7 +983,7 @@ abstract class Data implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = DataTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = DataTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Data'), 0, $e);
@@ -859,6 +1056,8 @@ abstract class Data implements ActiveRecordInterface
             $this->auserSysRef = null;
             $this->aContributions = null;
             $this->aTemplates = null;
+            $this->collDataVersions = null;
+
         } // if (deep)
     }
 
@@ -919,6 +1118,14 @@ abstract class Data implements ActiveRecordInterface
         return $con->transaction(function () use ($con) {
             $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            // versionable behavior
+            if ($this->isVersioningNecessary()) {
+                $this->setVersion($this->isNew() ? 1 : $this->getLastVersionNumber($con) + 1);
+                if (!$this->isColumnModified(DataTableMap::COL_VERSION_CREATED_AT)) {
+                    $this->setVersionCreatedAt(time());
+                }
+                $createVersion = true; // for postSave hook
+            }
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -932,6 +1139,10 @@ abstract class Data implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // versionable behavior
+                if (isset($createVersion)) {
+                    $this->addVersion($con);
+                }
                 DataTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
@@ -995,6 +1206,23 @@ abstract class Data implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->dataVersionsScheduledForDeletion !== null) {
+                if (!$this->dataVersionsScheduledForDeletion->isEmpty()) {
+                    \DataVersionQuery::create()
+                        ->filterByPrimaryKeys($this->dataVersionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->dataVersionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDataVersions !== null) {
+                foreach ($this->collDataVersions as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -1051,6 +1279,18 @@ abstract class Data implements ActiveRecordInterface
         if ($this->isColumnModified(DataTableMap::COL___SORT__)) {
             $modifiedColumns[':p' . $index++]  = '__sort__';
         }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION)) {
+            $modifiedColumns[':p' . $index++]  = 'version';
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'version_created_at';
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION_CREATED_BY)) {
+            $modifiedColumns[':p' . $index++]  = 'version_created_by';
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION_COMMENT)) {
+            $modifiedColumns[':p' . $index++]  = 'version_comment';
+        }
 
         $sql = sprintf(
             'INSERT INTO _data (%s) VALUES (%s)',
@@ -1091,6 +1331,18 @@ abstract class Data implements ActiveRecordInterface
                         break;
                     case '__sort__':
                         $stmt->bindValue($identifier, $this->__sort__, PDO::PARAM_INT);
+                        break;
+                    case 'version':
+                        $stmt->bindValue($identifier, $this->version, PDO::PARAM_INT);
+                        break;
+                    case 'version_created_at':
+                        $stmt->bindValue($identifier, $this->version_created_at ? $this->version_created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'version_created_by':
+                        $stmt->bindValue($identifier, $this->version_created_by, PDO::PARAM_STR);
+                        break;
+                    case 'version_comment':
+                        $stmt->bindValue($identifier, $this->version_comment, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1184,6 +1436,18 @@ abstract class Data implements ActiveRecordInterface
             case 9:
                 return $this->getSort();
                 break;
+            case 10:
+                return $this->getVersion();
+                break;
+            case 11:
+                return $this->getVersionCreatedAt();
+                break;
+            case 12:
+                return $this->getVersionCreatedBy();
+                break;
+            case 13:
+                return $this->getVersionComment();
+                break;
             default:
                 return null;
                 break;
@@ -1224,7 +1488,19 @@ abstract class Data implements ActiveRecordInterface
             $keys[7] => $this->getSplit(),
             $keys[8] => $this->getParentnode(),
             $keys[9] => $this->getSort(),
+            $keys[10] => $this->getVersion(),
+            $keys[11] => $this->getVersionCreatedAt(),
+            $keys[12] => $this->getVersionCreatedBy(),
+            $keys[13] => $this->getVersionComment(),
         );
+
+        $utc = new \DateTimeZone('utc');
+        if ($result[$keys[11]] instanceof \DateTime) {
+            // When changing timezone we don't want to change existing instances
+            $dateTime = clone $result[$keys[11]];
+            $result[$keys[11]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1275,6 +1551,21 @@ abstract class Data implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aTemplates->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collDataVersions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'dataVersions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_data_versions';
+                        break;
+                    default:
+                        $key = 'DataVersions';
+                }
+
+                $result[$key] = $this->collDataVersions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1340,6 +1631,18 @@ abstract class Data implements ActiveRecordInterface
             case 9:
                 $this->setSort($value);
                 break;
+            case 10:
+                $this->setVersion($value);
+                break;
+            case 11:
+                $this->setVersionCreatedAt($value);
+                break;
+            case 12:
+                $this->setVersionCreatedBy($value);
+                break;
+            case 13:
+                $this->setVersionComment($value);
+                break;
         } // switch()
 
         return $this;
@@ -1395,6 +1698,18 @@ abstract class Data implements ActiveRecordInterface
         }
         if (array_key_exists($keys[9], $arr)) {
             $this->setSort($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setVersion($arr[$keys[10]]);
+        }
+        if (array_key_exists($keys[11], $arr)) {
+            $this->setVersionCreatedAt($arr[$keys[11]]);
+        }
+        if (array_key_exists($keys[12], $arr)) {
+            $this->setVersionCreatedBy($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setVersionComment($arr[$keys[13]]);
         }
     }
 
@@ -1466,6 +1781,18 @@ abstract class Data implements ActiveRecordInterface
         }
         if ($this->isColumnModified(DataTableMap::COL___SORT__)) {
             $criteria->add(DataTableMap::COL___SORT__, $this->__sort__);
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION)) {
+            $criteria->add(DataTableMap::COL_VERSION, $this->version);
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION_CREATED_AT)) {
+            $criteria->add(DataTableMap::COL_VERSION_CREATED_AT, $this->version_created_at);
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION_CREATED_BY)) {
+            $criteria->add(DataTableMap::COL_VERSION_CREATED_BY, $this->version_created_by);
+        }
+        if ($this->isColumnModified(DataTableMap::COL_VERSION_COMMENT)) {
+            $criteria->add(DataTableMap::COL_VERSION_COMMENT, $this->version_comment);
         }
 
         return $criteria;
@@ -1562,6 +1889,24 @@ abstract class Data implements ActiveRecordInterface
         $copyObj->setSplit($this->getSplit());
         $copyObj->setParentnode($this->getParentnode());
         $copyObj->setSort($this->getSort());
+        $copyObj->setVersion($this->getVersion());
+        $copyObj->setVersionCreatedAt($this->getVersionCreatedAt());
+        $copyObj->setVersionCreatedBy($this->getVersionCreatedBy());
+        $copyObj->setVersionComment($this->getVersionComment());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getDataVersions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDataVersion($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1743,6 +2088,243 @@ abstract class Data implements ActiveRecordInterface
         return $this->aTemplates;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('DataVersion' == $relationName) {
+            return $this->initDataVersions();
+        }
+    }
+
+    /**
+     * Clears out the collDataVersions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addDataVersions()
+     */
+    public function clearDataVersions()
+    {
+        $this->collDataVersions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collDataVersions collection loaded partially.
+     */
+    public function resetPartialDataVersions($v = true)
+    {
+        $this->collDataVersionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collDataVersions collection.
+     *
+     * By default this just sets the collDataVersions collection to an empty array (like clearcollDataVersions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDataVersions($overrideExisting = true)
+    {
+        if (null !== $this->collDataVersions && !$overrideExisting) {
+            return;
+        }
+        $this->collDataVersions = new ObjectCollection();
+        $this->collDataVersions->setModel('\DataVersion');
+    }
+
+    /**
+     * Gets an array of ChildDataVersion objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildDataVersion[] List of ChildDataVersion objects
+     * @throws PropelException
+     */
+    public function getDataVersions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDataVersionsPartial && !$this->isNew();
+        if (null === $this->collDataVersions || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collDataVersions) {
+                // return empty collection
+                $this->initDataVersions();
+            } else {
+                $collDataVersions = ChildDataVersionQuery::create(null, $criteria)
+                    ->filterByData($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDataVersionsPartial && count($collDataVersions)) {
+                        $this->initDataVersions(false);
+
+                        foreach ($collDataVersions as $obj) {
+                            if (false == $this->collDataVersions->contains($obj)) {
+                                $this->collDataVersions->append($obj);
+                            }
+                        }
+
+                        $this->collDataVersionsPartial = true;
+                    }
+
+                    return $collDataVersions;
+                }
+
+                if ($partial && $this->collDataVersions) {
+                    foreach ($this->collDataVersions as $obj) {
+                        if ($obj->isNew()) {
+                            $collDataVersions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDataVersions = $collDataVersions;
+                $this->collDataVersionsPartial = false;
+            }
+        }
+
+        return $this->collDataVersions;
+    }
+
+    /**
+     * Sets a collection of ChildDataVersion objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $dataVersions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setDataVersions(Collection $dataVersions, ConnectionInterface $con = null)
+    {
+        /** @var ChildDataVersion[] $dataVersionsToDelete */
+        $dataVersionsToDelete = $this->getDataVersions(new Criteria(), $con)->diff($dataVersions);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->dataVersionsScheduledForDeletion = clone $dataVersionsToDelete;
+
+        foreach ($dataVersionsToDelete as $dataVersionRemoved) {
+            $dataVersionRemoved->setData(null);
+        }
+
+        $this->collDataVersions = null;
+        foreach ($dataVersions as $dataVersion) {
+            $this->addDataVersion($dataVersion);
+        }
+
+        $this->collDataVersions = $dataVersions;
+        $this->collDataVersionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related DataVersion objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related DataVersion objects.
+     * @throws PropelException
+     */
+    public function countDataVersions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDataVersionsPartial && !$this->isNew();
+        if (null === $this->collDataVersions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDataVersions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDataVersions());
+            }
+
+            $query = ChildDataVersionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByData($this)
+                ->count($con);
+        }
+
+        return count($this->collDataVersions);
+    }
+
+    /**
+     * Method called to associate a ChildDataVersion object to this object
+     * through the ChildDataVersion foreign key attribute.
+     *
+     * @param  ChildDataVersion $l ChildDataVersion
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addDataVersion(ChildDataVersion $l)
+    {
+        if ($this->collDataVersions === null) {
+            $this->initDataVersions();
+            $this->collDataVersionsPartial = true;
+        }
+
+        if (!$this->collDataVersions->contains($l)) {
+            $this->doAddDataVersion($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildDataVersion $dataVersion The ChildDataVersion object to add.
+     */
+    protected function doAddDataVersion(ChildDataVersion $dataVersion)
+    {
+        $this->collDataVersions[]= $dataVersion;
+        $dataVersion->setData($this);
+    }
+
+    /**
+     * @param  ChildDataVersion $dataVersion The ChildDataVersion object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeDataVersion(ChildDataVersion $dataVersion)
+    {
+        if ($this->getDataVersions()->contains($dataVersion)) {
+            $pos = $this->collDataVersions->search($dataVersion);
+            $this->collDataVersions->remove($pos);
+            if (null === $this->dataVersionsScheduledForDeletion) {
+                $this->dataVersionsScheduledForDeletion = clone $this->collDataVersions;
+                $this->dataVersionsScheduledForDeletion->clear();
+            }
+            $this->dataVersionsScheduledForDeletion[]= clone $dataVersion;
+            $dataVersion->setData(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1769,8 +2351,13 @@ abstract class Data implements ActiveRecordInterface
         $this->__split__ = null;
         $this->__parentnode__ = null;
         $this->__sort__ = null;
+        $this->version = null;
+        $this->version_created_at = null;
+        $this->version_created_by = null;
+        $this->version_comment = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1787,8 +2374,14 @@ abstract class Data implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collDataVersions) {
+                foreach ($this->collDataVersions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collDataVersions = null;
         $this->auserSysRef = null;
         $this->aContributions = null;
         $this->aTemplates = null;
@@ -1804,6 +2397,322 @@ abstract class Data implements ActiveRecordInterface
         return (string) $this->exportTo(DataTableMap::DEFAULT_STRING_FORMAT);
     }
 
+    // versionable behavior
+
+    /**
+     * Enforce a new Version of this object upon next save.
+     *
+     * @return $this|\Data
+     */
+    public function enforceVersioning()
+    {
+        $this->enforceVersion = true;
+
+        return $this;
+    }
+
+    /**
+     * Checks whether the current state must be recorded as a version
+     *
+     * @return  boolean
+     */
+    public function isVersioningNecessary($con = null)
+    {
+        if ($this->alreadyInSave) {
+            return false;
+        }
+
+        if ($this->enforceVersion) {
+            return true;
+        }
+
+        if (ChildDataQuery::isVersioningEnabled() && ($this->isNew() || $this->isModified()) || $this->isDeleted()) {
+            return true;
+        }
+        if (null !== ($object = $this->getContributions($con)) && $object->isVersioningNecessary($con)) {
+            return true;
+        }
+
+
+        return false;
+    }
+
+    /**
+     * Creates a version of the current object and saves it.
+     *
+     * @param   ConnectionInterface $con the connection to use
+     *
+     * @return  ChildDataVersion A version object
+     */
+    public function addVersion($con = null)
+    {
+        $this->enforceVersion = false;
+
+        $version = new ChildDataVersion();
+        $version->setId($this->getId());
+        $version->setForcontribution($this->getForcontribution());
+        $version->setFortemplatefield($this->getFortemplatefield());
+        $version->setContent($this->getContent());
+        $version->setIsjson($this->getIsjson());
+        $version->setUserSys($this->getUserSys());
+        $version->setConfigSys($this->getConfigSys());
+        $version->setSplit($this->getSplit());
+        $version->setParentnode($this->getParentnode());
+        $version->setSort($this->getSort());
+        $version->setVersion($this->getVersion());
+        $version->setVersionCreatedAt($this->getVersionCreatedAt());
+        $version->setVersionCreatedBy($this->getVersionCreatedBy());
+        $version->setVersionComment($this->getVersionComment());
+        $version->setData($this);
+        if (($related = $this->getContributions(null, $con)) && $related->getVersion()) {
+            $version->setForcontributionVersion($related->getVersion());
+        }
+        $version->save($con);
+
+        return $version;
+    }
+
+    /**
+     * Sets the properties of the current object to the value they had at a specific version
+     *
+     * @param   integer $versionNumber The version number to read
+     * @param   ConnectionInterface $con The connection to use
+     *
+     * @return  $this|ChildData The current object (for fluent API support)
+     */
+    public function toVersion($versionNumber, $con = null)
+    {
+        $version = $this->getOneVersion($versionNumber, $con);
+        if (!$version) {
+            throw new PropelException(sprintf('No ChildData object found with version %d', $version));
+        }
+        $this->populateFromVersion($version, $con);
+
+        return $this;
+    }
+
+    /**
+     * Sets the properties of the current object to the value they had at a specific version
+     *
+     * @param ChildDataVersion $version The version object to use
+     * @param ConnectionInterface   $con the connection to use
+     * @param array                 $loadedObjects objects that been loaded in a chain of populateFromVersion calls on referrer or fk objects.
+     *
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function populateFromVersion($version, $con = null, &$loadedObjects = array())
+    {
+        $loadedObjects['ChildData'][$version->getId()][$version->getVersion()] = $this;
+        $this->setId($version->getId());
+        $this->setForcontribution($version->getForcontribution());
+        $this->setFortemplatefield($version->getFortemplatefield());
+        $this->setContent($version->getContent());
+        $this->setIsjson($version->getIsjson());
+        $this->setUserSys($version->getUserSys());
+        $this->setConfigSys($version->getConfigSys());
+        $this->setSplit($version->getSplit());
+        $this->setParentnode($version->getParentnode());
+        $this->setSort($version->getSort());
+        $this->setVersion($version->getVersion());
+        $this->setVersionCreatedAt($version->getVersionCreatedAt());
+        $this->setVersionCreatedBy($version->getVersionCreatedBy());
+        $this->setVersionComment($version->getVersionComment());
+        if ($fkValue = $version->getForcontribution()) {
+            if (isset($loadedObjects['ChildContributions']) && isset($loadedObjects['ChildContributions'][$fkValue]) && isset($loadedObjects['ChildContributions'][$fkValue][$version->getForcontributionVersion()])) {
+                $related = $loadedObjects['ChildContributions'][$fkValue][$version->getForcontributionVersion()];
+            } else {
+                $related = new ChildContributions();
+                $relatedVersion = ChildContributionsVersionQuery::create()
+                    ->filterById($fkValue)
+                    ->filterByVersion($version->getForcontributionVersion())
+                    ->findOne($con);
+                $related->populateFromVersion($relatedVersion, $con, $loadedObjects);
+                $related->setNew(false);
+            }
+            $this->setContributions($related);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the latest persisted version number for the current object
+     *
+     * @param   ConnectionInterface $con the connection to use
+     *
+     * @return  integer
+     */
+    public function getLastVersionNumber($con = null)
+    {
+        $v = ChildDataVersionQuery::create()
+            ->filterByData($this)
+            ->orderByVersion('desc')
+            ->findOne($con);
+        if (!$v) {
+            return 0;
+        }
+
+        return $v->getVersion();
+    }
+
+    /**
+     * Checks whether the current object is the latest one
+     *
+     * @param   ConnectionInterface $con the connection to use
+     *
+     * @return  Boolean
+     */
+    public function isLastVersion($con = null)
+    {
+        return $this->getLastVersionNumber($con) == $this->getVersion();
+    }
+
+    /**
+     * Retrieves a version object for this entity and a version number
+     *
+     * @param   integer $versionNumber The version number to read
+     * @param   ConnectionInterface $con the connection to use
+     *
+     * @return  ChildDataVersion A version object
+     */
+    public function getOneVersion($versionNumber, $con = null)
+    {
+        return ChildDataVersionQuery::create()
+            ->filterByData($this)
+            ->filterByVersion($versionNumber)
+            ->findOne($con);
+    }
+
+    /**
+     * Gets all the versions of this object, in incremental order
+     *
+     * @param   ConnectionInterface $con the connection to use
+     *
+     * @return  ObjectCollection|ChildDataVersion[] A list of ChildDataVersion objects
+     */
+    public function getAllVersions($con = null)
+    {
+        $criteria = new Criteria();
+        $criteria->addAscendingOrderByColumn(DataVersionTableMap::COL_VERSION);
+
+        return $this->getDataVersions($criteria, $con);
+    }
+
+    /**
+     * Compares the current object with another of its version.
+     * <code>
+     * print_r($book->compareVersion(1));
+     * => array(
+     *   '1' => array('Title' => 'Book title at version 1'),
+     *   '2' => array('Title' => 'Book title at version 2')
+     * );
+     * </code>
+     *
+     * @param   integer             $versionNumber
+     * @param   string              $keys Main key used for the result diff (versions|columns)
+     * @param   ConnectionInterface $con the connection to use
+     * @param   array               $ignoredColumns  The columns to exclude from the diff.
+     *
+     * @return  array A list of differences
+     */
+    public function compareVersion($versionNumber, $keys = 'columns', $con = null, $ignoredColumns = array())
+    {
+        $fromVersion = $this->toArray();
+        $toVersion = $this->getOneVersion($versionNumber, $con)->toArray();
+
+        return $this->computeDiff($fromVersion, $toVersion, $keys, $ignoredColumns);
+    }
+
+    /**
+     * Compares two versions of the current object.
+     * <code>
+     * print_r($book->compareVersions(1, 2));
+     * => array(
+     *   '1' => array('Title' => 'Book title at version 1'),
+     *   '2' => array('Title' => 'Book title at version 2')
+     * );
+     * </code>
+     *
+     * @param   integer             $fromVersionNumber
+     * @param   integer             $toVersionNumber
+     * @param   string              $keys Main key used for the result diff (versions|columns)
+     * @param   ConnectionInterface $con the connection to use
+     * @param   array               $ignoredColumns  The columns to exclude from the diff.
+     *
+     * @return  array A list of differences
+     */
+    public function compareVersions($fromVersionNumber, $toVersionNumber, $keys = 'columns', $con = null, $ignoredColumns = array())
+    {
+        $fromVersion = $this->getOneVersion($fromVersionNumber, $con)->toArray();
+        $toVersion = $this->getOneVersion($toVersionNumber, $con)->toArray();
+
+        return $this->computeDiff($fromVersion, $toVersion, $keys, $ignoredColumns);
+    }
+
+    /**
+     * Computes the diff between two versions.
+     * <code>
+     * print_r($book->computeDiff(1, 2));
+     * => array(
+     *   '1' => array('Title' => 'Book title at version 1'),
+     *   '2' => array('Title' => 'Book title at version 2')
+     * );
+     * </code>
+     *
+     * @param   array     $fromVersion     An array representing the original version.
+     * @param   array     $toVersion       An array representing the destination version.
+     * @param   string    $keys            Main key used for the result diff (versions|columns).
+     * @param   array     $ignoredColumns  The columns to exclude from the diff.
+     *
+     * @return  array A list of differences
+     */
+    protected function computeDiff($fromVersion, $toVersion, $keys = 'columns', $ignoredColumns = array())
+    {
+        $fromVersionNumber = $fromVersion['Version'];
+        $toVersionNumber = $toVersion['Version'];
+        $ignoredColumns = array_merge(array(
+            'Version',
+            'VersionCreatedAt',
+            'VersionCreatedBy',
+            'VersionComment',
+        ), $ignoredColumns);
+        $diff = array();
+        foreach ($fromVersion as $key => $value) {
+            if (in_array($key, $ignoredColumns)) {
+                continue;
+            }
+            if ($toVersion[$key] != $value) {
+                switch ($keys) {
+                    case 'versions':
+                        $diff[$fromVersionNumber][$key] = $value;
+                        $diff[$toVersionNumber][$key] = $toVersion[$key];
+                        break;
+                    default:
+                        $diff[$key] = array(
+                            $fromVersionNumber => $value,
+                            $toVersionNumber => $toVersion[$key],
+                        );
+                        break;
+                }
+            }
+        }
+
+        return $diff;
+    }
+    /**
+     * retrieve the last $number versions.
+     *
+     * @param Integer $number the number of record to return.
+     * @return PropelCollection|\DataVersion[] List of \DataVersion objects
+     */
+    public function getLastVersions($number = 10, $criteria = null, $con = null)
+    {
+        $criteria = ChildDataVersionQuery::create(null, $criteria);
+        $criteria->addDescendingOrderByColumn(DataVersionTableMap::COL_VERSION);
+        $criteria->limit($number);
+
+        return $this->getDataVersions($criteria, $con);
+    }
     /**
      * Code to be run before persisting the object
      * @param  ConnectionInterface $con

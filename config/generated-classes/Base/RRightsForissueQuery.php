@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRRightsForissueQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRRightsForissueQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRRightsForissueQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRRightsForissueQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRRightsForissueQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRRightsForissueQuery leftJoinRights($relationAlias = null) Adds a LEFT JOIN clause to the query using the Rights relation
  * @method     ChildRRightsForissueQuery rightJoinRights($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Rights relation
  * @method     ChildRRightsForissueQuery innerJoinRights($relationAlias = null) Adds a INNER JOIN clause to the query using the Rights relation
  *
- * @method     ChildRRightsForissueQuery joinWithRights($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Rights relation
- *
- * @method     ChildRRightsForissueQuery leftJoinWithRights() Adds a LEFT JOIN clause and with to the query using the Rights relation
- * @method     ChildRRightsForissueQuery rightJoinWithRights() Adds a RIGHT JOIN clause and with to the query using the Rights relation
- * @method     ChildRRightsForissueQuery innerJoinWithRights() Adds a INNER JOIN clause and with to the query using the Rights relation
- *
  * @method     ChildRRightsForissueQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
  * @method     ChildRRightsForissueQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildRRightsForissueQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
- *
- * @method     ChildRRightsForissueQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
- *
- * @method     ChildRRightsForissueQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
- * @method     ChildRRightsForissueQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
- * @method     ChildRRightsForissueQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
  *
  * @method     \RightsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RRightsForissueQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RRightsForissueTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RRightsForissueTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RRightsForissueQuery extends ModelCriteria
             /** @var ChildRRightsForissue $obj */
             $obj = new ChildRRightsForissue();
             $obj->hydrate($row);
-            RRightsForissueTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RRightsForissueTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

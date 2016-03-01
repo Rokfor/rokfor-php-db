@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesXmlpluginQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRIssuesXmlpluginQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRIssuesXmlpluginQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRIssuesXmlpluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRIssuesXmlpluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRIssuesXmlpluginQuery leftJoinXmlIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the XmlIssue relation
  * @method     ChildRIssuesXmlpluginQuery rightJoinXmlIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the XmlIssue relation
  * @method     ChildRIssuesXmlpluginQuery innerJoinXmlIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the XmlIssue relation
  *
- * @method     ChildRIssuesXmlpluginQuery joinWithXmlIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the XmlIssue relation
- *
- * @method     ChildRIssuesXmlpluginQuery leftJoinWithXmlIssue() Adds a LEFT JOIN clause and with to the query using the XmlIssue relation
- * @method     ChildRIssuesXmlpluginQuery rightJoinWithXmlIssue() Adds a RIGHT JOIN clause and with to the query using the XmlIssue relation
- * @method     ChildRIssuesXmlpluginQuery innerJoinWithXmlIssue() Adds a INNER JOIN clause and with to the query using the XmlIssue relation
- *
  * @method     ChildRIssuesXmlpluginQuery leftJoinXmlPlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the XmlPlugin relation
  * @method     ChildRIssuesXmlpluginQuery rightJoinXmlPlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the XmlPlugin relation
  * @method     ChildRIssuesXmlpluginQuery innerJoinXmlPlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the XmlPlugin relation
- *
- * @method     ChildRIssuesXmlpluginQuery joinWithXmlPlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the XmlPlugin relation
- *
- * @method     ChildRIssuesXmlpluginQuery leftJoinWithXmlPlugin() Adds a LEFT JOIN clause and with to the query using the XmlPlugin relation
- * @method     ChildRIssuesXmlpluginQuery rightJoinWithXmlPlugin() Adds a RIGHT JOIN clause and with to the query using the XmlPlugin relation
- * @method     ChildRIssuesXmlpluginQuery innerJoinWithXmlPlugin() Adds a INNER JOIN clause and with to the query using the XmlPlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RIssuesXmlpluginTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RIssuesXmlpluginTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RIssuesXmlpluginQuery extends ModelCriteria
             /** @var ChildRIssuesXmlplugin $obj */
             $obj = new ChildRIssuesXmlplugin();
             $obj->hydrate($row);
-            RIssuesXmlpluginTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RIssuesXmlpluginTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

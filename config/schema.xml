@@ -300,6 +300,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="versionable">
+      <parameter name="log_created_at" value="true" />
+      <parameter name="log_created_by" value="true" />
+      <parameter name="log_comment" value="true" />
+    </behavior>
   </table>
   <table name="_data" idMethod="native" phpName="Data">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -333,6 +338,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="versionable">
+      <parameter name="log_created_at" value="true" />
+      <parameter name="log_created_by" value="true" />
+      <parameter name="log_comment" value="true" />
+    </behavior>
   </table>
   <table name="_fieldpostprocessor" idMethod="native" phpName="Fieldpostprocessor">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>

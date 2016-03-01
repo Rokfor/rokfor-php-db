@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesRtfpluginQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRIssuesRtfpluginQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRIssuesRtfpluginQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRIssuesRtfpluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRIssuesRtfpluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRIssuesRtfpluginQuery leftJoinRtfIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RtfIssue relation
  * @method     ChildRIssuesRtfpluginQuery rightJoinRtfIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RtfIssue relation
  * @method     ChildRIssuesRtfpluginQuery innerJoinRtfIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RtfIssue relation
  *
- * @method     ChildRIssuesRtfpluginQuery joinWithRtfIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RtfIssue relation
- *
- * @method     ChildRIssuesRtfpluginQuery leftJoinWithRtfIssue() Adds a LEFT JOIN clause and with to the query using the RtfIssue relation
- * @method     ChildRIssuesRtfpluginQuery rightJoinWithRtfIssue() Adds a RIGHT JOIN clause and with to the query using the RtfIssue relation
- * @method     ChildRIssuesRtfpluginQuery innerJoinWithRtfIssue() Adds a INNER JOIN clause and with to the query using the RtfIssue relation
- *
  * @method     ChildRIssuesRtfpluginQuery leftJoinRtfPlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RtfPlugin relation
  * @method     ChildRIssuesRtfpluginQuery rightJoinRtfPlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RtfPlugin relation
  * @method     ChildRIssuesRtfpluginQuery innerJoinRtfPlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RtfPlugin relation
- *
- * @method     ChildRIssuesRtfpluginQuery joinWithRtfPlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RtfPlugin relation
- *
- * @method     ChildRIssuesRtfpluginQuery leftJoinWithRtfPlugin() Adds a LEFT JOIN clause and with to the query using the RtfPlugin relation
- * @method     ChildRIssuesRtfpluginQuery rightJoinWithRtfPlugin() Adds a RIGHT JOIN clause and with to the query using the RtfPlugin relation
- * @method     ChildRIssuesRtfpluginQuery innerJoinWithRtfPlugin() Adds a INNER JOIN clause and with to the query using the RtfPlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RIssuesRtfpluginQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RIssuesRtfpluginTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RIssuesRtfpluginTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RIssuesRtfpluginQuery extends ModelCriteria
             /** @var ChildRIssuesRtfplugin $obj */
             $obj = new ChildRIssuesRtfplugin();
             $obj->hydrate($row);
-            RIssuesRtfpluginTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RIssuesRtfpluginTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

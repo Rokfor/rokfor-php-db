@@ -50,99 +50,41 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildIssuesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildIssuesQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildIssuesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildIssuesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildIssuesQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildIssuesQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildIssuesQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
- *
- * @method     ChildIssuesQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
- *
- * @method     ChildIssuesQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
- * @method     ChildIssuesQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
- * @method     ChildIssuesQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildIssuesQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
- * @method     ChildIssuesQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
- *
- * @method     ChildIssuesQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
- * @method     ChildIssuesQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
- * @method     ChildIssuesQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
- *
  * @method     ChildIssuesQuery leftJoinRIssuesAllplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesAllplugin relation
  * @method     ChildIssuesQuery rightJoinRIssuesAllplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesAllplugin relation
  * @method     ChildIssuesQuery innerJoinRIssuesAllplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesAllplugin relation
- *
- * @method     ChildIssuesQuery joinWithRIssuesAllplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesAllplugin relation
- *
- * @method     ChildIssuesQuery leftJoinWithRIssuesAllplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesAllplugin relation
- * @method     ChildIssuesQuery rightJoinWithRIssuesAllplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesAllplugin relation
- * @method     ChildIssuesQuery innerJoinWithRIssuesAllplugin() Adds a INNER JOIN clause and with to the query using the RIssuesAllplugin relation
  *
  * @method     ChildIssuesQuery leftJoinRIssuesNarrationplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesNarrationplugin relation
  * @method     ChildIssuesQuery rightJoinRIssuesNarrationplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesNarrationplugin relation
  * @method     ChildIssuesQuery innerJoinRIssuesNarrationplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesNarrationplugin relation
  *
- * @method     ChildIssuesQuery joinWithRIssuesNarrationplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesNarrationplugin relation
- *
- * @method     ChildIssuesQuery leftJoinWithRIssuesNarrationplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesNarrationplugin relation
- * @method     ChildIssuesQuery rightJoinWithRIssuesNarrationplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesNarrationplugin relation
- * @method     ChildIssuesQuery innerJoinWithRIssuesNarrationplugin() Adds a INNER JOIN clause and with to the query using the RIssuesNarrationplugin relation
- *
  * @method     ChildIssuesQuery leftJoinRIssuesRtfplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesRtfplugin relation
  * @method     ChildIssuesQuery rightJoinRIssuesRtfplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesRtfplugin relation
  * @method     ChildIssuesQuery innerJoinRIssuesRtfplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesRtfplugin relation
- *
- * @method     ChildIssuesQuery joinWithRIssuesRtfplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesRtfplugin relation
- *
- * @method     ChildIssuesQuery leftJoinWithRIssuesRtfplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesRtfplugin relation
- * @method     ChildIssuesQuery rightJoinWithRIssuesRtfplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesRtfplugin relation
- * @method     ChildIssuesQuery innerJoinWithRIssuesRtfplugin() Adds a INNER JOIN clause and with to the query using the RIssuesRtfplugin relation
  *
  * @method     ChildIssuesQuery leftJoinRIssuesSingleplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesSingleplugin relation
  * @method     ChildIssuesQuery rightJoinRIssuesSingleplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesSingleplugin relation
  * @method     ChildIssuesQuery innerJoinRIssuesSingleplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesSingleplugin relation
  *
- * @method     ChildIssuesQuery joinWithRIssuesSingleplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesSingleplugin relation
- *
- * @method     ChildIssuesQuery leftJoinWithRIssuesSingleplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesSingleplugin relation
- * @method     ChildIssuesQuery rightJoinWithRIssuesSingleplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesSingleplugin relation
- * @method     ChildIssuesQuery innerJoinWithRIssuesSingleplugin() Adds a INNER JOIN clause and with to the query using the RIssuesSingleplugin relation
- *
  * @method     ChildIssuesQuery leftJoinRIssuesXmlplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesXmlplugin relation
  * @method     ChildIssuesQuery rightJoinRIssuesXmlplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesXmlplugin relation
  * @method     ChildIssuesQuery innerJoinRIssuesXmlplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesXmlplugin relation
- *
- * @method     ChildIssuesQuery joinWithRIssuesXmlplugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssuesXmlplugin relation
- *
- * @method     ChildIssuesQuery leftJoinWithRIssuesXmlplugin() Adds a LEFT JOIN clause and with to the query using the RIssuesXmlplugin relation
- * @method     ChildIssuesQuery rightJoinWithRIssuesXmlplugin() Adds a RIGHT JOIN clause and with to the query using the RIssuesXmlplugin relation
- * @method     ChildIssuesQuery innerJoinWithRIssuesXmlplugin() Adds a INNER JOIN clause and with to the query using the RIssuesXmlplugin relation
  *
  * @method     ChildIssuesQuery leftJoinRRightsForissue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildIssuesQuery rightJoinRRightsForissue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildIssuesQuery innerJoinRRightsForissue($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForissue relation
  *
- * @method     ChildIssuesQuery joinWithRRightsForissue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForissue relation
- *
- * @method     ChildIssuesQuery leftJoinWithRRightsForissue() Adds a LEFT JOIN clause and with to the query using the RRightsForissue relation
- * @method     ChildIssuesQuery rightJoinWithRRightsForissue() Adds a RIGHT JOIN clause and with to the query using the RRightsForissue relation
- * @method     ChildIssuesQuery innerJoinWithRRightsForissue() Adds a INNER JOIN clause and with to the query using the RRightsForissue relation
- *
  * @method     ChildIssuesQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildIssuesQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildIssuesQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
- *
- * @method     ChildIssuesQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
- *
- * @method     ChildIssuesQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
- * @method     ChildIssuesQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
- * @method     ChildIssuesQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     \UsersQuery|\BooksQuery|\RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery|\RRightsForissueQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -253,7 +195,7 @@ abstract class IssuesQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = IssuesTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = IssuesTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -297,7 +239,7 @@ abstract class IssuesQuery extends ModelCriteria
             /** @var ChildIssues $obj */
             $obj = new ChildIssues();
             $obj->hydrate($row);
-            IssuesTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            IssuesTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

@@ -30,29 +30,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRIssuesNarrationpluginQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRIssuesNarrationpluginQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildRIssuesNarrationpluginQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildRIssuesNarrationpluginQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildRIssuesNarrationpluginQuery leftJoinNarrationIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the NarrationIssue relation
  * @method     ChildRIssuesNarrationpluginQuery rightJoinNarrationIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NarrationIssue relation
  * @method     ChildRIssuesNarrationpluginQuery innerJoinNarrationIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the NarrationIssue relation
  *
- * @method     ChildRIssuesNarrationpluginQuery joinWithNarrationIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the NarrationIssue relation
- *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinWithNarrationIssue() Adds a LEFT JOIN clause and with to the query using the NarrationIssue relation
- * @method     ChildRIssuesNarrationpluginQuery rightJoinWithNarrationIssue() Adds a RIGHT JOIN clause and with to the query using the NarrationIssue relation
- * @method     ChildRIssuesNarrationpluginQuery innerJoinWithNarrationIssue() Adds a INNER JOIN clause and with to the query using the NarrationIssue relation
- *
  * @method     ChildRIssuesNarrationpluginQuery leftJoinNarrationPlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the NarrationPlugin relation
  * @method     ChildRIssuesNarrationpluginQuery rightJoinNarrationPlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NarrationPlugin relation
  * @method     ChildRIssuesNarrationpluginQuery innerJoinNarrationPlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the NarrationPlugin relation
- *
- * @method     ChildRIssuesNarrationpluginQuery joinWithNarrationPlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the NarrationPlugin relation
- *
- * @method     ChildRIssuesNarrationpluginQuery leftJoinWithNarrationPlugin() Adds a LEFT JOIN clause and with to the query using the NarrationPlugin relation
- * @method     ChildRIssuesNarrationpluginQuery rightJoinWithNarrationPlugin() Adds a RIGHT JOIN clause and with to the query using the NarrationPlugin relation
- * @method     ChildRIssuesNarrationpluginQuery innerJoinWithNarrationPlugin() Adds a INNER JOIN clause and with to the query using the NarrationPlugin relation
  *
  * @method     \IssuesQuery|\PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -133,7 +117,7 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RIssuesNarrationpluginTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
+        if ((null !== ($obj = RIssuesNarrationpluginTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -178,7 +162,7 @@ abstract class RIssuesNarrationpluginQuery extends ModelCriteria
             /** @var ChildRIssuesNarrationplugin $obj */
             $obj = new ChildRIssuesNarrationplugin();
             $obj->hydrate($row);
-            RIssuesNarrationpluginTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            RIssuesNarrationpluginTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 

@@ -46,39 +46,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildTemplatesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildTemplatesQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildTemplatesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildTemplatesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildTemplatesQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
  * @method     ChildTemplatesQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildTemplatesQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
- *
- * @method     ChildTemplatesQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
- *
- * @method     ChildTemplatesQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildTemplatesQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
- * @method     ChildTemplatesQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
  *
  * @method     ChildTemplatesQuery leftJoinRFieldpostprocessorForfield($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildTemplatesQuery rightJoinRFieldpostprocessorForfield($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildTemplatesQuery innerJoinRFieldpostprocessorForfield($relationAlias = null) Adds a INNER JOIN clause to the query using the RFieldpostprocessorForfield relation
  *
- * @method     ChildTemplatesQuery joinWithRFieldpostprocessorForfield($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFieldpostprocessorForfield relation
- *
- * @method     ChildTemplatesQuery leftJoinWithRFieldpostprocessorForfield() Adds a LEFT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
- * @method     ChildTemplatesQuery rightJoinWithRFieldpostprocessorForfield() Adds a RIGHT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
- * @method     ChildTemplatesQuery innerJoinWithRFieldpostprocessorForfield() Adds a INNER JOIN clause and with to the query using the RFieldpostprocessorForfield relation
- *
  * @method     ChildTemplatesQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
- *
- * @method     ChildTemplatesQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
- *
- * @method     ChildTemplatesQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
- * @method     ChildTemplatesQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
- * @method     ChildTemplatesQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
  *
  * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -183,7 +161,7 @@ abstract class TemplatesQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = TemplatesTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = TemplatesTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -227,7 +205,7 @@ abstract class TemplatesQuery extends ModelCriteria
             /** @var ChildTemplates $obj */
             $obj = new ChildTemplates();
             $obj->hydrate($row);
-            TemplatesTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            TemplatesTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

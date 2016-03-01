@@ -42,59 +42,25 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildFormatsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildFormatsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildFormatsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildFormatsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildFormatsQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildFormatsQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildFormatsQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
- *
- * @method     ChildFormatsQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
- *
- * @method     ChildFormatsQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
- * @method     ChildFormatsQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
- * @method     ChildFormatsQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildFormatsQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildFormatsQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildFormatsQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
- * @method     ChildFormatsQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
- *
- * @method     ChildFormatsQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
- * @method     ChildFormatsQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
- * @method     ChildFormatsQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
- *
  * @method     ChildFormatsQuery leftJoinRRightsForformat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildFormatsQuery rightJoinRRightsForformat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildFormatsQuery innerJoinRRightsForformat($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForformat relation
- *
- * @method     ChildFormatsQuery joinWithRRightsForformat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForformat relation
- *
- * @method     ChildFormatsQuery leftJoinWithRRightsForformat() Adds a LEFT JOIN clause and with to the query using the RRightsForformat relation
- * @method     ChildFormatsQuery rightJoinWithRRightsForformat() Adds a RIGHT JOIN clause and with to the query using the RRightsForformat relation
- * @method     ChildFormatsQuery innerJoinWithRRightsForformat() Adds a INNER JOIN clause and with to the query using the RRightsForformat relation
  *
  * @method     ChildFormatsQuery leftJoinRTemplatenamesInchapter($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildFormatsQuery rightJoinRTemplatenamesInchapter($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildFormatsQuery innerJoinRTemplatenamesInchapter($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesInchapter relation
  *
- * @method     ChildFormatsQuery joinWithRTemplatenamesInchapter($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RTemplatenamesInchapter relation
- *
- * @method     ChildFormatsQuery leftJoinWithRTemplatenamesInchapter() Adds a LEFT JOIN clause and with to the query using the RTemplatenamesInchapter relation
- * @method     ChildFormatsQuery rightJoinWithRTemplatenamesInchapter() Adds a RIGHT JOIN clause and with to the query using the RTemplatenamesInchapter relation
- * @method     ChildFormatsQuery innerJoinWithRTemplatenamesInchapter() Adds a INNER JOIN clause and with to the query using the RTemplatenamesInchapter relation
- *
  * @method     ChildFormatsQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildFormatsQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildFormatsQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
- *
- * @method     ChildFormatsQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
- *
- * @method     ChildFormatsQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
- * @method     ChildFormatsQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
- * @method     ChildFormatsQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     \UsersQuery|\BooksQuery|\RRightsForformatQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -193,7 +159,7 @@ abstract class FormatsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = FormatsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = FormatsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -237,7 +203,7 @@ abstract class FormatsQuery extends ModelCriteria
             /** @var ChildFormats $obj */
             $obj = new ChildFormats();
             $obj->hydrate($row);
-            FormatsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            FormatsTableMap::addInstanceToPool($obj, (string) $key);
         }
         $stmt->closeCursor();
 

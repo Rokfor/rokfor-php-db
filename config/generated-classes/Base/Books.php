@@ -81,49 +81,42 @@ abstract class Books implements ActiveRecordInterface
 
     /**
      * The value for the id field.
-     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
-     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the __user__ field.
-     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
-     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
-     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
-     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
-     *
      * @var        int
      */
     protected $__sort__;
@@ -463,15 +456,7 @@ abstract class Books implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls = new \ReflectionClass($this);
-        $propertyNames = [];
-        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
-
-        foreach($serializableProperties as $property) {
-            $propertyNames[] = $property->getName();
-        }
-
-        return $propertyNames;
+        return array_keys(get_object_vars($this));
     }
 
     /**
@@ -2008,10 +1993,6 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRBatchForbooks->contains($l)) {
             $this->doAddRBatchForbook($l);
-
-            if ($this->rBatchForbooksScheduledForDeletion and $this->rBatchForbooksScheduledForDeletion->contains($l)) {
-                $this->rBatchForbooksScheduledForDeletion->remove($this->rBatchForbooksScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2258,10 +2239,6 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRRightsForbooks->contains($l)) {
             $this->doAddRRightsForbook($l);
-
-            if ($this->rRightsForbooksScheduledForDeletion and $this->rRightsForbooksScheduledForDeletion->contains($l)) {
-                $this->rRightsForbooksScheduledForDeletion->remove($this->rRightsForbooksScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2508,10 +2485,6 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesForbooks->contains($l)) {
             $this->doAddRTemplatenamesForbook($l);
-
-            if ($this->rTemplatenamesForbooksScheduledForDeletion and $this->rTemplatenamesForbooksScheduledForDeletion->contains($l)) {
-                $this->rTemplatenamesForbooksScheduledForDeletion->remove($this->rTemplatenamesForbooksScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -2755,10 +2728,6 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collFormatss->contains($l)) {
             $this->doAddFormats($l);
-
-            if ($this->formatssScheduledForDeletion and $this->formatssScheduledForDeletion->contains($l)) {
-                $this->formatssScheduledForDeletion->remove($this->formatssScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
@@ -3002,10 +2971,6 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collIssuess->contains($l)) {
             $this->doAddIssues($l);
-
-            if ($this->issuessScheduledForDeletion and $this->issuessScheduledForDeletion->contains($l)) {
-                $this->issuessScheduledForDeletion->remove($this->issuessScheduledForDeletion->search($l));
-            }
         }
 
         return $this;
