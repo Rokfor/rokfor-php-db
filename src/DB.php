@@ -846,11 +846,16 @@ class DB
       // Process
       if (in_array($file->getClientMediaType(), $this->paths['process'])) {
         $file->moveTo($localFile);
+
+        // Class
+        $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
+        $manager = new \Intervention\Image\ImageManager(array('driver' => $driver));
+        $image = $manager->make($localFile);
+
         // Thumbnail
-        $image = new \Eventviva\ImageResize($localFile);
-        $image->quality_jpg = $this->paths['quality'];
-        $image->resizeToBestFit(150,100);            
-        $image->save($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], IMAGETYPE_JPEG);
+        $image->fit(100,100);
+        $image->save($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
+        
         $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
         $_copy = 0;        
         foreach ($settings['imagesize'] as $size_per_image) {
@@ -860,13 +865,14 @@ class DB
           $_ext = str_replace('[*]', $_copy++, $this->paths['scaled']);
           $_processfile = $localFile.$_ext;
 
-          if ($height==0)
-            $image->resizeToWidth($width);
-          elseif ($width==0)
-            $image->resizeToHeight($height);
-          else
-            $image->resizeToBestFit($width,$height);            
-          $image->save($_processfile, IMAGETYPE_JPEG);        
+          $height = $height == 0 ? null : $height;
+          $width  = $width  == 0 ? null : $width;
+
+          $image->resize($width,$height, function ($constraint) {
+            $constraint->aspectRatio();
+          });
+
+          $image->save($_processfile, $this->paths['quality']);
             
 
         }
