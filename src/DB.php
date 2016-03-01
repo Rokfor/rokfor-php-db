@@ -870,14 +870,14 @@ class DB
             
 
         }
-        $original_url = $escapedFileName;
+        $original_url = $this->paths['web'].$escapedFileName;
       }
       // Move & Create a fake thumbnail
       else if (in_array($file->getClientMediaType(), $this->paths['store'])) {
         $file->moveTo($localFile);
-        $original_url = $escapedFileName;
         copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
         $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
+        $original_url = $this->paths['web'].$escapedFileName;
       }
       // Unknown Type
       else {
@@ -887,7 +887,7 @@ class DB
       }
       // Attach to Data, Store
       
-      array_push($oldVal, [$caption, $original_url]);
+      array_push($oldVal, [$caption, $escapedFileName]);
       $field->setContent(json_encode($oldVal))
         ->setIsjson(true)
         ->save();
