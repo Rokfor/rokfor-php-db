@@ -1,21 +1,21 @@
 {
-    "name": "rokfor/db",
-    "description": "PHP Library to access a Rokfor DB Structure",
-    "type": "Library",
-    "license": "MIT",
-    "minimum-stability": "stable",
-    "authors": [
-        {
-            "name": "Urs Hofer",
-            "email": "hoferurs@gmail.com"
-        }
-    ],
-    "require": {
-      "propel/propel": "~2.0.0-alpha5",
-        "intervention/image": "^2.3"
-    },
-    "autoload": {
-        "psr-4": {"Rokfor\\": "src/"},
-        "classmap": ["config/generated-classes/"]
-    }
+  "name": "rokfor/db",
+  "description": "PHP Library to access a Rokfor DB Structure",
+  "type": "Library",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "authors": [
+  {
+    "name": "Urs Hofer",
+    "email": "hoferurs@gmail.com"
+  }
+  ],
+  "require": {
+    "propel/propel": "~2.0.0-alpha5",
+    "intervention/image": "^2.3"
+  },
+  "autoload": {
+    "psr-4": {"Rokfor\\": "src/"},
+    "classmap": ["config/generated-classes/"]
+  }
 }
