@@ -652,6 +652,16 @@ class DB
   }  
   
   /**
+   * prepares the json statement for the config field of a new contribution
+   *
+   * @return void
+   * @author Urs Hofer
+   */
+  function ContributionDefaultConfig() {
+    return json_encode(['lockdate'=>time()]);
+  }
+  
+  /**
    * NewContribution
    * 
    * Adds a Contribution and Data Fields according to the given Template
@@ -677,6 +687,7 @@ class DB
       return false;
     if (!$template)
       return false;
+    
     $c = new \Contributions();
     $c->setIssues($issue)
       ->setFormats($format)
@@ -687,6 +698,7 @@ class DB
       ->setName($name)
       ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
+      ->setConfigSys($this->ContributionDefaultConfig())
       ->save();
     $_sort = 0;
     foreach ($this->TemplatesQuery()->filterByTemplatenames($template)->orderBySort('asc') as $templatefield) {
@@ -712,7 +724,15 @@ class DB
    */
   function CloneContributions($ids, $suffix) {
     if (!is_array($ids))
-      return false;    
+      return false;   
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      $restoreVersioning = true;
+    }     
+    else {
+      $restoreVersioning = false;
+    }
     foreach ($ids as $id) {
       $c = $this->ContributionsQuery()->findPk($id);
       $new = $c->copy(true);
@@ -721,6 +741,10 @@ class DB
         ->save();
       $this->duplicateData($new);
     }
+    if ($restoreVersioning) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+    }     
   }
     
   /**
@@ -1587,6 +1611,14 @@ class DB
    * @author Urs Hofer
    */  
   function duplicateBook($id, $suffix = "Copy") {
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      $restoreVersioning = true;
+    }     
+    else {
+      $restoreVersioning = false;
+    }
     $new = $this->getBook($id)
                 ->copy(true);
     $new
@@ -1598,7 +1630,10 @@ class DB
         $this->duplicateData($contribution);
       }
     }*/
-    
+    if ($restoreVersioning) {
+      \ContributionsQuery::enableVersioning();
+      \DataQuery::enableVersioning();
+    }    
   }
 
   /**
@@ -1611,6 +1646,15 @@ class DB
    * @author Urs Hofer
    */
   function duplicateIssue($id, $suffix = "Copy", $deep = true) {
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      $restoreVersioning = true;
+    }     
+    else {
+      $restoreVersioning = false;
+    }
+    
     $new = $this->getIssue($id)
                 ->copy($deep);
     $new
@@ -1619,6 +1663,10 @@ class DB
 
     foreach ($this->ContributionsQuery()->filterByForissue($new->getId()) as $contribution) {
       $this->duplicateData($contribution);
+    }
+    if ($restoreVersioning) {
+      \ContributionsQuery::enableVersioning();
+      \DataQuery::enableVersioning();
     }
   }
 
@@ -1631,6 +1679,15 @@ class DB
    * @author Urs Hofer
    */
   function duplicateChapter($id, $suffix = "Copy", $deep = true) {
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      $restoreVersioning = true;
+    }     
+    else {
+      $restoreVersioning = false;
+    }
+    
     $new = $this->getFormat($id)
                 ->copy($deep);
     $new
@@ -1639,6 +1696,10 @@ class DB
     
     foreach ($this->ContributionsQuery()->filterByForchapter($new->getId()) as $contribution) {
       $this->duplicateData($contribution);
+    }
+    if ($restoreVersioning) {
+      \ContributionsQuery::enableVersioning();
+      \DataQuery::enableVersioning();
     }
   }
   
@@ -1702,12 +1763,26 @@ class DB
    * @author Urs Hofer
    */  
   function duplicateTemplates($id, $suffix = "Copy") {
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      $restoreVersioning = true;
+    }     
+    else {
+      $restoreVersioning = false;
+    }    
+
     $new = $this->TemplatenamesQuery()
                 ->findPk($id)
                 ->copy(true);
     $new
       ->setName($new->getName() . "[".$suffix."]")
-      ->save();     
+      ->save();
+
+    if ($restoreVersioning) {
+      \ContributionsQuery::enableVersioning();
+      \DataQuery::enableVersioning();
+    }    
   }  
   
   /**
@@ -1808,12 +1883,26 @@ class DB
    * @author Urs Hofer
    */  
   function duplicateTemplatefield($id, $suffix = "Copy") {
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      $restoreVersioning = true;
+    }     
+    else {
+      $restoreVersioning = false;
+    } 
+    
     $new = $this->TemplatesQuery()
                 ->findPk($id)
                 ->copy(true);
     $new
       ->setFieldname($new->getFieldname() . "[".$suffix."]")
       ->save();
+
+    if ($restoreVersioning) {
+      \ContributionsQuery::enableVersioning();
+      \DataQuery::enableVersioning();
+    }
   }   
   
   
