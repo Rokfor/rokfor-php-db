@@ -824,7 +824,7 @@ class DB
    * @return bool   True on success, false on error
    * @throws \Propel\Runtime\Exception\PropelException*
    */
-  function FileStore($fieldid, &$file, &$original_url, &$thumb_url, &$caption, $default_caption = 'Caption') {
+  function FileStore($fieldid, &$file, &$original_url, &$relative_url, &$thumb_url, &$caption, &$newindex, $default_caption = 'Caption') {
     $field = $this->getField($fieldid);
     if ($field) {
       $settings = json_decode($field->getTemplates()->getConfigSys(), true);
@@ -848,7 +848,7 @@ class DB
       }
       
       // Process
-      if (in_array($file->getClientMediaType(), $this->paths['process'])) {
+      if (in_array($file->getClientMediaType(), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
         $file->moveTo($localFile);
 
         // Class
@@ -880,30 +880,29 @@ class DB
             
 
         }
-        $original_url = $this->paths['web'].$escapedFileName;
       }
       // Move & Create a fake thumbnail
-      else if (in_array($file->getClientMediaType(), $this->paths['store'])) {
+      // Also for process mime types which just failed because of missing size parameters
+      else if (in_array($file->getClientMediaType(), $this->paths['store']) || in_array($file->getClientMediaType(), $this->paths['process'])) {
         $file->moveTo($localFile);
         copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
         $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
-        $original_url = $this->paths['web'].$escapedFileName;
       }
       // Unknown Type
       else {
         $original_url = false;
         $thumb_url = false;
+        $relative_url = false;
         return false;
       }
       // Attach to Data, Store
-      
-      array_push($oldVal, [$caption, $escapedFileName]);
+      $newindex = array_push($oldVal, [$caption, $escapedFileName]);
       $field->setContent(json_encode($oldVal))
         ->setIsjson(true)
         ->save();
-
-
-
+      // Update References
+      $original_url = $escapedFileName;
+      $relative_url = $this->paths['web'].$escapedFileName;
       return true;
     }
     else
