@@ -1125,7 +1125,7 @@ class DB
     }
     
     if (
-      ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))) ||
+      ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))) &&
       ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())))
     ) {
       return $this->ContributionsQuery()
@@ -1142,6 +1142,7 @@ class DB
                   ->limit((int)$limit)
                 ->_endif();
       }
+      else return false;
   }
   
   /**
@@ -1152,6 +1153,26 @@ class DB
    * @author Urs Hofer
    */
   function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false) {
+    // Checks: if issue id is set, only check for the rights for this issue
+    if ($issueid) {
+      if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys())))) 
+        return false;
+    }
+    // Checks: if issue is not sent and user is regular, set issue to available primary keys
+    elseif ($this->rights["issues"] !== true) {
+      $issueid = $this->rights["issues"]->getPrimaryKeys();
+    }
+
+    // Checks: if chapter id is set, only check for the rights for this issue    
+    if ($chapterid) {
+      if (!($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapterid, $this->rights["formats"]->getPrimaryKeys()))))
+        return false;
+    }  
+    // Checks: if chapter is not sent and user is regular, set chapters to available primary keys
+    elseif ($this->rights["formats"] !== true) {
+      $chapterid = $this->rights["formats"]->getPrimaryKeys();
+    }
+  
   
     return $this->ContributionsQuery()
                 ->_if($issueid)
@@ -1193,7 +1214,20 @@ class DB
    * @author Urs Hofer
    */  
   function getContribution($id) {
-    return $this->ContributionsQuery()->findPk($id);
+    if ($_c = $this->ContributionsQuery()->findPk($id)) {
+      if (
+        ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($_c->getForissue(), $this->rights["issues"]->getPrimaryKeys()))) &&
+        ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($_c->getForchapter(), $this->rights["formats"]->getPrimaryKeys())))
+      ) {
+        return $_c; 
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return null;
+    } 
   }  
   
   /**
