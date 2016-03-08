@@ -150,16 +150,24 @@ class DB
   }
   
   /**
-   * returns true if the field has to be stores as json encoded string
+   * returns true if the field has to be stored as json encoded string
    *
    * @param string $field 
    * @return void
    * @author Urs Hofer
    */
   private function _determineJsonForField($field) {
-    $_json = $field->getTemplates()->getFieldtype() == 'Zahl' || 
-              ($field->getTemplates()->getFieldtype() == 'Text' && ($settings['rtfeditor'] || !$settings['arrayeditor']));
-    return !$_json;
+    $settings = json_decode($field->getTemplates()->getConfigSys(), true);
+    switch ($field->getTemplates()->getFieldtype()) {
+      case 'Zahl':
+        return false;
+        break;
+      case 'Text':
+        if (!$settings['arrayeditor'])
+          return false;
+        break;      
+    }
+    return true;
   }
 
   /**
