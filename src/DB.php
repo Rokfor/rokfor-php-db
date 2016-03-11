@@ -1133,8 +1133,17 @@ class DB
     }
     
     if (
-      ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))) &&
-      ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())))
+      ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && (
+        is_array($issueid) 
+          ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) > 0
+          : in_array($issueid, $this->rights["issues"]->getPrimaryKeys())
+        ))) &&
+      ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && (
+        is_array($chapterid) 
+          ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) > 0
+          : in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())
+          
+        )))
     ) {
       return $this->ContributionsQuery()
                 ->filterByForissue($issueid)
