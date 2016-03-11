@@ -886,15 +886,16 @@ class DB
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
         $manager = new \Intervention\Image\ImageManager(array('driver' => $driver));
-        $image = $manager->make($localFile);
 
         // Thumbnail
+        $image = $manager->make($localFile);
         $image->fit(100,100);
         $image->save($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
         
         $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
         $_copy = 0;        
         foreach ($settings['imagesize'] as $size_per_image) {
+          $image = $manager->make($localFile);
           $width = $size_per_image['width'];
           $height = $size_per_image['height'];
           // Resize and Copy to width and height
