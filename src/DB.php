@@ -1170,7 +1170,7 @@ class DB
    * @return ChildCollection\ContributionsQuery()
    * @author Urs Hofer
    */
-  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false) {
+  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc') {
     // Checks: if issue id is set, only check for the rights for this issue
     if ($issueid) {
       if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys())))) 
@@ -1190,7 +1190,44 @@ class DB
     elseif ($this->rights["formats"] !== true) {
       $chapterid = $this->rights["formats"]->getPrimaryKeys();
     }
+    
+    // Sort Mode
+    if (!$sortmode) $sortmode = "asc";
+    if ($sortmode == "asc" || $sortmode == "desc") {
+      $direction = $sortmode;
+      $sort = 'orderBySort';
+    }
+    else {
+      list($sort,$direction) = explode(":", $sortmode);
+      if ($direction == "") {
+        $direction == "asc";
+      }
+      switch ($sort) {
+        case 'date':
+          $sort = 'orderByNewdate';
+          break;
+        case 'name':
+          $sort = 'orderByName';
+          break;
+        case 'id':
+          $sort = 'orderById';
+          break;
+        default:
+          $sort = 'orderBySort';
+          break;
+      }
+    }
   
+    // Filter Fields: If passed, only the selected fields are searched for a valoue
+    $filterfieldids = [];
+    if ($filterfield) {
+      foreach (explode('|', $filterfield) as $f) {
+        $filterfieldids[] = (int)$f;
+      }
+    }
+    if ($filtermode != "lt" && $filtermode != "gt" && $filtermode != "eq") {
+      $filtermode = "like";
+    }
   
     return $this->ContributionsQuery()
                 ->_if($issueid)
@@ -1203,12 +1240,29 @@ class DB
                   ->filterByStatus($status)
                 ->_endif()
                 ->distinct()
-                ->filterByName('%'.$string.'%')
-                ->_or()
-                  ->useDataQuery()
-                  ->filterByContent('%'.$string.'%')
+                ->_if(!$filterfield)
+                  ->filterByName('%'.$string.'%')
+                  ->_or()
+                ->_endif()
+                ->useDataQuery()
+                    ->_if($filterfield)
+                      ->filterByFortemplatefield($filterfieldids)
+                      ->_and()
+                    ->_endif()
+                    ->_if($filtermode == "like")
+                      ->filterByContent('%'.$string.'%')
+                    ->_endif()
+                    ->_if($filtermode == "lt")
+                      ->filterByContent(array('max' => (int)$string))
+                    ->_endif()                                  
+                    ->_if($filtermode == "gt")
+                      ->filterByContent(array('min' => (int)$string))
+                    ->_endif()                                  
+                    ->_if($filtermode == "eq")
+                      ->filterByContent($string)
+                    ->_endif()
                   ->endUse()
-                ->orderByName()
+                ->$sort($direction)
                 ->_if($limit)
                   ->limit((int)$limit)
                 ->_endif()
