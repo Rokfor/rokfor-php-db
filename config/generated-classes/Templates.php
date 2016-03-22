@@ -42,6 +42,7 @@ class Templates extends BaseTemplates
       'textlength'         => [              7,8, ],
       'fullhistory'        => [                8, ],
       'rtfeditor'          => [                8, ],
+      'markdowneditor'     => [                8, ],
       'codeeditor'         => [                8, ],
       'editorcolumns'      => [                8, ],
       'arrayeditor'        => [                8, ],
