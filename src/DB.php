@@ -92,14 +92,86 @@ class DB
       'icon'      => 'thumb.jpg'
     ];
     
-    $defaultLogger = new \Monolog\Logger('defaultLogger');
-    $defaultLogger->pushHandler(new \Monolog\Handler\StreamHandler($log, $level));
-    $this->serviceContainer->setLogger('defaultLogger', $defaultLogger);
+    $this->defaultLogger = new \Monolog\Logger('defaultLogger');
+    $this->defaultLogger->pushHandler(new \Monolog\Handler\StreamHandler($log, $level));
+    $this->serviceContainer->setLogger('defaultLogger', $this->defaultLogger);
     if (!$versioning) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
     }
   }
+  
+  private function s3_copy($source, $dest) {
+    @copy($source, $dest);
+    /*
+    $result = $client->putObject([
+        'ACL' => 'private|public-read|public-read-write|authenticated-read|aws-exec-read|bucket-owner-read|bucket-owner-full-control',
+        'Body' => <string || resource || Psr\Http\Message\StreamInterface>,
+        'Bucket' => '<string>', // REQUIRED
+        'CacheControl' => '<string>',
+        'ContentDisposition' => '<string>',
+        'ContentEncoding' => '<string>',
+        'ContentLanguage' => '<string>',
+        'ContentLength' => <integer>,
+        'ContentSHA256' => '<string>',
+        'ContentType' => '<string>',
+        'Expires' => <integer || string || DateTime>,
+        'GrantFullControl' => '<string>',
+        'GrantRead' => '<string>',
+        'GrantReadACP' => '<string>',
+        'GrantWriteACP' => '<string>',
+        'Key' => '<string>', // REQUIRED
+        'Metadata' => ['<string>', ...],
+        'RequestPayer' => 'requester',
+        'SSECustomerAlgorithm' => '<string>',
+        'SSECustomerKey' => '<string>',
+        'SSECustomerKeyMD5' => '<string>',
+        'SSEKMSKeyId' => '<string>',
+        'ServerSideEncryption' => 'AES256|aws:kms',
+        'SourceFile' => '<string>',
+        'StorageClass' => 'STANDARD|REDUCED_REDUNDANCY|STANDARD_IA',
+        'WebsiteRedirectLocation' => '<string>',
+    ]);*/
+  }
+  
+  private function s3_unlink($filename) {
+    @unlink($filename);
+    /*
+    $result = $client->deleteObject([
+        'Bucket' => '<string>', // REQUIRED
+        'Key' => '<string>', // REQUIRED
+        'MFA' => '<string>',
+        'RequestPayer' => 'requester',
+        'VersionId' => '<string>',
+    ]);
+    
+    $result = $client->deleteObjects([
+        'Bucket' => '<string>', // REQUIRED
+        'Delete' => [ // REQUIRED
+            'Objects' => [ // REQUIRED
+                [
+                    'Key' => '<string>', // REQUIRED
+                    'VersionId' => '<string>',
+                ],
+                // ...
+            ],
+            'Quiet' => true || false,
+        ],
+        'MFA' => '<string>',
+        'RequestPayer' => 'requester',
+    ]);
+    */
+  } 
+  
+  private function copy($source, $dest) {
+    //$this->defaultLogger->alert("FROM: " . $source . " TO: ". $dest);
+    @copy($source, $dest);
+  }
+
+  private function unlink($filename) {
+    @unlink($filename);
+  }
+
   
   private function RightsQuery() {
     return \RightsQuery::create();
@@ -177,16 +249,18 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  private function DeleteFiles($delete) {
+  private function DeleteFiles($delete, $thumbs, $scaled) {
     foreach ($delete as $file) {
-      // Thumb
-      @unlink($this->paths['systhumbs'].$file.$this->paths['thmbsuffix']);
       // Original
-      @unlink($this->paths['sys'].$file);      
+      $this->unlink($this->paths['sys'].$file);      
+    }
+    foreach ($thumbs as $file) {
+      // Thumb
+      $this->unlink($this->paths['systhumbs'].$file);
+    }
+    foreach ($scaled as $file) {
       // Scaled Versions
-      foreach (glob($this->paths['sys'].$file."*") as $filename) {
-        @unlink($filename);      
-      }
+      $this->unlink($this->paths['sys'].$file);      
     }
   }
   
@@ -197,20 +271,31 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  private function CopyFiles($filename) {
-    $parts = pathinfo($filename);
+  private function CopyFiles($file, $versions) {
+    $newversions = ['thumbnail' => "", 'scaled' => []];
     $copy_suffix = uniqid("_");
-    $newname = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
-    // Thumb
-    @copy($this->paths['systhumbs'].$filename.$this->paths['thmbsuffix'], $this->paths['systhumbs'].$newname.$this->paths['thmbsuffix']);
+
     // Original
-    @copy($this->paths['sys'].$filename, $this->paths['sys'].$newname);      
-    // Scaled Versions
-    foreach (glob($this->paths['sys'].$filename."*") as $scaled) {
-      $new_scaled = str_replace($filename, $newname, $scaled);
-      @copy($scaled, $new_scaled);
+    $parts = pathinfo($file);    
+    $newname = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
+    $this->copy($this->paths['sys'].$file, $this->paths['sys'].$newname);      
+
+    // Thumb
+    if ($versions['thumbnail']) {
+      $parts = pathinfo($versions['thumbnail']);    
+      $newversions['thumbnail'] = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
+      $this->copy($this->paths['systhumbs'].$versions['thumbnail'], $this->paths['systhumbs'].$newversions['thumbnail']);
     }
-    return $newname;
+
+    // Scaled Versions
+
+    foreach ($versions['scaled'] as $scaled) {
+      $parts = pathinfo($scaled);
+      $new_scaled = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
+      $this->copy($this->paths['sys'].$scaled, $this->paths['sys'].$new_scaled);
+      $newversions['scaled'][] = $new_scaled;
+    }
+    return array($newname, $newversions);
   }
   
     
@@ -858,6 +943,7 @@ class DB
    */
   function FileStore($fieldid, &$file, &$original_url, &$relative_url, &$thumb_url, &$caption, &$newindex, $default_caption = 'Caption') {
     $field = $this->getField($fieldid);
+    $versions = ['thumbnail' => "", 'scaled' => []];
     if ($field) {
       $settings = json_decode($field->getTemplates()->getConfigSys(), true);
       $oldVal   = json_decode($field->getContent(), true);
@@ -873,34 +959,33 @@ class DB
 
       // Escape File Name
       $escapedFileName = preg_replace('/[^A-Za-z0-9ÄÖÜäöüÀÉÈèéà_\-\.]/', '_', $file->getClientFilename());
-      $localFile = $this->paths['sys'].$escapedFileName;
-      while (file_exists($localFile)) {
+      while (file_exists($this->paths['sys'].$escapedFileName)) {
         $escapedFileName = time()."_".$escapedFileName;
-        $localFile = $this->paths['sys'].$escapedFileName;
       }
       
       // Process
       if (in_array($file->getClientMediaType(), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
-        $file->moveTo($localFile);
+        $file->moveTo($this->paths['sys'].$escapedFileName);
 
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
         $manager = new \Intervention\Image\ImageManager(array('driver' => $driver));
 
         // Thumbnail
-        $image = $manager->make($localFile);
+        $image = $manager->make($this->paths['sys'].$escapedFileName);
         $image->fit(100,100);
         $image->save($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
+        $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
         
         $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
         $_copy = 0;        
         foreach ($settings['imagesize'] as $size_per_image) {
-          $image = $manager->make($localFile);
+          $image = $manager->make($this->paths['sys'].$escapedFileName);
           $width = $size_per_image['width'];
           $height = $size_per_image['height'];
           // Resize and Copy to width and height
           $_ext = str_replace('[*]', $_copy++, $this->paths['scaled']);
-          $_processfile = $localFile.$_ext;
+          $_processfile = $escapedFileName.$_ext;
 
           $height = $height == 0 ? null : $height;
           $width  = $width  == 0 ? null : $width;
@@ -908,20 +993,19 @@ class DB
           $image->resize($width,$height, function ($constraint) {
             $constraint->aspectRatio();
           });
-
-          $image->save($_processfile, $this->paths['quality']);
-            
-
+          $image->save($this->paths['sys'].$_processfile, $this->paths['quality']);
+          array_push($versions['scaled'], $escapedFileName.$_ext);
         }
       }
       // Move & Create a fake thumbnail
       // Also for process mime types which just failed because of missing size parameters
       else if (in_array($file->getClientMediaType(), $this->paths['store']) || in_array($file->getClientMediaType(), $this->paths['process'])) {
-        $file->moveTo($localFile);
-        copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
+        $file->moveTo($this->paths['sys'].$escapedFileName);
+        $this->copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
         $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
+        $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
       }
-      // Unknown Type
+      // Unknown Type: Do not accept and return false
       else {
         $original_url = false;
         $thumb_url = false;
@@ -929,7 +1013,7 @@ class DB
         return false;
       }
       // Attach to Data, Store
-      $newindex = array_push($oldVal, [$caption, $escapedFileName]);
+      $newindex = array_push($oldVal, [$caption, $escapedFileName, $versions]);
       $field->setContent(json_encode($oldVal))
         ->setIsjson(true)
         ->save();
@@ -958,20 +1042,45 @@ class DB
       $tabledata = [];
     if ($field) {
       $olddata  = json_decode($field->getContent(), true);
-      $images = [];
-      // Get Files to Delete
-      foreach ($tabledata as $i) $images[] = $i[1];
+      $oldimages = [];
+      foreach ($olddata as $i) {
+        $oldimages[$i[1]] = $i;
+      }
+
+      // Copy scaled versions from old data
+
+      foreach ($tabledata as $key => $i) {
+        if ($oldimages[$i[1]][1] === $i[1]) {
+          $tabledata[$key][2] = $oldimages[$i[1]][2];
+          unset($oldimages[$i[1]]);
+        }
+      }
+
+      // $this->defaultLogger->alert("TO DELETE: " . join(",",array_keys($oldimages)));
+
+      // Oldimages has now all the rest which does not exist in the new data
       $delete = [];
-      if (is_array($olddata)) {
-        foreach ($olddata as $oldimage) {
-          if (!in_array($oldimage[1], $images))
-            $delete[] = $oldimage[1];
-        };
-        $this->DeleteFiles($delete);
-      }      
-//      print_r($delete);
-//      print_r($newdata);      
-//      print_r($olddata);      
+      $thumbs = [];
+      $scaled = [];
+      foreach ($oldimages as $i) {
+        $delete[] = $i[1];
+        if ($i[2]['thumbnail']) {
+          $thumbs[] = $i[2]['thumbnail'];
+        }
+        if (is_array($i[2]['scaled'])) {
+          $scaled  = array_merge($scaled, $i[2]['scaled']);
+        }        
+      }
+      $this->DeleteFiles($delete, $thumbs, $scaled);
+
+      //$this->defaultLogger->alert("ORIG: " . join(",", $delete));
+      //$this->defaultLogger->alert("THMB: " . join(",", $thumbs));
+      //$this->defaultLogger->alert("SCLD: " . join(",", $scaled));
+      //$this->defaultLogger->alert("STORE: " . print_r($tabledata, true));
+      
+      //      print_r($delete);
+      //      print_r($newdata);
+      //      print_r($olddata);
       $field->setContent(json_encode($tabledata))
         ->setIsjson(true)
         ->save();
@@ -2110,8 +2219,8 @@ class DB
       if ($field->getTemplates()->getFieldtype() == "Bild") {
         $olddata  = json_decode($field->getContent(), true);
         if (is_array($olddata)) {
-          foreach ($olddata as &$oldimage) {
-              $oldimage[1] = $this->CopyFiles($oldimage[1]);
+          foreach ($olddata as $key=>$oldimage) {
+              list($olddata[$key][1], $olddata[$key][2]) = $this->CopyFiles($oldimage[1], $oldimage[2]);
           }
           $field->setContent(json_encode($olddata))->save();
         }
