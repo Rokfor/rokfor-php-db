@@ -1092,6 +1092,45 @@ class DB
   
 
   /**
+   * updates the contribution backreferences stored in the _config_ field of a contribution
+   *
+   * @param string $field 
+   * @param string $data 
+   * @return void
+   * @author Urs Hofer
+   */
+  function _updateContributionalReference($fieldid, $data = []) {
+    $field = $this->getField($fieldid);    
+    if ($field->getTemplates()->getFieldtype() == "TypologySelect" || $field->getTemplates()->getFieldtype() == "TypologyKeyword") {
+      $settings = json_decode($field->getTemplates()->getConfigSys());
+      if ($settings->history_command == "contributional") {
+        // Delete old References
+        foreach ($this->ContributionsQuery()->filterById(json_decode($field->getContent())) as $_ref) {
+          if ($_nodes = json_decode($_ref->getConfigSys(), true)) {
+            if ($_nodes["referenced"][$fieldid]) {
+              unset($_nodes["referenced"][$fieldid]);
+              $_ref->setConfigSys(json_encode($_nodes))->save();
+            }
+          }
+        }
+
+        // Store new References
+        foreach ($this->ContributionsQuery()->filterById(json_decode($data)) as $_ref) {
+          $_nodes = json_decode($_ref->getConfigSys(), true);
+          if (!$_nodes || !is_array($_nodes)) {
+            $_nodes = [];
+          }
+          if (!is_array($_nodes["referenced"])) $_nodes["referenced"] = [];
+          $_nodes["referenced"][$fieldid] = $field->getForcontribution();
+          $_ref->setConfigSys(json_encode($_nodes))->save();
+        }
+      }
+    }
+  }
+  
+  
+
+  /**
    * setField
    * 
    * Stores the Data of a specific Field
@@ -1105,19 +1144,21 @@ class DB
    * @return void
    * @author Urs Hofer
    */
+  
   function setField($fieldid, &$data) {
     $field = $this->getField($fieldid);
     if ($field) {
       $tname = $field->getTemplates()->getTemplatenames();
       $access = ($this->rights["templates"]=== true || is_object($this->rights["templates"]) && in_array($tname->getId(), $this->rights["templates"]->getPrimaryKeys()));
       if ($access) {
+        // Update Contributional References for Relative Fields
+        $this->_updateContributionalReference($fieldid, $data);
+        // Json is always true unless it is a number or a plain text field
+        $field->setIsjson($this->_determineJsonForField($field));
+
         if ((is_array($data) || is_object($data))) {
           $data = json_encode($data);
         }
-        // Json is always true unless it is a number or a plain text field
-        $settings = json_decode($field->getTemplates()->getConfigSys(), true);
-        
-        $field->setIsjson($this->_determineJsonForField($field));
         $field->setContent($data)->save();
         return true;
       }
@@ -2238,6 +2279,10 @@ class DB
    */
   function deleteData($contribution) {  
     foreach ($contribution->getDatas() as $field) {
+      // Update Contribution References
+      $this->_updateContributionalReference($field->getId());
+      
+      // Delete Images
       if ($field->getTemplates()->getFieldtype() == "Bild") {
         $this->FileModify($field->getId(), []);
       }
