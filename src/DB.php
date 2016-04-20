@@ -619,8 +619,8 @@ class DB
     foreach ($books as $book) {
       $i = [];
       if ($this->rights["books"] === true || (is_object($this->rights["books"]) && in_array($book->getId(), $this->rights["books"]->getPrimaryKeys()))) {
+        $c = [];
         foreach ($book->getIssuess($criteria) as $issue) {
-          $c = [];
           if ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issue->getId(), $this->rights["issues"]->getPrimaryKeys()))) {
             foreach ($book->getFormatss($criteria) as $chapter) {
               if ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapter->getId(), $this->rights["formats"]->getPrimaryKeys()))) {
@@ -652,9 +652,71 @@ class DB
           "chapters"  => $c
         ];
       }
+      else {
+        if ($bookid) {
+          return false;
+        }
+      }
     }
     return $retval;
   }
+  
+  /**
+   * returns available issues for a user
+   * 
+   *
+   * @param int $issueid
+   * @return array
+   * @author Urs Hofer
+   */
+  function getStructureByIssues($issueid = false) {
+    $retval = [];
+    
+    $issues = $this->IssuesQuery()
+                  ->_if($issueid)
+                    ->filterById($issueid)
+                  ->_endif()
+                  ->orderBySort('asc');
+    foreach ($issues as $issue) {
+      if ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issue->getId(), $this->rights["issues"]->getPrimaryKeys()))) {
+        $retval[] = $issue;
+      }
+      else {
+        if ($issueid) {
+          return false;
+        }
+      }
+    }
+    return $retval;
+  }
+  
+  /**
+   * returns available chapters for a user
+   * 
+   *
+   * @param int $issueid
+   * @return array
+   * @author Urs Hofer
+   */
+  function getStructureByChapters($chapterid = false) {
+    $retval = [];
+    $formats = $this->FormatsQuery()
+                  ->_if($chapterid)
+                    ->filterById($chapterid)
+                  ->_endif()
+                  ->orderBySort('asc');
+    foreach ($formats as $format) {
+      if ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($format->getId(), $this->rights["formats"]->getPrimaryKeys()))) {
+        $retval[] = $format;
+      }
+      else {
+        if ($chapterid) {
+          return false;
+        }
+      }
+    }
+    return $retval;
+  }  
   
   /**
    * return template id and name for a chapter
@@ -690,6 +752,17 @@ class DB
   }
   
   /**
+   * return template field by id
+   *
+   * @param string $format 
+   * @return void
+   * @author Urs Hofer
+   */
+  function getTemplatefield($value) {
+    return $this->TemplatesQuery()->findPk($value);
+  }
+  
+  /**
    * reorder a bunch of contributions defined by their ids
    *
    * @param array $id 
@@ -722,6 +795,8 @@ class DB
     foreach ($ids as $id) {
       $c = $this->ContributionsQuery()->findPk($id);
       $this->deleteData($c);
+      // Update Contribution References
+      $this->_clearReferencedObjects($c);
     }
     $this->ContributionsQuery()
       ->filterById($ids)
@@ -1090,6 +1165,36 @@ class DB
       return false;
   }
   
+  /**
+   * sets the value of a referenced field to -1 if the source object is deleted
+   *
+   * @param string $source 
+   * @return void
+   * @author Urs Hofer
+   */
+  private function _clearReferencedObjects($source) {
+    $_id = $source->getId();
+    if ($_id) {
+      if ($_nodes = json_decode($source->getConfigSys())) {
+        foreach ($_nodes->referenced as $fieldId => $refContrib) {
+          $_f = $this->getField($fieldId);
+          if ($_f) {
+            $_oldval = $_f->getDataAlwaysAsArray();
+            // Delete this reference from valoues
+            if(($key = array_search($_id, $_oldval)) !== false) {
+                unset($_oldval[$key]);
+            }
+            // Set to Disabled if no values are left
+            if (sizeof($_oldval) == 0) {
+              $_oldval[] = -1;
+            }
+            $_f->setContent(json_encode($_oldval))->save();
+          }        
+        }
+      }
+    }
+  }
+  
 
   /**
    * updates the contribution backreferences stored in the _config_ field of a contribution
@@ -1099,13 +1204,36 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  function _updateContributionalReference($fieldid, $data = []) {
+  private function _updateReferencedObjects($fieldid, $data = []) {
     $field = $this->getField($fieldid);    
     if ($field->getTemplates()->getFieldtype() == "TypologySelect" || $field->getTemplates()->getFieldtype() == "TypologyKeyword") {
       $settings = json_decode($field->getTemplates()->getConfigSys());
+      $_oldvals = json_decode($field->getContent());
+      $_oldref = false;
+      $_newref = false;
+      // Contributional: Store contribution-id of the field in the target contribution
       if ($settings->history_command == "contributional") {
-        // Delete old References
-        foreach ($this->ContributionsQuery()->filterById(json_decode($field->getContent())) as $_ref) {
+        $_oldref = $this->ContributionsQuery()->filterById($_oldvals);
+        $_newref = $this->ContributionsQuery()->filterById(json_decode($data));
+      }
+      
+      // Books: Store contribution-id of the field in the target contribution
+      else if ($settings->history_command == "books") {
+        $_oldref = $this->BooksQuery()->filterById($_oldvals); 
+        $_newref = $this->BooksQuery()->filterById(json_decode($data)); 
+      }
+      else if ($settings->history_command == "issues") {
+        $_oldref = $this->IssuesQuery()->filterById($_oldvals); 
+        $_newref = $this->IssuesQuery()->filterById(json_decode($data));
+      }
+      else if ($settings->history_command == "chapters") {
+        $_oldref = $this->FormatsQuery()->filterById($_oldvals); 
+        $_newref = $this->FormatsQuery()->filterById(json_decode($data));
+      }
+      
+      if ($_oldref && $_newref) {
+        // Delete old References: Possible to de-click values
+        foreach ($_oldref as $_ref) {
           if ($_nodes = json_decode($_ref->getConfigSys(), true)) {
             if ($_nodes["referenced"][$fieldid]) {
               unset($_nodes["referenced"][$fieldid]);
@@ -1113,9 +1241,8 @@ class DB
             }
           }
         }
-
         // Store new References
-        foreach ($this->ContributionsQuery()->filterById(json_decode($data)) as $_ref) {
+        foreach ($_newref as $_ref) {
           $_nodes = json_decode($_ref->getConfigSys(), true);
           if (!$_nodes || !is_array($_nodes)) {
             $_nodes = [];
@@ -1152,7 +1279,7 @@ class DB
       $access = ($this->rights["templates"]=== true || is_object($this->rights["templates"]) && in_array($tname->getId(), $this->rights["templates"]->getPrimaryKeys()));
       if ($access) {
         // Update Contributional References for Relative Fields
-        $this->_updateContributionalReference($fieldid, $data);
+        $this->_updateReferencedObjects($fieldid, $data);
         // Json is always true unless it is a number or a plain text field
         $field->setIsjson($this->_determineJsonForField($field));
 
@@ -1256,7 +1383,7 @@ class DB
    * @return Childcollection\ContributionsQuery()
    * @author Urs Hofer
    */  
-  function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false) {
+  function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false, $count = false) {
     if (!$sortmode) $sortmode = "asc";
     if ($sortmode == "asc" || $sortmode == "desc") {
       $direction = $sortmode;
@@ -1296,7 +1423,15 @@ class DB
           
         )))
     ) {
-      return $this->ContributionsQuery()
+      if ($count === true) return $this->ContributionsQuery()
+                ->filterByForissue($issueid)
+                ->filterByForchapter($chapterid)
+                ->_if($status)
+                  ->filterByStatus($status)
+                ->_endif()
+                ->count();
+      
+      else return $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
                 ->_if($status)
@@ -1320,7 +1455,7 @@ class DB
    * @return ChildCollection\ContributionsQuery()
    * @author Urs Hofer
    */
-  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc') {
+  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false) {
     // Checks: if issue id is set, only check for the rights for this issue
     if ($issueid) {
       if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys())))) 
@@ -1378,8 +1513,7 @@ class DB
     if ($filtermode != "lt" && $filtermode != "gt" && $filtermode != "eq") {
       $filtermode = "like";
     }
-  
-    return $this->ContributionsQuery()
+    if ($count === true) return $this->ContributionsQuery()
                 ->_if($issueid)
                   ->filterByForissue($issueid)
                 ->_endif()
@@ -1411,14 +1545,43 @@ class DB
                     ->_if($filtermode == "eq")
                       ->filterByContent($string)
                     ->_endif()
-                  ->endUse()
+                ->endUse()
+                ->count();
+    
+    else return $this->ContributionsQuery()
+                ->_if($issueid)
+                  ->filterByForissue($issueid)
+                ->_endif()
+                ->_if($chapterid)
+                  ->filterByForchapter($chapterid)
+                ->_endif()
+                ->_if($status)
+                  ->filterByStatus($status)
+                ->_endif()
+                ->distinct()
+                ->_if(!$filterfield)
+                  ->filterByName('%'.$string.'%')
+                  ->_or()
+                ->_endif()
+                ->useDataQuery()
+                    ->_if($filterfield)
+                      ->filterByFortemplatefield($filterfieldids)
+                      ->_and()
+                    ->_endif()
+                    ->_if($filtermode == "like")
+                      ->filterByContent('%'.$string.'%')
+                    ->_endif()
+                    ->_if($filtermode == "lt")
+                      ->filterByContent(array('max' => (int)$string))
+                    ->_endif()                                  
+                    ->_if($filtermode == "gt")
+                      ->filterByContent(array('min' => (int)$string))
+                    ->_endif()                                  
+                    ->_if($filtermode == "eq")
+                      ->filterByContent($string)
+                    ->_endif()
+                ->endUse()
                 ->$sort($direction)
-                ->_if($limit)
-                  ->limit((int)$limit)
-                ->_endif()
-                ->_if($offset)
-                  ->offset((int)$offset)
-                ->_endif()
                 ->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
@@ -1744,6 +1907,23 @@ class DB
     }
     $b->save();
   }
+  
+  /**
+   * change settingsBook of a book
+   *
+   * @param int $id 
+   * @param string $name
+   * @return void
+   * @author Urs Hofer
+   */  
+  function settingsBook($id, $rights) {
+    $b = $this->getBook($id);
+    if ($b) {
+      $b->setConfigSys($rights);
+      $b->save();
+    }
+  }
+  
 
   /**
    * renames an issue
@@ -1777,6 +1957,22 @@ class DB
     }
     $b->save();
   }  
+  
+  /**
+   * change config of a issue
+   *
+   * @param int $id 
+   * @param string $name
+   * @return void
+   * @author Urs Hofer
+   */  
+  function settingsIssue($id, $rights) {
+    $b = $this->getIssue($id);
+    if ($b) {
+      $b->setConfigSys($rights);
+      $b->save();
+    }
+  }  
 
   /**
    * renames a chapter
@@ -1793,7 +1989,7 @@ class DB
   }
   
   /**
-   * change rights of a issue
+   * change rights of a chapter
    *
    * @param int $id 
    * @param string $name
@@ -1810,6 +2006,22 @@ class DB
     }
     $b->save();
   }    
+  
+  /**
+   * change rights of a chapter
+   *
+   * @param int $id 
+   * @param string $name
+   * @return void
+   * @author Urs Hofer
+   */  
+  function settingsChapter($id, $rights) {
+    $b = $this->getFormat($id);
+    if ($b) {
+      $b->setConfigSys($rights);
+      $b->save();
+    }
+  }    
 
   /**
    * deletes a book with all content and binaries
@@ -1819,13 +2031,24 @@ class DB
    * @author Urs Hofer
    */
   function deleteBook($id) {
-    foreach ($this->IssuesQuery()->filterByForbook($id) as $issue) {
-      foreach ($this->ContributionsQuery()->filterByIssues($issue) as $contribution) {
-          $this->deleteData($contribution);
+    $_book =  $this->getBook($id);
+    if ($_book) {
+      // Update Contribution References
+      $this->_clearReferencedObjects($_book);
+      // Delete Binaries & References
+      foreach ($this->IssuesQuery()->filterByForbook($id) as $issue) {
+        $this->_clearReferencedObjects($issue);
+        foreach ($this->ContributionsQuery()->filterByIssues($issue) as $contribution) {
+            $this->deleteData($contribution);
+            $this->_clearReferencedObjects($contribution);
+        }
       }
+      // Delete Chapter References
+      foreach ($this->FormatsQuery()->filterByForbook($id) as $chapter) {
+        $this->_clearReferencedObjects($chapter);
+      }
+      $_book->delete();
     }
-    $this->getBook($id)
-         ->delete();
   }
 
   /**
@@ -1836,11 +2059,17 @@ class DB
    * @author Urs Hofer
    */
   function deleteIssue($id) {
-    foreach ($this->ContributionsQuery()->filterByForissue($id) as $contribution) {
-      $this->deleteData($contribution);
-    }    
-    $this->getIssue($id)
-         ->delete();    
+    $_issue = $this->getIssue($id);
+    if ($_issue) {
+      // Delete Contribution References
+      $this->_clearReferencedObjects($_issue);
+      // Delete Binaries & References
+      foreach ($this->ContributionsQuery()->filterByForissue($id) as $contribution) {
+        $this->deleteData($contribution);
+        $this->_clearReferencedObjects($contribution);
+      }    
+      $_issue->delete();    
+    }
   }
 
   /**
@@ -1851,11 +2080,26 @@ class DB
    * @author Urs Hofer
    */
   function deleteChapter($id) {
-    foreach ($this->ContributionsQuery()->filterByForchapter($id) as $contribution) {
-      $this->deleteData($contribution);
+    $_chapter = $this->getFormat($id);
+    if ($_chapter) {
+      // Update Contribution References
+      $this->_clearReferencedObjects($_chapter);
+      // Delete Binaries & References
+      foreach ($this->ContributionsQuery()->filterByForchapter($id) as $contribution) {
+        $this->deleteData($contribution);
+        $this->_clearReferencedObjects($contribution);
+      }
+      // Set Parentnode of dependent chapters to -1
+      foreach ($this->getFormats()->filterByForbook($_chapter->getForbook()) as $f) {
+        $_config = json_decode($f->getConfigSys());
+        if ($_config->parentnode == $id) {
+          $_config->parentnode = -1;
+          $f->setConfigSys(json_encode($_config))->save();
+        }
+      }
+      // Delete Chapter
+      $_chapter->delete();
     }
-    $this->getFormat($id)
-         ->delete();        
   }
   
   /**
@@ -2279,9 +2523,6 @@ class DB
    */
   function deleteData($contribution) {  
     foreach ($contribution->getDatas() as $field) {
-      // Update Contribution References
-      $this->_updateContributionalReference($field->getId());
-      
       // Delete Images
       if ($field->getTemplates()->getFieldtype() == "Bild") {
         $this->FileModify($field->getId(), []);
