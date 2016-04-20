@@ -15,4 +15,15 @@ use Base\Books as BaseBooks;
 class Books extends BaseBooks
 {
 
+  public function getConfigSys()
+  {
+    $_c = json_decode($this->__config__);
+    if (!is_object($_c)) {
+       $_c = new stdClass();
+    }
+    $_c->editorcolumns = $_c->editorcolumns ? $_c->editorcolumns : [];
+    $_c->locale = $_c->locale ? $_c->locale : [];
+    return json_encode($_c);
+  }
+
 }

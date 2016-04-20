@@ -188,6 +188,11 @@ class Data extends BaseData
                                                 ->_endif()
                                                 ->_if($settings['restrict_to_template'])
                                                   ->filterByTemplatenames($template)
+                                                ->_endif()
+                                                ->_if($settings['restrict_to_book'])
+                                                  ->useIssuesQuery()
+                                                    ->filterByBooks($book)
+                                                  ->endUse()
                                                 ->_endif();
           foreach($_data as $_b) {
             array_push($retval, ["id"=>$_b->getId(),"value"=>$_b->getName()]);
@@ -235,7 +240,8 @@ class Data extends BaseData
    */
   function getDataAlwaysAsArray()
   {
-    $data = json_decode($this->getContent(), true);
+    $_c = $this->getContent() ? $this->getContent() : -1;
+    $data = json_decode($_c, true);
     return (!is_array($data)?[$data]:$data);
   }
 }

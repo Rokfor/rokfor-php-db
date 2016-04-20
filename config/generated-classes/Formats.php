@@ -15,4 +15,25 @@ use Base\Formats as BaseFormats;
 class Formats extends BaseFormats
 {
 
+  public function getConfigSys()
+  {
+    $_c = json_decode($this->__config__);
+    $_c->parentnode = $this->getParentnode();
+    $_c->editorcolumns = $_c->editorcolumns ? $_c->editorcolumns : [];
+    $_c->locale = $_c->locale ? $_c->locale : [];
+    return json_encode($_c);
+  }
+  
+  public function setConfigSys($v)
+  {
+
+      // Setting Parentnode
+      $_c = json_decode($v);
+      if ($_c->parentnode) {
+        $this->setParentnode($_c->parentnode);
+      }
+
+      return parent::setConfigSys($v);
+  } // setConfigSys()
+
 }
