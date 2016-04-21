@@ -44,7 +44,6 @@ class DB
    */
   private $rights;
     
-
   /**
    * paths for several upload actions
    *
@@ -52,7 +51,7 @@ class DB
    */
   private $paths;
     
-  function __construct($host, $user, $pass, $dbname, $log, $level, $socket = false, $port = false, $versioning = false)
+  function __construct($host, $user, $pass, $dbname, $log, $level, $patharray = [], $socket = false, $port = false, $versioning = false)
   {
     $socket = $socket 
               ? "unix_socket=".$socket.";" 
@@ -80,16 +79,16 @@ class DB
     $this->serviceContainer->setDefaultDatasource('rokfor');
     $this->currentUser = false;
     $this->paths = [
-      'sys'       => __DIR__. '/../public/udb/',
-      'systhumbs' => __DIR__. '/../public/udb/thumbs/',
-      'web'       => '/udb/',
-      'webthumbs' => '/udb/thumbs/',
-      'thmbsuffix'=> '-thmb.jpg',
-      'scaled'    => '-preview[*].jpg',
-      'quality'   =>  75,
-      'process'   => ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/tiff'],
-      'store'     => ['application/zip', 'video/quicktime', 'video/mp4', 'video/webm', 'audio/mp3'],
-      'icon'      => 'thumb.jpg'
+      'sys'       => $patharray['sys']        ? $patharray['sys']         : __DIR__. '/../public/udb/',
+      'systhumbs' => $patharray['systhumbs']  ? $patharray['systhumbs']   : __DIR__. '/../public/udb/thumbs/',
+      'web'       => $patharray['web']        ? $patharray['web']         : '/udb/',
+      'webthumbs' => $patharray['webthumbs']  ? $patharray['webthumbs']   : '/udb/thumbs/',
+      'thmbsuffix'=> $patharray['thmbsuffix'] ? $patharray['thmbsuffix']  : '-thmb.jpg',
+      'scaled'    => $patharray['scaled']     ? $patharray['scaled']      : '-preview[*].jpg',
+      'quality'   => $patharray['quality']    ? $patharray['quality']     :  75,
+      'process'   => $patharray['process']    ? $patharray['process']     : ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/tiff'],
+      'store'     => $patharray['store']      ? $patharray['store']       : ['application/zip', 'video/quicktime', 'video/mp4', 'video/webm', 'audio/mp3'],
+      'icon'      => $patharray['icon']       ? $patharray['icon']        : 'thumb.jpg'
     ];
     
     $this->defaultLogger = new \Monolog\Logger('defaultLogger');
@@ -296,34 +295,6 @@ class DB
       $newversions['scaled'][] = $new_scaled;
     }
     return array($newname, $newversions);
-  }
-  
-    
-
-  /**
-   * update paths for file actions
-   *
-   * @param string $pSys 
-   * @param string $pSysthumbs 
-   * @param string $pWeb 
-   * @param string $pWebthumbs 
-   * @param string $thmbsuffix 
-   * @return void
-   * @author Urs Hofer
-   */
-  function updatePaths($pSys = false, $pSysthumbs = false, $pWeb = false, $pWebthumbs = false, $thmbsuffix = false, $scaled = false, $quality = false, $process = false, $store = false, $icon = false) {
-    $this->paths = [
-      'sys'       => $pSys        ? $pSys       : $this->paths['sys'],
-      'systhumbs' => $pSysthumbs  ? $pSysthumbs : $this->paths['systhumbs'],
-      'web'       => $pWeb        ? $pWeb       : $this->paths['web'],
-      'webthumbs' => $pWebthumbs  ? $pWebthumbs : $this->paths['webthumbs'],
-      'thmbsuffix'=> $thmbsuffix  ? $thmbsuffix : $this->paths['thmbsuffix'],
-      'scaled'    => $scaled      ? $scaled     : $this->paths['scaled'],
-      'quality'   => $quality     ? $quality    : $this->paths['quality'],
-      'process'   => $process     ? $process    : $this->paths['process'],
-      'store'     => $store       ? $store      : $this->paths['store'],
-      'icon'      => $icon        ? $icon       : $this->paths['icon']
-    ];    
   }
   
   /**
@@ -617,11 +588,12 @@ class DB
                   ->orderBySort('asc');
         
     foreach ($books as $book) {
-      $i = [];
       if ($this->rights["books"] === true || (is_object($this->rights["books"]) && in_array($book->getId(), $this->rights["books"]->getPrimaryKeys()))) {
         $c = [];
+        $i = [];
         foreach ($book->getIssuess($criteria) as $issue) {
           if ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issue->getId(), $this->rights["issues"]->getPrimaryKeys()))) {
+            $c = [];
             foreach ($book->getFormatss($criteria) as $chapter) {
               if ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapter->getId(), $this->rights["formats"]->getPrimaryKeys()))) {
                 $c[] = [
@@ -1040,6 +1012,7 @@ class DB
       
       // Process
       if (in_array($file->getClientMediaType(), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
+
         $file->moveTo($this->paths['sys'].$escapedFileName);
 
         // Class
