@@ -90,7 +90,6 @@ class DB
       'store'     => $patharray['store']      ? $patharray['store']       : ['application/zip', 'video/quicktime', 'video/mp4', 'video/webm', 'audio/mp3'],
       'icon'      => $patharray['icon']       ? $patharray['icon']        : 'thumb.jpg'
     ];
-    
     $this->defaultLogger = new \Monolog\Logger('defaultLogger');
     $this->defaultLogger->pushHandler(new \Monolog\Handler\StreamHandler($log, $level));
     $this->serviceContainer->setLogger('defaultLogger', $this->defaultLogger);
