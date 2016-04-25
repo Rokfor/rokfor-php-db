@@ -50,6 +50,22 @@ class DB
    * @var array
    */
   private $paths;
+  
+  
+  /**
+   * proxy redirect prefix for private binary uploads
+   *
+   * @var string
+   */
+  private $proxy_prefix;
+  
+  
+  /**
+   * s3 storage client
+   *
+   * @var string
+   */
+  private static $s3;
     
   function __construct($host, $user, $pass, $dbname, $log, $level, $patharray = [], $socket = false, $port = false, $versioning = false)
   {
@@ -97,79 +113,154 @@ class DB
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
     }
+    
+    if ($patharray['s3'] === true) {
+      static::$s3 = new \stdClass();
+      static::$s3->client = \Aws\S3\S3Client::factory(array(
+          'credentials' => array(
+              'key'     => $patharray['s3_aws_key'],
+              'secret'  => $patharray['s3_aws_secret'],
+          ),
+          'region'      => $patharray['s3_aws_region'],
+          'version'     => "2006-03-01"
+      ));
+      static::$s3->bucket = $patharray['s3_aws_bucket'];
+      static::$s3->folder = md5($dbname);
+      static::$s3->client->registerStreamWrapper();
+    }
+    else {
+      static::$s3 = false;
+    }
+    
+    $this->proxy_prefix = '/rf/proxy?';
   }
   
-  private function s3_copy($source, $dest) {
-    @copy($source, $dest);
-    /*
-    $result = $client->putObject([
-        'ACL' => 'private|public-read|public-read-write|authenticated-read|aws-exec-read|bucket-owner-read|bucket-owner-full-control',
-        'Body' => <string || resource || Psr\Http\Message\StreamInterface>,
-        'Bucket' => '<string>', // REQUIRED
-        'CacheControl' => '<string>',
-        'ContentDisposition' => '<string>',
-        'ContentEncoding' => '<string>',
-        'ContentLanguage' => '<string>',
-        'ContentLength' => <integer>,
-        'ContentSHA256' => '<string>',
-        'ContentType' => '<string>',
-        'Expires' => <integer || string || DateTime>,
-        'GrantFullControl' => '<string>',
-        'GrantRead' => '<string>',
-        'GrantReadACP' => '<string>',
-        'GrantWriteACP' => '<string>',
-        'Key' => '<string>', // REQUIRED
-        'Metadata' => ['<string>', ...],
-        'RequestPayer' => 'requester',
-        'SSECustomerAlgorithm' => '<string>',
-        'SSECustomerKey' => '<string>',
-        'SSECustomerKeyMD5' => '<string>',
-        'SSEKMSKeyId' => '<string>',
-        'ServerSideEncryption' => 'AES256|aws:kms',
-        'SourceFile' => '<string>',
-        'StorageClass' => 'STANDARD|REDUCED_REDUNDANCY|STANDARD_IA',
-        'WebsiteRedirectLocation' => '<string>',
-    ]);*/
+  private function s3_upload($source, $dest, $private) {
+    if (substr($dest, 0, 1) != '/') {
+      $dest = '/'. $dest;
+    }
+    $result = static::$s3->client->putObject(array(
+        'ACL'        => $private ? 'private' : 'public-read',
+        'Bucket'     => static::$s3->bucket,
+        'Key'        => static::$s3->folder . $dest,
+        'SourceFile' => $source,
+    ));
+    $this->defaultLogger->alert("uploaded $deleteFile with status " . ($private ? 'private' : 'public-read'));
+    
+    return $result['ObjectURL'];
+  }
+  
+  private function _add_proxy_single_file($url) {
+    return $this->proxy_prefix.base64_encode($url);
+  }
+  
+  private function _remove_proxy_single_file($url) {
+    if (stristr($url, $this->proxy_prefix )) {
+      return base64_decode(substr($url, strlen($this->proxy_prefix)));
+    }
+    else {
+      return $url;
+    }
+  }
+
+  private function _sign_request(&$fields, $unsign = false) {
+    $func = $unsign
+            ? "_remove_proxy_single_file"
+            : "_add_proxy_single_file";
+    if (static::$s3 !== false) {
+      foreach ($fields as $key => &$v) {
+        $v[1]              = $this->$func($v[1]);
+        $v[2]['thumbnail'] = $this->$func($v[2]['thumbnail']);
+        if (is_array($v[2]['scaled'])) {
+          foreach ($v[2]['scaled'] as &$s) {
+            $s = $this->$func($s);
+          }
+        }
+      }
+    }
+  }
+
+  function sign_request(&$fields) {
+    $this->_sign_request($fields);
+  }
+  
+  function unsign_request(&$fields) {
+    $this->_sign_request($fields, true);
+  }  
+  
+  
+  function proxy($s3url) {
+    $key = static::$s3->folder . '/' . pathinfo($s3url, PATHINFO_BASENAME);
+    $this->defaultLogger->alert("proxying $key");
+    return static::$s3->client->getObject(array(
+        'Bucket' => static::$s3->bucket,
+        'Key'    => $key
+    ));
+
+  }
+
+  private function s3_move($source, $dest, $private) {
+    $ObjectURL = $this->s3_upload($source, $dest, $private);
+    @unlink($source);
+    return $ObjectURL;
   }
   
   private function s3_unlink($filename) {
-    @unlink($filename);
-    /*
-    $result = $client->deleteObject([
-        'Bucket' => '<string>', // REQUIRED
-        'Key' => '<string>', // REQUIRED
-        'MFA' => '<string>',
-        'RequestPayer' => 'requester',
-        'VersionId' => '<string>',
-    ]);
-    
-    $result = $client->deleteObjects([
-        'Bucket' => '<string>', // REQUIRED
-        'Delete' => [ // REQUIRED
-            'Objects' => [ // REQUIRED
-                [
-                    'Key' => '<string>', // REQUIRED
-                    'VersionId' => '<string>',
-                ],
-                // ...
-            ],
-            'Quiet' => true || false,
-        ],
-        'MFA' => '<string>',
-        'RequestPayer' => 'requester',
-    ]);
-    */
+    $deleteFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
+    $result = static::$s3->client->deleteObject(array(
+        'Bucket' => static::$s3->bucket,
+        'Key'    => $deleteFile,
+    ));
+    $this->defaultLogger->alert("s3 unlink $deleteFile");  
+    return $result['DeleteMarker'];
   } 
+
+  private function s3_file_exists($filename) {
+//    $this->defaultLogger->alert($deleteFile);
+    $checkFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
+    $this->defaultLogger->alert("s3 file exists $checkFile");  
+    $keyExists = file_exists("s3://".static::$s3->bucket."/".$checkFile);
+//    $this->defaultLogger->alert("s3 file exists done $keyExists");  
+    return $keyExists;
+  }
+  
+  private function s3_copy($source, $dest, $private) {
+    $sourceFile = static::$s3->folder . '/' . pathinfo($source, PATHINFO_BASENAME);
+    $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);    
+  //  $this->defaultLogger->alert("s3 copy: " . $sourceFile . " TO: ". $destFile);
+    $result = static::$s3->client->copyObject(array(
+      'ACL'        =>  $private ? 'private' : 'public-read',
+      'Bucket'      => static::$s3->bucket,
+      'Key'         => $destFile,
+      'CopySource'  => static::$s3->bucket. "/" . $sourceFile,
+    ));
+  //  $this->defaultLogger->alert("s3 copy done.");
+    $destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
+    return $destUrl;
+  }
+    
   
   private function copy($source, $dest) {
-    //$this->defaultLogger->alert("FROM: " . $source . " TO: ". $dest);
-    @copy($source, $dest);
+    return @copy($source, $dest);
   }
 
-  private function unlink($filename) {
-    @unlink($filename);
+  private function unlink($path, $filename) {
+    if (static::$s3 !== false) {
+      return $this->s3_unlink($filename);
+    }
+    else {
+      return @unlink($path . $filename);
+    }
   }
 
+  private function file_exists($filename) {
+    if (static::$s3 !== false) {
+      return $this->s3_file_exists($filename);      
+    }
+    else {
+      return file_exists($filename);
+    }
+  }
   
   private function RightsQuery() {
     return \RightsQuery::create();
@@ -250,15 +341,15 @@ class DB
   private function DeleteFiles($delete, $thumbs, $scaled) {
     foreach ($delete as $file) {
       // Original
-      $this->unlink($this->paths['sys'].$file);      
+      $this->unlink($this->paths['sys'], $file);      
     }
     foreach ($thumbs as $file) {
       // Thumb
-      $this->unlink($this->paths['systhumbs'].$file);
+      $this->unlink($this->paths['systhumbs'], $file);
     }
     foreach ($scaled as $file) {
       // Scaled Versions
-      $this->unlink($this->paths['sys'].$file);      
+      $this->unlink($this->paths['sys'], $file);      
     }
   }
   
@@ -269,20 +360,31 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  private function CopyFiles($file, $versions) {
+  private function CopyFiles($file, $versions, $private) {
     $newversions = ['thumbnail' => "", 'scaled' => []];
     $copy_suffix = uniqid("_");
 
     // Original
     $parts = pathinfo($file);    
     $newname = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
-    $this->copy($this->paths['sys'].$file, $this->paths['sys'].$newname);      
+    if (static::$s3 !== false) {
+      $newname = $this->s3_copy($this->paths['sys'].$file, $this->paths['sys'].$newname, $private);      
+    }
+    else {
+      $this->copy($this->paths['sys'].$file, $this->paths['sys'].$newname);      
+    }
+
 
     // Thumb
     if ($versions['thumbnail']) {
       $parts = pathinfo($versions['thumbnail']);    
       $newversions['thumbnail'] = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
-      $this->copy($this->paths['systhumbs'].$versions['thumbnail'], $this->paths['systhumbs'].$newversions['thumbnail']);
+      if (static::$s3 !== false) {
+        $newversions['thumbnail'] = $this->s3_copy($this->paths['systhumbs'].$versions['thumbnail'], $this->paths['systhumbs'].$newversions['thumbnail'], $private);
+      }
+      else {
+        $this->copy($this->paths['systhumbs'].$versions['thumbnail'], $this->paths['systhumbs'].$newversions['thumbnail']);
+      }
     }
 
     // Scaled Versions
@@ -290,7 +392,12 @@ class DB
     foreach ($versions['scaled'] as $scaled) {
       $parts = pathinfo($scaled);
       $new_scaled = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
-      $this->copy($this->paths['sys'].$scaled, $this->paths['sys'].$new_scaled);
+      if (static::$s3 !== false) {
+        $new_scaled = $this->s3_copy($this->paths['sys'].$scaled, $this->paths['sys'].$new_scaled, $private);
+      }
+      else {
+        $this->copy($this->paths['sys'].$scaled, $this->paths['sys'].$new_scaled);
+      }
       $newversions['scaled'][] = $new_scaled;
     }
     return array($newname, $newversions);
@@ -991,6 +1098,10 @@ class DB
     $field = $this->getField($fieldid);
     $versions = ['thumbnail' => "", 'scaled' => []];
     if ($field) {
+
+      // Private Storage
+      $private = !$field->getTemplates()->getTemplatenames()->getPublic();
+
       $settings = json_decode($field->getTemplates()->getConfigSys(), true);
       $oldVal   = json_decode($field->getContent(), true);
       if (!$oldVal) {
@@ -1005,7 +1116,7 @@ class DB
 
       // Escape File Name
       $escapedFileName = preg_replace('/[^A-Za-z0-9ÄÖÜäöüÀÉÈèéà_\-\.]/', '_', $file->getClientFilename());
-      while (file_exists($this->paths['sys'].$escapedFileName)) {
+      while ($this->file_exists($this->paths['sys'].$escapedFileName)) {
         $escapedFileName = time()."_".$escapedFileName;
       }
       
@@ -1022,9 +1133,17 @@ class DB
         $image = $manager->make($this->paths['sys'].$escapedFileName);
         $image->fit(100,100);
         $image->save($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
-        $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
-        
-        $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
+
+        // S3 Storage
+        if (static::$s3 !== false) {
+          $thumb_url = $this->s3_move($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $escapedFileName.$this->paths['thmbsuffix'], $private);
+          $versions['thumbnail'] = $thumb_url;
+        }
+        else {
+          $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];          
+          $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
+        }
+
         $_copy = 0;        
         foreach ($settings['imagesize'] as $size_per_image) {
           $image = $manager->make($this->paths['sys'].$escapedFileName);
@@ -1041,16 +1160,36 @@ class DB
             $constraint->aspectRatio();
           });
           $image->save($this->paths['sys'].$_processfile, $this->paths['quality']);
-          array_push($versions['scaled'], $escapedFileName.$_ext);
+          
+          // S3 Storage
+          if (static::$s3 !== false) {
+            array_push($versions['scaled'], $this->s3_move($this->paths['sys'].$_processfile, $escapedFileName.$_ext, $private));
+          }
+          else {
+            array_push($versions['scaled'], $escapedFileName.$_ext);
+          }
+        }
+        
+        if (static::$s3 !== false) {
+          $original_url = $this->s3_move($this->paths['sys'].$escapedFileName, $escapedFileName, $private);
         }
       }
       // Move & Create a fake thumbnail
       // Also for process mime types which just failed because of missing size parameters
       else if (in_array($file->getClientMediaType(), $this->paths['store']) || in_array($file->getClientMediaType(), $this->paths['process'])) {
         $file->moveTo($this->paths['sys'].$escapedFileName);
-        $this->copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
-        $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
-        $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
+        
+        // S3 Storage
+        if (static::$s3 !== false) {
+          $original_url = $this->s3_move($this->paths['sys'].$escapedFileName, $escapedFileName, $private);
+          $thumb_url = $this->s3_upload($this->paths['systhumbs'].$this->paths['icon'], $escapedFileName.$this->paths['thmbsuffix'], $private);
+          $versions['thumbnail'] = $thumb_url;
+        }
+        else {
+          $this->copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
+          $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
+          $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
+        }
       }
       // Unknown Type: Do not accept and return false
       else {
@@ -1059,14 +1198,29 @@ class DB
         $relative_url = false;
         return false;
       }
-      // Attach to Data, Store
-      $newindex = array_push($oldVal, [$caption, $escapedFileName, $versions]);
+      
+      // Update References
+      if (static::$s3 === false) {
+        // Attach to Data
+        $newindex = array_push($oldVal, [$caption, $escapedFileName, $versions]);
+        $original_url = $escapedFileName;
+        $relative_url = $this->paths['web'].$escapedFileName;
+      }
+      else {
+        // Attach to Data
+        $newindex = array_push($oldVal, [$caption, $original_url, $versions]);
+        $relative_url = $original_url;
+      }
+      // Store
       $field->setContent(json_encode($oldVal))
         ->setIsjson(true)
         ->save();
-      // Update References
-      $original_url = $escapedFileName;
-      $relative_url = $this->paths['web'].$escapedFileName;
+      // Proxify if private
+      if ($private === true) {
+        $original_url = $this->_add_proxy_single_file($original_url);
+        $thumb_url    = $this->_add_proxy_single_file($thumb_url);
+        $relative_url = $this->_add_proxy_single_file($relative_url);
+      }
       return true;
     }
     else
@@ -1088,6 +1242,12 @@ class DB
     if (!is_array($tabledata))
       $tabledata = [];
     if ($field) {
+
+      // Deproxify Private Binaries
+      if (!$field->getTemplates()->getTemplatenames()->getPublic()) {
+        $this->unsign_request($tabledata);
+      }
+
       $olddata  = json_decode($field->getContent(), true);
       $oldimages = [];
       foreach ($olddata as $i) {
@@ -2271,6 +2431,10 @@ class DB
     foreach($t->getBookss() as $f) {$t->removeBooks($f);}
     foreach($t->getRightss() as $f) {$t->removeRights($f);}
 
+    // Reset Checkboxes first, since they are not passed
+    // if switched of, only on values
+    $t->setPublic(false);
+
     // Cycle thru form values and store them
     foreach ($data as $value) {
       if ($value["name"] == "Formats") {
@@ -2283,7 +2447,7 @@ class DB
         $t->addRights($this->getRight($value["value"]));
       }            
       elseif ($value["name"] == "Public") {
-        $t->setPublic($value["value"] == "on" ? "true" : "false");
+        $t->setPublic(true);
       }
       else {
         $t->{"set".$value["name"]}($value["value"]);
@@ -2472,12 +2636,13 @@ class DB
    * @author Urs Hofer
    */
   function duplicateData($contribution) {
+    $private = !$contribution->getTemplatenames()->getPublic();
     foreach ($contribution->getDatas() as $field) {
       if ($field->getTemplates()->getFieldtype() == "Bild") {
         $olddata  = json_decode($field->getContent(), true);
         if (is_array($olddata)) {
           foreach ($olddata as $key=>$oldimage) {
-              list($olddata[$key][1], $olddata[$key][2]) = $this->CopyFiles($oldimage[1], $oldimage[2]);
+              list($olddata[$key][1], $olddata[$key][2]) = $this->CopyFiles($oldimage[1], $oldimage[2], $private);
           }
           $field->setContent(json_encode($olddata))->save();
         }
