@@ -1609,17 +1609,21 @@ class DB
     }
     
     // Sort Mode
-    if (!$sortmode) $sortmode = "asc";
+    $customsort = false; // If Sorted by Field: Contains Field ID
+    $sort = false;      
+    $direction = "asc";
+
+
     if ($sortmode == "asc" || $sortmode == "desc") {
       $direction = $sortmode;
       $sort = 'orderBySort';
     }
     else {
-      list($sort,$direction) = explode(":", $sortmode);
-      if ($direction == "") {
-        $direction == "asc";
+      list($_sort,$direction) = explode(":", $sortmode);
+      if ($direction != 'asc' && $direction != 'desc') {
+        $direction = "asc";
       }
-      switch ($sort) {
+      switch ($_sort) {
         case 'date':
           $sort = 'orderByNewdate';
           break;
@@ -1630,6 +1634,9 @@ class DB
           $sort = 'orderById';
           break;
         default:
+          if ($_sort != false && $_sort != "sort") {
+            $customsort = $_sort;
+          }
           $sort = 'orderBySort';
           break;
       }
@@ -1642,9 +1649,10 @@ class DB
         $filterfieldids[] = (int)$f;
       }
     }
-    if ($filtermode != "lt" && $filtermode != "gt" && $filtermode != "eq") {
+    if ($filtermode != "lte" && $filtermode != "gte" && $filtermode != "lt" && $filtermode != "gt" && $filtermode != "eq") {
       $filtermode = "like";
     }
+    
     if ($count === true) return $this->ContributionsQuery()
                 ->_if($issueid)
                   ->filterByForissue($issueid)
@@ -1669,11 +1677,17 @@ class DB
                       ->filterByContent('%'.$string.'%')
                     ->_endif()
                     ->_if($filtermode == "lt")
-                      ->filterByContent(array('max' => (int)$string))
-                    ->_endif()                                  
+                      ->add('_content', 'CAST(_content AS UNSIGNED) < ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                    ->_endif()
                     ->_if($filtermode == "gt")
-                      ->filterByContent(array('min' => (int)$string))
+                      ->add('_content', 'CAST(_content AS UNSIGNED) > ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                    ->_endif()
+                    ->_if($filtermode == "lte")
+                      ->add('_content', 'CAST(_content AS UNSIGNED) <= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
                     ->_endif()                                  
+                    ->_if($filtermode == "gte")
+                      ->add('_content', 'CAST(_content AS UNSIGNED) >= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                    ->_endif()
                     ->_if($filtermode == "eq")
                       ->filterByContent($string)
                     ->_endif()
@@ -1690,12 +1704,14 @@ class DB
                 ->_if($status)
                   ->filterByStatus($status)
                 ->_endif()
+                
+                        
                 ->distinct()
                 ->_if(!$filterfield)
                   ->filterByName('%'.$string.'%')
                   ->_or()
                 ->_endif()
-                ->useDataQuery()
+                ->useDataQuery('FilterColumn')
                     ->_if($filterfield)
                       ->filterByFortemplatefield($filterfieldids)
                       ->_and()
@@ -1704,23 +1720,42 @@ class DB
                       ->filterByContent('%'.$string.'%')
                     ->_endif()
                     ->_if($filtermode == "lt")
-                      ->filterByContent(array('max' => (int)$string))
-                    ->_endif()                                  
+                      ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) < ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                    ->_endif()
                     ->_if($filtermode == "gt")
-                      ->filterByContent(array('min' => (int)$string))
+                      ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) > ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                    ->_endif()
+                    ->_if($filtermode == "lte")
+                      ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) <= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
                     ->_endif()                                  
+                    ->_if($filtermode == "gte")
+                      ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) >= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                    ->_endif()
+
                     ->_if($filtermode == "eq")
                       ->filterByContent($string)
                     ->_endif()
                 ->endUse()
-                ->$sort($direction)
+                ->_if($customsort)
+                    ->withColumn('SortColumn._content', 'sortcolumn')
+                    ->useDataQuery('SortColumn')
+                      ->filterByFortemplatefield($customsort)
+                    ->endUse()
+                    ->orderBy('sortcolumn', $direction)
+                ->_endif()
+
+
+                ->_if(!$customsort)
+                  ->$sort($direction)
+                ->_endif()
+
                 ->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
                 ->_if($limit)
                   ->limit((int)$limit)
                 ->_endif();
-;
+
   }
 
   /**
