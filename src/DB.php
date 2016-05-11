@@ -1515,7 +1515,7 @@ class DB
    * @return Childcollection\ContributionsQuery()
    * @author Urs Hofer
    */  
-  function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false, $count = false) {
+  function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false, $count = false, $templateid = false) {
     if (!$sortmode) $sortmode = "asc";
     if ($sortmode == "asc" || $sortmode == "desc") {
       $direction = $sortmode;
@@ -1558,6 +1558,9 @@ class DB
       if ($count === true) return $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
+                ->_if($templateid)
+                  ->filterByFortemplate($templateid)
+                ->_endif()                  
                 ->_if($status)
                   ->filterByStatus($status)
                 ->_endif()
@@ -1566,6 +1569,9 @@ class DB
       else return $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
+                ->_if($templateid)
+                  ->filterByFortemplate($templateid)
+                ->_endif()
                 ->_if($status)
                   ->filterByStatus($status)
                 ->_endif()
@@ -1587,7 +1593,7 @@ class DB
    * @return ChildCollection\ContributionsQuery()
    * @author Urs Hofer
    */
-  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false) {
+  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false, $templateid = false) {
     // Checks: if issue id is set, only check for the rights for this issue
     if ($issueid) {
       if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys())))) 
@@ -1681,6 +1687,9 @@ class DB
                 ->_if($status)
                   ->filterByStatus($status)
                 ->_endif()
+                ->_if($templateid)
+                  ->filterByFortemplate($templateid)
+                ->_endif()
                 ->distinct()
 
                 ->_if($filterby != "")
@@ -1745,7 +1754,9 @@ class DB
                 ->_if($status)
                   ->filterByStatus($status)
                 ->_endif()
-                
+                ->_if($templateid)
+                  ->filterByFortemplate($templateid)
+                ->_endif()                
                         
                 ->distinct()
                         
