@@ -639,6 +639,16 @@ class DB
   }
   
   /**
+   * returns a formats Query
+   *
+   * @return \Childobject\Template
+   * @author Urs Hofer
+   */  
+  function getData() {
+    return $this->DataQuery();
+  }  
+  
+  /**
    * returns rights query
    *
    * @return void
