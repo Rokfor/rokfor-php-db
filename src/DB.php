@@ -992,9 +992,18 @@ class DB
     foreach ($ids as $id) {
       $c = $this->ContributionsQuery()->findPk($id);
       $new = $c->copy(true);
-      $new
-        ->setName($c->getName() . "[".$suffix."]")
-        ->save();
+      $new->setName($c->getName() . "[".$suffix."]");
+
+      /* Clear References in New Contribution */
+      if ($_nodes = json_decode($new->getConfigSys(), true)) {
+        if ($_nodes["referenced"]) {
+          $_nodes["referenced"] = [];
+          $new->setConfigSys(json_encode($_nodes));
+        }
+      }      
+      
+      /* Save */
+      $new->save();
       $this->duplicateData($new);
     }
     if ($restoreVersioning) {
