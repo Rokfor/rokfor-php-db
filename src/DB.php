@@ -1627,11 +1627,17 @@ class DB
                 ->_endif()
 
                 ->_if($chaptersort)
-                  ->orderByForchapter($direction)
+                  ->useFormatsQuery('ChapterSortColumn')
+                    ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
+                  ->endUse()
+                  ->orderBy('chaptersort', $direction)
                 ->_endif()
 
                 ->_if($issuesort)
-                  ->orderByForissue($direction)
+                  ->useIssuesQuery('IssueSortColumn')
+                    ->withColumn('IssueSortColumn.__sort__', 'issuesort')
+                  ->endUse()
+                  ->orderBy('issuesort', $direction)
                 ->_endif()
 
                 ->_if($offset)
@@ -1676,7 +1682,6 @@ class DB
     $customsort = false; // If Sorted by Field: Contains Field ID
     $sort = false;      
     $direction = "asc";
-
     $chaptersort = false;   // Sort by chapter
     $issuesort   = false;   // Sort by issue
 
@@ -1896,8 +1901,19 @@ class DB
                 ->_endif()
 
                 ->_if($chaptersort)
-                  ->orderByForchapter($direction)
+                  ->useFormatsQuery('ChapterSortColumn')
+                    ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
+                  ->endUse()
+                  ->orderBy('chaptersort', $direction)
                 ->_endif()
+
+                ->_if($issuesort)
+                  ->useIssuesQuery('IssueSortColumn')
+                    ->withColumn('IssueSortColumn.__sort__', 'issuesort')
+                  ->endUse()
+                  ->orderBy('issuesort', $direction)
+                ->_endif()
+
 
                 ->_if($issuesort)
                   ->orderByForissue($direction)
