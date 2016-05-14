@@ -1535,6 +1535,12 @@ class DB
    * @author Urs Hofer
    */  
   function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false, $count = false, $templateid = false) {
+    
+    
+    $chaptersort = false;   // Sort by chapter
+    $issuesort   = false;   // Sort by issue
+    $customsort = false; // If Sorted by Field: Contains Field ID
+    
     if (!$sortmode) $sortmode = "asc";
     if ($sortmode == "asc" || $sortmode == "desc") {
       $direction = $sortmode;
@@ -1555,7 +1561,15 @@ class DB
         case 'id':
           $sort = 'orderById';
           break;
+        case 'chapter':
+          $chaptersort = true;
+          break;          
+        case 'issue':
+          $issuesort = true;
         default:
+          if ($sort != false && $sort != "sort") {
+            $customsort = $sort;
+          }
           $sort = 'orderBySort';
           break;
       }
@@ -1594,7 +1608,27 @@ class DB
                 ->_if($status)
                   ->filterByStatus($status)
                 ->_endif()
-                ->$sort($direction)
+                
+                ->_if($customsort)
+                    ->withColumn('SortColumn._content', 'sortcolumn')
+                    ->useDataQuery('SortColumn')
+                      ->filterByFortemplatefield($customsort)
+                    ->endUse()
+                    ->orderBy('sortcolumn', $direction)
+                ->_endif()
+
+                ->_if(!$customsort)
+                  ->$sort($direction)
+                ->_endif()
+
+                ->_if($chaptersort)
+                  ->orderByForchapter($direction)
+                ->_endif()
+
+                ->_if($issuesort)
+                  ->orderByForissue($direction)
+                ->_endif()
+
                 ->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
@@ -1638,6 +1672,9 @@ class DB
     $sort = false;      
     $direction = "asc";
 
+    $chaptersort = false;   // Sort by chapter
+    $issuesort   = false;   // Sort by issue
+
 
     if ($sortmode == "asc" || $sortmode == "desc") {
       $direction = $sortmode;
@@ -1658,6 +1695,12 @@ class DB
         case 'id':
           $sort = 'orderById';
           break;
+        case 'chapter':
+          $chaptersort = true;
+          break;          
+        case 'issue':
+          $issuesort = true;
+          break;                    
         default:
           if ($_sort != false && $_sort != "sort") {
             $customsort = $_sort;
@@ -1838,11 +1881,18 @@ class DB
                     ->orderBy('sortcolumn', $direction)
                 ->_endif()
 
-
                 ->_if(!$customsort)
                   ->$sort($direction)
                 ->_endif()
 
+                ->_if($chaptersort)
+                  ->orderByForchapter($direction)
+                ->_endif()
+
+                ->_if($issuesort)
+                  ->orderByForissue($direction)
+                ->_endif()
+                                                                                                                                
                 ->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
