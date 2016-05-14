@@ -1547,31 +1547,36 @@ class DB
       $sort = 'orderBySort';
     }
     else {
-      list($sort,$direction) = explode(":", $sortmode);
+      list($sortarray,$direction) = explode(":", $sortmode);
       if ($direction == "") {
         $direction == "asc";
       }
-      switch ($sort) {
-        case 'date':
-          $sort = 'orderByNewdate';
-          break;
-        case 'name':
-          $sort = 'orderByName';
-          break;
-        case 'id':
-          $sort = 'orderById';
-          break;
-        case 'chapter':
-          $chaptersort = true;
-          break;          
-        case 'issue':
-          $issuesort = true;
-        default:
-          if ($sort != false && $sort != "sort") {
-            $customsort = $sort;
-          }
+      foreach ((array)explode("|", $sortarray) as $_sort) {
+        switch ($_sort) {
+          case 'date':
+            $sort = 'orderByNewdate';
+            break;
+          case 'name':
+            $sort = 'orderByName';
+            break;
+          case 'id':
+            $sort = 'orderById';
+            break;
+          case 'chapter':
+            $chaptersort = true;
+            break;          
+          case 'issue':
+            $issuesort = true;
+            break;          
+          default:
+            if ($sort != false && $sort != "sort") {
+              $customsort = $sort;
+            }
+            break;
+        }
+        if (!$sort) {
           $sort = 'orderBySort';
-          break;
+        }
       }
     }
     
@@ -1681,33 +1686,38 @@ class DB
       $sort = 'orderBySort';
     }
     else {
-      list($_sort,$direction) = explode(":", $sortmode);
-      if ($direction != 'asc' && $direction != 'desc') {
-        $direction = "asc";
+      list($sortarray,$direction) = explode(":", $sortmode);
+      if ($direction == "") {
+        $direction == "asc";
       }
-      switch ($_sort) {
-        case 'date':
-          $sort = 'orderByNewdate';
-          break;
-        case 'name':
-          $sort = 'orderByName';
-          break;
-        case 'id':
-          $sort = 'orderById';
-          break;
-        case 'chapter':
-          $chaptersort = true;
-          break;          
-        case 'issue':
-          $issuesort = true;
-          break;                    
-        default:
-          if ($_sort != false && $_sort != "sort") {
-            $customsort = $_sort;
-          }
+      foreach ((array)explode("|", $sortarray) as $_sort) {
+        switch ($_sort) {
+          case 'date':
+            $sort = 'orderByNewdate';
+            break;
+          case 'name':
+            $sort = 'orderByName';
+            break;
+          case 'id':
+            $sort = 'orderById';
+            break;
+          case 'chapter':
+            $chaptersort = true;
+            break;          
+          case 'issue':
+            $issuesort = true;
+            break;          
+          default:
+            if ($sort != false && $sort != "sort") {
+              $customsort = $sort;
+            }
+            break;
+        }
+        if (!$sort) {
           $sort = 'orderBySort';
-          break;
+        }
       }
+      
     }
   
     // Filter Fields: If passed, only the selected fields are searched for a valoue
