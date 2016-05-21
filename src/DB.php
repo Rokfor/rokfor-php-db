@@ -1134,7 +1134,7 @@ class DB
       }
 
       // Escape File Name
-      $escapedFileName = preg_replace('/[^A-Za-z0-9ÄÖÜäöüÀÉÈèéà_\-\.]/', '_', $file->getClientFilename());
+      $escapedFileName = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientFilename());
       while ($this->file_exists($this->paths['sys'].$escapedFileName)) {
         $escapedFileName = time()."_".$escapedFileName;
       }
@@ -1569,8 +1569,8 @@ class DB
             $issuesort = true;
             break;          
           default:
-            if ($sort != false && $sort != "sort") {
-              $customsort = $sort;
+            if ($_sort != false && $_sort != "sort") {
+              $customsort = $_sort;
             }
             break;
         }
@@ -1622,10 +1622,6 @@ class DB
                     ->orderBy('sortcolumn', $direction)
                 ->_endif()
 
-                ->_if(!$customsort)
-                  ->$sort($direction)
-                ->_endif()
-
                 ->_if($chaptersort)
                   ->useFormatsQuery('ChapterSortColumn')
                     ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
@@ -1638,6 +1634,10 @@ class DB
                     ->withColumn('IssueSortColumn.__sort__', 'issuesort')
                   ->endUse()
                   ->orderBy('issuesort', $direction)
+                ->_endif()
+
+                ->_if(!$customsort)
+                  ->$sort($direction)
                 ->_endif()
 
                 ->_if($offset)
@@ -1713,8 +1713,8 @@ class DB
             $issuesort = true;
             break;          
           default:
-            if ($sort != false && $sort != "sort") {
-              $customsort = $sort;
+            if ($_sort != false && $_sort != "sort") {
+              $customsort = $_sort;
             }
             break;
         }
@@ -1753,7 +1753,6 @@ class DB
     if ($filtermode != "lte" && $filtermode != "gte" && $filtermode != "lt" && $filtermode != "gt" && $filtermode != "eq") {
       $filtermode = "like";
     }
-    
     if ($count === true) return $this->ContributionsQuery()
                 ->_if($issueid)
                   ->filterByForissue($issueid)
@@ -1888,16 +1887,13 @@ class DB
                       ->_endif()
                   ->endUse()
                 ->_endif()
+
                 ->_if($customsort)
                     ->withColumn('SortColumn._content', 'sortcolumn')
                     ->useDataQuery('SortColumn')
                       ->filterByFortemplatefield($customsort)
                     ->endUse()
                     ->orderBy('sortcolumn', $direction)
-                ->_endif()
-
-                ->_if(!$customsort)
-                  ->$sort($direction)
                 ->_endif()
 
                 ->_if($chaptersort)
@@ -1914,11 +1910,10 @@ class DB
                   ->orderBy('issuesort', $direction)
                 ->_endif()
 
-
-                ->_if($issuesort)
-                  ->orderByForissue($direction)
+                ->_if(!$customsort)
+                  ->$sort($direction)
                 ->_endif()
-                                                                                                                                
+
                 ->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
