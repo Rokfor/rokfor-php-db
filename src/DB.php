@@ -900,7 +900,7 @@ class DB
    * @author Urs Hofer
    */
   function ChangeStateContributions($ids, $state) {
-    if (!in_array($state, ['Open', 'Close', 'Deleted']))
+    if (!in_array($state, ['Open', 'Draft', 'Close', 'Deleted']))
       return false;
     $this->ContributionsQuery()
       ->filterById($ids)
