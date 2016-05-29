@@ -1101,6 +1101,17 @@ class DB
     }
   }
   
+  private function _getMimeType($file) {
+    $type = $file->getClientMediaType();
+    // Nasty Firefox Bug handeled here...
+    if ($type === "application/force-download") {
+      if (strtolower(pathinfo( $file->getClientFilename(), PATHINFO_EXTENSION)) === "pdf") {
+        $type = "application/pdf";
+      }
+    }
+    return $type;
+  }
+  
   /**
    * FileStore
    *
@@ -1140,7 +1151,7 @@ class DB
       }
       
       // Process
-      if (in_array($file->getClientMediaType(), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
+      if (in_array($this->_getMimeType($file), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
 
         $file->moveTo($this->paths['sys'].$escapedFileName);
 
@@ -1195,7 +1206,7 @@ class DB
       }
       // Move & Create a fake thumbnail
       // Also for process mime types which just failed because of missing size parameters
-      else if (in_array($file->getClientMediaType(), $this->paths['store']) || in_array($file->getClientMediaType(), $this->paths['process'])) {
+      else if (in_array($this->_getMimeType($file), $this->paths['store']) || in_array($this->_getMimeType($file), $this->paths['process'])) {
         $file->moveTo($this->paths['sys'].$escapedFileName);
         
         // S3 Storage
