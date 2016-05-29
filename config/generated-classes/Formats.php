@@ -18,6 +18,9 @@ class Formats extends BaseFormats
   public function getConfigSys()
   {
     $_c = json_decode($this->__config__);
+    if ($_c === NULL) {
+      $_c = new stdClass();
+    }
     $_c->parentnode = $this->getParentnode();
     $_c->editorcolumns = $_c->editorcolumns ? $_c->editorcolumns : [];
     $_c->locale = $_c->locale ? $_c->locale : [];
