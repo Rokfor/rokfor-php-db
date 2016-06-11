@@ -145,7 +145,7 @@ class DB
         'Key'        => static::$s3->folder . $dest,
         'SourceFile' => $source,
     ));
-    $this->defaultLogger->alert("uploaded $deleteFile with status " . ($private ? 'private' : 'public-read'));
+    $this->defaultLogger->info("uploaded $deleteFile with status " . ($private ? 'private' : 'public-read'));
     
     return $result['ObjectURL'];
   }
@@ -237,7 +237,7 @@ class DB
     /* S3 File Proxying */
     if (static::$s3 !== false) {    
       $key = static::$s3->folder . '/' . pathinfo($s3url, PATHINFO_BASENAME);
-      $this->defaultLogger->alert("s3 proxying $key");
+      $this->defaultLogger->info("s3 proxying $key");
       if ($this->s3_file_exists($key)) {
         $result =  static::$s3->client->getObject(array(
             'Bucket' => static::$s3->bucket,
@@ -257,7 +257,7 @@ class DB
     else {
       $localfile = $this->paths['privatesys'].$s3url;
       if (file_exists($localfile)) {
-        $this->defaultLogger->alert("local proxying $localfile");
+        $this->defaultLogger->info("local proxying $localfile");
         $r = $response->withHeader('Content-Type', mime_content_type($localfile))->withHeader('Content-Length', filesize($localfile));
         $r->getBody()->write(file_get_contents($localfile));            
       }
@@ -282,16 +282,16 @@ class DB
         'Bucket' => static::$s3->bucket,
         'Key'    => $deleteFile,
     ));
-    $this->defaultLogger->alert("s3 unlink $deleteFile");  
+    $this->defaultLogger->info("s3 unlink $deleteFile");  
     return $result['DeleteMarker'];
   } 
 
   private function s3_file_exists($filename) {
-//    $this->defaultLogger->alert($deleteFile);
+//    $this->defaultLogger->info($deleteFile);
     $checkFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
     $keyExists = file_exists("s3://".static::$s3->bucket."/".$checkFile);
     if ($keyExists) {
-      $this->defaultLogger->alert("s3 file exists $checkFile");  
+      $this->defaultLogger->info("s3 file exists $checkFile");  
     }
     return $keyExists;
   }
@@ -299,14 +299,14 @@ class DB
   private function s3_copy($source, $dest, $private) {
     $sourceFile = static::$s3->folder . '/' . pathinfo($source, PATHINFO_BASENAME);
     $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);    
-  //  $this->defaultLogger->alert("s3 copy: " . $sourceFile . " TO: ". $destFile);
+  //  $this->defaultLogger->info("s3 copy: " . $sourceFile . " TO: ". $destFile);
     $result = static::$s3->client->copyObject(array(
       'ACL'        =>  $private ? 'private' : 'public-read',
       'Bucket'      => static::$s3->bucket,
       'Key'         => $destFile,
       'CopySource'  => static::$s3->bucket. "/" . $sourceFile,
     ));
-  //  $this->defaultLogger->alert("s3 copy done.");
+  //  $this->defaultLogger->info("s3 copy done.");
     $destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
     return $destUrl;
   }
@@ -1214,7 +1214,7 @@ class DB
                 ? $this->paths['privatesys'] 
                 : $this->paths['sys'];
 
-$this->defaultLogger->alert("PRIVATE: " . $private);
+$this->defaultLogger->info("PRIVATE: " . $private);
 
       $settings = json_decode($field->getTemplates()->getConfigSys(), true);
       $oldVal   = json_decode($field->getContent(), true);
@@ -1232,7 +1232,7 @@ $this->defaultLogger->alert("PRIVATE: " . $private);
       $escapedFileName = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientFilename());
       while ($this->file_exists($path.$this->paths['web'].$escapedFileName)) {
         $escapedFileName = time()."_".$escapedFileName;
-        $this->defaultLogger->alert("APPENDING: " . $escapedFileName);
+        $this->defaultLogger->info("APPENDING: " . $escapedFileName);
       }
       
       // Process
@@ -1378,7 +1378,7 @@ $this->defaultLogger->alert("PRIVATE: " . $private);
       if ($private === true) {
         foreach ($tabledata as $key => $i) {
           $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1]);
-          $this->defaultLogger->alert($tabledata[$key][1]);
+          $this->defaultLogger->info($tabledata[$key][1]);
         }
       }
       foreach ($tabledata as $key => $i) {
@@ -1388,7 +1388,7 @@ $this->defaultLogger->alert("PRIVATE: " . $private);
         }
       }
 
-      // $this->defaultLogger->alert("TO DELETE: " . join(",",array_keys($oldimages)));
+      // $this->defaultLogger->info("TO DELETE: " . join(",",array_keys($oldimages)));
 
       // Oldimages has now all the rest which does not exist in the new data
       $delete = [];
@@ -1405,10 +1405,10 @@ $this->defaultLogger->alert("PRIVATE: " . $private);
       }
       $this->DeleteFiles($delete, $thumbs, $scaled, $private);
 
-      //$this->defaultLogger->alert("ORIG: " . join(",", $delete));
-      //$this->defaultLogger->alert("THMB: " . join(",", $thumbs));
-      //$this->defaultLogger->alert("SCLD: " . join(",", $scaled));
-      //$this->defaultLogger->alert("STORE: " . print_r($tabledata, true));
+      //$this->defaultLogger->info("ORIG: " . join(",", $delete));
+      //$this->defaultLogger->info("THMB: " . join(",", $thumbs));
+      //$this->defaultLogger->info("SCLD: " . join(",", $scaled));
+      //$this->defaultLogger->info("STORE: " . print_r($tabledata, true));
       
       //      print_r($delete);
       //      print_r($newdata);
@@ -2754,7 +2754,7 @@ $this->defaultLogger->alert("PRIVATE: " . $private);
       }            
       elseif ($value["name"] == "Public") {
         $t->setPublic(true);
-        $this->defaultLogger->alert("set public: true");
+        $this->defaultLogger->info("set public: true");
       }
       else {
         $t->{"set".$value["name"]}($value["value"]);
