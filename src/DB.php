@@ -95,8 +95,8 @@ class DB
     $this->serviceContainer->setDefaultDatasource('rokfor');
     $this->currentUser = false;
     $this->paths = [
-      'sys'       => $patharray['sys']        ? $patharray['sys']         : __DIR__. '/../public/udb/',
-      'systhumbs' => $patharray['systhumbs']  ? $patharray['systhumbs']   : __DIR__. '/../public/udb/thumbs/',
+      'sys'       => $patharray['sys']        ? $patharray['sys']         : __DIR__. '/../public',
+      'privatesys'=> $patharray['privatesys'] ? $patharray['privatesys']  : __DIR__. '/../public',
       'web'       => $patharray['web']        ? $patharray['web']         : '/udb/',
       'webthumbs' => $patharray['webthumbs']  ? $patharray['webthumbs']   : '/udb/thumbs/',
       'thmbsuffix'=> $patharray['thmbsuffix'] ? $patharray['thmbsuffix']  : '-thmb.jpg',
@@ -156,47 +156,118 @@ class DB
   
   private function _remove_proxy_single_file($url) {
     if (stristr($url, $this->proxy_prefix )) {
-      return base64_decode(substr($url, strlen($this->proxy_prefix)));
+      if (static::$s3 !== false) {
+        return base64_decode(substr($url, strlen($this->proxy_prefix)));
+      }
+      else {
+        $encoded = base64_decode(substr($url, strlen($this->proxy_prefix)));
+        if (substr($encoded, 0, strlen($this->paths['web'])) === $this->paths['web']) {
+          return substr($encoded, strlen($this->paths['web']));
+        }
+        if (substr($encoded, 0, strlen($this->paths['webthumbs'])) === $this->paths['webthumbs']) {
+          return substr($encoded, strlen($this->paths['webthumbs']));
+        } 
+        return $encoded;       
+      }
+
     }
     else {
       return $url;
     }
   }
 
-  private function _sign_request(&$fields, $unsign = false) {
-    $func = $unsign
-            ? "_remove_proxy_single_file"
-            : "_add_proxy_single_file";
+  function sign_request(&$fields, $proxy_prefix = false) {
+    if ($proxy_prefix) {
+      $this->proxy_prefix = $proxy_prefix;
+    }
     if (static::$s3 !== false) {
       foreach ($fields as $key => &$v) {
-        $v[1]              = $this->$func($v[1]);
-        $v[2]['thumbnail'] = $this->$func($v[2]['thumbnail']);
-        if (is_array($v[2]['scaled'])) {
-          foreach ($v[2]['scaled'] as &$s) {
-            $s = $this->$func($s);
+        $v[1]              = $this->_add_proxy_single_file($v[1]);
+        if (is_object($v[2])) {
+          $v[2]->thumbnail = $this->_add_proxy_single_file($v[2]->thumbnail);
+          if (is_array($v[2]->scaled)) {
+            foreach ($v[2]->scaled as &$s) {
+              $s = $this->_add_proxy_single_file($s);
+            }
+          }
+        }
+        else {
+          $v[2]['thumbnail'] = $this->_add_proxy_single_file($v[2]['thumbnail']);
+          if (is_array($v[2]['scaled'])) {
+            foreach ($v[2]['scaled'] as &$s) {
+              $s = $this->_add_proxy_single_file($s);
+            }
           }
         }
       }
     }
+    else {
+      foreach ($fields as $key => &$v) {
+        $v[1]              = $this->_add_proxy_single_file($this->paths['web'].$v[1]);
+        if (is_object($v[2])) {
+          $v[2]->thumbnail = $this->_add_proxy_single_file($this->paths['webthumbs'].$v[2]->thumbnail);
+          if (is_array($v[2]->scaled)) {
+            foreach ($v[2]->scaled as &$s) {
+              $s = $this->_add_proxy_single_file($this->paths['web'].$s);
+            }
+          }
+        }
+        else {
+          $v[2]['thumbnail'] = $this->_add_proxy_single_file($this->paths['webthumbs'].$v[2]['thumbnail']);
+          if (is_array($v[2]['scaled'])) {
+            foreach ($v[2]['scaled'] as &$s) {
+              $s = $this->_add_proxy_single_file($this->paths['web'].$s);
+            }
+          }
+        }
+      }
+    }    
   }
 
-  function sign_request(&$fields) {
-    $this->_sign_request($fields);
-  }
   
-  function unsign_request(&$fields) {
+/*  function unsign_request(&$fields, $proxy_prefix = false) {
+    if ($proxy_prefix) {
+      $this->proxy_prefix = $proxy_prefix;
+    }
     $this->_sign_request($fields, true);
-  }  
+  }*/  
   
   
-  function proxy($s3url) {
-    $key = static::$s3->folder . '/' . pathinfo($s3url, PATHINFO_BASENAME);
-    $this->defaultLogger->alert("proxying $key");
-    return static::$s3->client->getObject(array(
-        'Bucket' => static::$s3->bucket,
-        'Key'    => $key
-    ));
-
+  function proxy($s3url, &$response) {
+    /* S3 File Proxying */
+    if (static::$s3 !== false) {    
+      $key = static::$s3->folder . '/' . pathinfo($s3url, PATHINFO_BASENAME);
+      $this->defaultLogger->alert("s3 proxying $key");
+      if ($this->s3_file_exists($key)) {
+        $result =  static::$s3->client->getObject(array(
+            'Bucket' => static::$s3->bucket,
+            'Key'    => $key
+        ));
+        $body = $result->get('Body');
+        $body->rewind();
+        $r = $response->withHeader('Content-Type', $result['ContentType'])->withHeader('Content-Length', $result['ContentLength']);
+        $r->getBody()->write($body->read($result['ContentLength']));    
+      }
+      else {
+        $r = $response->withHeader('Content-type', 'application/json');
+        $r->getBody()->write(json_encode(['error' => "404", 'message' => "File not found"]));
+      }
+    }
+    /* Local File Proxying: Always from private folder */
+    else {
+      $localfile = $this->paths['privatesys'].$s3url;
+      if (file_exists($localfile)) {
+        $this->defaultLogger->alert("local proxying $localfile");
+        $r = $response->withHeader('Content-Type', mime_content_type($localfile))->withHeader('Content-Length', filesize($localfile));
+        $r->getBody()->write(file_get_contents($localfile));            
+      }
+      else {
+        $r = $response->withHeader('Content-type', 'application/json');
+        $r->getBody()->write(json_encode(['error' => "404", 'message' => "File not found"]));
+      }
+    }
+    /* Return Response */
+    return $r;
   }
 
   private function s3_move($source, $dest, $private) {
@@ -218,9 +289,10 @@ class DB
   private function s3_file_exists($filename) {
 //    $this->defaultLogger->alert($deleteFile);
     $checkFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
-    $this->defaultLogger->alert("s3 file exists $checkFile");  
     $keyExists = file_exists("s3://".static::$s3->bucket."/".$checkFile);
-//    $this->defaultLogger->alert("s3 file exists done $keyExists");  
+    if ($keyExists) {
+      $this->defaultLogger->alert("s3 file exists $checkFile");  
+    }
     return $keyExists;
   }
   
@@ -338,18 +410,22 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  private function DeleteFiles($delete, $thumbs, $scaled) {
+  private function DeleteFiles($delete, $thumbs, $scaled, $private = false) {
+    $path = $private === true 
+              ? $this->paths['privatesys'] 
+              : $this->paths['sys'];
+    
     foreach ($delete as $file) {
       // Original
-      $this->unlink($this->paths['sys'], $file);      
+      $this->unlink($path.$this->paths['web'], $file);      
     }
     foreach ($thumbs as $file) {
       // Thumb
-      $this->unlink($this->paths['systhumbs'], $file);
+      $this->unlink($path.$this->paths['webthumbs'], $file);
     }
     foreach ($scaled as $file) {
       // Scaled Versions
-      $this->unlink($this->paths['sys'], $file);      
+      $this->unlink($path.$this->paths['web'], $file);      
     }
   }
   
@@ -363,15 +439,18 @@ class DB
   private function CopyFiles($file, $versions, $private) {
     $newversions = ['thumbnail' => "", 'scaled' => []];
     $copy_suffix = uniqid("_");
+    $path = $private === true 
+              ? $this->paths['privatesys'] 
+              : $this->paths['sys'];
 
     // Original
     $parts = pathinfo($file);    
     $newname = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
     if (static::$s3 !== false) {
-      $newname = $this->s3_copy($this->paths['sys'].$file, $this->paths['sys'].$newname, $private);      
+      $newname = $this->s3_copy($path.$this->paths['web'].$file, $path.$this->paths['web'].$newname, $private);      
     }
     else {
-      $this->copy($this->paths['sys'].$file, $this->paths['sys'].$newname);      
+      $this->copy($path.$this->paths['web'].$file, $path.$this->paths['web'].$newname);      
     }
 
 
@@ -380,10 +459,10 @@ class DB
       $parts = pathinfo($versions['thumbnail']);    
       $newversions['thumbnail'] = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
       if (static::$s3 !== false) {
-        $newversions['thumbnail'] = $this->s3_copy($this->paths['systhumbs'].$versions['thumbnail'], $this->paths['systhumbs'].$newversions['thumbnail'], $private);
+        $newversions['thumbnail'] = $this->s3_copy($path.$this->paths['webthumbs'].$versions['thumbnail'], $path.$this->paths['webthumbs'].$newversions['thumbnail'], $private);
       }
       else {
-        $this->copy($this->paths['systhumbs'].$versions['thumbnail'], $this->paths['systhumbs'].$newversions['thumbnail']);
+        $this->copy($path.$this->paths['webthumbs'].$versions['thumbnail'], $path.$this->paths['webthumbs'].$newversions['thumbnail']);
       }
     }
 
@@ -393,10 +472,10 @@ class DB
       $parts = pathinfo($scaled);
       $new_scaled = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
       if (static::$s3 !== false) {
-        $new_scaled = $this->s3_copy($this->paths['sys'].$scaled, $this->paths['sys'].$new_scaled, $private);
+        $new_scaled = $this->s3_copy($path.$this->paths['web'].$scaled, $path.$this->paths['web'].$new_scaled, $private);
       }
       else {
-        $this->copy($this->paths['sys'].$scaled, $this->paths['sys'].$new_scaled);
+        $this->copy($path.$this->paths['web'].$scaled, $path.$this->paths['web'].$new_scaled);
       }
       $newversions['scaled'][] = $new_scaled;
     }
@@ -1130,7 +1209,12 @@ class DB
     if ($field) {
 
       // Private Storage
-      $private = !$field->getTemplates()->getTemplatenames()->getPublic();
+      $private = $field->getTemplates()->getTemplatenames()->getPublic() ? false : true;
+      $path = $private === true 
+                ? $this->paths['privatesys'] 
+                : $this->paths['sys'];
+
+$this->defaultLogger->alert("PRIVATE: " . $private);
 
       $settings = json_decode($field->getTemplates()->getConfigSys(), true);
       $oldVal   = json_decode($field->getContent(), true);
@@ -1146,27 +1230,28 @@ class DB
 
       // Escape File Name
       $escapedFileName = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientFilename());
-      while ($this->file_exists($this->paths['sys'].$escapedFileName)) {
+      while ($this->file_exists($path.$this->paths['web'].$escapedFileName)) {
         $escapedFileName = time()."_".$escapedFileName;
+        $this->defaultLogger->alert("APPENDING: " . $escapedFileName);
       }
       
       // Process
       if (in_array($this->_getMimeType($file), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
 
-        $file->moveTo($this->paths['sys'].$escapedFileName);
+        $file->moveTo($path.$this->paths['web'].$escapedFileName);
 
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
         $manager = new \Intervention\Image\ImageManager(array('driver' => $driver));
 
         // Thumbnail
-        $image = $manager->make($this->paths['sys'].$escapedFileName);
+        $image = $manager->make($path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
-        $image->save($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
+        $image->save($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
 
         // S3 Storage
         if (static::$s3 !== false) {
-          $thumb_url = $this->s3_move($this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix'], $escapedFileName.$this->paths['thmbsuffix'], $private);
+          $thumb_url = $this->s3_move($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $escapedFileName.$this->paths['thmbsuffix'], $private);
           $versions['thumbnail'] = $thumb_url;
         }
         else {
@@ -1176,7 +1261,7 @@ class DB
 
         $_copy = 0;        
         foreach ($settings['imagesize'] as $size_per_image) {
-          $image = $manager->make($this->paths['sys'].$escapedFileName);
+          $image = $manager->make($path.$this->paths['web'].$escapedFileName);
           $width = $size_per_image['width'];
           $height = $size_per_image['height'];
           // Resize and Copy to width and height
@@ -1189,11 +1274,11 @@ class DB
           $image->resize($width,$height, function ($constraint) {
             $constraint->aspectRatio();
           });
-          $image->save($this->paths['sys'].$_processfile, $this->paths['quality']);
+          $image->save($path.$this->paths['web'].$_processfile, $this->paths['quality']);
           
           // S3 Storage
           if (static::$s3 !== false) {
-            array_push($versions['scaled'], $this->s3_move($this->paths['sys'].$_processfile, $escapedFileName.$_ext, $private));
+            array_push($versions['scaled'], $this->s3_move($path.$this->paths['web'].$_processfile, $escapedFileName.$_ext, $private));
           }
           else {
             array_push($versions['scaled'], $escapedFileName.$_ext);
@@ -1201,22 +1286,22 @@ class DB
         }
         
         if (static::$s3 !== false) {
-          $original_url = $this->s3_move($this->paths['sys'].$escapedFileName, $escapedFileName, $private);
+          $original_url = $this->s3_move($path.$this->paths['web'].$escapedFileName, $escapedFileName, $private);
         }
       }
       // Move & Create a fake thumbnail
       // Also for process mime types which just failed because of missing size parameters
       else if (in_array($this->_getMimeType($file), $this->paths['store']) || in_array($this->_getMimeType($file), $this->paths['process'])) {
-        $file->moveTo($this->paths['sys'].$escapedFileName);
+        $file->moveTo($path.$this->paths['web'].$escapedFileName);
         
         // S3 Storage
         if (static::$s3 !== false) {
-          $original_url = $this->s3_move($this->paths['sys'].$escapedFileName, $escapedFileName, $private);
-          $thumb_url = $this->s3_upload($this->paths['systhumbs'].$this->paths['icon'], $escapedFileName.$this->paths['thmbsuffix'], $private);
+          $original_url = $this->s3_move($path.$this->paths['web'].$escapedFileName, $escapedFileName, $private);
+          $thumb_url = $this->s3_upload($path.$this->paths['webthumbs'].$this->paths['icon'], $escapedFileName.$this->paths['thmbsuffix'], $private);
           $versions['thumbnail'] = $thumb_url;
         }
         else {
-          $this->copy($this->paths['systhumbs'].$this->paths['icon'], $this->paths['systhumbs'].$escapedFileName.$this->paths['thmbsuffix']);
+          $this->copy($path.$this->paths['webthumbs'].$this->paths['icon'], $path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix']);
           $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
           $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
         }
@@ -1275,17 +1360,27 @@ class DB
 
       // Deproxify Private Binaries
       if (!$field->getTemplates()->getTemplatenames()->getPublic()) {
-        $this->unsign_request($tabledata);
+        $private = true;
+      }
+      else {
+        $private = false;
       }
 
       $olddata  = json_decode($field->getContent(), true);
       $oldimages = [];
-      foreach ($olddata as $i) {
-        $oldimages[$i[1]] = $i;
+      if (is_array($olddata)) {
+        foreach ($olddata as $i) {
+          $oldimages[$i[1]] = $i;
+        }
       }
 
       // Copy scaled versions from old data
-
+      if ($private === true) {
+        foreach ($tabledata as $key => $i) {
+          $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1]);
+          $this->defaultLogger->alert($tabledata[$key][1]);
+        }
+      }
       foreach ($tabledata as $key => $i) {
         if ($oldimages[$i[1]][1] === $i[1]) {
           $tabledata[$key][2] = $oldimages[$i[1]][2];
@@ -1308,7 +1403,7 @@ class DB
           $scaled  = array_merge($scaled, $i[2]['scaled']);
         }        
       }
-      $this->DeleteFiles($delete, $thumbs, $scaled);
+      $this->DeleteFiles($delete, $thumbs, $scaled, $private);
 
       //$this->defaultLogger->alert("ORIG: " . join(",", $delete));
       //$this->defaultLogger->alert("THMB: " . join(",", $thumbs));
@@ -2659,6 +2754,7 @@ class DB
       }            
       elseif ($value["name"] == "Public") {
         $t->setPublic(true);
+        $this->defaultLogger->alert("set public: true");
       }
       else {
         $t->{"set".$value["name"]}($value["value"]);
