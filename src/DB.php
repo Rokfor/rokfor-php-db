@@ -550,6 +550,24 @@ class DB
     return md5($pw) == $this->currentUser->getPassword();
   }
   
+  
+  /**
+   * returns the user query by Email
+   *
+   * @param string $email 
+   * @return void
+   * @author Urs Hofer
+   */
+  function getUserByEmail($email) {
+    $q = $this->UsersQuery()->filterByEmail($email);
+    if ($q->count() > 0) {
+      return $q; 
+    }
+    else {
+      return false;
+    }
+  }
+  
   /**
    * password quality 
    *
@@ -1243,6 +1261,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
         $manager = new \Intervention\Image\ImageManager(array('driver' => $driver));
+        $supported_types = $driver == 'imagick' 
+                            ? ['image/jpeg' => 'jpg',
+                               'image/jpg'  => 'jpg',
+                               'image/png'  => 'png',
+                               'image/gif'  => 'gif']
+                            : ['image/jpeg' => 'jpg',
+                               'image/jpg'  => 'jpg',
+                               'image/gif'  => 'gif'];
 
         // Thumbnail
         $image = $manager->make($path.$this->paths['web'].$escapedFileName);
@@ -1266,6 +1292,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           $height = $size_per_image['height'];
           // Resize and Copy to width and height
           $_ext = str_replace('[*]', $_copy++, $this->paths['scaled']);
+
+          // Keep File Type if possible: otherwise make a jpeg.
+          // If no [ext] is avaible, nothing happens.
+
+          $_suffix = $supported_types[$this->_getMimeType($file)] ? $supported_types[$this->_getMimeType($file)] : 'jpg';
+          $_ext = str_replace('[ext]', $_suffix, $_ext);
+
           $_processfile = $escapedFileName.$_ext;
 
           $height = $height == 0 ? null : $height;
@@ -1655,7 +1688,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     else {
       list($sortarray,$direction) = explode(":", $sortmode);
       if ($direction == "") {
-        $direction == "asc";
+        $direction = "asc";
       }
       foreach ((array)explode("|", $sortarray) as $_sort) {
         switch ($_sort) {
@@ -1799,7 +1832,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     else {
       list($sortarray,$direction) = explode(":", $sortmode);
       if ($direction == "") {
-        $direction == "asc";
+        $direction = "asc";
       }
       foreach ((array)explode("|", $sortarray) as $_sort) {
         switch ($_sort) {
