@@ -127,6 +127,8 @@ class Data extends BaseData
                                            ->filterByStatus('Open')
                                            ->_or()
                                            ->filterByStatus('Close')
+                                           ->_or()
+                                           ->filterByStatus('Draft')
                                          ->_endif()
                                        ->endUse();
 
@@ -155,6 +157,8 @@ class Data extends BaseData
                                           ->filterByStatus('Open')
                                           ->_or()
                                           ->filterByStatus('Close')
+                                          ->_or()
+                                          ->filterByStatus('Draft')
                                         ->_endif()
                                       ->endUse();
           foreach($_data as $_b) {
@@ -182,6 +186,8 @@ class Data extends BaseData
                                                   ->filterByStatus('Open')
                                                   ->_or()
                                                   ->filterByStatus('Close')
+                                                  ->_or()
+                                                  ->filterByStatus('Draft')                                                        
                                                 ->_endif()
                                                 ->_if($settings['restrict_to_chapter'])
                                                   ->filterByFormats($chapter)
