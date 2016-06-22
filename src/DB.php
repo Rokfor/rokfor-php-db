@@ -258,7 +258,10 @@ class DB
       $localfile = $this->paths['privatesys'].$s3url;
       if (file_exists($localfile)) {
         $this->defaultLogger->info("local proxying $localfile");
-        $r = $response->withHeader('Content-Type', mime_content_type($localfile))->withHeader('Content-Length', filesize($localfile));
+        $r = $response
+                ->withHeader('Content-Type', mime_content_type($localfile))
+                ->withHeader('Content-Length', filesize($localfile))
+                ->withHeader('Content-Disposition', 'attachment; filename="'.basename($localfile).'"');
         $r->getBody()->write(file_get_contents($localfile));            
       }
       else {
