@@ -245,7 +245,11 @@ class DB
         ));
         $body = $result->get('Body');
         $body->rewind();
-        $r = $response->withHeader('Content-Type', $result['ContentType'])->withHeader('Content-Length', $result['ContentLength']);
+        $r = $response
+                ->withHeader('Content-Type', $result['ContentType'])
+                ->withHeader('Content-Length', $result['ContentLength'])
+                ->withHeader('Content-Disposition', 'attachment; filename="'.pathinfo($s3url, PATHINFO_BASENAME).'"');
+                  
         $r->getBody()->write($body->read($result['ContentLength']));    
       }
       else {
