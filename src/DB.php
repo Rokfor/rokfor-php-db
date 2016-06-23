@@ -154,7 +154,7 @@ class DB
     return $this->proxy_prefix.base64_encode($url);
   }
   
-  private function _remove_proxy_single_file($url) {
+  function _remove_proxy_single_file($url) {
     if (stristr($url, $this->proxy_prefix )) {
       if (static::$s3 !== false) {
         return base64_decode(substr($url, strlen($this->proxy_prefix)));
