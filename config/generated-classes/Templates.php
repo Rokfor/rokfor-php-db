@@ -59,6 +59,7 @@ class Templates extends BaseTemplates
       'restrict_to_issue'  => [0,1,2,             ],
       'restrict_to_chapter'=> [0,1,2,             ],
       'restrict_to_book'   => [0,1,2,             ],
+      'restrict_to_template' => [0,1,2,             ],      
       'frombook'           => [0,1,2,             ],
       'fromchapter'        => [0,1,2,             ],
       'fromissue'          => [0,1,2,             ],
