@@ -122,6 +122,7 @@ class DB
               'secret'  => $patharray['s3_aws_secret'],
           ),
           'region'      => $patharray['s3_aws_region'],
+          'endpoint'    => $patharray['s3_aws_endpoint'],
           'version'     => "2006-03-01"
       ));
       static::$s3->bucket = $patharray['s3_aws_bucket'];
