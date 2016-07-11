@@ -2124,12 +2124,28 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function addLog($type, $message, $ip) {
-    $log = new \Log();
+
+
+    $log = $this->LogQuery()
+      ->filterByAgent($type)
+      ->filterByConfigSys($message)
+      ->limit(1)
+      ->findOne();
+
+    if (!$log) {
+      $log = new \Log();
+      $count = 0;
+    }
+    else {
+      $count = $log->getSplit() + 1;
+    }
+
     $log->setUser($this->currentUser->getId())
         ->setIp($ip)
         ->setAgent($type)
         ->setDate(time())
         ->setConfigSys($message)
+        ->setSplit($count)
         ->save();
   }
   
@@ -2150,8 +2166,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
          ->select('__config__')
          ->withColumn('MAX(_log._date)', 'date')
          ->groupBy('_log.__config__')
-         ->orderBy('date', 'desc');
-    return $this->applyCallbackAndLimitToLog($log, $callback, $limit);
+         ->orderBy('date', 'desc')
+         ->limit($limit);
+    return $this->applyCallbackAndLimitToLog($log, $callback);
   }
   
   /**
@@ -2170,10 +2187,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
            ->filterByAgent($type)
              ->filterByUser($this->currentUser->getId())
            ->select('__config__')
-           ->withColumn('COUNT(_log.__config__)', 'count')
+           ->withColumn('MAX(_log.__split__)', 'count')
            ->groupBy('_log.__config__')
-           ->orderBy('count', 'desc');
-    return $this->applyCallbackAndLimitToLog($log, $callback, $limit);
+           ->orderBy('count', 'desc')
+           ->limit($limit);
+    return $this->applyCallbackAndLimitToLog($log, $callback);
   }
 
   /**
@@ -2183,7 +2201,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @return collection LogQuery
    * @author Urs Hofer
    */
-  private function applyCallbackAndLimitToLog($log, $callback, $limit) {
+  private function applyCallbackAndLimitToLog($log, $callback) {
     $retval = [];
     foreach ($log as $data) {
       if ($callback) {
@@ -2193,7 +2211,6 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         }
       }
       else $retval[] = $data;
-      if (count($retval)==$limit) break;
     }
     return $retval;
   }
