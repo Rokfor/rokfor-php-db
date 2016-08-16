@@ -2073,17 +2073,19 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   }
 
   /**
-   * returns Contribution object by id
+   * returns Contribution object by id. If public == true, return the contribution only if the status is not open
    *
    * @param int $id 
+   * @param bool $checkstate
    * @return Childobject\Contribution()
    * @author Urs Hofer
    */  
-  function getContribution($id) {
+  function getContribution($id, $public = false) {
     if ($_c = $this->ContributionsQuery()->findPk($id)) {
       if (
         ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($_c->getForissue(), $this->rights["issues"]->getPrimaryKeys()))) &&
-        ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($_c->getForchapter(), $this->rights["formats"]->getPrimaryKeys())))
+        ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($_c->getForchapter(), $this->rights["formats"]->getPrimaryKeys()))) &&
+        ($public === false || $_c->getStatus() != "Open")
       ) {
         return $_c; 
       }
