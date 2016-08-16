@@ -1474,20 +1474,22 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $_id = $source->getId();
     if ($_id) {
       if ($_nodes = json_decode($source->getConfigSys())) {
-        foreach ($_nodes->referenced as $fieldId => $refContrib) {
-          $_f = $this->getField($fieldId);
-          if ($_f) {
-            $_oldval = $_f->getDataAlwaysAsArray();
-            // Delete this reference from valoues
-            if(($key = array_search($_id, $_oldval)) !== false) {
-                unset($_oldval[$key]);
-            }
-            // Set to Disabled if no values are left
-            if (sizeof($_oldval) == 0) {
-              $_oldval[] = -1;
-            }
-            $_f->setContent(json_encode($_oldval))->save();
-          }        
+        if (is_array($_nodes->referenced)) {
+          foreach ($_nodes->referenced as $fieldId => $refContrib) {
+            $_f = $this->getField($fieldId);
+            if ($_f) {
+              $_oldval = $_f->getDataAlwaysAsArray();
+              // Delete this reference from valoues
+              if(($key = array_search($_id, $_oldval)) !== false) {
+                  unset($_oldval[$key]);
+              }
+              // Set to Disabled if no values are left
+              if (sizeof($_oldval) == 0) {
+                $_oldval[] = -1;
+              }
+              $_f->setContent(json_encode($_oldval))->save();
+            }        
+          }
         }
       }
     }
