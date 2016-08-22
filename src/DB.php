@@ -81,6 +81,7 @@ class DB
     $this->serviceContainer->setAdapterClass('rokfor', 'mysql');
     $this->manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
     $this->manager->setConfiguration(array (
+      'adapter' => 'mysql',
       'classname' => 'Propel\\Runtime\\Connection\\DebugPDO',
       'dsn' => 'mysql:host='.$host.';'.$port.'dbname='.$dbname.';'.$socket,
       'user' => $user,
@@ -93,6 +94,7 @@ class DB
     $this->manager->setName('rokfor');
     $this->serviceContainer->setConnectionManager('rokfor', $this->manager);
     $this->serviceContainer->setDefaultDatasource('rokfor');
+    
     $this->currentUser = false;
     $this->paths = [
       'sys'       => $patharray['sys']        ? $patharray['sys']         : __DIR__. '/../public',
@@ -388,6 +390,16 @@ class DB
   
   function PDO() {
     return $this->serviceContainer->getConnection()->getWrappedConnection();
+  }
+
+  function insertSql(&$messages = []) {
+    $_manager = new \Propel\Generator\Manager\SqlManager();
+    $_manager->setLoggerClosure(function ($message) {
+      $_messages[] = $message;
+    });
+    $_manager->setConnections(["rokfor" => $this->manager->getConfiguration()]);
+    $_manager->setWorkingDirectory('./vendor/rokfor/db/config/generated-sql');
+    return $_manager->insertSql("rokfor");
   }
   
   /**
