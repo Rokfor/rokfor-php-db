@@ -398,7 +398,7 @@ class DB
       $_messages[] = $message;
     });
     $_manager->setConnections(["rokfor" => $this->manager->getConfiguration()]);
-    $_manager->setWorkingDirectory('./vendor/rokfor/db/config/generated-sql');
+    $_manager->setWorkingDirectory(dirname(__FILE__).'/../config/generated-sql');
     return $_manager->insertSql("rokfor");
   }
   
