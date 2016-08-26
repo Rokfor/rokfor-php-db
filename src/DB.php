@@ -148,8 +148,7 @@ class DB
         'Key'        => static::$s3->folder . $dest,
         'SourceFile' => $source,
     ));
-    $this->defaultLogger->info("uploaded $deleteFile with status " . ($private ? 'private' : 'public-read'));
-    
+    $this->defaultLogger->info("uploaded $source with status " . ($private ? 'private' : 'public-read'));
     return $result['ObjectURL'];
   }
   
