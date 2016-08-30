@@ -148,7 +148,17 @@ class DB
         'Key'        => static::$s3->folder . $dest,
         'SourceFile' => $source,
     ));
+    //$signedUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, static::$s3->folder . $dest, '+10 minutes');
+    //echo ($signedUrl);
+    /*$result =static::$s3->client->getObjectAcl(array(
+        'Bucket' => static::$s3->bucket,
+        'Key' => static::$s3->folder . $dest
+    ));
+    */
+    
     $this->defaultLogger->info("uploaded $source with status " . ($private ? 'private' : 'public-read'));
+    
+    
     return $result['ObjectURL'];
   }
   
@@ -182,48 +192,25 @@ class DB
     if ($proxy_prefix) {
       $this->proxy_prefix = $proxy_prefix;
     }
-    if (static::$s3 !== false) {
-      foreach ($fields as $key => &$v) {
-        $v[1]              = $this->_add_proxy_single_file($v[1]);
-        if (is_object($v[2])) {
-          $v[2]->thumbnail = $this->_add_proxy_single_file($v[2]->thumbnail);
-          if (is_array($v[2]->scaled)) {
-            foreach ($v[2]->scaled as &$s) {
-              $s = $this->_add_proxy_single_file($s);
-            }
+    foreach ($fields as $key => &$v) {
+      $v[1]              = $this->_add_proxy_single_file(static::$s3 !== false ? $v[1] : $this->paths['web'].$v[1]);
+      if (is_object($v[2])) {
+        $v[2]->thumbnail = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]->thumbnail : $this->paths['webthumbs'].$v[2]->thumbnail);
+        if (is_array($v[2]->scaled)) {
+          foreach ($v[2]->scaled as &$s) {
+            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s);
           }
         }
-        else {
-          $v[2]['thumbnail'] = $this->_add_proxy_single_file($v[2]['thumbnail']);
-          if (is_array($v[2]['scaled'])) {
-            foreach ($v[2]['scaled'] as &$s) {
-              $s = $this->_add_proxy_single_file($s);
-            }
+      }
+      else {
+        $v[2]['thumbnail'] = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]['thumbnail'] : $this->paths['webthumbs'].$v[2]['thumbnail']);
+        if (is_array($v[2]['scaled'])) {
+          foreach ($v[2]['scaled'] as &$s) {
+            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s);
           }
         }
       }
     }
-    else {
-      foreach ($fields as $key => &$v) {
-        $v[1]              = $this->_add_proxy_single_file($this->paths['web'].$v[1]);
-        if (is_object($v[2])) {
-          $v[2]->thumbnail = $this->_add_proxy_single_file($this->paths['webthumbs'].$v[2]->thumbnail);
-          if (is_array($v[2]->scaled)) {
-            foreach ($v[2]->scaled as &$s) {
-              $s = $this->_add_proxy_single_file($this->paths['web'].$s);
-            }
-          }
-        }
-        else {
-          $v[2]['thumbnail'] = $this->_add_proxy_single_file($this->paths['webthumbs'].$v[2]['thumbnail']);
-          if (is_array($v[2]['scaled'])) {
-            foreach ($v[2]['scaled'] as &$s) {
-              $s = $this->_add_proxy_single_file($this->paths['web'].$s);
-            }
-          }
-        }
-      }
-    }    
   }
 
   
@@ -287,10 +274,14 @@ class DB
   
   private function s3_unlink($filename) {
     $deleteFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
-    $result = static::$s3->client->deleteObject(array(
-        'Bucket' => static::$s3->bucket,
-        'Key'    => $deleteFile,
-    ));
+    try {
+      $result = static::$s3->client->deleteObject(array(
+          'Bucket' => static::$s3->bucket,
+          'Key'    => $deleteFile,
+      ));
+    } catch (Exception $e) {
+      return false;
+    }
     $this->defaultLogger->info("s3 unlink $deleteFile");  
     return $result['DeleteMarker'];
   } 
