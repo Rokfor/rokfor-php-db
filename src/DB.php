@@ -158,7 +158,7 @@ class DB
 
   function presign_file($file) {
     $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
-    return static::$s3->client->getObjectUrl(static::$s3->bucket, static::$s3->folder . $dest, '+10 minutes');
+    return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
   }
 
   
