@@ -148,23 +148,19 @@ class DB
         'Key'        => static::$s3->folder . $dest,
         'SourceFile' => $source,
     ));
-    //$signedUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, static::$s3->folder . $dest, '+10 minutes');
-    //echo ($signedUrl);
-    /*$result =static::$s3->client->getObjectAcl(array(
-        'Bucket' => static::$s3->bucket,
-        'Key' => static::$s3->folder . $dest
-    ));
-    */
-    
     $this->defaultLogger->info("uploaded $source with status " . ($private ? 'private' : 'public-read'));
-    
-    
     return $result['ObjectURL'];
   }
   
   private function _add_proxy_single_file($url) {
     return $this->proxy_prefix.base64_encode($url);
   }
+
+  function presign_file($file) {
+    $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
+    return static::$s3->client->getObjectUrl(static::$s3->bucket, static::$s3->folder . $dest, '+10 minutes');
+  }
+
   
   function _remove_proxy_single_file($url) {
     if (stristr($url, $this->proxy_prefix )) {
