@@ -2082,12 +2082,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @return Childobject\Contribution()
    * @author Urs Hofer
    */  
-  function getContribution($id, $public = false) {
+  function getContribution($id, $public = false, $overrule_user_rights = false) {
     if ($_c = $this->ContributionsQuery()->findPk($id)) {
       if (
-        ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($_c->getForissue(), $this->rights["issues"]->getPrimaryKeys()))) &&
+        (($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($_c->getForissue(), $this->rights["issues"]->getPrimaryKeys()))) &&
         ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($_c->getForchapter(), $this->rights["formats"]->getPrimaryKeys()))) &&
-        ($public === false || $_c->getStatus() != "Open")
+        ($public === false || $_c->getStatus() != "Open"))
+        ||
+        ($overrule_user_rights === true && ($public === false || $_c->getStatus() != "Open"))
       ) {
         return $_c; 
       }
