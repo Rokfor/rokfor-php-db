@@ -160,6 +160,14 @@ class DB
     $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
     return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
   }
+  
+  function s3_file_info($file) {
+    $result =  static::$s3->client->getObject(array(
+        'Bucket' => static::$s3->bucket,
+        'Key'    => $file
+    ));
+    return $result['ContentType'];
+  }
 
   
   function _remove_proxy_single_file($url) {
