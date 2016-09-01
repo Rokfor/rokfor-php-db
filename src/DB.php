@@ -162,9 +162,10 @@ class DB
   }
   
   function s3_file_info($file) {
+    $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
     $result =  static::$s3->client->getObject(array(
         'Bucket' => static::$s3->bucket,
-        'Key'    => $file
+        'Key'    => $key
     ));
     return $result;
   }
