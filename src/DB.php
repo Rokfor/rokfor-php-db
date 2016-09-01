@@ -149,7 +149,8 @@ class DB
         'SourceFile' => $source,
     ));
     $this->defaultLogger->info("uploaded $source with status " . ($private ? 'private' : 'public-read'));
-    return $result['ObjectURL'];
+//    return $result['ObjectURL'];
+    return pathinfo($result['ObjectURL'], PATHINFO_BASENAME);
   }
   
   private function _add_proxy_single_file($url) {
