@@ -166,7 +166,7 @@ class DB
         'Bucket' => static::$s3->bucket,
         'Key'    => $file
     ));
-    return $result['ContentType'];
+    return $result;
   }
 
   
