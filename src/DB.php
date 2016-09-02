@@ -136,6 +136,7 @@ class DB
     }
     
     $this->proxy_prefix = '/rf/proxy?';
+    $this->asset_prefix = '/asset/';
   }
   
   private function s3_upload($source, $dest, $private) {
@@ -153,8 +154,13 @@ class DB
     return pathinfo($result['ObjectURL'], PATHINFO_BASENAME);
   }
   
-  private function _add_proxy_single_file($url) {
-    return $this->proxy_prefix.base64_encode($url);
+  private function _add_proxy_single_file($url, $private = true, $contribution = false, $field = false) {
+    if ($private === true) {
+      return $this->proxy_prefix.base64_encode($url);
+    }
+    else {
+      return $this->asset_prefix.$contribution.'/'.$field.'/'.$url;
+    }
   }
 
   function presign_file($file) {
@@ -172,47 +178,56 @@ class DB
   }
 
   
-  function _remove_proxy_single_file($url) {
-    if (stristr($url, $this->proxy_prefix )) {
-      if (static::$s3 !== false) {
-        return base64_decode(substr($url, strlen($this->proxy_prefix)));
-      }
-      else {
+  function _remove_proxy_single_file($url, $private = true) {
+    /* Private Files: Run over secured proxy */
+    if ($private) {
+      if (stristr($url, $this->proxy_prefix )) {
         $encoded = base64_decode(substr($url, strlen($this->proxy_prefix)));
-        if (substr($encoded, 0, strlen($this->paths['web'])) === $this->paths['web']) {
-          return substr($encoded, strlen($this->paths['web']));
+        if ($encoded) {
+          if (static::$s3 !== false) {
+            return $encoded;
+          }
+          else {
+            if (substr($encoded, 0, strlen($this->paths['web'])) === $this->paths['web']) {
+              return substr($encoded, strlen($this->paths['web']));
+            }
+            if (substr($encoded, 0, strlen($this->paths['webthumbs'])) === $this->paths['webthumbs']) {
+              return substr($encoded, strlen($this->paths['webthumbs']));
+            } 
+            return $encoded;       
+          }
         }
-        if (substr($encoded, 0, strlen($this->paths['webthumbs'])) === $this->paths['webthumbs']) {
-          return substr($encoded, strlen($this->paths['webthumbs']));
-        } 
-        return $encoded;       
       }
-
     }
+    /* Non Private Files are redirected over assets proxy */
     else {
-      return $url;
+      if (static::$s3 !== false) {
+        return pathinfo($url, PATHINFO_BASENAME);
+      }
     }
+
+    return $url;
   }
 
-  function sign_request(&$fields, $proxy_prefix = false) {
+  function sign_request(&$fields, $private = false, $proxy_prefix = false, $contribution = false, $field = false) {
     if ($proxy_prefix) {
       $this->proxy_prefix = $proxy_prefix;
     }
     foreach ($fields as $key => &$v) {
-      $v[1]              = $this->_add_proxy_single_file(static::$s3 !== false ? $v[1] : $this->paths['web'].$v[1]);
+      $v[1]              = $this->_add_proxy_single_file(static::$s3 !== false ? $v[1] : $this->paths['web'].$v[1], $private, $contribution, $field);
       if (is_object($v[2])) {
-        $v[2]->thumbnail = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]->thumbnail : $this->paths['webthumbs'].$v[2]->thumbnail);
+        $v[2]->thumbnail = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]->thumbnail : $this->paths['webthumbs'].$v[2]->thumbnail, $private, $contribution, $field);
         if (is_array($v[2]->scaled)) {
           foreach ($v[2]->scaled as &$s) {
-            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s);
+            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
           }
         }
       }
       else {
-        $v[2]['thumbnail'] = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]['thumbnail'] : $this->paths['webthumbs'].$v[2]['thumbnail']);
+        $v[2]['thumbnail'] = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]['thumbnail'] : $this->paths['webthumbs'].$v[2]['thumbnail'], $private, $contribution, $field);
         if (is_array($v[2]['scaled'])) {
           foreach ($v[2]['scaled'] as &$s) {
-            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s);
+            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
           }
         }
       }
@@ -314,7 +329,7 @@ class DB
     ));
   //  $this->defaultLogger->info("s3 copy done.");
     $destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
-    return $destUrl;
+    return pathinfo($destUrl, PATHINFO_BASENAME);
   }
     
   
@@ -1380,10 +1395,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ->setIsjson(true)
         ->save();
       // Proxify if private
-      if ($private === true) {
-        $original_url = $this->_add_proxy_single_file($original_url);
-        $thumb_url    = $this->_add_proxy_single_file($thumb_url);
-        $relative_url = $this->_add_proxy_single_file($relative_url);
+      if ($private === true || static::$s3 !== false) {
+        $original_url = $this->_add_proxy_single_file($original_url, $private, $field->getForcontribution(), $fieldid);
+        $thumb_url    = $this->_add_proxy_single_file($thumb_url, $private, $field->getForcontribution(), $fieldid);
+        $relative_url = $this->_add_proxy_single_file($relative_url, $private, $field->getForcontribution(), $fieldid);
       }
       return true;
     }
@@ -1424,9 +1439,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
 
       // Copy scaled versions from old data
-      if ($private === true) {
+      if ($private === true || static::$s3 !== false) {
         foreach ($tabledata as $key => $i) {
-          $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1]);
+          $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1], $private);
           $this->defaultLogger->info($tabledata[$key][1]);
         }
       }
@@ -1437,7 +1452,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         }
       }
 
-      // $this->defaultLogger->info("TO DELETE: " . join(",",array_keys($oldimages)));
+       $this->defaultLogger->info("TO DELETE: " . join(",",array_keys($oldimages)));
 
       // Oldimages has now all the rest which does not exist in the new data
       $delete = [];
@@ -1454,10 +1469,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
       $this->DeleteFiles($delete, $thumbs, $scaled, $private);
 
-      //$this->defaultLogger->info("ORIG: " . join(",", $delete));
-      //$this->defaultLogger->info("THMB: " . join(",", $thumbs));
-      //$this->defaultLogger->info("SCLD: " . join(",", $scaled));
-      //$this->defaultLogger->info("STORE: " . print_r($tabledata, true));
+      $this->defaultLogger->info("ORIG: " . join(",", $delete));
+      $this->defaultLogger->info("THMB: " . join(",", $thumbs));
+      $this->defaultLogger->info("SCLD: " . join(",", $scaled));
+      $this->defaultLogger->info("STORE: " . print_r($tabledata, true));
       
       //      print_r($delete);
       //      print_r($newdata);
