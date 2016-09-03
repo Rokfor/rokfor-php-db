@@ -263,8 +263,8 @@ class DB
         $r->getBody()->write($body->read($result['ContentLength']));    
       }
       else {
-        $r = $response->withHeader('Content-type', 'application/json');
-        $r->getBody()->write(json_encode(['error' => "404", 'message' => "File not found"]));
+        $r = $response->withHeader('Content-type', 'application/json')->withStatus(404);
+        $r->getBody()->write(json_encode(['Error' => "File not found"]));
       }
     }
     /* Local File Proxying: Always from private folder */
@@ -279,8 +279,8 @@ class DB
         $r->getBody()->write(file_get_contents($localfile));            
       }
       else {
-        $r = $response->withHeader('Content-type', 'application/json');
-        $r->getBody()->write(json_encode(['error' => "404", 'message' => "File not found"]));
+        $r = $response->withHeader('Content-type', 'application/json')->withStatus(404);
+        $r->getBody()->write(json_encode(['Error' => "File not found"]));
       }
     }
     /* Return Response */
