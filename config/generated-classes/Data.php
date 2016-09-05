@@ -161,13 +161,18 @@ class Data extends BaseData
                                           ->filterByStatus('Draft')
                                         ->_endif()
                                       ->endUse();
-          foreach($_data as $_b) {
-            foreach(json_decode($_b->getContent(), true) as $_d) {
-              $retval[$_d] = ["id"=>$_d,"value"=>$_d];
+          if (is_array($_data)) {
+            foreach($_data as $_b) {
+              $_decoded = json_decode($_b->getContent(), true);
+              if (is_array($_decoded)) {
+                foreach($_decoded as $_d) {
+                  $retval[$_d] = ["id"=>$_d,"value"=>$_d];
+                }
+              }
             }
-          }
           ksort($retval);    
           break;
+        }
         //
         // CONTRIBUTIONS HISTORY
         // option: restrict_to_issue(bool): true = fromissue or self / false = all issues
