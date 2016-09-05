@@ -213,21 +213,23 @@ class DB
     if ($proxy_prefix) {
       $this->proxy_prefix = $proxy_prefix;
     }
-    foreach ($fields as $key => &$v) {
-      $v[1]              = $this->_add_proxy_single_file(static::$s3 !== false ? $v[1] : $this->paths['web'].$v[1], $private, $contribution, $field);
-      if (is_object($v[2])) {
-        $v[2]->thumbnail = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]->thumbnail : $this->paths['webthumbs'].$v[2]->thumbnail, $private, $contribution, $field);
-        if (is_array($v[2]->scaled)) {
-          foreach ($v[2]->scaled as &$s) {
-            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
+    if (is_array($fields)) {
+      foreach ($fields as $key => &$v) {
+        $v[1]              = $this->_add_proxy_single_file(static::$s3 !== false ? $v[1] : $this->paths['web'].$v[1], $private, $contribution, $field);
+        if (is_object($v[2])) {
+          $v[2]->thumbnail = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]->thumbnail : $this->paths['webthumbs'].$v[2]->thumbnail, $private, $contribution, $field);
+          if (is_array($v[2]->scaled)) {
+            foreach ($v[2]->scaled as &$s) {
+              $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
+            }
           }
         }
-      }
-      else {
-        $v[2]['thumbnail'] = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]['thumbnail'] : $this->paths['webthumbs'].$v[2]['thumbnail'], $private, $contribution, $field);
-        if (is_array($v[2]['scaled'])) {
-          foreach ($v[2]['scaled'] as &$s) {
-            $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
+        else {
+          $v[2]['thumbnail'] = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]['thumbnail'] : $this->paths['webthumbs'].$v[2]['thumbnail'], $private, $contribution, $field);
+          if (is_array($v[2]['scaled'])) {
+            foreach ($v[2]['scaled'] as &$s) {
+              $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
+            }
           }
         }
       }
@@ -446,18 +448,21 @@ class DB
               ? $this->paths['privatesys'] 
               : $this->paths['sys'];
     
-    foreach ($delete as $file) {
-      // Original
-      $this->unlink($path.$this->paths['web'], $file);      
-    }
-    foreach ($thumbs as $file) {
-      // Thumb
-      $this->unlink($path.$this->paths['webthumbs'], $file);
-    }
-    foreach ($scaled as $file) {
-      // Scaled Versions
-      $this->unlink($path.$this->paths['web'], $file);      
-    }
+    if (is_array($delete))
+      foreach ($delete as $file) {
+        // Original
+        $this->unlink($path.$this->paths['web'], $file);      
+      }
+    if (is_array($thumbs))
+      foreach ($thumbs as $file) {
+        // Thumb
+        $this->unlink($path.$this->paths['webthumbs'], $file);
+      }
+    if (is_array($scaled))
+      foreach ($scaled as $file) {
+        // Scaled Versions
+        $this->unlink($path.$this->paths['web'], $file);      
+      }
   }
   
   /**
