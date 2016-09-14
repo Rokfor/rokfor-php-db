@@ -19,7 +19,5 @@
   "autoload": {
     "psr-4": {"Rokfor\\": "src/"},
     "classmap": ["config/generated-classes/"]
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  }
 }
