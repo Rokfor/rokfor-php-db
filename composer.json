@@ -1,13 +1,15 @@
 {
   "name": "rokfor/db",
   "description": "PHP Library to access a Rokfor DB Structure",
+  "keywords": ["rokfor", "slim","framework","propelorm"],  
   "type": "Library",
   "license": "MIT",
   "authors": [
-  {
-    "name": "Urs Hofer",
-    "email": "hoferurs@gmail.com"
-  }
+    {
+      "name": "Urs Hofer",
+      "email": "inquiries@rokfor.ch",
+      "homepage": "http://cloud.rokfor.ch"    
+    }
   ],
   "require": {
     "propel/propel": "~2.0.0-alpha5",
@@ -17,5 +19,7 @@
   "autoload": {
     "psr-4": {"Rokfor\\": "src/"},
     "classmap": ["config/generated-classes/"]
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
