@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "propel/propel": "~2.0.0-alpha5",
+    "propel/propel": "2.0.*@dev",
     "intervention/image": "^2.3",
     "aws/aws-sdk-php": "^2.8"
   },
