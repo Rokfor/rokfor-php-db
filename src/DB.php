@@ -2806,10 +2806,20 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
     $new = $this->TemplatenamesQuery()
                 ->findPk($id)
-                ->copy(true);
+                ->copy();
     $new
       ->setName($new->getName() . "[".$suffix."]")
       ->save();
+    
+    /* Clone Affiliated Fields */
+    
+    foreach ($this->TemplatesQuery()->filterByFortemplate($id) as $f) {
+      $clone = $f->copy();
+      $clone
+        ->setTemplatenames($new)
+        ->save();
+    }
+
 
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
@@ -2931,7 +2941,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     
     $new = $this->TemplatesQuery()
                 ->findPk($id)
-                ->copy(true);
+                ->copy();
     $new
       ->setFieldname($new->getFieldname() . "[".$suffix."]")
       ->save();
