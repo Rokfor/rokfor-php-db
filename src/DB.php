@@ -2675,7 +2675,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @return void
    * @author Urs Hofer
    */
-  function duplicateIssue($id, $suffix = "Copy", $deep = true) {
+  function duplicateIssue($id, $suffix = "Copy", $deep = false) {
     if (\ContributionsQuery::isVersioningEnabled()) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
@@ -2690,9 +2690,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $new
       ->setName($new->getName() . "[".$suffix."]")
       ->save();  
-
-    foreach ($this->ContributionsQuery()->filterByForissue($new->getId()) as $contribution) {
-      $this->duplicateData($contribution);
+    if ($deep === true) {
+      foreach ($this->ContributionsQuery()->filterByForissue($new->getId()) as $contribution) {
+        $this->duplicateData($contribution);
+      }
     }
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
@@ -2708,7 +2709,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @return void
    * @author Urs Hofer
    */
-  function duplicateChapter($id, $suffix = "Copy", $deep = true) {
+  function duplicateChapter($id, $suffix = "Copy", $deep = false) {
     if (\ContributionsQuery::isVersioningEnabled()) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
@@ -2723,9 +2724,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $new
       ->setName($new->getName() . "[".$suffix."]")
       ->save(); 
-    
-    foreach ($this->ContributionsQuery()->filterByForchapter($new->getId()) as $contribution) {
-      $this->duplicateData($contribution);
+    if ($deep === true) {
+      foreach ($this->ContributionsQuery()->filterByForchapter($new->getId()) as $contribution) {
+        $this->duplicateData($contribution);
+      }
     }
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
