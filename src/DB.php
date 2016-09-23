@@ -128,6 +128,7 @@ class DB
           'version'     => "2006-03-01"
       ));
       static::$s3->bucket = $patharray['s3_aws_bucket'];
+      static::$s3->public = $patharray['s3_aws_public_pages'];
       static::$s3->folder = md5($dbname);
       static::$s3->client->registerStreamWrapper();
     }
@@ -155,9 +156,17 @@ class DB
   }
   
   private function _add_proxy_single_file($url, $private = true, $contribution = false, $field = false) {
+    // Private: Proxy thru local tunnel
     if ($private === true) {
       return $this->proxy_prefix.base64_encode($url);
     }
+    
+    // Public Pages available: Show directly
+    if (static::$s3->public === true) {
+      return $url;
+    }
+    
+    // All other cases: Proxy thru Asset tunnel
     else {
       return $this->asset_prefix.$contribution.'/'.$field.'/'.$url;
     }
