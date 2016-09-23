@@ -129,6 +129,7 @@ class DB
       ));
       static::$s3->bucket = $patharray['s3_aws_bucket'];
       static::$s3->public = $patharray['s3_aws_public_pages'];
+      static::$s3->endpoint = $patharray['s3_aws_endpoint'];      
       static::$s3->folder = md5($dbname);
       static::$s3->client->registerStreamWrapper();
     }
@@ -163,7 +164,7 @@ class DB
     
     // Public Pages available: Show directly
     if (static::$s3->public === true) {
-      return static::$s3->client->getEndpoint() . '/' . static::$s3->folder . '/' . $url;
+      return static::$s3->endpoint . '/' . static::$s3->folder . '/' . $url;
     }
     
     // All other cases: Proxy thru Asset tunnel
