@@ -163,7 +163,7 @@ class DB
     
     // Public Pages available: Show directly
     if (static::$s3->public === true) {
-      return $url;
+      return static::$s3->client->getEndpoint() . '/' . static::$s3->folder . '/' . $url;
     }
     
     // All other cases: Proxy thru Asset tunnel
