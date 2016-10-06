@@ -1549,24 +1549,29 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_oldvals = json_decode($field->getContent());
       $_oldref = false;
       $_newref = false;
+      
+      $_decoded = (is_array($data) || is_object($data) || is_numeric($data)) 
+                  ? $data
+                  : json_decode($data);
+      
       // Contributional: Store contribution-id of the field in the target contribution
       if ($settings->history_command == "contributional") {
         $_oldref = $this->ContributionsQuery()->filterById($_oldvals);
-        $_newref = $this->ContributionsQuery()->filterById(json_decode($data));
+        $_newref = $this->ContributionsQuery()->filterById($_decoded);
       }
       
       // Books: Store contribution-id of the field in the target contribution
       else if ($settings->history_command == "books") {
         $_oldref = $this->BooksQuery()->filterById($_oldvals); 
-        $_newref = $this->BooksQuery()->filterById(json_decode($data)); 
+        $_newref = $this->BooksQuery()->filterById($_decoded); 
       }
       else if ($settings->history_command == "issues") {
         $_oldref = $this->IssuesQuery()->filterById($_oldvals); 
-        $_newref = $this->IssuesQuery()->filterById(json_decode($data));
+        $_newref = $this->IssuesQuery()->filterById($_decoded);
       }
       else if ($settings->history_command == "chapters") {
         $_oldref = $this->FormatsQuery()->filterById($_oldvals); 
-        $_newref = $this->FormatsQuery()->filterById(json_decode($data));
+        $_newref = $this->FormatsQuery()->filterById($_decoded);
       }
       
       if ($_oldref && $_newref) {
