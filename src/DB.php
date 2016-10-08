@@ -156,7 +156,7 @@ class DB
     return pathinfo($result['ObjectURL'], PATHINFO_BASENAME);
   }
   
-  private function _add_proxy_single_file($url, $private = true, $contribution = false, $field = false) {
+  function _add_proxy_single_file($url, $private = true, $contribution = false, $field = false) {
     // Private: Proxy thru local tunnel
     if ($private === true) {
       return $this->proxy_prefix.base64_encode($url);
