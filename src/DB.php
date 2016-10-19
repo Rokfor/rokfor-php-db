@@ -1729,48 +1729,51 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false, $count = false, $templateid = false) {
     
     
-    $chaptersort = false;   // Sort by chapter
-    $issuesort   = false;   // Sort by issue
-    $customsort = false; // If Sorted by Field: Contains Field ID
+    /**
+     * Sort Mode
+     * 
+     **/
     
-    if (!$sortmode) $sortmode = "asc";
+    $sort = [];  
+    $directions = [];
+
+    // Default:
     if ($sortmode == "asc" || $sortmode == "desc") {
-      $direction = $sortmode;
-      $sort = 'orderBySort';
+      $directions[] = $sortmode;
+      $sort[] = 'orderBySort'; 
     }
     else {
-      list($sortarray,$direction) = explode(":", $sortmode);
-      if ($direction == "") {
-        $direction = "asc";
-      }
-      foreach ((array)explode("|", $sortarray) as $_sort) {
+      list($_sortarray,$_direction) = explode(":", $sortmode);
+      $directions = (array)explode("|", $_direction);
+      foreach ((array)explode("|", $_sortarray) as $_sort) {
         switch ($_sort) {
+          case 'sort':
+            $sort[] = 'orderBySort';
+            break;
           case 'date':
-            $sort = 'orderByNewdate';
+            $sort[] = 'orderByNewdate';
             break;
           case 'name':
-            $sort = 'orderByName';
+            $sort[] = 'orderByName';
             break;
           case 'id':
-            $sort = 'orderById';
+            $sort[] = 'orderById';
             break;
           case 'chapter':
-            $chaptersort = true;
+            $sort[] = 'orderByChapter';
             break;          
           case 'issue':
-            $issuesort = true;
+            $sort[] = 'orderByIssue';
             break;          
           default:
             if ($_sort != false && $_sort != "sort") {
-              $customsort = $_sort;
+              $sort[] = $_sort;
             }
             break;
         }
-        if (!$sort) {
-          $sort = 'orderBySort';
-        }
       }
     }
+    
     
     if (
       ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && (
@@ -1785,18 +1788,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           
         )))
     ) {
-      if ($count === true) return $this->ContributionsQuery()
-                ->filterByForissue($issueid)
-                ->filterByForchapter($chapterid)
-                ->_if($templateid)
-                  ->filterByFortemplate($templateid)
-                ->_endif()                  
-                ->_if($status)
-                  ->filterByStatus($status)
-                ->_endif()
-                ->count();
       
-      else return $this->ContributionsQuery()
+      $q = $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
                 ->_if($templateid)
@@ -1804,35 +1797,47 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->_endif()
                 ->_if($status)
                   ->filterByStatus($status)
-                ->_endif()
-                
-                ->_if($customsort)
-                    ->withColumn('SortColumn._content', 'sortcolumn')
-                    ->useDataQuery('SortColumn')
-                      ->filterByFortemplatefield($customsort)
+                ->_endif();
+      
+        if ($count === true) return $q->count();
+      
+        // Return Sorted Results
+    
+        foreach ($sort as $_key=>$_sort) {
+          $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
+                        ? $directions[$_key]
+                        : "asc";
+
+          switch ($_sort) {
+            case 'orderBySort':
+            case 'orderByNewdate':
+            case 'orderByName':
+            case 'orderById':
+              $q = $q->$_sort($direction);
+              break;
+            case 'orderByChapter':
+              $q = $q->useFormatsQuery('ChapterSortColumn')
+                      ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
                     ->endUse()
-                    ->orderBy('sortcolumn', $direction)
-                ->_endif()
+                    ->orderBy('chaptersort', $direction);
+              break;          
+            case 'orderByIssue':
+              $q = $q->useIssuesQuery('IssueSortColumn')
+                      ->withColumn('IssueSortColumn.__sort__', 'issuesort')
+                    ->endUse()
+                    ->orderBy('issuesort', $direction);
+              break;          
+            default:
+              $q = $q->withColumn('SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
+                    ->useDataQuery('SortColumn_'.$_sort)
+                      ->filterByFortemplatefield($_sort)
+                    ->endUse()
+                    ->orderBy('sortcolumn_'.$_sort, $direction);
+              break;
+          }
+        }
 
-                ->_if($chaptersort)
-                  ->useFormatsQuery('ChapterSortColumn')
-                    ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
-                  ->endUse()
-                  ->orderBy('chaptersort', $direction)
-                ->_endif()
-
-                ->_if($issuesort)
-                  ->useIssuesQuery('IssueSortColumn')
-                    ->withColumn('IssueSortColumn.__sort__', 'issuesort')
-                  ->endUse()
-                  ->orderBy('issuesort', $direction)
-                ->_endif()
-
-                ->_if(!$customsort)
-                  ->$sort($direction)
-                ->_endif()
-
-                ->_if($offset)
+        return $q->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
                 ->_if($limit)
@@ -1849,7 +1854,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @return ChildCollection\ContributionsQuery()
    * @author Urs Hofer
    */
-  function searchContributions($string, $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false, $templateid = false) {
+  function searchContributions($string = "", $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false, $templateid = false) {
     // Checks: if issue id is set, only check for the rights for this issue
     if ($issueid) {
       if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys())))) 
@@ -1870,248 +1875,278 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $chapterid = $this->rights["formats"]->getPrimaryKeys();
     }
     
-    // Sort Mode
-    $customsort = false; // If Sorted by Field: Contains Field ID
-    $sort = false;      
-    $direction = "asc";
-    $chaptersort = false;   // Sort by chapter
-    $issuesort   = false;   // Sort by issue
+    /**
+     * Sort Mode
+     * 
+     **/
+    
+    $sort = [];  
+    $directions = [];
 
-
+    // Default:
     if ($sortmode == "asc" || $sortmode == "desc") {
-      $direction = $sortmode;
-      $sort = 'orderBySort';
+      $directions[] = $sortmode;
+      $sort[] = 'orderBySort'; 
     }
     else {
-      list($sortarray,$direction) = explode(":", $sortmode);
-      if ($direction == "") {
-        $direction = "asc";
-      }
-      foreach ((array)explode("|", $sortarray) as $_sort) {
+      list($_sortarray,$_direction) = explode(":", $sortmode);
+      $directions = (array)explode("|", $_direction);
+      foreach ((array)explode("|", $_sortarray) as $_sort) {
         switch ($_sort) {
+          case 'sort':
+            $sort[] = 'orderBySort';
+            break;
           case 'date':
-            $sort = 'orderByNewdate';
+            $sort[] = 'orderByNewdate';
             break;
           case 'name':
-            $sort = 'orderByName';
+            $sort[] = 'orderByName';
             break;
           case 'id':
-            $sort = 'orderById';
+            $sort[] = 'orderById';
             break;
           case 'chapter':
-            $chaptersort = true;
+            $sort[] = 'orderByChapter';
             break;          
           case 'issue':
-            $issuesort = true;
+            $sort[] = 'orderByIssue';
             break;          
           default:
             if ($_sort != false && $_sort != "sort") {
-              $customsort = $_sort;
+              $sort[] = $_sort;
             }
             break;
         }
-        if (!$sort) {
-          $sort = 'orderBySort';
-        }
       }
-      
     }
+    
+    /**
+     * Initialize Query
+     **/
+
+    $q = $this->ContributionsQuery()
+                ->_if($issueid)
+                  ->filterByForissue($issueid)
+                ->_endif()
+                ->_if($chapterid)
+                  ->filterByForchapter($chapterid)
+                ->_endif()
+                ->_if($status)
+                  ->filterByStatus($status)
+                ->_endif()
+                ->_if($templateid)
+                  ->filterByFortemplate($templateid)
+                ->_endif()
+                ->distinct();
+    
+    /**
+     * $string contains the query, divided by | multiple "or"
+     * $filterfield: single or divided by |, either sort, id, date or field id
+     * $filtermode: single or divided by |, default: like
+     * 
+     * filterfields and filtermode need can be defined for each search term
+     * if not, the default filtermode ("like") and filterfield (all fields) is 
+     * used for the search.
+     * 
+     * ?query=Word1|Word2                     Searches for Word1 OR Word2 in all fields
+     * ?query=Word1|Word2&filter=12:eq        Word1 matches field 12 OR Word2 matches everywhere
+     * ?query=Word1+Word2&filter=1|2:eq+12    Word1 matches field 1 or 2 AND Word2 matches everywhere
+     */
+    
   
     // Filter Fields: If passed, only the selected fields are searched for a valoue
-    $filterfieldids = [];
-
-    $filterby = "";
-    $filterbycol = false;
+//    $filterfieldids = [];
+    $filterby    = [];
+    $filterbycol = [];
+    $filtermodes = (array)explode("|", $filtermode);
 
     if ($filterfield) {
-      foreach (explode('|', $filterfield) as $f) {
-        if ($f === "sort") {
-          $filterby = 'filterBySort';
-          $filterbycol = '_contributions.__sort__';
+      foreach (explode('|', $filterfield) as $_key=>$f) {
+        $_filter = in_array($filtermodes[$_key], ["lte","gte","lt","gt","eq", "like"]) ? $filtermodes[$_key] : "like";
+        switch ($f) {
+          case 'sort':
+            $filterby[] = [
+              'method' => 'filterBySort',    
+              'column' => '_contributions.__sort__',
+              'mode' => $_filter
+            ];
+            break;
+          case 'id':
+            $filterby[] = [
+              'method' => 'filterById',      
+              'column' => '_contributions.id',
+              'mode' => $_filter
+            ];
+            break;          
+          case 'date':
+            $filterby[] = [
+              'method' => 'filterByNewdate', 
+              'column' => '_contributions._newdate',
+              'mode' => $_filter
+            ];
+            break;
+          default:
+            $filterby[] = [
+              'method' => false, 
+              'column' => is_numeric($f) ? (int)$f : false,
+              'mode' => $_filter
+            ];
+            //$filterfields[] = (int)$f;
+            break;
         }
-        else if ($f === "id") {
-          $filterby = 'filterById';
-          $filterbycol = '_contributions.id';
-        }
-        else if ($f === "date") {
-          $filterby = 'filterByNewdate';
-          $filterbycol = '_contributions._newdate';
-        }        
-        else {
-          $filterfieldids[] = (int)$f;
-        }
+
       }
     }
-    if ($filtermode != "lte" && $filtermode != "gte" && $filtermode != "lt" && $filtermode != "gt" && $filtermode != "eq") {
-      $filtermode = "like";
-    }
-    if ($count === true) return $this->ContributionsQuery()
-                ->_if($issueid)
-                  ->filterByForissue($issueid)
-                ->_endif()
-                ->_if($chapterid)
-                  ->filterByForchapter($chapterid)
-                ->_endif()
-                ->_if($status)
-                  ->filterByStatus($status)
-                ->_endif()
-                ->_if($templateid)
-                  ->filterByFortemplate($templateid)
-                ->_endif()
-                ->distinct()
-
-                ->_if($filterby != "")
-                  ->_if($filtermode == "like")
-                    ->$filterby('%'.$string.'%')
-                  ->_endif()
-                  ->_if($filtermode == "lt")
-                    ->addUsingAlias($filterbycol, (int)$string, \Propel\Runtime\ActiveQuery\Criteria::LESS_THAN)
-                  ->_endif()
-                  ->_if($filtermode == "gt")
-                    ->addUsingAlias($filterbycol, (int)$string, \Propel\Runtime\ActiveQuery\Criteria::GREATER_THAN)
-                  ->_endif()
-                  ->_if($filtermode == "lte")
-                    ->$filterby(array('max' => (int)$string))
-                  ->_endif()
-                  ->_if($filtermode == "gte")
-                    ->$filterby(array('min' => (int)$string))
-                  ->_endif()
-                  ->_if($filtermode == "eq")
-                    ->$filterby((int)$string)
-                  ->_endif()
-
-                ->_else()
-                  ->_if(!$filterfield)
-                    ->filterByName('%'.$string.'%')
-                    ->_or()
-                  ->_endif()
-                  ->useDataQuery()
-                      ->_if($filterfield)
-                        ->filterByFortemplatefield($filterfieldids)
-                        ->_and()
-                      ->_endif()
-                      ->_if($filtermode == "like")
-                        ->filterByContent('%'.$string.'%')
-                      ->_endif()
-                      ->_if($filtermode == "lt")
-                        ->add('_content', 'CAST(_content AS UNSIGNED) < ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()
-                      ->_if($filtermode == "gt")
-                        ->add('_content', 'CAST(_content AS UNSIGNED) > ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()
-                      ->_if($filtermode == "lte")
-                        ->add('_content', 'CAST(_content AS UNSIGNED) <= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()                                  
-                      ->_if($filtermode == "gte")
-                        ->add('_content', 'CAST(_content AS UNSIGNED) >= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()
-                      ->_if($filtermode == "eq")
-                        ->filterByContent($string)
-                      ->_endif()
-                  ->endUse()
-                ->_endif()
-                ->count();
     
-    else return $this->ContributionsQuery()
-                ->_if($issueid)
-                  ->filterByForissue($issueid)
-                ->_endif()
-                ->_if($chapterid)
-                  ->filterByForchapter($chapterid)
-                ->_endif()
-                ->_if($status)
-                  ->filterByStatus($status)
-                ->_endif()
-                ->_if($templateid)
-                  ->filterByFortemplate($templateid)
-                ->_endif()                
-                        
-                ->distinct()
-                        
-                ->_if($filterby <> "")
-                  ->_if($filtermode == "like")
-                    ->$filterby('%'.$string.'%')
-                  ->_endif()
-                  ->_if($filtermode == "lt")
-                    ->addUsingAlias($filterbycol, (int)$string, \Propel\Runtime\ActiveQuery\Criteria::LESS_THAN)
-                  ->_endif()
-                  ->_if($filtermode == "gt")
-                    ->addUsingAlias($filterbycol, (int)$string, \Propel\Runtime\ActiveQuery\Criteria::GREATER_THAN)
-                  ->_endif()
-                  ->_if($filtermode == "lte")
-                    ->$filterby(array('max' => (int)$string))
-                  ->_endif()
-                  ->_if($filtermode == "gte")
-                    ->$filterby(array('min' => (int)$string))
-                  ->_endif()
-                  ->_if($filtermode == "eq")
-                    ->$filterby((int)$string)
-                  ->_endif()
+//    print_r(preg_split('/([\|\+])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE));
+//    die();
+//    Array
+//    (
+//        [0] => Data
+//        [1] => |
+//        [2] => Test
+//        [3] => +
+//        [4] => Gutzi
+//        [5] => |
+//        [6] => Date
+//    )
 
-                ->_else()                        
-                  ->_if(!$filterfield)
-                    ->filterByName('%'.$string.'%')
-                    ->_or()
-                  ->_endif()
-                  ->useDataQuery('FilterColumn')
-                      ->_if($filterfield)
-                        ->filterByFortemplatefield($filterfieldids)
-                        ->_and()
-                      ->_endif()
-                      ->_if($filtermode == "like")
-                        ->filterByContent('%'.$string.'%')
-                      ->_endif()
-                      ->_if($filtermode == "lt")
-                        ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) < ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()
-                      ->_if($filtermode == "gt")
-                        ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) > ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()
-                      ->_if($filtermode == "lte")
-                        ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) <= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()                                  
-                      ->_if($filtermode == "gte")
-                        ->add('FilterColumn._content', 'CAST(FilterColumn._content AS UNSIGNED) >= ' . (int)$string, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
-                      ->_endif()
+    foreach (preg_split('/([\|\+])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE) as $_key => $_s) {
+      
+      // Delimiter
+      
+      if ($_s == "|") {
+        $q = $q->_or();
+        continue;
+      }
+      if ($_s == "+") {
+        $q = $q->_and();
+        continue;
+      }
+      
+      // Get Current Filter
+      
+      $_filter = $filterby[$_key] 
+                 ? $filterby[$_key] 
+                 : [
+                    'method' => false, 
+                    'column' => false,
+                    'mode'   => 'like'
+                  ];
+      
+      if ($_filter['method']) {
+        $q = $q->_if($_filter['mode'] == "like")
+                 ->{$_filter['method']}('%'.$_s.'%')
+               ->_endif()
+               ->_if($_filter['mode'] == "lt")
+                 ->addUsingAlias($_filter['column'], (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::LESS_THAN)
+               ->_endif()
+               ->_if($_filter['mode'] == "gt")
+                 ->addUsingAlias($_filter['column'], (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::GREATER_THAN)
+               ->_endif()
+               ->_if($_filter['mode'] == "lte")
+                 ->{$_filter['method']}(array('max' => (int)$_s))
+               ->_endif()
+               ->_if($_filter['mode'] == "gte")
+                 ->{$_filter['method']}(array('min' => (int)$_s))
+               ->_endif()
+               ->_if($_filter['mode'] == "eq")
+                 ->{$_filter['method']}((int)$_s)
+               ->_endif();
+      }
+      else {
+        if (!$_filter['column']) {
+          $q = $q->_if($_filter['mode'] == "like")
+                     ->filterByName('%'.$_s.'%')
+                   ->_endif()
+                   ->_if($_filter['mode'] == "lt")
+                     ->addUsingAlias('_contributions._name', (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::LESS_THAN)
+                   ->_endif()
+                   ->_if($_filter['mode'] == "gt")
+                     ->addUsingAlias('_contributions._name', (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::GREATER_THAN)
+                   ->_endif()
+                   ->_if($_filter['mode'] == "lte")
+                     ->filterByName(array('max' => (int)$_s))
+                   ->_endif()
+                   ->_if($_filter['mode'] == "gte")
+                     ->filterByName(array('min' => (int)$_s))
+                   ->_endif()
+                   ->_if($_filter['mode'] == "eq")
+                     ->filterByName($_s)
+                   ->_endif()
+                 ->_or();
+        }
+        $q = $q->useDataQuery('FilterColumn'.$_key)
+                 ->_if($_filter['column'])
+                   ->filterByFortemplatefield($_filter['column'])
+//                     ->_or()
+                 ->_endif()
+                 ->_if($_filter['mode'] == "like")
+                   ->filterByContent('%'.$_s.'%')
+                 ->_endif()
+                 ->_if($_filter['mode'] == "lt")
+                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) < ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                 ->_endif()
+                 ->_if($_filter['mode'] == "gt")
+                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) > ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                 ->_endif()
+                 ->_if($_filter['mode'] == "lte")
+                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) <= ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                 ->_endif()                                  
+                 ->_if($_filter['mode'] == "gte")
+                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) >= ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                 ->_endif()
+                 ->_if($_filter['mode'] == "eq")
+                   ->filterByContent($_s)
+                 ->_endif()
+             ->endUse();
+      }
+    }
+    // Return Counts Here
+    
+    if ($count === true) return $q->count();
+    
+    // Return Sorted Results
+    
+    foreach ($sort as $_key=>$_sort) {
+      $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
+                    ? $directions[$_key]
+                    : "asc";
+      switch ($_sort) {
+        case 'orderBySort':
+        case 'orderByNewdate':
+        case 'orderByName':
+        case 'orderById':
+          $q = $q->$_sort($direction);
+          break;
+        case 'orderByChapter':
+          $q = $q->useFormatsQuery('ChapterSortColumn')
+                  ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
+                ->endUse()
+                ->orderBy('chaptersort', $direction);
+          break;          
+        case 'orderByIssue':
+          $q = $q->useIssuesQuery('IssueSortColumn')
+                  ->withColumn('IssueSortColumn.__sort__', 'issuesort')
+                ->endUse()
+                ->orderBy('issuesort', $direction);
+          break;          
+        default:
+          $q = $q->withColumn('SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
+                ->useDataQuery('SortColumn_'.$_sort)
+                  ->filterByFortemplatefield($_sort)
+                ->endUse()
+                ->orderBy('sortcolumn_'.$_sort, $direction);
+          break;
+      }
+    }
 
-                      ->_if($filtermode == "eq")
-                        ->filterByContent($string)
-                      ->_endif()
-                  ->endUse()
-                ->_endif()
-
-                ->_if($customsort)
-                    ->withColumn('SortColumn._content', 'sortcolumn')
-                    ->useDataQuery('SortColumn')
-                      ->filterByFortemplatefield($customsort)
-                    ->endUse()
-                    ->orderBy('sortcolumn', $direction)
-                ->_endif()
-
-                ->_if($chaptersort)
-                  ->useFormatsQuery('ChapterSortColumn')
-                    ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
-                  ->endUse()
-                  ->orderBy('chaptersort', $direction)
-                ->_endif()
-
-                ->_if($issuesort)
-                  ->useIssuesQuery('IssueSortColumn')
-                    ->withColumn('IssueSortColumn.__sort__', 'issuesort')
-                  ->endUse()
-                  ->orderBy('issuesort', $direction)
-                ->_endif()
-
-                ->_if(!$customsort)
-                  ->$sort($direction)
-                ->_endif()
-
-                ->_if($offset)
-                  ->offset((int)$offset)
-                ->_endif()
-                ->_if($limit)
-                  ->limit((int)$limit)
-                ->_endif();
+    return $q->_if($offset)
+              ->offset((int)$offset)
+            ->_endif()
+            ->_if($limit)
+              ->limit((int)$limit)
+            ->_endif();
 
   }
 
