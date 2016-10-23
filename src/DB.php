@@ -1937,8 +1937,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->_if($templateid)
                   ->filterByFortemplate($templateid)
                 ->_endif()
-                ->distinct();
-    
+                ->distinct()
+                ->_and();
     /**
      * $string contains the query, divided by | multiple "or"
      * $filterfield: single or divided by |, either sort, id, date or field id
@@ -2011,7 +2011,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 //        [6] => Date
 //    )
 
-    foreach (preg_split('/([\|\+])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE) as $_key => $_s) {
+    $_key = 0;
+
+    foreach (preg_split('/([\|\+])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE) as $_s) {
       
       // Delimiter
       
@@ -2057,50 +2059,58 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       else {
         if (!$_filter['column']) {
           $q = $q->_if($_filter['mode'] == "like")
-                     ->filterByName('%'.$_s.'%')
+                     ->where('_contributions._name LIKE ?', '%'.$_s.'%')
                    ->_endif()
                    ->_if($_filter['mode'] == "lt")
-                     ->addUsingAlias('_contributions._name', (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::LESS_THAN)
+                     ->where('CAST(_contributions._name AS UNSIGNED) < ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "gt")
-                     ->addUsingAlias('_contributions._name', (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::GREATER_THAN)
+                     ->where('CAST(_contributions._name AS UNSIGNED) > ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "lte")
-                     ->filterByName(array('max' => (int)$_s))
+                     ->where('CAST(_contributions._name AS UNSIGNED) <= ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "gte")
-                     ->filterByName(array('min' => (int)$_s))
+                     ->where('CAST(_contributions._name AS UNSIGNED) >= ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "eq")
-                     ->filterByName($_s)
+                     ->where('_contributions._name = ?', $_s)
                    ->_endif()
-                 ->_or();
+                   ->_or();
         }
-        $q = $q->useDataQuery('FilterColumn'.$_key)
+        // Query Data as well
+        $q = $q->useDataQuery()
                  ->_if($_filter['column'])
-                   ->filterByFortemplatefield($_filter['column'])
-//                     ->_or()
+                   ->condition('_field', '_data._fortemplatefield = ?', (int)$_filter['column'])
                  ->_endif()
                  ->_if($_filter['mode'] == "like")
-                   ->filterByContent('%'.$_s.'%')
+                   ->condition('_data', '_data._content LIKE ?', '%'.$_s.'%')
                  ->_endif()
                  ->_if($_filter['mode'] == "lt")
-                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) < ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                   ->condition('_data', 'CAST(_data._content AS UNSIGNED) < ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "gt")
-                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) > ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                   ->condition('_data', 'CAST(_data._content AS UNSIGNED) > ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "lte")
-                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) <= ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                   ->condition('_data', 'CAST(_data._content AS UNSIGNED) <= ?', (int)$_s)
                  ->_endif()                                  
                  ->_if($_filter['mode'] == "gte")
-                   ->add('FilterColumn'.$_key.'._content', 'CAST(FilterColumn'.$_key.'._content AS UNSIGNED) >= ' . (int)$_s, \Propel\Runtime\ActiveQuery\Criteria::CUSTOM)
+                   ->condition('_data', 'CAST(_data._content AS UNSIGNED) >= ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "eq")
-                   ->filterByContent($_s)
+                   ->condition('_data', '_data._content = ?', $_s)
+                 ->_endif()
+                 ->_if($_filter['column'])                               
+                   ->where(array('_field', '_data'), 'and')
+                 ->_else()
+                   ->where(array('_data'))
                  ->_endif()
              ->endUse();
       }
+      
+      $_key++;
+      
     }
     // Return Counts Here
     
