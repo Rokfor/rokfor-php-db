@@ -436,6 +436,28 @@ CREATE TABLE `_contributions`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- _contributions_cache
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `_contributions_cache`;
+
+CREATE TABLE `_contributions_cache`
+(
+    `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
+    `_signature` VARCHAR(255) NOT NULL,
+    `_forcontribution` INTEGER(4),
+    `_cache` LONGTEXT,
+    PRIMARY KEY (`id`),
+    INDEX `_cacheforcontribution_index` (`_forcontribution`),
+    INDEX `_signature_index` (`_signature`),
+    CONSTRAINT `c_contribution_fk`
+        FOREIGN KEY (`_forcontribution`)
+        REFERENCES `_contributions` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- _data
 -- ---------------------------------------------------------------------
 
@@ -446,7 +468,7 @@ CREATE TABLE `_data`
     `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
     `_forcontribution` INTEGER(4),
     `_fortemplatefield` INTEGER(32),
-    `_content` TEXT,
+    `_content` LONGTEXT,
     `_isjson` TINYINT(1),
     `__user__` INTEGER(4),
     `__config__` TEXT,
@@ -460,6 +482,7 @@ CREATE TABLE `_data`
     PRIMARY KEY (`id`),
     INDEX `_user_index` (`__user__`),
     INDEX `_dataforcontribution_index` (`_forcontribution`),
+    FULLTEXT INDEX `_content` (`_content`),
     INDEX `_datafortemplatefield_index` (`_fortemplatefield`),
     CONSTRAINT `user_ref_data`
         FOREIGN KEY (`__user__`)
@@ -473,6 +496,156 @@ CREATE TABLE `_data`
         ON DELETE CASCADE,
     CONSTRAINT `d_template_fk`
         FOREIGN KEY (`_fortemplatefield`)
+        REFERENCES `_templates` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_data_data
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_data_data`;
+
+CREATE TABLE `R_data_data`
+(
+    `_src` INTEGER(4) NOT NULL,
+    `_ref` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_src`,`_ref`),
+    INDEX `r_data1_a` (`_src`),
+    INDEX `r_data1_b` (`_ref`),
+    CONSTRAINT `r_data1_a`
+        FOREIGN KEY (`_src`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_data1_b`
+        FOREIGN KEY (`_ref`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_data_contribution
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_data_contribution`;
+
+CREATE TABLE `R_data_contribution`
+(
+    `_dataid` INTEGER(4) NOT NULL,
+    `_contributionid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_dataid`,`_contributionid`),
+    INDEX `r_data2_a` (`_dataid`),
+    INDEX `r_data2_b` (`_contributionid`),
+    CONSTRAINT `r_data2_a`
+        FOREIGN KEY (`_dataid`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_data2_b`
+        FOREIGN KEY (`_contributionid`)
+        REFERENCES `_contributions` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_data_book
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_data_book`;
+
+CREATE TABLE `R_data_book`
+(
+    `_dataid` INTEGER(4) NOT NULL,
+    `_bookid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_dataid`,`_bookid`),
+    INDEX `r_data3_a` (`_dataid`),
+    INDEX `r_data3_b` (`_bookid`),
+    CONSTRAINT `r_data3_a`
+        FOREIGN KEY (`_dataid`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_data3_b`
+        FOREIGN KEY (`_bookid`)
+        REFERENCES `_books` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_data_format
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_data_format`;
+
+CREATE TABLE `R_data_format`
+(
+    `_dataid` INTEGER(4) NOT NULL,
+    `_formatid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_dataid`,`_formatid`),
+    INDEX `r_data4_a` (`_dataid`),
+    INDEX `r_data4_b` (`_formatid`),
+    CONSTRAINT `r_data4_a`
+        FOREIGN KEY (`_dataid`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_data4_b`
+        FOREIGN KEY (`_formatid`)
+        REFERENCES `_formats` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_data_issue
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_data_issue`;
+
+CREATE TABLE `R_data_issue`
+(
+    `_dataid` INTEGER(4) NOT NULL,
+    `_issueid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_dataid`,`_issueid`),
+    INDEX `r_data5_a` (`_dataid`),
+    INDEX `r_data5_b` (`_issueid`),
+    CONSTRAINT `r_data5_a`
+        FOREIGN KEY (`_dataid`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_data5_b`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_data_template
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_data_template`;
+
+CREATE TABLE `R_data_template`
+(
+    `_dataid` INTEGER(4) NOT NULL,
+    `_templateid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_dataid`,`_templateid`),
+    INDEX `r_data6_a` (`_dataid`),
+    INDEX `r_data6_b` (`_templateid`),
+    CONSTRAINT `r_data6_a`
+        FOREIGN KEY (`_dataid`)
+        REFERENCES `_data` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_data6_b`
+        FOREIGN KEY (`_templateid`)
         REFERENCES `_templates` (`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
@@ -770,7 +943,7 @@ CREATE TABLE `_data_version`
     `id` INTEGER(4) NOT NULL,
     `_forcontribution` INTEGER(4),
     `_fortemplatefield` INTEGER(32),
-    `_content` TEXT,
+    `_content` LONGTEXT,
     `_isjson` TINYINT(1),
     `__user__` INTEGER(4),
     `__config__` TEXT,

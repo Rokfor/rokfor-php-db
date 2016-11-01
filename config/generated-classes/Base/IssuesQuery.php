@@ -86,7 +86,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildIssuesQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
  *
- * @method     \UsersQuery|\BooksQuery|\RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery|\RRightsForissueQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildIssuesQuery leftJoinRDataIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataIssue relation
+ * @method     ChildIssuesQuery rightJoinRDataIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataIssue relation
+ * @method     ChildIssuesQuery innerJoinRDataIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataIssue relation
+ *
+ * @method     \UsersQuery|\BooksQuery|\RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery|\RRightsForissueQuery|\ContributionsQuery|\RDataIssueQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildIssues findOne(ConnectionInterface $con = null) Return the first ChildIssues matching the query
  * @method     ChildIssues findOneOrCreate(ConnectionInterface $con = null) Return the first ChildIssues matching the query, or a new ChildIssues object populated from the query conditions when no match is found
@@ -1417,6 +1421,79 @@ abstract class IssuesQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RDataIssue object
+     *
+     * @param \RDataIssue|ObjectCollection $rDataIssue the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRDataIssue($rDataIssue, $comparison = null)
+    {
+        if ($rDataIssue instanceof \RDataIssue) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL_ID, $rDataIssue->getIssueid(), $comparison);
+        } elseif ($rDataIssue instanceof ObjectCollection) {
+            return $this
+                ->useRDataIssueQuery()
+                ->filterByPrimaryKeys($rDataIssue->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataIssue() only accepts arguments of type \RDataIssue or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataIssue relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinRDataIssue($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataIssue');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataIssue');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataIssue relation RDataIssue object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataIssueQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataIssueQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataIssue($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataIssue', '\RDataIssueQuery');
+    }
+
+    /**
      * Filter the query by a related Plugins object
      * using the R_issues_allplugin table as cross reference
      *
@@ -1515,6 +1592,23 @@ abstract class IssuesQuery extends ModelCriteria
         return $this
             ->useRRightsForissueQuery()
             ->filterByRights($rights, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_issue table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRData($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataIssueQuery()
+            ->filterByRData($data, $comparison)
             ->endUse();
     }
 

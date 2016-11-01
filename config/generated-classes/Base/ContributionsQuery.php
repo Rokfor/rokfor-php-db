@@ -74,15 +74,23 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildContributionsQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
  *
+ * @method     ChildContributionsQuery leftJoinContributionscache($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributionscache relation
+ * @method     ChildContributionsQuery rightJoinContributionscache($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributionscache relation
+ * @method     ChildContributionsQuery innerJoinContributionscache($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributionscache relation
+ *
  * @method     ChildContributionsQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildContributionsQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildContributionsQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
+ *
+ * @method     ChildContributionsQuery leftJoinRDataContribution($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataContribution relation
+ * @method     ChildContributionsQuery rightJoinRDataContribution($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataContribution relation
+ * @method     ChildContributionsQuery innerJoinRDataContribution($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataContribution relation
  *
  * @method     ChildContributionsQuery leftJoinContributionsVersion($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContributionsVersion relation
  * @method     ChildContributionsQuery rightJoinContributionsVersion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContributionsVersion relation
  * @method     ChildContributionsQuery innerJoinContributionsVersion($relationAlias = null) Adds a INNER JOIN clause to the query using the ContributionsVersion relation
  *
- * @method     \UsersQuery|\FormatsQuery|\IssuesQuery|\TemplatenamesQuery|\DataQuery|\ContributionsVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\FormatsQuery|\IssuesQuery|\TemplatenamesQuery|\ContributionscacheQuery|\DataQuery|\RDataContributionQuery|\ContributionsVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildContributions findOne(ConnectionInterface $con = null) Return the first ChildContributions matching the query
  * @method     ChildContributions findOneOrCreate(ConnectionInterface $con = null) Return the first ChildContributions matching the query, or a new ChildContributions object populated from the query conditions when no match is found
@@ -1245,6 +1253,79 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
     }
 
     /**
+     * Filter the query by a related \Contributionscache object
+     *
+     * @param \Contributionscache|ObjectCollection $contributionscache the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByContributionscache($contributionscache, $comparison = null)
+    {
+        if ($contributionscache instanceof \Contributionscache) {
+            return $this
+                ->addUsingAlias(ContributionsTableMap::COL_ID, $contributionscache->getForcontribution(), $comparison);
+        } elseif ($contributionscache instanceof ObjectCollection) {
+            return $this
+                ->useContributionscacheQuery()
+                ->filterByPrimaryKeys($contributionscache->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByContributionscache() only accepts arguments of type \Contributionscache or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Contributionscache relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function joinContributionscache($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Contributionscache');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Contributionscache');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Contributionscache relation Contributionscache object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ContributionscacheQuery A secondary query class using the current class as primary query
+     */
+    public function useContributionscacheQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinContributionscache($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Contributionscache', '\ContributionscacheQuery');
+    }
+
+    /**
      * Filter the query by a related \Data object
      *
      * @param \Data|ObjectCollection $data the related object to use as filter
@@ -1318,6 +1399,79 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
     }
 
     /**
+     * Filter the query by a related \RDataContribution object
+     *
+     * @param \RDataContribution|ObjectCollection $rDataContribution the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByRDataContribution($rDataContribution, $comparison = null)
+    {
+        if ($rDataContribution instanceof \RDataContribution) {
+            return $this
+                ->addUsingAlias(ContributionsTableMap::COL_ID, $rDataContribution->getContributionid(), $comparison);
+        } elseif ($rDataContribution instanceof ObjectCollection) {
+            return $this
+                ->useRDataContributionQuery()
+                ->filterByPrimaryKeys($rDataContribution->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataContribution() only accepts arguments of type \RDataContribution or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataContribution relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildContributionsQuery The current query, for fluid interface
+     */
+    public function joinRDataContribution($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataContribution');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataContribution');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataContribution relation RDataContribution object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataContributionQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataContributionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataContribution($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataContribution', '\RDataContributionQuery');
+    }
+
+    /**
      * Filter the query by a related \ContributionsVersion object
      *
      * @param \ContributionsVersion|ObjectCollection $contributionsVersion the related object to use as filter
@@ -1388,6 +1542,23 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         return $this
             ->joinContributionsVersion($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ContributionsVersion', '\ContributionsVersionQuery');
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_contribution table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildContributionsQuery The current query, for fluid interface
+     */
+    public function filterByRData($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataContributionQuery()
+            ->filterByRData($data, $comparison)
+            ->endUse();
     }
 
     /**

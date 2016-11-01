@@ -2,6 +2,7 @@
 
 use Base\Templates as BaseTemplates;
 
+
 /**
  * Skeleton subclass for representing a row from the '_templates' table.
  *

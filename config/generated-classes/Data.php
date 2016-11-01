@@ -161,7 +161,7 @@ class Data extends BaseData
                                           ->filterByStatus('Draft')
                                         ->_endif()
                                       ->endUse();
-          if (is_array($_data)) {
+          //if (is_array($_data)) {
             foreach($_data as $_b) {
               $_decoded = json_decode($_b->getContent(), true);
               if (is_array($_decoded)) {
@@ -172,7 +172,7 @@ class Data extends BaseData
             }
           ksort($retval);    
           break;
-        }
+          //}
         //
         // CONTRIBUTIONS HISTORY
         // option: restrict_to_issue(bool): true = fromissue or self / false = all issues
@@ -255,4 +255,68 @@ class Data extends BaseData
     $data = json_decode($_c, true);
     return (!is_array($data)?[$data]:$data);
   }
+  
+  /**
+   * returns the relations of a data field as array of int
+   *
+   * @return void
+   * @author Urs Hofer
+   */  
+  function getRelationsAsArray($history_command) 
+  {
+    if ($relations = $this->getRelationsAsObject($history_command)) {
+      if (is_array($relations)) {
+        return $relations;
+      }
+      $ids = [];
+      foreach ($relations as $_r) {
+        $ids[] = $_r->getId();
+      }
+      return (count($ids) == 0 ? [-1] : $ids);
+    }
+    return false;
+  }
+  
+  
+  /**
+   * returns the relations of a data field as array of int
+   *
+   * @return void
+   * @author Urs Hofer
+   */  
+  function getRelationsAsObject($history_command) 
+  {
+    $getAction = false;
+    switch ($history_command) {
+      case 'contributional':
+        $getAction = 'getRContributions';
+        break;
+      case 'books':
+        $getAction = 'getRBooks';
+        break;
+      case 'issues':
+        $getAction = 'getRIssues';
+        break;
+      case 'chapters':
+        $getAction = 'getRFormats';
+        break;      
+      case 'structural':
+        $getAction = 'getRTemplates';
+        break;
+      case 'other':
+        $getAction = 'getRDataRefs';
+        break;
+      default:
+        //- Return Plain Values here for self referenced keywords
+        return $this->getDataAlwaysAsArray();
+        break;
+    }
+    if ($getAction) {
+      return $this->$getAction();
+    }
+    return false;
+  }
+  
+  
+  
 }

@@ -62,7 +62,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildFormatsQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
  *
- * @method     \UsersQuery|\BooksQuery|\RRightsForformatQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildFormatsQuery leftJoinRDataFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataFormat relation
+ * @method     ChildFormatsQuery rightJoinRDataFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataFormat relation
+ * @method     ChildFormatsQuery innerJoinRDataFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataFormat relation
+ *
+ * @method     \UsersQuery|\BooksQuery|\RRightsForformatQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery|\RDataFormatQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildFormats findOne(ConnectionInterface $con = null) Return the first ChildFormats matching the query
  * @method     ChildFormats findOneOrCreate(ConnectionInterface $con = null) Return the first ChildFormats matching the query, or a new ChildFormats object populated from the query conditions when no match is found
@@ -949,6 +953,79 @@ abstract class FormatsQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RDataFormat object
+     *
+     * @param \RDataFormat|ObjectCollection $rDataFormat the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFormatsQuery The current query, for fluid interface
+     */
+    public function filterByRDataFormat($rDataFormat, $comparison = null)
+    {
+        if ($rDataFormat instanceof \RDataFormat) {
+            return $this
+                ->addUsingAlias(FormatsTableMap::COL_ID, $rDataFormat->getFormatid(), $comparison);
+        } elseif ($rDataFormat instanceof ObjectCollection) {
+            return $this
+                ->useRDataFormatQuery()
+                ->filterByPrimaryKeys($rDataFormat->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataFormat() only accepts arguments of type \RDataFormat or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataFormat relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildFormatsQuery The current query, for fluid interface
+     */
+    public function joinRDataFormat($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataFormat');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataFormat');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataFormat relation RDataFormat object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataFormatQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataFormatQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataFormat($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataFormat', '\RDataFormatQuery');
+    }
+
+    /**
      * Filter the query by a related Rights object
      * using the R_rights_forformat table as cross reference
      *
@@ -979,6 +1056,23 @@ abstract class FormatsQuery extends ModelCriteria
         return $this
             ->useRTemplatenamesInchapterQuery()
             ->filterByTemplatenames($templatenames, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_format table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildFormatsQuery The current query, for fluid interface
+     */
+    public function filterByRData($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataFormatQuery()
+            ->filterByRData($data, $comparison)
             ->endUse();
     }
 

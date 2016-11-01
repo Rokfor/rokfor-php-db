@@ -66,11 +66,39 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataQuery rightJoinTemplates($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templates relation
  * @method     ChildDataQuery innerJoinTemplates($relationAlias = null) Adds a INNER JOIN clause to the query using the Templates relation
  *
+ * @method     ChildDataQuery leftJoinRDataDataRelatedBySource($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataDataRelatedBySource relation
+ * @method     ChildDataQuery rightJoinRDataDataRelatedBySource($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataDataRelatedBySource relation
+ * @method     ChildDataQuery innerJoinRDataDataRelatedBySource($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataDataRelatedBySource relation
+ *
+ * @method     ChildDataQuery leftJoinRDataDataRelatedByTarget($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataDataRelatedByTarget relation
+ * @method     ChildDataQuery rightJoinRDataDataRelatedByTarget($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataDataRelatedByTarget relation
+ * @method     ChildDataQuery innerJoinRDataDataRelatedByTarget($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataDataRelatedByTarget relation
+ *
+ * @method     ChildDataQuery leftJoinRDataContribution($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataContribution relation
+ * @method     ChildDataQuery rightJoinRDataContribution($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataContribution relation
+ * @method     ChildDataQuery innerJoinRDataContribution($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataContribution relation
+ *
+ * @method     ChildDataQuery leftJoinRDataBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataBook relation
+ * @method     ChildDataQuery rightJoinRDataBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataBook relation
+ * @method     ChildDataQuery innerJoinRDataBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataBook relation
+ *
+ * @method     ChildDataQuery leftJoinRDataFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataFormat relation
+ * @method     ChildDataQuery rightJoinRDataFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataFormat relation
+ * @method     ChildDataQuery innerJoinRDataFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataFormat relation
+ *
+ * @method     ChildDataQuery leftJoinRDataIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataIssue relation
+ * @method     ChildDataQuery rightJoinRDataIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataIssue relation
+ * @method     ChildDataQuery innerJoinRDataIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataIssue relation
+ *
+ * @method     ChildDataQuery leftJoinRDataTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataTemplate relation
+ * @method     ChildDataQuery rightJoinRDataTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataTemplate relation
+ * @method     ChildDataQuery innerJoinRDataTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataTemplate relation
+ *
  * @method     ChildDataQuery leftJoinDataVersion($relationAlias = null) Adds a LEFT JOIN clause to the query using the DataVersion relation
  * @method     ChildDataQuery rightJoinDataVersion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DataVersion relation
  * @method     ChildDataQuery innerJoinDataVersion($relationAlias = null) Adds a INNER JOIN clause to the query using the DataVersion relation
  *
- * @method     \UsersQuery|\ContributionsQuery|\TemplatesQuery|\DataVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\ContributionsQuery|\TemplatesQuery|\RDataDataQuery|\RDataContributionQuery|\RDataBookQuery|\RDataFormatQuery|\RDataIssueQuery|\RDataTemplateQuery|\DataVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildData findOne(ConnectionInterface $con = null) Return the first ChildData matching the query
  * @method     ChildData findOneOrCreate(ConnectionInterface $con = null) Return the first ChildData matching the query, or a new ChildData object populated from the query conditions when no match is found
@@ -1052,6 +1080,517 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
     }
 
     /**
+     * Filter the query by a related \RDataData object
+     *
+     * @param \RDataData|ObjectCollection $rDataData the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataDataRelatedBySource($rDataData, $comparison = null)
+    {
+        if ($rDataData instanceof \RDataData) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataData->getSource(), $comparison);
+        } elseif ($rDataData instanceof ObjectCollection) {
+            return $this
+                ->useRDataDataRelatedBySourceQuery()
+                ->filterByPrimaryKeys($rDataData->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataDataRelatedBySource() only accepts arguments of type \RDataData or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataDataRelatedBySource relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataDataRelatedBySource($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataDataRelatedBySource');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataDataRelatedBySource');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataDataRelatedBySource relation RDataData object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataDataQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataDataRelatedBySourceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataDataRelatedBySource($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataDataRelatedBySource', '\RDataDataQuery');
+    }
+
+    /**
+     * Filter the query by a related \RDataData object
+     *
+     * @param \RDataData|ObjectCollection $rDataData the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataDataRelatedByTarget($rDataData, $comparison = null)
+    {
+        if ($rDataData instanceof \RDataData) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataData->getTarget(), $comparison);
+        } elseif ($rDataData instanceof ObjectCollection) {
+            return $this
+                ->useRDataDataRelatedByTargetQuery()
+                ->filterByPrimaryKeys($rDataData->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataDataRelatedByTarget() only accepts arguments of type \RDataData or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataDataRelatedByTarget relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataDataRelatedByTarget($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataDataRelatedByTarget');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataDataRelatedByTarget');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataDataRelatedByTarget relation RDataData object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataDataQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataDataRelatedByTargetQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataDataRelatedByTarget($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataDataRelatedByTarget', '\RDataDataQuery');
+    }
+
+    /**
+     * Filter the query by a related \RDataContribution object
+     *
+     * @param \RDataContribution|ObjectCollection $rDataContribution the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataContribution($rDataContribution, $comparison = null)
+    {
+        if ($rDataContribution instanceof \RDataContribution) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataContribution->getDataid(), $comparison);
+        } elseif ($rDataContribution instanceof ObjectCollection) {
+            return $this
+                ->useRDataContributionQuery()
+                ->filterByPrimaryKeys($rDataContribution->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataContribution() only accepts arguments of type \RDataContribution or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataContribution relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataContribution($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataContribution');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataContribution');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataContribution relation RDataContribution object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataContributionQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataContributionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataContribution($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataContribution', '\RDataContributionQuery');
+    }
+
+    /**
+     * Filter the query by a related \RDataBook object
+     *
+     * @param \RDataBook|ObjectCollection $rDataBook the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataBook($rDataBook, $comparison = null)
+    {
+        if ($rDataBook instanceof \RDataBook) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataBook->getDataid(), $comparison);
+        } elseif ($rDataBook instanceof ObjectCollection) {
+            return $this
+                ->useRDataBookQuery()
+                ->filterByPrimaryKeys($rDataBook->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataBook() only accepts arguments of type \RDataBook or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataBook relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataBook($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataBook');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataBook');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataBook relation RDataBook object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataBookQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataBookQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataBook($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataBook', '\RDataBookQuery');
+    }
+
+    /**
+     * Filter the query by a related \RDataFormat object
+     *
+     * @param \RDataFormat|ObjectCollection $rDataFormat the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataFormat($rDataFormat, $comparison = null)
+    {
+        if ($rDataFormat instanceof \RDataFormat) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataFormat->getDataid(), $comparison);
+        } elseif ($rDataFormat instanceof ObjectCollection) {
+            return $this
+                ->useRDataFormatQuery()
+                ->filterByPrimaryKeys($rDataFormat->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataFormat() only accepts arguments of type \RDataFormat or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataFormat relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataFormat($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataFormat');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataFormat');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataFormat relation RDataFormat object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataFormatQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataFormatQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataFormat($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataFormat', '\RDataFormatQuery');
+    }
+
+    /**
+     * Filter the query by a related \RDataIssue object
+     *
+     * @param \RDataIssue|ObjectCollection $rDataIssue the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataIssue($rDataIssue, $comparison = null)
+    {
+        if ($rDataIssue instanceof \RDataIssue) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataIssue->getDataid(), $comparison);
+        } elseif ($rDataIssue instanceof ObjectCollection) {
+            return $this
+                ->useRDataIssueQuery()
+                ->filterByPrimaryKeys($rDataIssue->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataIssue() only accepts arguments of type \RDataIssue or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataIssue relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataIssue($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataIssue');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataIssue');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataIssue relation RDataIssue object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataIssueQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataIssueQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataIssue($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataIssue', '\RDataIssueQuery');
+    }
+
+    /**
+     * Filter the query by a related \RDataTemplate object
+     *
+     * @param \RDataTemplate|ObjectCollection $rDataTemplate the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataTemplate($rDataTemplate, $comparison = null)
+    {
+        if ($rDataTemplate instanceof \RDataTemplate) {
+            return $this
+                ->addUsingAlias(DataTableMap::COL_ID, $rDataTemplate->getDataid(), $comparison);
+        } elseif ($rDataTemplate instanceof ObjectCollection) {
+            return $this
+                ->useRDataTemplateQuery()
+                ->filterByPrimaryKeys($rDataTemplate->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataTemplate() only accepts arguments of type \RDataTemplate or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataTemplate relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDataQuery The current query, for fluid interface
+     */
+    public function joinRDataTemplate($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataTemplate');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataTemplate');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataTemplate relation RDataTemplate object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataTemplateQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataTemplateQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataTemplate($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataTemplate', '\RDataTemplateQuery');
+    }
+
+    /**
      * Filter the query by a related \DataVersion object
      *
      * @param \DataVersion|ObjectCollection $dataVersion the related object to use as filter
@@ -1122,6 +1661,125 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         return $this
             ->joinDataVersion($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'DataVersion', '\DataVersionQuery');
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_data table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataRef($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataDataRelatedBySourceQuery()
+            ->filterByRDataRef($data, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_data table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRDataSrc($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataDataRelatedByTargetQuery()
+            ->filterByRDataSrc($data, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Contributions object
+     * using the R_data_contribution table as cross reference
+     *
+     * @param Contributions $contributions the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRContribution($contributions, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataContributionQuery()
+            ->filterByRContribution($contributions, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Books object
+     * using the R_data_book table as cross reference
+     *
+     * @param Books $books the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRBook($books, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataBookQuery()
+            ->filterByRBook($books, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Formats object
+     * using the R_data_format table as cross reference
+     *
+     * @param Formats $formats the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRFormat($formats, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataFormatQuery()
+            ->filterByRFormat($formats, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Issues object
+     * using the R_data_issue table as cross reference
+     *
+     * @param Issues $issues the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRIssue($issues, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataIssueQuery()
+            ->filterByRIssue($issues, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Templates object
+     * using the R_data_template table as cross reference
+     *
+     * @param Templates $templates the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDataQuery The current query, for fluid interface
+     */
+    public function filterByRTemplate($templates, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataTemplateQuery()
+            ->filterByRTemplate($templates, $comparison)
+            ->endUse();
     }
 
     /**

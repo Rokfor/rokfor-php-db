@@ -14,7 +14,6 @@ use Base\Books as BaseBooks;
  */
 class Books extends BaseBooks
 {
-
   public function getConfigSys()
   {
     $_c = json_decode($this->__config__);

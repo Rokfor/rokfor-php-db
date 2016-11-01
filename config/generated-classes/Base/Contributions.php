@@ -6,6 +6,8 @@ use \Contributions as ChildContributions;
 use \ContributionsQuery as ChildContributionsQuery;
 use \ContributionsVersion as ChildContributionsVersion;
 use \ContributionsVersionQuery as ChildContributionsVersionQuery;
+use \Contributionscache as ChildContributionscache;
+use \ContributionscacheQuery as ChildContributionscacheQuery;
 use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
 use \DataVersionQuery as ChildDataVersionQuery;
@@ -13,6 +15,8 @@ use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
 use \Issues as ChildIssues;
 use \IssuesQuery as ChildIssuesQuery;
+use \RDataContribution as ChildRDataContribution;
+use \RDataContributionQuery as ChildRDataContributionQuery;
 use \Templatenames as ChildTemplatenames;
 use \TemplatenamesQuery as ChildTemplatenamesQuery;
 use \Users as ChildUsers;
@@ -196,16 +200,38 @@ abstract class Contributions implements ActiveRecordInterface
     protected $aTemplatenames;
 
     /**
+     * @var        ObjectCollection|ChildContributionscache[] Collection to store aggregation of ChildContributionscache objects.
+     */
+    protected $collContributionscaches;
+    protected $collContributionscachesPartial;
+
+    /**
      * @var        ObjectCollection|ChildData[] Collection to store aggregation of ChildData objects.
      */
     protected $collDatas;
     protected $collDatasPartial;
 
     /**
+     * @var        ObjectCollection|ChildRDataContribution[] Collection to store aggregation of ChildRDataContribution objects.
+     */
+    protected $collRDataContributions;
+    protected $collRDataContributionsPartial;
+
+    /**
      * @var        ObjectCollection|ChildContributionsVersion[] Collection to store aggregation of ChildContributionsVersion objects.
      */
     protected $collContributionsVersions;
     protected $collContributionsVersionsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildData[] Cross Collection to store aggregation of ChildData objects.
+     */
+    protected $collRDatas;
+
+    /**
+     * @var bool
+     */
+    protected $collRDatasPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -227,7 +253,25 @@ abstract class Contributions implements ActiveRecordInterface
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildData[]
      */
+    protected $rDatasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildContributionscache[]
+     */
+    protected $contributionscachesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
     protected $datasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataContribution[]
+     */
+    protected $rDataContributionsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1146,10 +1190,15 @@ abstract class Contributions implements ActiveRecordInterface
             $this->aFormats = null;
             $this->aIssues = null;
             $this->aTemplatenames = null;
+            $this->collContributionscaches = null;
+
             $this->collDatas = null;
+
+            $this->collRDataContributions = null;
 
             $this->collContributionsVersions = null;
 
+            $this->collRDatas = null;
         } // if (deep)
     }
 
@@ -1305,6 +1354,52 @@ abstract class Contributions implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->rDatasScheduledForDeletion !== null) {
+                if (!$this->rDatasScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rDatasScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataContributionQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rDatasScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $rData) {
+                    if (!$rData->isDeleted() && ($rData->isNew() || $rData->isModified())) {
+                        $rData->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->contributionscachesScheduledForDeletion !== null) {
+                if (!$this->contributionscachesScheduledForDeletion->isEmpty()) {
+                    \ContributionscacheQuery::create()
+                        ->filterByPrimaryKeys($this->contributionscachesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->contributionscachesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collContributionscaches !== null) {
+                foreach ($this->collContributionscaches as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->datasScheduledForDeletion !== null) {
                 if (!$this->datasScheduledForDeletion->isEmpty()) {
                     \DataQuery::create()
@@ -1316,6 +1411,23 @@ abstract class Contributions implements ActiveRecordInterface
 
             if ($this->collDatas !== null) {
                 foreach ($this->collDatas as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataContributionsScheduledForDeletion !== null) {
+                if (!$this->rDataContributionsScheduledForDeletion->isEmpty()) {
+                    \RDataContributionQuery::create()
+                        ->filterByPrimaryKeys($this->rDataContributionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataContributionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataContributions !== null) {
+                foreach ($this->collRDataContributions as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1703,6 +1815,21 @@ abstract class Contributions implements ActiveRecordInterface
 
                 $result[$key] = $this->aTemplatenames->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
+            if (null !== $this->collContributionscaches) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'contributionscaches';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_contributions_caches';
+                        break;
+                    default:
+                        $key = 'Contributionscaches';
+                }
+
+                $result[$key] = $this->collContributionscaches->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collDatas) {
 
                 switch ($keyType) {
@@ -1717,6 +1844,21 @@ abstract class Contributions implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collDatas->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataContributions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataContributions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_contributions';
+                        break;
+                    default:
+                        $key = 'RDataContributions';
+                }
+
+                $result[$key] = $this->collRDataContributions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collContributionsVersions) {
 
@@ -2085,9 +2227,21 @@ abstract class Contributions implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getContributionscaches() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addContributionscache($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getDatas() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addData($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataContributions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataContribution($relObj->copy($deepCopy));
                 }
             }
 
@@ -2342,12 +2496,236 @@ abstract class Contributions implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('Contributionscache' == $relationName) {
+            return $this->initContributionscaches();
+        }
         if ('Data' == $relationName) {
             return $this->initDatas();
+        }
+        if ('RDataContribution' == $relationName) {
+            return $this->initRDataContributions();
         }
         if ('ContributionsVersion' == $relationName) {
             return $this->initContributionsVersions();
         }
+    }
+
+    /**
+     * Clears out the collContributionscaches collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addContributionscaches()
+     */
+    public function clearContributionscaches()
+    {
+        $this->collContributionscaches = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collContributionscaches collection loaded partially.
+     */
+    public function resetPartialContributionscaches($v = true)
+    {
+        $this->collContributionscachesPartial = $v;
+    }
+
+    /**
+     * Initializes the collContributionscaches collection.
+     *
+     * By default this just sets the collContributionscaches collection to an empty array (like clearcollContributionscaches());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initContributionscaches($overrideExisting = true)
+    {
+        if (null !== $this->collContributionscaches && !$overrideExisting) {
+            return;
+        }
+        $this->collContributionscaches = new ObjectCollection();
+        $this->collContributionscaches->setModel('\Contributionscache');
+    }
+
+    /**
+     * Gets an array of ChildContributionscache objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContributions is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildContributionscache[] List of ChildContributionscache objects
+     * @throws PropelException
+     */
+    public function getContributionscaches(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collContributionscachesPartial && !$this->isNew();
+        if (null === $this->collContributionscaches || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collContributionscaches) {
+                // return empty collection
+                $this->initContributionscaches();
+            } else {
+                $collContributionscaches = ChildContributionscacheQuery::create(null, $criteria)
+                    ->filterByContributions($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collContributionscachesPartial && count($collContributionscaches)) {
+                        $this->initContributionscaches(false);
+
+                        foreach ($collContributionscaches as $obj) {
+                            if (false == $this->collContributionscaches->contains($obj)) {
+                                $this->collContributionscaches->append($obj);
+                            }
+                        }
+
+                        $this->collContributionscachesPartial = true;
+                    }
+
+                    return $collContributionscaches;
+                }
+
+                if ($partial && $this->collContributionscaches) {
+                    foreach ($this->collContributionscaches as $obj) {
+                        if ($obj->isNew()) {
+                            $collContributionscaches[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collContributionscaches = $collContributionscaches;
+                $this->collContributionscachesPartial = false;
+            }
+        }
+
+        return $this->collContributionscaches;
+    }
+
+    /**
+     * Sets a collection of ChildContributionscache objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $contributionscaches A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildContributions The current object (for fluent API support)
+     */
+    public function setContributionscaches(Collection $contributionscaches, ConnectionInterface $con = null)
+    {
+        /** @var ChildContributionscache[] $contributionscachesToDelete */
+        $contributionscachesToDelete = $this->getContributionscaches(new Criteria(), $con)->diff($contributionscaches);
+
+
+        $this->contributionscachesScheduledForDeletion = $contributionscachesToDelete;
+
+        foreach ($contributionscachesToDelete as $contributionscacheRemoved) {
+            $contributionscacheRemoved->setContributions(null);
+        }
+
+        $this->collContributionscaches = null;
+        foreach ($contributionscaches as $contributionscache) {
+            $this->addContributionscache($contributionscache);
+        }
+
+        $this->collContributionscaches = $contributionscaches;
+        $this->collContributionscachesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Contributionscache objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Contributionscache objects.
+     * @throws PropelException
+     */
+    public function countContributionscaches(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collContributionscachesPartial && !$this->isNew();
+        if (null === $this->collContributionscaches || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collContributionscaches) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getContributionscaches());
+            }
+
+            $query = ChildContributionscacheQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByContributions($this)
+                ->count($con);
+        }
+
+        return count($this->collContributionscaches);
+    }
+
+    /**
+     * Method called to associate a ChildContributionscache object to this object
+     * through the ChildContributionscache foreign key attribute.
+     *
+     * @param  ChildContributionscache $l ChildContributionscache
+     * @return $this|\Contributions The current object (for fluent API support)
+     */
+    public function addContributionscache(ChildContributionscache $l)
+    {
+        if ($this->collContributionscaches === null) {
+            $this->initContributionscaches();
+            $this->collContributionscachesPartial = true;
+        }
+
+        if (!$this->collContributionscaches->contains($l)) {
+            $this->doAddContributionscache($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildContributionscache $contributionscache The ChildContributionscache object to add.
+     */
+    protected function doAddContributionscache(ChildContributionscache $contributionscache)
+    {
+        $this->collContributionscaches[]= $contributionscache;
+        $contributionscache->setContributions($this);
+    }
+
+    /**
+     * @param  ChildContributionscache $contributionscache The ChildContributionscache object to remove.
+     * @return $this|ChildContributions The current object (for fluent API support)
+     */
+    public function removeContributionscache(ChildContributionscache $contributionscache)
+    {
+        if ($this->getContributionscaches()->contains($contributionscache)) {
+            $pos = $this->collContributionscaches->search($contributionscache);
+            $this->collContributionscaches->remove($pos);
+            if (null === $this->contributionscachesScheduledForDeletion) {
+                $this->contributionscachesScheduledForDeletion = clone $this->collContributionscaches;
+                $this->contributionscachesScheduledForDeletion->clear();
+            }
+            $this->contributionscachesScheduledForDeletion[]= $contributionscache;
+            $contributionscache->setContributions(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -2619,6 +2997,252 @@ abstract class Contributions implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDataContributions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataContributions()
+     */
+    public function clearRDataContributions()
+    {
+        $this->collRDataContributions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataContributions collection loaded partially.
+     */
+    public function resetPartialRDataContributions($v = true)
+    {
+        $this->collRDataContributionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataContributions collection.
+     *
+     * By default this just sets the collRDataContributions collection to an empty array (like clearcollRDataContributions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataContributions($overrideExisting = true)
+    {
+        if (null !== $this->collRDataContributions && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataContributions = new ObjectCollection();
+        $this->collRDataContributions->setModel('\RDataContribution');
+    }
+
+    /**
+     * Gets an array of ChildRDataContribution objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContributions is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataContribution[] List of ChildRDataContribution objects
+     * @throws PropelException
+     */
+    public function getRDataContributions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataContributionsPartial && !$this->isNew();
+        if (null === $this->collRDataContributions || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataContributions) {
+                // return empty collection
+                $this->initRDataContributions();
+            } else {
+                $collRDataContributions = ChildRDataContributionQuery::create(null, $criteria)
+                    ->filterByRContribution($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataContributionsPartial && count($collRDataContributions)) {
+                        $this->initRDataContributions(false);
+
+                        foreach ($collRDataContributions as $obj) {
+                            if (false == $this->collRDataContributions->contains($obj)) {
+                                $this->collRDataContributions->append($obj);
+                            }
+                        }
+
+                        $this->collRDataContributionsPartial = true;
+                    }
+
+                    return $collRDataContributions;
+                }
+
+                if ($partial && $this->collRDataContributions) {
+                    foreach ($this->collRDataContributions as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataContributions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataContributions = $collRDataContributions;
+                $this->collRDataContributionsPartial = false;
+            }
+        }
+
+        return $this->collRDataContributions;
+    }
+
+    /**
+     * Sets a collection of ChildRDataContribution objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataContributions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildContributions The current object (for fluent API support)
+     */
+    public function setRDataContributions(Collection $rDataContributions, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataContribution[] $rDataContributionsToDelete */
+        $rDataContributionsToDelete = $this->getRDataContributions(new Criteria(), $con)->diff($rDataContributions);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataContributionsScheduledForDeletion = clone $rDataContributionsToDelete;
+
+        foreach ($rDataContributionsToDelete as $rDataContributionRemoved) {
+            $rDataContributionRemoved->setRContribution(null);
+        }
+
+        $this->collRDataContributions = null;
+        foreach ($rDataContributions as $rDataContribution) {
+            $this->addRDataContribution($rDataContribution);
+        }
+
+        $this->collRDataContributions = $rDataContributions;
+        $this->collRDataContributionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataContribution objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataContribution objects.
+     * @throws PropelException
+     */
+    public function countRDataContributions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataContributionsPartial && !$this->isNew();
+        if (null === $this->collRDataContributions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataContributions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataContributions());
+            }
+
+            $query = ChildRDataContributionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRContribution($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataContributions);
+    }
+
+    /**
+     * Method called to associate a ChildRDataContribution object to this object
+     * through the ChildRDataContribution foreign key attribute.
+     *
+     * @param  ChildRDataContribution $l ChildRDataContribution
+     * @return $this|\Contributions The current object (for fluent API support)
+     */
+    public function addRDataContribution(ChildRDataContribution $l)
+    {
+        if ($this->collRDataContributions === null) {
+            $this->initRDataContributions();
+            $this->collRDataContributionsPartial = true;
+        }
+
+        if (!$this->collRDataContributions->contains($l)) {
+            $this->doAddRDataContribution($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataContribution $rDataContribution The ChildRDataContribution object to add.
+     */
+    protected function doAddRDataContribution(ChildRDataContribution $rDataContribution)
+    {
+        $this->collRDataContributions[]= $rDataContribution;
+        $rDataContribution->setRContribution($this);
+    }
+
+    /**
+     * @param  ChildRDataContribution $rDataContribution The ChildRDataContribution object to remove.
+     * @return $this|ChildContributions The current object (for fluent API support)
+     */
+    public function removeRDataContribution(ChildRDataContribution $rDataContribution)
+    {
+        if ($this->getRDataContributions()->contains($rDataContribution)) {
+            $pos = $this->collRDataContributions->search($rDataContribution);
+            $this->collRDataContributions->remove($pos);
+            if (null === $this->rDataContributionsScheduledForDeletion) {
+                $this->rDataContributionsScheduledForDeletion = clone $this->collRDataContributions;
+                $this->rDataContributionsScheduledForDeletion->clear();
+            }
+            $this->rDataContributionsScheduledForDeletion[]= clone $rDataContribution;
+            $rDataContribution->setRContribution(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Contributions is new, it will return
+     * an empty collection; or if this Contributions has previously
+     * been saved, it will retrieve related RDataContributions from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Contributions.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataContribution[] List of ChildRDataContribution objects
+     */
+    public function getRDataContributionsJoinRData(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataContributionQuery::create(null, $criteria);
+        $query->joinWith('RData', $joinBehavior);
+
+        return $this->getRDataContributions($query, $con);
+    }
+
+    /**
      * Clears out the collContributionsVersions collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -2840,6 +3464,248 @@ abstract class Contributions implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDatas collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDatas()
+     */
+    public function clearRDatas()
+    {
+        $this->collRDatas = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRDatas crossRef collection.
+     *
+     * By default this just sets the collRDatas collection to an empty collection (like clearRDatas());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRDatas()
+    {
+        $this->collRDatas = new ObjectCollection();
+        $this->collRDatasPartial = true;
+
+        $this->collRDatas->setModel('\Data');
+    }
+
+    /**
+     * Checks if the collRDatas collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRDatasLoaded()
+    {
+        return null !== $this->collRDatas;
+    }
+
+    /**
+     * Gets a collection of ChildData objects related by a many-to-many relationship
+     * to the current object by way of the R_data_contribution cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildContributions is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getRDatas(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRDatas) {
+                    $this->initRDatas();
+                }
+            } else {
+
+                $query = ChildDataQuery::create(null, $criteria)
+                    ->filterByRContribution($this);
+                $collRDatas = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRDatas;
+                }
+
+                if ($partial && $this->collRDatas) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRDatas as $obj) {
+                        if (!$collRDatas->contains($obj)) {
+                            $collRDatas[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDatas = $collRDatas;
+                $this->collRDatasPartial = false;
+            }
+        }
+
+        return $this->collRDatas;
+    }
+
+    /**
+     * Sets a collection of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_contribution cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rDatas A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildContributions The current object (for fluent API support)
+     */
+    public function setRDatas(Collection $rDatas, ConnectionInterface $con = null)
+    {
+        $this->clearRDatas();
+        $currentRDatas = $this->getRDatas();
+
+        $rDatasScheduledForDeletion = $currentRDatas->diff($rDatas);
+
+        foreach ($rDatasScheduledForDeletion as $toDelete) {
+            $this->removeRData($toDelete);
+        }
+
+        foreach ($rDatas as $rData) {
+            if (!$currentRDatas->contains($rData)) {
+                $this->doAddRData($rData);
+            }
+        }
+
+        $this->collRDatasPartial = false;
+        $this->collRDatas = $rDatas;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_contribution cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Data objects
+     */
+    public function countRDatas(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDatas) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRDatas());
+                }
+
+                $query = ChildDataQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRContribution($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRDatas);
+        }
+    }
+
+    /**
+     * Associate a ChildData to this object
+     * through the R_data_contribution cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildContributions The current object (for fluent API support)
+     */
+    public function addRData(ChildData $rData)
+    {
+        if ($this->collRDatas === null) {
+            $this->initRDatas();
+        }
+
+        if (!$this->getRDatas()->contains($rData)) {
+            // only add it if the **same** object is not already associated
+            $this->collRDatas->push($rData);
+            $this->doAddRData($rData);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildData $rData
+     */
+    protected function doAddRData(ChildData $rData)
+    {
+        $rDataContribution = new ChildRDataContribution();
+
+        $rDataContribution->setRData($rData);
+
+        $rDataContribution->setRContribution($this);
+
+        $this->addRDataContribution($rDataContribution);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rData->isRContributionsLoaded()) {
+            $rData->initRContributions();
+            $rData->getRContributions()->push($this);
+        } elseif (!$rData->getRContributions()->contains($this)) {
+            $rData->getRContributions()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rData of this object
+     * through the R_data_contribution cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildContributions The current object (for fluent API support)
+     */
+    public function removeRData(ChildData $rData)
+    {
+        if ($this->getRDatas()->contains($rData)) { $rDataContribution = new ChildRDataContribution();
+
+            $rDataContribution->setRData($rData);
+            if ($rData->isRContributionsLoaded()) {
+                //remove the back reference if available
+                $rData->getRContributions()->removeObject($this);
+            }
+
+            $rDataContribution->setRContribution($this);
+            $this->removeRDataContribution(clone $rDataContribution);
+            $rDataContribution->clear();
+
+            $this->collRDatas->remove($this->collRDatas->search($rData));
+
+            if (null === $this->rDatasScheduledForDeletion) {
+                $this->rDatasScheduledForDeletion = clone $this->collRDatas;
+                $this->rDatasScheduledForDeletion->clear();
+            }
+
+            $this->rDatasScheduledForDeletion->push($rData);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2893,8 +3759,18 @@ abstract class Contributions implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collContributionscaches) {
+                foreach ($this->collContributionscaches as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collDatas) {
                 foreach ($this->collDatas as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataContributions) {
+                foreach ($this->collRDataContributions as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2903,10 +3779,18 @@ abstract class Contributions implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collContributionscaches = null;
         $this->collDatas = null;
+        $this->collRDataContributions = null;
         $this->collContributionsVersions = null;
+        $this->collRDatas = null;
         $this->auserSysRef = null;
         $this->aFormats = null;
         $this->aIssues = null;

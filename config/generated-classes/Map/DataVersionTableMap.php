@@ -199,7 +199,7 @@ class DataVersionTableMap extends TableMap
         $this->addForeignPrimaryKey('id', 'Id', 'INTEGER' , '_data', 'id', true, 4, null);
         $this->addColumn('_forcontribution', 'Forcontribution', 'INTEGER', false, 4, null);
         $this->addColumn('_fortemplatefield', 'Fortemplatefield', 'INTEGER', false, 32, null);
-        $this->addColumn('_content', 'Content', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('_content', 'Content', 'CLOB', false, null, null);
         $this->addColumn('_isjson', 'Isjson', 'BOOLEAN', false, 1, null);
         $this->addColumn('__user__', 'UserSys', 'INTEGER', false, 4, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);

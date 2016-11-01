@@ -14,5 +14,4 @@ use Base\Templatenames as BaseTemplatenames;
  */
 class Templatenames extends BaseTemplatenames
 {
-
 }

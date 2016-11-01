@@ -306,11 +306,31 @@
       <parameter name="log_comment" value="true" />
     </behavior>
   </table>
+
+  <table name="_contributions_cache" idMethod="native" phpName="Contributionscache">
+    <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="_signature" phpName="Signature" type="VARCHAR" required="true"/>
+    <column name="_forcontribution" phpName="Forcontribution" type="INTEGER" size="4"/>
+    <column name="_cache" phpName="Cache" type="CLOB"/>
+    <foreign-key foreignTable="_contributions" name="c_contribution_fk" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="_forcontribution" foreign="id"/>
+    </foreign-key>
+    <index name="_cacheforcontribution_index">
+      <index-column name="_forcontribution"/>
+    </index>
+    <index name="_signature_index">
+      <index-column name="_signature"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
   <table name="_data" idMethod="native" phpName="Data">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_forcontribution" phpName="Forcontribution" type="INTEGER" size="4"/>
     <column name="_fortemplatefield" phpName="Fortemplatefield" type="INTEGER" size="32"/>
-    <column name="_content" phpName="Content" type="LONGVARCHAR"/>
+    <column name="_content" phpName="Content" type="CLOB"/>
     <column name="_isjson" phpName="Isjson" type="BOOLEAN"/>    
     <column name="__user__" phpName="UserSys" type="INTEGER" size="4"/>
     <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
@@ -332,9 +352,15 @@
     <index name="_dataforcontribution_index">
       <index-column name="_forcontribution"/>
     </index>
+    <index name="_content">
+      <index-column name="_content"/>
+      <vendor type="mysql">
+        <parameter name="Index_type" value="FULLTEXT"/>
+      </vendor>
+    </index>
     <index name="_datafortemplatefield_index">
       <index-column name="_fortemplatefield"/>
-    </index>
+    </index>    
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
@@ -344,6 +370,132 @@
       <parameter name="log_comment" value="true" />
     </behavior>
   </table>
+  
+  <!--
+   //  
+   //  Data - Data Crossref Tables
+   //  
+   -->
+  <table name="R_data_data" idMethod="native" phpName="RDataData" isCrossRef="true">
+    <column name="_src" phpName="Source" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_ref" phpName="Target" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_data" name="r_data1_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RDataSrc">
+      <reference local="_src" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_data" name="r_data1_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RDataRef">
+      <reference local="_ref" foreign="id"/>
+    </foreign-key>
+    <index name="r_data1_a">
+      <index-column name="_src"/>
+    </index>
+    <index name="r_data1_b">
+      <index-column name="_ref"/>
+    </index>    
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  
+  <table name="R_data_contribution" idMethod="native" phpName="RDataContribution" isCrossRef="true">
+    <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_contributionid" phpName="Contributionid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_data" name="r_data2_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RData">
+      <reference local="_dataid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_contributions" name="r_data2_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RContribution">
+      <reference local="_contributionid" foreign="id"/>
+    </foreign-key>
+    <index name="r_data2_a">
+      <index-column name="_dataid"/>
+    </index>
+    <index name="r_data2_b">
+      <index-column name="_contributionid"/>
+    </index>    
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>  
+  
+  <table name="R_data_book" idMethod="native" phpName="RDataBook" isCrossRef="true">
+    <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_bookid" phpName="Bookid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_data" name="r_data3_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RData">
+      <reference local="_dataid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_books" name="r_data3_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RBook">
+      <reference local="_bookid" foreign="id"/>
+    </foreign-key>
+    <index name="r_data3_a">
+      <index-column name="_dataid"/>
+    </index>
+    <index name="r_data3_b">
+      <index-column name="_bookid"/>
+    </index>    
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>  
+  
+  <table name="R_data_format" idMethod="native" phpName="RDataFormat" isCrossRef="true">
+    <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_formatid" phpName="Formatid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_data" name="r_data4_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RData">
+      <reference local="_dataid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_formats" name="r_data4_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RFormat">
+      <reference local="_formatid" foreign="id"/>
+    </foreign-key>
+    <index name="r_data4_a">
+      <index-column name="_dataid"/>
+    </index>
+    <index name="r_data4_b">
+      <index-column name="_formatid"/>
+    </index>    
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>   
+  
+  <table name="R_data_issue" idMethod="native" phpName="RDataIssue" isCrossRef="true">
+    <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_issueid" phpName="Issueid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_data" name="r_data5_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RData">
+      <reference local="_dataid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_issues" name="r_data5_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RIssue">
+      <reference local="_issueid" foreign="id"/>
+    </foreign-key>
+    <index name="r_data5_a">
+      <index-column name="_dataid"/>
+    </index>
+    <index name="r_data5_b">
+      <index-column name="_issueid"/>
+    </index>    
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  
+  <table name="R_data_template" idMethod="native" phpName="RDataTemplate" isCrossRef="true">
+    <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_templateid" phpName="Templateid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_data" name="r_data6_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RData">
+      <reference local="_dataid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_templates" name="r_data6_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RTemplate">
+      <reference local="_templateid" foreign="id"/>
+    </foreign-key>
+    <index name="r_data6_a">
+      <index-column name="_dataid"/>
+    </index>
+    <index name="r_data6_b">
+      <index-column name="_templateid"/>
+    </index>    
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  
   <table name="_fieldpostprocessor" idMethod="native" phpName="Fieldpostprocessor">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_name" phpName="Name" type="LONGVARCHAR"/>

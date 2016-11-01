@@ -14,7 +14,6 @@ use Base\Formats as BaseFormats;
  */
 class Formats extends BaseFormats
 {
-
   public function getConfigSys()
   {
     $_c = json_decode($this->__config__);

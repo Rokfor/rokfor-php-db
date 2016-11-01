@@ -6,8 +6,12 @@ use \Books as ChildBooks;
 use \BooksQuery as ChildBooksQuery;
 use \Contributions as ChildContributions;
 use \ContributionsQuery as ChildContributionsQuery;
+use \Data as ChildData;
+use \DataQuery as ChildDataQuery;
 use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
+use \RDataFormat as ChildRDataFormat;
+use \RDataFormatQuery as ChildRDataFormatQuery;
 use \RRightsForformat as ChildRRightsForformat;
 use \RRightsForformatQuery as ChildRRightsForformatQuery;
 use \RTemplatenamesInchapter as ChildRTemplatenamesInchapter;
@@ -152,6 +156,12 @@ abstract class Formats implements ActiveRecordInterface
     protected $collContributionssPartial;
 
     /**
+     * @var        ObjectCollection|ChildRDataFormat[] Collection to store aggregation of ChildRDataFormat objects.
+     */
+    protected $collRDataFormats;
+    protected $collRDataFormatsPartial;
+
+    /**
      * @var        ObjectCollection|ChildRights[] Cross Collection to store aggregation of ChildRights objects.
      */
     protected $collRightss;
@@ -170,6 +180,16 @@ abstract class Formats implements ActiveRecordInterface
      * @var bool
      */
     protected $collTemplatenamessPartial;
+
+    /**
+     * @var        ObjectCollection|ChildData[] Cross Collection to store aggregation of ChildData objects.
+     */
+    protected $collRDatas;
+
+    /**
+     * @var bool
+     */
+    protected $collRDatasPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -193,6 +213,12 @@ abstract class Formats implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
+    protected $rDatasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRRightsForformat[]
      */
     protected $rRightsForformatsScheduledForDeletion = null;
@@ -208,6 +234,12 @@ abstract class Formats implements ActiveRecordInterface
      * @var ObjectCollection|ChildContributions[]
      */
     protected $contributionssScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataFormat[]
+     */
+    protected $rDataFormatsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Formats object.
@@ -816,8 +848,11 @@ abstract class Formats implements ActiveRecordInterface
 
             $this->collContributionss = null;
 
+            $this->collRDataFormats = null;
+
             $this->collRightss = null;
             $this->collTemplatenamess = null;
+            $this->collRDatas = null;
         } // if (deep)
     }
 
@@ -1005,6 +1040,35 @@ abstract class Formats implements ActiveRecordInterface
             }
 
 
+            if ($this->rDatasScheduledForDeletion !== null) {
+                if (!$this->rDatasScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rDatasScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataFormatQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rDatasScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $rData) {
+                    if (!$rData->isDeleted() && ($rData->isNew() || $rData->isModified())) {
+                        $rData->save($con);
+                    }
+                }
+            }
+
+
             if ($this->rRightsForformatsScheduledForDeletion !== null) {
                 if (!$this->rRightsForformatsScheduledForDeletion->isEmpty()) {
                     \RRightsForformatQuery::create()
@@ -1050,6 +1114,23 @@ abstract class Formats implements ActiveRecordInterface
 
             if ($this->collContributionss !== null) {
                 foreach ($this->collContributionss as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataFormatsScheduledForDeletion !== null) {
+                if (!$this->rDataFormatsScheduledForDeletion->isEmpty()) {
+                    \RDataFormatQuery::create()
+                        ->filterByPrimaryKeys($this->rDataFormatsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataFormatsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataFormats !== null) {
+                foreach ($this->collRDataFormats as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1347,6 +1428,21 @@ abstract class Formats implements ActiveRecordInterface
 
                 $result[$key] = $this->collContributionss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collRDataFormats) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataFormats';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_formats';
+                        break;
+                    default:
+                        $key = 'RDataFormats';
+                }
+
+                $result[$key] = $this->collRDataFormats->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -1637,6 +1733,12 @@ abstract class Formats implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRDataFormats() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataFormat($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1788,6 +1890,9 @@ abstract class Formats implements ActiveRecordInterface
         }
         if ('Contributions' == $relationName) {
             return $this->initContributionss();
+        }
+        if ('RDataFormat' == $relationName) {
+            return $this->initRDataFormats();
         }
     }
 
@@ -2577,6 +2682,252 @@ abstract class Formats implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDataFormats collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataFormats()
+     */
+    public function clearRDataFormats()
+    {
+        $this->collRDataFormats = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataFormats collection loaded partially.
+     */
+    public function resetPartialRDataFormats($v = true)
+    {
+        $this->collRDataFormatsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataFormats collection.
+     *
+     * By default this just sets the collRDataFormats collection to an empty array (like clearcollRDataFormats());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataFormats($overrideExisting = true)
+    {
+        if (null !== $this->collRDataFormats && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataFormats = new ObjectCollection();
+        $this->collRDataFormats->setModel('\RDataFormat');
+    }
+
+    /**
+     * Gets an array of ChildRDataFormat objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFormats is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataFormat[] List of ChildRDataFormat objects
+     * @throws PropelException
+     */
+    public function getRDataFormats(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataFormatsPartial && !$this->isNew();
+        if (null === $this->collRDataFormats || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataFormats) {
+                // return empty collection
+                $this->initRDataFormats();
+            } else {
+                $collRDataFormats = ChildRDataFormatQuery::create(null, $criteria)
+                    ->filterByRFormat($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataFormatsPartial && count($collRDataFormats)) {
+                        $this->initRDataFormats(false);
+
+                        foreach ($collRDataFormats as $obj) {
+                            if (false == $this->collRDataFormats->contains($obj)) {
+                                $this->collRDataFormats->append($obj);
+                            }
+                        }
+
+                        $this->collRDataFormatsPartial = true;
+                    }
+
+                    return $collRDataFormats;
+                }
+
+                if ($partial && $this->collRDataFormats) {
+                    foreach ($this->collRDataFormats as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataFormats[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataFormats = $collRDataFormats;
+                $this->collRDataFormatsPartial = false;
+            }
+        }
+
+        return $this->collRDataFormats;
+    }
+
+    /**
+     * Sets a collection of ChildRDataFormat objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataFormats A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function setRDataFormats(Collection $rDataFormats, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataFormat[] $rDataFormatsToDelete */
+        $rDataFormatsToDelete = $this->getRDataFormats(new Criteria(), $con)->diff($rDataFormats);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataFormatsScheduledForDeletion = clone $rDataFormatsToDelete;
+
+        foreach ($rDataFormatsToDelete as $rDataFormatRemoved) {
+            $rDataFormatRemoved->setRFormat(null);
+        }
+
+        $this->collRDataFormats = null;
+        foreach ($rDataFormats as $rDataFormat) {
+            $this->addRDataFormat($rDataFormat);
+        }
+
+        $this->collRDataFormats = $rDataFormats;
+        $this->collRDataFormatsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataFormat objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataFormat objects.
+     * @throws PropelException
+     */
+    public function countRDataFormats(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataFormatsPartial && !$this->isNew();
+        if (null === $this->collRDataFormats || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataFormats) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataFormats());
+            }
+
+            $query = ChildRDataFormatQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRFormat($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataFormats);
+    }
+
+    /**
+     * Method called to associate a ChildRDataFormat object to this object
+     * through the ChildRDataFormat foreign key attribute.
+     *
+     * @param  ChildRDataFormat $l ChildRDataFormat
+     * @return $this|\Formats The current object (for fluent API support)
+     */
+    public function addRDataFormat(ChildRDataFormat $l)
+    {
+        if ($this->collRDataFormats === null) {
+            $this->initRDataFormats();
+            $this->collRDataFormatsPartial = true;
+        }
+
+        if (!$this->collRDataFormats->contains($l)) {
+            $this->doAddRDataFormat($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataFormat $rDataFormat The ChildRDataFormat object to add.
+     */
+    protected function doAddRDataFormat(ChildRDataFormat $rDataFormat)
+    {
+        $this->collRDataFormats[]= $rDataFormat;
+        $rDataFormat->setRFormat($this);
+    }
+
+    /**
+     * @param  ChildRDataFormat $rDataFormat The ChildRDataFormat object to remove.
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function removeRDataFormat(ChildRDataFormat $rDataFormat)
+    {
+        if ($this->getRDataFormats()->contains($rDataFormat)) {
+            $pos = $this->collRDataFormats->search($rDataFormat);
+            $this->collRDataFormats->remove($pos);
+            if (null === $this->rDataFormatsScheduledForDeletion) {
+                $this->rDataFormatsScheduledForDeletion = clone $this->collRDataFormats;
+                $this->rDataFormatsScheduledForDeletion->clear();
+            }
+            $this->rDataFormatsScheduledForDeletion[]= clone $rDataFormat;
+            $rDataFormat->setRFormat(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Formats is new, it will return
+     * an empty collection; or if this Formats has previously
+     * been saved, it will retrieve related RDataFormats from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Formats.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataFormat[] List of ChildRDataFormat objects
+     */
+    public function getRDataFormatsJoinRData(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataFormatQuery::create(null, $criteria);
+        $query->joinWith('RData', $joinBehavior);
+
+        return $this->getRDataFormats($query, $con);
+    }
+
+    /**
      * Clears out the collRightss collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -3061,6 +3412,248 @@ abstract class Formats implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDatas collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDatas()
+     */
+    public function clearRDatas()
+    {
+        $this->collRDatas = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRDatas crossRef collection.
+     *
+     * By default this just sets the collRDatas collection to an empty collection (like clearRDatas());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRDatas()
+    {
+        $this->collRDatas = new ObjectCollection();
+        $this->collRDatasPartial = true;
+
+        $this->collRDatas->setModel('\Data');
+    }
+
+    /**
+     * Checks if the collRDatas collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRDatasLoaded()
+    {
+        return null !== $this->collRDatas;
+    }
+
+    /**
+     * Gets a collection of ChildData objects related by a many-to-many relationship
+     * to the current object by way of the R_data_format cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFormats is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getRDatas(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRDatas) {
+                    $this->initRDatas();
+                }
+            } else {
+
+                $query = ChildDataQuery::create(null, $criteria)
+                    ->filterByRFormat($this);
+                $collRDatas = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRDatas;
+                }
+
+                if ($partial && $this->collRDatas) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRDatas as $obj) {
+                        if (!$collRDatas->contains($obj)) {
+                            $collRDatas[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDatas = $collRDatas;
+                $this->collRDatasPartial = false;
+            }
+        }
+
+        return $this->collRDatas;
+    }
+
+    /**
+     * Sets a collection of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_format cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rDatas A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function setRDatas(Collection $rDatas, ConnectionInterface $con = null)
+    {
+        $this->clearRDatas();
+        $currentRDatas = $this->getRDatas();
+
+        $rDatasScheduledForDeletion = $currentRDatas->diff($rDatas);
+
+        foreach ($rDatasScheduledForDeletion as $toDelete) {
+            $this->removeRData($toDelete);
+        }
+
+        foreach ($rDatas as $rData) {
+            if (!$currentRDatas->contains($rData)) {
+                $this->doAddRData($rData);
+            }
+        }
+
+        $this->collRDatasPartial = false;
+        $this->collRDatas = $rDatas;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_format cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Data objects
+     */
+    public function countRDatas(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDatas) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRDatas());
+                }
+
+                $query = ChildDataQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRFormat($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRDatas);
+        }
+    }
+
+    /**
+     * Associate a ChildData to this object
+     * through the R_data_format cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildFormats The current object (for fluent API support)
+     */
+    public function addRData(ChildData $rData)
+    {
+        if ($this->collRDatas === null) {
+            $this->initRDatas();
+        }
+
+        if (!$this->getRDatas()->contains($rData)) {
+            // only add it if the **same** object is not already associated
+            $this->collRDatas->push($rData);
+            $this->doAddRData($rData);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildData $rData
+     */
+    protected function doAddRData(ChildData $rData)
+    {
+        $rDataFormat = new ChildRDataFormat();
+
+        $rDataFormat->setRData($rData);
+
+        $rDataFormat->setRFormat($this);
+
+        $this->addRDataFormat($rDataFormat);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rData->isRFormatsLoaded()) {
+            $rData->initRFormats();
+            $rData->getRFormats()->push($this);
+        } elseif (!$rData->getRFormats()->contains($this)) {
+            $rData->getRFormats()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rData of this object
+     * through the R_data_format cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildFormats The current object (for fluent API support)
+     */
+    public function removeRData(ChildData $rData)
+    {
+        if ($this->getRDatas()->contains($rData)) { $rDataFormat = new ChildRDataFormat();
+
+            $rDataFormat->setRData($rData);
+            if ($rData->isRFormatsLoaded()) {
+                //remove the back reference if available
+                $rData->getRFormats()->removeObject($this);
+            }
+
+            $rDataFormat->setRFormat($this);
+            $this->removeRDataFormat(clone $rDataFormat);
+            $rDataFormat->clear();
+
+            $this->collRDatas->remove($this->collRDatas->search($rData));
+
+            if (null === $this->rDatasScheduledForDeletion) {
+                $this->rDatasScheduledForDeletion = clone $this->collRDatas;
+                $this->rDatasScheduledForDeletion->clear();
+            }
+
+            $this->rDatasScheduledForDeletion->push($rData);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3114,6 +3707,11 @@ abstract class Formats implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDataFormats) {
+                foreach ($this->collRDataFormats as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRightss) {
                 foreach ($this->collRightss as $o) {
                     $o->clearAllReferences($deep);
@@ -3124,13 +3722,20 @@ abstract class Formats implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collRRightsForformats = null;
         $this->collRTemplatenamesInchapters = null;
         $this->collContributionss = null;
+        $this->collRDataFormats = null;
         $this->collRightss = null;
         $this->collTemplatenamess = null;
+        $this->collRDatas = null;
         $this->auserSysRef = null;
         $this->aBooks = null;
     }

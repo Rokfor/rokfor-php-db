@@ -6,6 +6,8 @@ use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
 use \Fieldpostprocessor as ChildFieldpostprocessor;
 use \FieldpostprocessorQuery as ChildFieldpostprocessorQuery;
+use \RDataTemplate as ChildRDataTemplate;
+use \RDataTemplateQuery as ChildRDataTemplateQuery;
 use \RFieldpostprocessorForfield as ChildRFieldpostprocessorForfield;
 use \RFieldpostprocessorForfieldQuery as ChildRFieldpostprocessorForfieldQuery;
 use \Templatenames as ChildTemplatenames;
@@ -147,6 +149,12 @@ abstract class Templates implements ActiveRecordInterface
     protected $collDatasPartial;
 
     /**
+     * @var        ObjectCollection|ChildRDataTemplate[] Collection to store aggregation of ChildRDataTemplate objects.
+     */
+    protected $collRDataTemplates;
+    protected $collRDataTemplatesPartial;
+
+    /**
      * @var        ObjectCollection|ChildFieldpostprocessor[] Cross Collection to store aggregation of ChildFieldpostprocessor objects.
      */
     protected $collFieldpostprocessors;
@@ -155,6 +163,16 @@ abstract class Templates implements ActiveRecordInterface
      * @var bool
      */
     protected $collFieldpostprocessorsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildData[] Cross Collection to store aggregation of ChildData objects.
+     */
+    protected $collRDatas;
+
+    /**
+     * @var bool
+     */
+    protected $collRDatasPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -172,6 +190,12 @@ abstract class Templates implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
+    protected $rDatasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRFieldpostprocessorForfield[]
      */
     protected $rFieldpostprocessorForfieldsScheduledForDeletion = null;
@@ -181,6 +205,12 @@ abstract class Templates implements ActiveRecordInterface
      * @var ObjectCollection|ChildData[]
      */
     protected $datasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataTemplate[]
+     */
+    protected $rDataTemplatesScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Templates object.
@@ -845,7 +875,10 @@ abstract class Templates implements ActiveRecordInterface
 
             $this->collDatas = null;
 
+            $this->collRDataTemplates = null;
+
             $this->collFieldpostprocessors = null;
+            $this->collRDatas = null;
         } // if (deep)
     }
 
@@ -997,6 +1030,35 @@ abstract class Templates implements ActiveRecordInterface
             }
 
 
+            if ($this->rDatasScheduledForDeletion !== null) {
+                if (!$this->rDatasScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rDatasScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataTemplateQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rDatasScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $rData) {
+                    if (!$rData->isDeleted() && ($rData->isNew() || $rData->isModified())) {
+                        $rData->save($con);
+                    }
+                }
+            }
+
+
             if ($this->rFieldpostprocessorForfieldsScheduledForDeletion !== null) {
                 if (!$this->rFieldpostprocessorForfieldsScheduledForDeletion->isEmpty()) {
                     \RFieldpostprocessorForfieldQuery::create()
@@ -1025,6 +1087,23 @@ abstract class Templates implements ActiveRecordInterface
 
             if ($this->collDatas !== null) {
                 foreach ($this->collDatas as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataTemplatesScheduledForDeletion !== null) {
+                if (!$this->rDataTemplatesScheduledForDeletion->isEmpty()) {
+                    \RDataTemplateQuery::create()
+                        ->filterByPrimaryKeys($this->rDataTemplatesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataTemplatesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataTemplates !== null) {
+                foreach ($this->collRDataTemplates as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1311,6 +1390,21 @@ abstract class Templates implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collDatas->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataTemplates) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataTemplates';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_templates';
+                        break;
+                    default:
+                        $key = 'RDataTemplates';
+                }
+
+                $result[$key] = $this->collRDataTemplates->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1616,6 +1710,12 @@ abstract class Templates implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRDataTemplates() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataTemplate($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1713,6 +1813,9 @@ abstract class Templates implements ActiveRecordInterface
         }
         if ('Data' == $relationName) {
             return $this->initDatas();
+        }
+        if ('RDataTemplate' == $relationName) {
+            return $this->initRDataTemplates();
         }
     }
 
@@ -2231,6 +2334,252 @@ abstract class Templates implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDataTemplates collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataTemplates()
+     */
+    public function clearRDataTemplates()
+    {
+        $this->collRDataTemplates = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataTemplates collection loaded partially.
+     */
+    public function resetPartialRDataTemplates($v = true)
+    {
+        $this->collRDataTemplatesPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataTemplates collection.
+     *
+     * By default this just sets the collRDataTemplates collection to an empty array (like clearcollRDataTemplates());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataTemplates($overrideExisting = true)
+    {
+        if (null !== $this->collRDataTemplates && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataTemplates = new ObjectCollection();
+        $this->collRDataTemplates->setModel('\RDataTemplate');
+    }
+
+    /**
+     * Gets an array of ChildRDataTemplate objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTemplates is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataTemplate[] List of ChildRDataTemplate objects
+     * @throws PropelException
+     */
+    public function getRDataTemplates(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataTemplatesPartial && !$this->isNew();
+        if (null === $this->collRDataTemplates || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataTemplates) {
+                // return empty collection
+                $this->initRDataTemplates();
+            } else {
+                $collRDataTemplates = ChildRDataTemplateQuery::create(null, $criteria)
+                    ->filterByRTemplate($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataTemplatesPartial && count($collRDataTemplates)) {
+                        $this->initRDataTemplates(false);
+
+                        foreach ($collRDataTemplates as $obj) {
+                            if (false == $this->collRDataTemplates->contains($obj)) {
+                                $this->collRDataTemplates->append($obj);
+                            }
+                        }
+
+                        $this->collRDataTemplatesPartial = true;
+                    }
+
+                    return $collRDataTemplates;
+                }
+
+                if ($partial && $this->collRDataTemplates) {
+                    foreach ($this->collRDataTemplates as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataTemplates[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataTemplates = $collRDataTemplates;
+                $this->collRDataTemplatesPartial = false;
+            }
+        }
+
+        return $this->collRDataTemplates;
+    }
+
+    /**
+     * Sets a collection of ChildRDataTemplate objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataTemplates A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildTemplates The current object (for fluent API support)
+     */
+    public function setRDataTemplates(Collection $rDataTemplates, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataTemplate[] $rDataTemplatesToDelete */
+        $rDataTemplatesToDelete = $this->getRDataTemplates(new Criteria(), $con)->diff($rDataTemplates);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataTemplatesScheduledForDeletion = clone $rDataTemplatesToDelete;
+
+        foreach ($rDataTemplatesToDelete as $rDataTemplateRemoved) {
+            $rDataTemplateRemoved->setRTemplate(null);
+        }
+
+        $this->collRDataTemplates = null;
+        foreach ($rDataTemplates as $rDataTemplate) {
+            $this->addRDataTemplate($rDataTemplate);
+        }
+
+        $this->collRDataTemplates = $rDataTemplates;
+        $this->collRDataTemplatesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataTemplate objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataTemplate objects.
+     * @throws PropelException
+     */
+    public function countRDataTemplates(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataTemplatesPartial && !$this->isNew();
+        if (null === $this->collRDataTemplates || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataTemplates) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataTemplates());
+            }
+
+            $query = ChildRDataTemplateQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRTemplate($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataTemplates);
+    }
+
+    /**
+     * Method called to associate a ChildRDataTemplate object to this object
+     * through the ChildRDataTemplate foreign key attribute.
+     *
+     * @param  ChildRDataTemplate $l ChildRDataTemplate
+     * @return $this|\Templates The current object (for fluent API support)
+     */
+    public function addRDataTemplate(ChildRDataTemplate $l)
+    {
+        if ($this->collRDataTemplates === null) {
+            $this->initRDataTemplates();
+            $this->collRDataTemplatesPartial = true;
+        }
+
+        if (!$this->collRDataTemplates->contains($l)) {
+            $this->doAddRDataTemplate($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataTemplate $rDataTemplate The ChildRDataTemplate object to add.
+     */
+    protected function doAddRDataTemplate(ChildRDataTemplate $rDataTemplate)
+    {
+        $this->collRDataTemplates[]= $rDataTemplate;
+        $rDataTemplate->setRTemplate($this);
+    }
+
+    /**
+     * @param  ChildRDataTemplate $rDataTemplate The ChildRDataTemplate object to remove.
+     * @return $this|ChildTemplates The current object (for fluent API support)
+     */
+    public function removeRDataTemplate(ChildRDataTemplate $rDataTemplate)
+    {
+        if ($this->getRDataTemplates()->contains($rDataTemplate)) {
+            $pos = $this->collRDataTemplates->search($rDataTemplate);
+            $this->collRDataTemplates->remove($pos);
+            if (null === $this->rDataTemplatesScheduledForDeletion) {
+                $this->rDataTemplatesScheduledForDeletion = clone $this->collRDataTemplates;
+                $this->rDataTemplatesScheduledForDeletion->clear();
+            }
+            $this->rDataTemplatesScheduledForDeletion[]= clone $rDataTemplate;
+            $rDataTemplate->setRTemplate(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Templates is new, it will return
+     * an empty collection; or if this Templates has previously
+     * been saved, it will retrieve related RDataTemplates from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Templates.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataTemplate[] List of ChildRDataTemplate objects
+     */
+    public function getRDataTemplatesJoinRData(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataTemplateQuery::create(null, $criteria);
+        $query->joinWith('RData', $joinBehavior);
+
+        return $this->getRDataTemplates($query, $con);
+    }
+
+    /**
      * Clears out the collFieldpostprocessors collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -2473,6 +2822,248 @@ abstract class Templates implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDatas collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDatas()
+     */
+    public function clearRDatas()
+    {
+        $this->collRDatas = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRDatas crossRef collection.
+     *
+     * By default this just sets the collRDatas collection to an empty collection (like clearRDatas());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRDatas()
+    {
+        $this->collRDatas = new ObjectCollection();
+        $this->collRDatasPartial = true;
+
+        $this->collRDatas->setModel('\Data');
+    }
+
+    /**
+     * Checks if the collRDatas collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRDatasLoaded()
+    {
+        return null !== $this->collRDatas;
+    }
+
+    /**
+     * Gets a collection of ChildData objects related by a many-to-many relationship
+     * to the current object by way of the R_data_template cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTemplates is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getRDatas(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRDatas) {
+                    $this->initRDatas();
+                }
+            } else {
+
+                $query = ChildDataQuery::create(null, $criteria)
+                    ->filterByRTemplate($this);
+                $collRDatas = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRDatas;
+                }
+
+                if ($partial && $this->collRDatas) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRDatas as $obj) {
+                        if (!$collRDatas->contains($obj)) {
+                            $collRDatas[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDatas = $collRDatas;
+                $this->collRDatasPartial = false;
+            }
+        }
+
+        return $this->collRDatas;
+    }
+
+    /**
+     * Sets a collection of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_template cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rDatas A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildTemplates The current object (for fluent API support)
+     */
+    public function setRDatas(Collection $rDatas, ConnectionInterface $con = null)
+    {
+        $this->clearRDatas();
+        $currentRDatas = $this->getRDatas();
+
+        $rDatasScheduledForDeletion = $currentRDatas->diff($rDatas);
+
+        foreach ($rDatasScheduledForDeletion as $toDelete) {
+            $this->removeRData($toDelete);
+        }
+
+        foreach ($rDatas as $rData) {
+            if (!$currentRDatas->contains($rData)) {
+                $this->doAddRData($rData);
+            }
+        }
+
+        $this->collRDatasPartial = false;
+        $this->collRDatas = $rDatas;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_template cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Data objects
+     */
+    public function countRDatas(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDatas) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRDatas());
+                }
+
+                $query = ChildDataQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRTemplate($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRDatas);
+        }
+    }
+
+    /**
+     * Associate a ChildData to this object
+     * through the R_data_template cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildTemplates The current object (for fluent API support)
+     */
+    public function addRData(ChildData $rData)
+    {
+        if ($this->collRDatas === null) {
+            $this->initRDatas();
+        }
+
+        if (!$this->getRDatas()->contains($rData)) {
+            // only add it if the **same** object is not already associated
+            $this->collRDatas->push($rData);
+            $this->doAddRData($rData);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildData $rData
+     */
+    protected function doAddRData(ChildData $rData)
+    {
+        $rDataTemplate = new ChildRDataTemplate();
+
+        $rDataTemplate->setRData($rData);
+
+        $rDataTemplate->setRTemplate($this);
+
+        $this->addRDataTemplate($rDataTemplate);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rData->isRTemplatesLoaded()) {
+            $rData->initRTemplates();
+            $rData->getRTemplates()->push($this);
+        } elseif (!$rData->getRTemplates()->contains($this)) {
+            $rData->getRTemplates()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rData of this object
+     * through the R_data_template cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildTemplates The current object (for fluent API support)
+     */
+    public function removeRData(ChildData $rData)
+    {
+        if ($this->getRDatas()->contains($rData)) { $rDataTemplate = new ChildRDataTemplate();
+
+            $rDataTemplate->setRData($rData);
+            if ($rData->isRTemplatesLoaded()) {
+                //remove the back reference if available
+                $rData->getRTemplates()->removeObject($this);
+            }
+
+            $rDataTemplate->setRTemplate($this);
+            $this->removeRDataTemplate(clone $rDataTemplate);
+            $rDataTemplate->clear();
+
+            $this->collRDatas->remove($this->collRDatas->search($rData));
+
+            if (null === $this->rDatasScheduledForDeletion) {
+                $this->rDatasScheduledForDeletion = clone $this->collRDatas;
+                $this->rDatasScheduledForDeletion->clear();
+            }
+
+            $this->rDatasScheduledForDeletion->push($rData);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2520,8 +3111,18 @@ abstract class Templates implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDataTemplates) {
+                foreach ($this->collRDataTemplates as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collFieldpostprocessors) {
                 foreach ($this->collFieldpostprocessors as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2529,7 +3130,9 @@ abstract class Templates implements ActiveRecordInterface
 
         $this->collRFieldpostprocessorForfields = null;
         $this->collDatas = null;
+        $this->collRDataTemplates = null;
         $this->collFieldpostprocessors = null;
+        $this->collRDatas = null;
         $this->aTemplatenames = null;
     }
 

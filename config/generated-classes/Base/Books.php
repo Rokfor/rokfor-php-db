@@ -6,12 +6,16 @@ use \Batch as ChildBatch;
 use \BatchQuery as ChildBatchQuery;
 use \Books as ChildBooks;
 use \BooksQuery as ChildBooksQuery;
+use \Data as ChildData;
+use \DataQuery as ChildDataQuery;
 use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
 use \Issues as ChildIssues;
 use \IssuesQuery as ChildIssuesQuery;
 use \RBatchForbook as ChildRBatchForbook;
 use \RBatchForbookQuery as ChildRBatchForbookQuery;
+use \RDataBook as ChildRDataBook;
+use \RDataBookQuery as ChildRDataBookQuery;
 use \RRightsForbook as ChildRRightsForbook;
 use \RRightsForbookQuery as ChildRRightsForbookQuery;
 use \RTemplatenamesForbook as ChildRTemplatenamesForbook;
@@ -145,6 +149,12 @@ abstract class Books implements ActiveRecordInterface
     protected $collRTemplatenamesForbooksPartial;
 
     /**
+     * @var        ObjectCollection|ChildRDataBook[] Collection to store aggregation of ChildRDataBook objects.
+     */
+    protected $collRDataBooks;
+    protected $collRDataBooksPartial;
+
+    /**
      * @var        ObjectCollection|ChildFormats[] Collection to store aggregation of ChildFormats objects.
      */
     protected $collFormatss;
@@ -187,6 +197,16 @@ abstract class Books implements ActiveRecordInterface
     protected $collTemplatenamessPartial;
 
     /**
+     * @var        ObjectCollection|ChildData[] Cross Collection to store aggregation of ChildData objects.
+     */
+    protected $collRDatas;
+
+    /**
+     * @var bool
+     */
+    protected $collRDatasPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -214,6 +234,12 @@ abstract class Books implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
+    protected $rDatasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRBatchForbook[]
      */
     protected $rBatchForbooksScheduledForDeletion = null;
@@ -229,6 +255,12 @@ abstract class Books implements ActiveRecordInterface
      * @var ObjectCollection|ChildRTemplatenamesForbook[]
      */
     protected $rTemplatenamesForbooksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataBook[]
+     */
+    protected $rDataBooksScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -808,6 +840,8 @@ abstract class Books implements ActiveRecordInterface
 
             $this->collRTemplatenamesForbooks = null;
 
+            $this->collRDataBooks = null;
+
             $this->collFormatss = null;
 
             $this->collIssuess = null;
@@ -815,6 +849,7 @@ abstract class Books implements ActiveRecordInterface
             $this->collBatches = null;
             $this->collRightss = null;
             $this->collTemplatenamess = null;
+            $this->collRDatas = null;
         } // if (deep)
     }
 
@@ -1024,6 +1059,35 @@ abstract class Books implements ActiveRecordInterface
             }
 
 
+            if ($this->rDatasScheduledForDeletion !== null) {
+                if (!$this->rDatasScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rDatasScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataBookQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rDatasScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $rData) {
+                    if (!$rData->isDeleted() && ($rData->isNew() || $rData->isModified())) {
+                        $rData->save($con);
+                    }
+                }
+            }
+
+
             if ($this->rBatchForbooksScheduledForDeletion !== null) {
                 if (!$this->rBatchForbooksScheduledForDeletion->isEmpty()) {
                     \RBatchForbookQuery::create()
@@ -1069,6 +1133,23 @@ abstract class Books implements ActiveRecordInterface
 
             if ($this->collRTemplatenamesForbooks !== null) {
                 foreach ($this->collRTemplatenamesForbooks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataBooksScheduledForDeletion !== null) {
+                if (!$this->rDataBooksScheduledForDeletion->isEmpty()) {
+                    \RDataBookQuery::create()
+                        ->filterByPrimaryKeys($this->rDataBooksScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataBooksScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataBooks !== null) {
+                foreach ($this->collRDataBooks as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1374,6 +1455,21 @@ abstract class Books implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collRTemplatenamesForbooks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataBooks) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataBooks';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_books';
+                        break;
+                    default:
+                        $key = 'RDataBooks';
+                }
+
+                $result[$key] = $this->collRDataBooks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collFormatss) {
 
@@ -1685,6 +1781,12 @@ abstract class Books implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRDataBooks() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataBook($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getFormatss() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addFormats($relObj->copy($deepCopy));
@@ -1797,6 +1899,9 @@ abstract class Books implements ActiveRecordInterface
         }
         if ('RTemplatenamesForbook' == $relationName) {
             return $this->initRTemplatenamesForbooks();
+        }
+        if ('RDataBook' == $relationName) {
+            return $this->initRDataBooks();
         }
         if ('Formats' == $relationName) {
             return $this->initFormatss();
@@ -2542,6 +2647,252 @@ abstract class Books implements ActiveRecordInterface
         $query->joinWith('Templatenames', $joinBehavior);
 
         return $this->getRTemplatenamesForbooks($query, $con);
+    }
+
+    /**
+     * Clears out the collRDataBooks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataBooks()
+     */
+    public function clearRDataBooks()
+    {
+        $this->collRDataBooks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataBooks collection loaded partially.
+     */
+    public function resetPartialRDataBooks($v = true)
+    {
+        $this->collRDataBooksPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataBooks collection.
+     *
+     * By default this just sets the collRDataBooks collection to an empty array (like clearcollRDataBooks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataBooks($overrideExisting = true)
+    {
+        if (null !== $this->collRDataBooks && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataBooks = new ObjectCollection();
+        $this->collRDataBooks->setModel('\RDataBook');
+    }
+
+    /**
+     * Gets an array of ChildRDataBook objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildBooks is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataBook[] List of ChildRDataBook objects
+     * @throws PropelException
+     */
+    public function getRDataBooks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataBooksPartial && !$this->isNew();
+        if (null === $this->collRDataBooks || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataBooks) {
+                // return empty collection
+                $this->initRDataBooks();
+            } else {
+                $collRDataBooks = ChildRDataBookQuery::create(null, $criteria)
+                    ->filterByRBook($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataBooksPartial && count($collRDataBooks)) {
+                        $this->initRDataBooks(false);
+
+                        foreach ($collRDataBooks as $obj) {
+                            if (false == $this->collRDataBooks->contains($obj)) {
+                                $this->collRDataBooks->append($obj);
+                            }
+                        }
+
+                        $this->collRDataBooksPartial = true;
+                    }
+
+                    return $collRDataBooks;
+                }
+
+                if ($partial && $this->collRDataBooks) {
+                    foreach ($this->collRDataBooks as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataBooks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataBooks = $collRDataBooks;
+                $this->collRDataBooksPartial = false;
+            }
+        }
+
+        return $this->collRDataBooks;
+    }
+
+    /**
+     * Sets a collection of ChildRDataBook objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataBooks A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildBooks The current object (for fluent API support)
+     */
+    public function setRDataBooks(Collection $rDataBooks, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataBook[] $rDataBooksToDelete */
+        $rDataBooksToDelete = $this->getRDataBooks(new Criteria(), $con)->diff($rDataBooks);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataBooksScheduledForDeletion = clone $rDataBooksToDelete;
+
+        foreach ($rDataBooksToDelete as $rDataBookRemoved) {
+            $rDataBookRemoved->setRBook(null);
+        }
+
+        $this->collRDataBooks = null;
+        foreach ($rDataBooks as $rDataBook) {
+            $this->addRDataBook($rDataBook);
+        }
+
+        $this->collRDataBooks = $rDataBooks;
+        $this->collRDataBooksPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataBook objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataBook objects.
+     * @throws PropelException
+     */
+    public function countRDataBooks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataBooksPartial && !$this->isNew();
+        if (null === $this->collRDataBooks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataBooks) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataBooks());
+            }
+
+            $query = ChildRDataBookQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRBook($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataBooks);
+    }
+
+    /**
+     * Method called to associate a ChildRDataBook object to this object
+     * through the ChildRDataBook foreign key attribute.
+     *
+     * @param  ChildRDataBook $l ChildRDataBook
+     * @return $this|\Books The current object (for fluent API support)
+     */
+    public function addRDataBook(ChildRDataBook $l)
+    {
+        if ($this->collRDataBooks === null) {
+            $this->initRDataBooks();
+            $this->collRDataBooksPartial = true;
+        }
+
+        if (!$this->collRDataBooks->contains($l)) {
+            $this->doAddRDataBook($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataBook $rDataBook The ChildRDataBook object to add.
+     */
+    protected function doAddRDataBook(ChildRDataBook $rDataBook)
+    {
+        $this->collRDataBooks[]= $rDataBook;
+        $rDataBook->setRBook($this);
+    }
+
+    /**
+     * @param  ChildRDataBook $rDataBook The ChildRDataBook object to remove.
+     * @return $this|ChildBooks The current object (for fluent API support)
+     */
+    public function removeRDataBook(ChildRDataBook $rDataBook)
+    {
+        if ($this->getRDataBooks()->contains($rDataBook)) {
+            $pos = $this->collRDataBooks->search($rDataBook);
+            $this->collRDataBooks->remove($pos);
+            if (null === $this->rDataBooksScheduledForDeletion) {
+                $this->rDataBooksScheduledForDeletion = clone $this->collRDataBooks;
+                $this->rDataBooksScheduledForDeletion->clear();
+            }
+            $this->rDataBooksScheduledForDeletion[]= clone $rDataBook;
+            $rDataBook->setRBook(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Books is new, it will return
+     * an empty collection; or if this Books has previously
+     * been saved, it will retrieve related RDataBooks from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Books.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataBook[] List of ChildRDataBook objects
+     */
+    public function getRDataBooksJoinRData(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataBookQuery::create(null, $criteria);
+        $query->joinWith('RData', $joinBehavior);
+
+        return $this->getRDataBooks($query, $con);
     }
 
     /**
@@ -3757,6 +4108,248 @@ abstract class Books implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDatas collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDatas()
+     */
+    public function clearRDatas()
+    {
+        $this->collRDatas = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRDatas crossRef collection.
+     *
+     * By default this just sets the collRDatas collection to an empty collection (like clearRDatas());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRDatas()
+    {
+        $this->collRDatas = new ObjectCollection();
+        $this->collRDatasPartial = true;
+
+        $this->collRDatas->setModel('\Data');
+    }
+
+    /**
+     * Checks if the collRDatas collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRDatasLoaded()
+    {
+        return null !== $this->collRDatas;
+    }
+
+    /**
+     * Gets a collection of ChildData objects related by a many-to-many relationship
+     * to the current object by way of the R_data_book cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildBooks is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getRDatas(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRDatas) {
+                    $this->initRDatas();
+                }
+            } else {
+
+                $query = ChildDataQuery::create(null, $criteria)
+                    ->filterByRBook($this);
+                $collRDatas = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRDatas;
+                }
+
+                if ($partial && $this->collRDatas) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRDatas as $obj) {
+                        if (!$collRDatas->contains($obj)) {
+                            $collRDatas[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDatas = $collRDatas;
+                $this->collRDatasPartial = false;
+            }
+        }
+
+        return $this->collRDatas;
+    }
+
+    /**
+     * Sets a collection of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_book cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rDatas A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildBooks The current object (for fluent API support)
+     */
+    public function setRDatas(Collection $rDatas, ConnectionInterface $con = null)
+    {
+        $this->clearRDatas();
+        $currentRDatas = $this->getRDatas();
+
+        $rDatasScheduledForDeletion = $currentRDatas->diff($rDatas);
+
+        foreach ($rDatasScheduledForDeletion as $toDelete) {
+            $this->removeRData($toDelete);
+        }
+
+        foreach ($rDatas as $rData) {
+            if (!$currentRDatas->contains($rData)) {
+                $this->doAddRData($rData);
+            }
+        }
+
+        $this->collRDatasPartial = false;
+        $this->collRDatas = $rDatas;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_book cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Data objects
+     */
+    public function countRDatas(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDatasPartial && !$this->isNew();
+        if (null === $this->collRDatas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDatas) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRDatas());
+                }
+
+                $query = ChildDataQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRBook($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRDatas);
+        }
+    }
+
+    /**
+     * Associate a ChildData to this object
+     * through the R_data_book cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildBooks The current object (for fluent API support)
+     */
+    public function addRData(ChildData $rData)
+    {
+        if ($this->collRDatas === null) {
+            $this->initRDatas();
+        }
+
+        if (!$this->getRDatas()->contains($rData)) {
+            // only add it if the **same** object is not already associated
+            $this->collRDatas->push($rData);
+            $this->doAddRData($rData);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildData $rData
+     */
+    protected function doAddRData(ChildData $rData)
+    {
+        $rDataBook = new ChildRDataBook();
+
+        $rDataBook->setRData($rData);
+
+        $rDataBook->setRBook($this);
+
+        $this->addRDataBook($rDataBook);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rData->isRBooksLoaded()) {
+            $rData->initRBooks();
+            $rData->getRBooks()->push($this);
+        } elseif (!$rData->getRBooks()->contains($this)) {
+            $rData->getRBooks()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rData of this object
+     * through the R_data_book cross reference table.
+     *
+     * @param ChildData $rData
+     * @return ChildBooks The current object (for fluent API support)
+     */
+    public function removeRData(ChildData $rData)
+    {
+        if ($this->getRDatas()->contains($rData)) { $rDataBook = new ChildRDataBook();
+
+            $rDataBook->setRData($rData);
+            if ($rData->isRBooksLoaded()) {
+                //remove the back reference if available
+                $rData->getRBooks()->removeObject($this);
+            }
+
+            $rDataBook->setRBook($this);
+            $this->removeRDataBook(clone $rDataBook);
+            $rDataBook->clear();
+
+            $this->collRDatas->remove($this->collRDatas->search($rData));
+
+            if (null === $this->rDatasScheduledForDeletion) {
+                $this->rDatasScheduledForDeletion = clone $this->collRDatas;
+                $this->rDatasScheduledForDeletion->clear();
+            }
+
+            $this->rDatasScheduledForDeletion->push($rData);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3806,6 +4399,11 @@ abstract class Books implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDataBooks) {
+                foreach ($this->collRDataBooks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collFormatss) {
                 foreach ($this->collFormatss as $o) {
                     $o->clearAllReferences($deep);
@@ -3831,16 +4429,23 @@ abstract class Books implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDatas) {
+                foreach ($this->collRDatas as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collRBatchForbooks = null;
         $this->collRRightsForbooks = null;
         $this->collRTemplatenamesForbooks = null;
+        $this->collRDataBooks = null;
         $this->collFormatss = null;
         $this->collIssuess = null;
         $this->collBatches = null;
         $this->collRightss = null;
         $this->collTemplatenamess = null;
+        $this->collRDatas = null;
         $this->auserSysRef = null;
     }
 

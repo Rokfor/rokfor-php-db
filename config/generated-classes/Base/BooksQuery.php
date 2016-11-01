@@ -56,6 +56,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBooksQuery rightJoinRTemplatenamesForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesForbook relation
  * @method     ChildBooksQuery innerJoinRTemplatenamesForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesForbook relation
  *
+ * @method     ChildBooksQuery leftJoinRDataBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataBook relation
+ * @method     ChildBooksQuery rightJoinRDataBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataBook relation
+ * @method     ChildBooksQuery innerJoinRDataBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataBook relation
+ *
  * @method     ChildBooksQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildBooksQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildBooksQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
@@ -64,7 +68,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBooksQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildBooksQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
  *
- * @method     \UsersQuery|\RBatchForbookQuery|\RRightsForbookQuery|\RTemplatenamesForbookQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\RBatchForbookQuery|\RRightsForbookQuery|\RTemplatenamesForbookQuery|\RDataBookQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBooks findOne(ConnectionInterface $con = null) Return the first ChildBooks matching the query
  * @method     ChildBooks findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBooks matching the query, or a new ChildBooks object populated from the query conditions when no match is found
@@ -828,6 +832,79 @@ abstract class BooksQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RDataBook object
+     *
+     * @param \RDataBook|ObjectCollection $rDataBook the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBooksQuery The current query, for fluid interface
+     */
+    public function filterByRDataBook($rDataBook, $comparison = null)
+    {
+        if ($rDataBook instanceof \RDataBook) {
+            return $this
+                ->addUsingAlias(BooksTableMap::COL_ID, $rDataBook->getBookid(), $comparison);
+        } elseif ($rDataBook instanceof ObjectCollection) {
+            return $this
+                ->useRDataBookQuery()
+                ->filterByPrimaryKeys($rDataBook->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataBook() only accepts arguments of type \RDataBook or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataBook relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildBooksQuery The current query, for fluid interface
+     */
+    public function joinRDataBook($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataBook');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataBook');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataBook relation RDataBook object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataBookQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataBookQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataBook($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataBook', '\RDataBookQuery');
+    }
+
+    /**
      * Filter the query by a related \Formats object
      *
      * @param \Formats|ObjectCollection $formats the related object to use as filter
@@ -1021,6 +1098,23 @@ abstract class BooksQuery extends ModelCriteria
         return $this
             ->useRTemplatenamesForbookQuery()
             ->filterByTemplatenames($templatenames, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_book table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBooksQuery The current query, for fluid interface
+     */
+    public function filterByRData($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataBookQuery()
+            ->filterByRData($data, $comparison)
             ->endUse();
     }
 

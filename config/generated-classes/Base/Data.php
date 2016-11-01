@@ -2,6 +2,8 @@
 
 namespace Base;
 
+use \Books as ChildBooks;
+use \BooksQuery as ChildBooksQuery;
 use \Contributions as ChildContributions;
 use \ContributionsQuery as ChildContributionsQuery;
 use \ContributionsVersionQuery as ChildContributionsVersionQuery;
@@ -9,6 +11,22 @@ use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
 use \DataVersion as ChildDataVersion;
 use \DataVersionQuery as ChildDataVersionQuery;
+use \Formats as ChildFormats;
+use \FormatsQuery as ChildFormatsQuery;
+use \Issues as ChildIssues;
+use \IssuesQuery as ChildIssuesQuery;
+use \RDataBook as ChildRDataBook;
+use \RDataBookQuery as ChildRDataBookQuery;
+use \RDataContribution as ChildRDataContribution;
+use \RDataContributionQuery as ChildRDataContributionQuery;
+use \RDataData as ChildRDataData;
+use \RDataDataQuery as ChildRDataDataQuery;
+use \RDataFormat as ChildRDataFormat;
+use \RDataFormatQuery as ChildRDataFormatQuery;
+use \RDataIssue as ChildRDataIssue;
+use \RDataIssueQuery as ChildRDataIssueQuery;
+use \RDataTemplate as ChildRDataTemplate;
+use \RDataTemplateQuery as ChildRDataTemplateQuery;
 use \Templates as ChildTemplates;
 use \TemplatesQuery as ChildTemplatesQuery;
 use \Users as ChildUsers;
@@ -174,10 +192,122 @@ abstract class Data implements ActiveRecordInterface
     protected $aTemplates;
 
     /**
+     * @var        ObjectCollection|ChildRDataData[] Collection to store aggregation of ChildRDataData objects.
+     */
+    protected $collRDataDatasRelatedBySource;
+    protected $collRDataDatasRelatedBySourcePartial;
+
+    /**
+     * @var        ObjectCollection|ChildRDataData[] Collection to store aggregation of ChildRDataData objects.
+     */
+    protected $collRDataDatasRelatedByTarget;
+    protected $collRDataDatasRelatedByTargetPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRDataContribution[] Collection to store aggregation of ChildRDataContribution objects.
+     */
+    protected $collRDataContributions;
+    protected $collRDataContributionsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRDataBook[] Collection to store aggregation of ChildRDataBook objects.
+     */
+    protected $collRDataBooks;
+    protected $collRDataBooksPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRDataFormat[] Collection to store aggregation of ChildRDataFormat objects.
+     */
+    protected $collRDataFormats;
+    protected $collRDataFormatsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRDataIssue[] Collection to store aggregation of ChildRDataIssue objects.
+     */
+    protected $collRDataIssues;
+    protected $collRDataIssuesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRDataTemplate[] Collection to store aggregation of ChildRDataTemplate objects.
+     */
+    protected $collRDataTemplates;
+    protected $collRDataTemplatesPartial;
+
+    /**
      * @var        ObjectCollection|ChildDataVersion[] Collection to store aggregation of ChildDataVersion objects.
      */
     protected $collDataVersions;
     protected $collDataVersionsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildData[] Cross Collection to store aggregation of ChildData objects.
+     */
+    protected $collRDataRefs;
+
+    /**
+     * @var bool
+     */
+    protected $collRDataRefsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildData[] Cross Collection to store aggregation of ChildData objects.
+     */
+    protected $collRDataSrcs;
+
+    /**
+     * @var bool
+     */
+    protected $collRDataSrcsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildContributions[] Cross Collection to store aggregation of ChildContributions objects.
+     */
+    protected $collRContributions;
+
+    /**
+     * @var bool
+     */
+    protected $collRContributionsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildBooks[] Cross Collection to store aggregation of ChildBooks objects.
+     */
+    protected $collRBooks;
+
+    /**
+     * @var bool
+     */
+    protected $collRBooksPartial;
+
+    /**
+     * @var        ObjectCollection|ChildFormats[] Cross Collection to store aggregation of ChildFormats objects.
+     */
+    protected $collRFormats;
+
+    /**
+     * @var bool
+     */
+    protected $collRFormatsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Cross Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collRIssues;
+
+    /**
+     * @var bool
+     */
+    protected $collRIssuesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildTemplates[] Cross Collection to store aggregation of ChildTemplates objects.
+     */
+    protected $collRTemplates;
+
+    /**
+     * @var bool
+     */
+    protected $collRTemplatesPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -194,6 +324,90 @@ abstract class Data implements ActiveRecordInterface
      * @var bool
      */
     protected $enforceVersion = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
+    protected $rDataRefsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildData[]
+     */
+    protected $rDataSrcsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildContributions[]
+     */
+    protected $rContributionsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBooks[]
+     */
+    protected $rBooksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildFormats[]
+     */
+    protected $rFormatsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildIssues[]
+     */
+    protected $rIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildTemplates[]
+     */
+    protected $rTemplatesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataData[]
+     */
+    protected $rDataDatasRelatedBySourceScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataData[]
+     */
+    protected $rDataDatasRelatedByTargetScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataContribution[]
+     */
+    protected $rDataContributionsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataBook[]
+     */
+    protected $rDataBooksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataFormat[]
+     */
+    protected $rDataFormatsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataIssue[]
+     */
+    protected $rDataIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRDataTemplate[]
+     */
+    protected $rDataTemplatesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1056,8 +1270,29 @@ abstract class Data implements ActiveRecordInterface
             $this->auserSysRef = null;
             $this->aContributions = null;
             $this->aTemplates = null;
+            $this->collRDataDatasRelatedBySource = null;
+
+            $this->collRDataDatasRelatedByTarget = null;
+
+            $this->collRDataContributions = null;
+
+            $this->collRDataBooks = null;
+
+            $this->collRDataFormats = null;
+
+            $this->collRDataIssues = null;
+
+            $this->collRDataTemplates = null;
+
             $this->collDataVersions = null;
 
+            $this->collRDataRefs = null;
+            $this->collRDataSrcs = null;
+            $this->collRContributions = null;
+            $this->collRBooks = null;
+            $this->collRFormats = null;
+            $this->collRIssues = null;
+            $this->collRTemplates = null;
         } // if (deep)
     }
 
@@ -1204,6 +1439,328 @@ abstract class Data implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->rDataRefsScheduledForDeletion !== null) {
+                if (!$this->rDataRefsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rDataRefsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataDataQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rDataRefsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRDataRefs) {
+                foreach ($this->collRDataRefs as $rDataRef) {
+                    if (!$rDataRef->isDeleted() && ($rDataRef->isNew() || $rDataRef->isModified())) {
+                        $rDataRef->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rDataSrcsScheduledForDeletion !== null) {
+                if (!$this->rDataSrcsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rDataSrcsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataDataQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rDataSrcsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRDataSrcs) {
+                foreach ($this->collRDataSrcs as $rDataSrc) {
+                    if (!$rDataSrc->isDeleted() && ($rDataSrc->isNew() || $rDataSrc->isModified())) {
+                        $rDataSrc->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rContributionsScheduledForDeletion !== null) {
+                if (!$this->rContributionsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rContributionsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataContributionQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rContributionsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRContributions) {
+                foreach ($this->collRContributions as $rContribution) {
+                    if (!$rContribution->isDeleted() && ($rContribution->isNew() || $rContribution->isModified())) {
+                        $rContribution->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rBooksScheduledForDeletion !== null) {
+                if (!$this->rBooksScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rBooksScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataBookQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rBooksScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRBooks) {
+                foreach ($this->collRBooks as $rBook) {
+                    if (!$rBook->isDeleted() && ($rBook->isNew() || $rBook->isModified())) {
+                        $rBook->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rFormatsScheduledForDeletion !== null) {
+                if (!$this->rFormatsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rFormatsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataFormatQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rFormatsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRFormats) {
+                foreach ($this->collRFormats as $rFormat) {
+                    if (!$rFormat->isDeleted() && ($rFormat->isNew() || $rFormat->isModified())) {
+                        $rFormat->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rIssuesScheduledForDeletion !== null) {
+                if (!$this->rIssuesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rIssuesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataIssueQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rIssuesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRIssues) {
+                foreach ($this->collRIssues as $rIssue) {
+                    if (!$rIssue->isDeleted() && ($rIssue->isNew() || $rIssue->isModified())) {
+                        $rIssue->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rTemplatesScheduledForDeletion !== null) {
+                if (!$this->rTemplatesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rTemplatesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RDataTemplateQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rTemplatesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRTemplates) {
+                foreach ($this->collRTemplates as $rTemplate) {
+                    if (!$rTemplate->isDeleted() && ($rTemplate->isNew() || $rTemplate->isModified())) {
+                        $rTemplate->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rDataDatasRelatedBySourceScheduledForDeletion !== null) {
+                if (!$this->rDataDatasRelatedBySourceScheduledForDeletion->isEmpty()) {
+                    \RDataDataQuery::create()
+                        ->filterByPrimaryKeys($this->rDataDatasRelatedBySourceScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataDatasRelatedBySourceScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataDatasRelatedBySource !== null) {
+                foreach ($this->collRDataDatasRelatedBySource as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataDatasRelatedByTargetScheduledForDeletion !== null) {
+                if (!$this->rDataDatasRelatedByTargetScheduledForDeletion->isEmpty()) {
+                    \RDataDataQuery::create()
+                        ->filterByPrimaryKeys($this->rDataDatasRelatedByTargetScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataDatasRelatedByTargetScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataDatasRelatedByTarget !== null) {
+                foreach ($this->collRDataDatasRelatedByTarget as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataContributionsScheduledForDeletion !== null) {
+                if (!$this->rDataContributionsScheduledForDeletion->isEmpty()) {
+                    \RDataContributionQuery::create()
+                        ->filterByPrimaryKeys($this->rDataContributionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataContributionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataContributions !== null) {
+                foreach ($this->collRDataContributions as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataBooksScheduledForDeletion !== null) {
+                if (!$this->rDataBooksScheduledForDeletion->isEmpty()) {
+                    \RDataBookQuery::create()
+                        ->filterByPrimaryKeys($this->rDataBooksScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataBooksScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataBooks !== null) {
+                foreach ($this->collRDataBooks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataFormatsScheduledForDeletion !== null) {
+                if (!$this->rDataFormatsScheduledForDeletion->isEmpty()) {
+                    \RDataFormatQuery::create()
+                        ->filterByPrimaryKeys($this->rDataFormatsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataFormatsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataFormats !== null) {
+                foreach ($this->collRDataFormats as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataIssuesScheduledForDeletion !== null) {
+                if (!$this->rDataIssuesScheduledForDeletion->isEmpty()) {
+                    \RDataIssueQuery::create()
+                        ->filterByPrimaryKeys($this->rDataIssuesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataIssuesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataIssues !== null) {
+                foreach ($this->collRDataIssues as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rDataTemplatesScheduledForDeletion !== null) {
+                if (!$this->rDataTemplatesScheduledForDeletion->isEmpty()) {
+                    \RDataTemplateQuery::create()
+                        ->filterByPrimaryKeys($this->rDataTemplatesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rDataTemplatesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRDataTemplates !== null) {
+                foreach ($this->collRDataTemplates as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->dataVersionsScheduledForDeletion !== null) {
@@ -1552,6 +2109,111 @@ abstract class Data implements ActiveRecordInterface
 
                 $result[$key] = $this->aTemplates->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
+            if (null !== $this->collRDataDatasRelatedBySource) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataDatas';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_datas';
+                        break;
+                    default:
+                        $key = 'RDataDatas';
+                }
+
+                $result[$key] = $this->collRDataDatasRelatedBySource->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataDatasRelatedByTarget) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataDatas';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_datas';
+                        break;
+                    default:
+                        $key = 'RDataDatas';
+                }
+
+                $result[$key] = $this->collRDataDatasRelatedByTarget->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataContributions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataContributions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_contributions';
+                        break;
+                    default:
+                        $key = 'RDataContributions';
+                }
+
+                $result[$key] = $this->collRDataContributions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataBooks) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataBooks';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_books';
+                        break;
+                    default:
+                        $key = 'RDataBooks';
+                }
+
+                $result[$key] = $this->collRDataBooks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataFormats) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataFormats';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_formats';
+                        break;
+                    default:
+                        $key = 'RDataFormats';
+                }
+
+                $result[$key] = $this->collRDataFormats->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataIssues) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataIssues';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_issues';
+                        break;
+                    default:
+                        $key = 'RDataIssues';
+                }
+
+                $result[$key] = $this->collRDataIssues->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRDataTemplates) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rDataTemplates';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_data_templates';
+                        break;
+                    default:
+                        $key = 'RDataTemplates';
+                }
+
+                $result[$key] = $this->collRDataTemplates->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collDataVersions) {
 
                 switch ($keyType) {
@@ -1899,6 +2561,48 @@ abstract class Data implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getRDataDatasRelatedBySource() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataDataRelatedBySource($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataDatasRelatedByTarget() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataDataRelatedByTarget($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataContributions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataContribution($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataBooks() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataBook($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataFormats() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataFormat($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataIssues() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataIssue($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRDataTemplates() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRDataTemplate($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getDataVersions() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addDataVersion($relObj->copy($deepCopy));
@@ -2099,9 +2803,1702 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('RDataDataRelatedBySource' == $relationName) {
+            return $this->initRDataDatasRelatedBySource();
+        }
+        if ('RDataDataRelatedByTarget' == $relationName) {
+            return $this->initRDataDatasRelatedByTarget();
+        }
+        if ('RDataContribution' == $relationName) {
+            return $this->initRDataContributions();
+        }
+        if ('RDataBook' == $relationName) {
+            return $this->initRDataBooks();
+        }
+        if ('RDataFormat' == $relationName) {
+            return $this->initRDataFormats();
+        }
+        if ('RDataIssue' == $relationName) {
+            return $this->initRDataIssues();
+        }
+        if ('RDataTemplate' == $relationName) {
+            return $this->initRDataTemplates();
+        }
         if ('DataVersion' == $relationName) {
             return $this->initDataVersions();
         }
+    }
+
+    /**
+     * Clears out the collRDataDatasRelatedBySource collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataDatasRelatedBySource()
+     */
+    public function clearRDataDatasRelatedBySource()
+    {
+        $this->collRDataDatasRelatedBySource = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataDatasRelatedBySource collection loaded partially.
+     */
+    public function resetPartialRDataDatasRelatedBySource($v = true)
+    {
+        $this->collRDataDatasRelatedBySourcePartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataDatasRelatedBySource collection.
+     *
+     * By default this just sets the collRDataDatasRelatedBySource collection to an empty array (like clearcollRDataDatasRelatedBySource());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataDatasRelatedBySource($overrideExisting = true)
+    {
+        if (null !== $this->collRDataDatasRelatedBySource && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataDatasRelatedBySource = new ObjectCollection();
+        $this->collRDataDatasRelatedBySource->setModel('\RDataData');
+    }
+
+    /**
+     * Gets an array of ChildRDataData objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataData[] List of ChildRDataData objects
+     * @throws PropelException
+     */
+    public function getRDataDatasRelatedBySource(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataDatasRelatedBySourcePartial && !$this->isNew();
+        if (null === $this->collRDataDatasRelatedBySource || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataDatasRelatedBySource) {
+                // return empty collection
+                $this->initRDataDatasRelatedBySource();
+            } else {
+                $collRDataDatasRelatedBySource = ChildRDataDataQuery::create(null, $criteria)
+                    ->filterByRDataSrc($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataDatasRelatedBySourcePartial && count($collRDataDatasRelatedBySource)) {
+                        $this->initRDataDatasRelatedBySource(false);
+
+                        foreach ($collRDataDatasRelatedBySource as $obj) {
+                            if (false == $this->collRDataDatasRelatedBySource->contains($obj)) {
+                                $this->collRDataDatasRelatedBySource->append($obj);
+                            }
+                        }
+
+                        $this->collRDataDatasRelatedBySourcePartial = true;
+                    }
+
+                    return $collRDataDatasRelatedBySource;
+                }
+
+                if ($partial && $this->collRDataDatasRelatedBySource) {
+                    foreach ($this->collRDataDatasRelatedBySource as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataDatasRelatedBySource[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataDatasRelatedBySource = $collRDataDatasRelatedBySource;
+                $this->collRDataDatasRelatedBySourcePartial = false;
+            }
+        }
+
+        return $this->collRDataDatasRelatedBySource;
+    }
+
+    /**
+     * Sets a collection of ChildRDataData objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataDatasRelatedBySource A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataDatasRelatedBySource(Collection $rDataDatasRelatedBySource, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataData[] $rDataDatasRelatedBySourceToDelete */
+        $rDataDatasRelatedBySourceToDelete = $this->getRDataDatasRelatedBySource(new Criteria(), $con)->diff($rDataDatasRelatedBySource);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataDatasRelatedBySourceScheduledForDeletion = clone $rDataDatasRelatedBySourceToDelete;
+
+        foreach ($rDataDatasRelatedBySourceToDelete as $rDataDataRelatedBySourceRemoved) {
+            $rDataDataRelatedBySourceRemoved->setRDataSrc(null);
+        }
+
+        $this->collRDataDatasRelatedBySource = null;
+        foreach ($rDataDatasRelatedBySource as $rDataDataRelatedBySource) {
+            $this->addRDataDataRelatedBySource($rDataDataRelatedBySource);
+        }
+
+        $this->collRDataDatasRelatedBySource = $rDataDatasRelatedBySource;
+        $this->collRDataDatasRelatedBySourcePartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataData objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataData objects.
+     * @throws PropelException
+     */
+    public function countRDataDatasRelatedBySource(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataDatasRelatedBySourcePartial && !$this->isNew();
+        if (null === $this->collRDataDatasRelatedBySource || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataDatasRelatedBySource) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataDatasRelatedBySource());
+            }
+
+            $query = ChildRDataDataQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRDataSrc($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataDatasRelatedBySource);
+    }
+
+    /**
+     * Method called to associate a ChildRDataData object to this object
+     * through the ChildRDataData foreign key attribute.
+     *
+     * @param  ChildRDataData $l ChildRDataData
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataDataRelatedBySource(ChildRDataData $l)
+    {
+        if ($this->collRDataDatasRelatedBySource === null) {
+            $this->initRDataDatasRelatedBySource();
+            $this->collRDataDatasRelatedBySourcePartial = true;
+        }
+
+        if (!$this->collRDataDatasRelatedBySource->contains($l)) {
+            $this->doAddRDataDataRelatedBySource($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataData $rDataDataRelatedBySource The ChildRDataData object to add.
+     */
+    protected function doAddRDataDataRelatedBySource(ChildRDataData $rDataDataRelatedBySource)
+    {
+        $this->collRDataDatasRelatedBySource[]= $rDataDataRelatedBySource;
+        $rDataDataRelatedBySource->setRDataSrc($this);
+    }
+
+    /**
+     * @param  ChildRDataData $rDataDataRelatedBySource The ChildRDataData object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataDataRelatedBySource(ChildRDataData $rDataDataRelatedBySource)
+    {
+        if ($this->getRDataDatasRelatedBySource()->contains($rDataDataRelatedBySource)) {
+            $pos = $this->collRDataDatasRelatedBySource->search($rDataDataRelatedBySource);
+            $this->collRDataDatasRelatedBySource->remove($pos);
+            if (null === $this->rDataDatasRelatedBySourceScheduledForDeletion) {
+                $this->rDataDatasRelatedBySourceScheduledForDeletion = clone $this->collRDataDatasRelatedBySource;
+                $this->rDataDatasRelatedBySourceScheduledForDeletion->clear();
+            }
+            $this->rDataDatasRelatedBySourceScheduledForDeletion[]= clone $rDataDataRelatedBySource;
+            $rDataDataRelatedBySource->setRDataSrc(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRDataDatasRelatedByTarget collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataDatasRelatedByTarget()
+     */
+    public function clearRDataDatasRelatedByTarget()
+    {
+        $this->collRDataDatasRelatedByTarget = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataDatasRelatedByTarget collection loaded partially.
+     */
+    public function resetPartialRDataDatasRelatedByTarget($v = true)
+    {
+        $this->collRDataDatasRelatedByTargetPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataDatasRelatedByTarget collection.
+     *
+     * By default this just sets the collRDataDatasRelatedByTarget collection to an empty array (like clearcollRDataDatasRelatedByTarget());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataDatasRelatedByTarget($overrideExisting = true)
+    {
+        if (null !== $this->collRDataDatasRelatedByTarget && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataDatasRelatedByTarget = new ObjectCollection();
+        $this->collRDataDatasRelatedByTarget->setModel('\RDataData');
+    }
+
+    /**
+     * Gets an array of ChildRDataData objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataData[] List of ChildRDataData objects
+     * @throws PropelException
+     */
+    public function getRDataDatasRelatedByTarget(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataDatasRelatedByTargetPartial && !$this->isNew();
+        if (null === $this->collRDataDatasRelatedByTarget || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataDatasRelatedByTarget) {
+                // return empty collection
+                $this->initRDataDatasRelatedByTarget();
+            } else {
+                $collRDataDatasRelatedByTarget = ChildRDataDataQuery::create(null, $criteria)
+                    ->filterByRDataRef($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataDatasRelatedByTargetPartial && count($collRDataDatasRelatedByTarget)) {
+                        $this->initRDataDatasRelatedByTarget(false);
+
+                        foreach ($collRDataDatasRelatedByTarget as $obj) {
+                            if (false == $this->collRDataDatasRelatedByTarget->contains($obj)) {
+                                $this->collRDataDatasRelatedByTarget->append($obj);
+                            }
+                        }
+
+                        $this->collRDataDatasRelatedByTargetPartial = true;
+                    }
+
+                    return $collRDataDatasRelatedByTarget;
+                }
+
+                if ($partial && $this->collRDataDatasRelatedByTarget) {
+                    foreach ($this->collRDataDatasRelatedByTarget as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataDatasRelatedByTarget[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataDatasRelatedByTarget = $collRDataDatasRelatedByTarget;
+                $this->collRDataDatasRelatedByTargetPartial = false;
+            }
+        }
+
+        return $this->collRDataDatasRelatedByTarget;
+    }
+
+    /**
+     * Sets a collection of ChildRDataData objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataDatasRelatedByTarget A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataDatasRelatedByTarget(Collection $rDataDatasRelatedByTarget, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataData[] $rDataDatasRelatedByTargetToDelete */
+        $rDataDatasRelatedByTargetToDelete = $this->getRDataDatasRelatedByTarget(new Criteria(), $con)->diff($rDataDatasRelatedByTarget);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataDatasRelatedByTargetScheduledForDeletion = clone $rDataDatasRelatedByTargetToDelete;
+
+        foreach ($rDataDatasRelatedByTargetToDelete as $rDataDataRelatedByTargetRemoved) {
+            $rDataDataRelatedByTargetRemoved->setRDataRef(null);
+        }
+
+        $this->collRDataDatasRelatedByTarget = null;
+        foreach ($rDataDatasRelatedByTarget as $rDataDataRelatedByTarget) {
+            $this->addRDataDataRelatedByTarget($rDataDataRelatedByTarget);
+        }
+
+        $this->collRDataDatasRelatedByTarget = $rDataDatasRelatedByTarget;
+        $this->collRDataDatasRelatedByTargetPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataData objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataData objects.
+     * @throws PropelException
+     */
+    public function countRDataDatasRelatedByTarget(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataDatasRelatedByTargetPartial && !$this->isNew();
+        if (null === $this->collRDataDatasRelatedByTarget || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataDatasRelatedByTarget) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataDatasRelatedByTarget());
+            }
+
+            $query = ChildRDataDataQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRDataRef($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataDatasRelatedByTarget);
+    }
+
+    /**
+     * Method called to associate a ChildRDataData object to this object
+     * through the ChildRDataData foreign key attribute.
+     *
+     * @param  ChildRDataData $l ChildRDataData
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataDataRelatedByTarget(ChildRDataData $l)
+    {
+        if ($this->collRDataDatasRelatedByTarget === null) {
+            $this->initRDataDatasRelatedByTarget();
+            $this->collRDataDatasRelatedByTargetPartial = true;
+        }
+
+        if (!$this->collRDataDatasRelatedByTarget->contains($l)) {
+            $this->doAddRDataDataRelatedByTarget($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataData $rDataDataRelatedByTarget The ChildRDataData object to add.
+     */
+    protected function doAddRDataDataRelatedByTarget(ChildRDataData $rDataDataRelatedByTarget)
+    {
+        $this->collRDataDatasRelatedByTarget[]= $rDataDataRelatedByTarget;
+        $rDataDataRelatedByTarget->setRDataRef($this);
+    }
+
+    /**
+     * @param  ChildRDataData $rDataDataRelatedByTarget The ChildRDataData object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataDataRelatedByTarget(ChildRDataData $rDataDataRelatedByTarget)
+    {
+        if ($this->getRDataDatasRelatedByTarget()->contains($rDataDataRelatedByTarget)) {
+            $pos = $this->collRDataDatasRelatedByTarget->search($rDataDataRelatedByTarget);
+            $this->collRDataDatasRelatedByTarget->remove($pos);
+            if (null === $this->rDataDatasRelatedByTargetScheduledForDeletion) {
+                $this->rDataDatasRelatedByTargetScheduledForDeletion = clone $this->collRDataDatasRelatedByTarget;
+                $this->rDataDatasRelatedByTargetScheduledForDeletion->clear();
+            }
+            $this->rDataDatasRelatedByTargetScheduledForDeletion[]= clone $rDataDataRelatedByTarget;
+            $rDataDataRelatedByTarget->setRDataRef(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRDataContributions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataContributions()
+     */
+    public function clearRDataContributions()
+    {
+        $this->collRDataContributions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataContributions collection loaded partially.
+     */
+    public function resetPartialRDataContributions($v = true)
+    {
+        $this->collRDataContributionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataContributions collection.
+     *
+     * By default this just sets the collRDataContributions collection to an empty array (like clearcollRDataContributions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataContributions($overrideExisting = true)
+    {
+        if (null !== $this->collRDataContributions && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataContributions = new ObjectCollection();
+        $this->collRDataContributions->setModel('\RDataContribution');
+    }
+
+    /**
+     * Gets an array of ChildRDataContribution objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataContribution[] List of ChildRDataContribution objects
+     * @throws PropelException
+     */
+    public function getRDataContributions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataContributionsPartial && !$this->isNew();
+        if (null === $this->collRDataContributions || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataContributions) {
+                // return empty collection
+                $this->initRDataContributions();
+            } else {
+                $collRDataContributions = ChildRDataContributionQuery::create(null, $criteria)
+                    ->filterByRData($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataContributionsPartial && count($collRDataContributions)) {
+                        $this->initRDataContributions(false);
+
+                        foreach ($collRDataContributions as $obj) {
+                            if (false == $this->collRDataContributions->contains($obj)) {
+                                $this->collRDataContributions->append($obj);
+                            }
+                        }
+
+                        $this->collRDataContributionsPartial = true;
+                    }
+
+                    return $collRDataContributions;
+                }
+
+                if ($partial && $this->collRDataContributions) {
+                    foreach ($this->collRDataContributions as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataContributions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataContributions = $collRDataContributions;
+                $this->collRDataContributionsPartial = false;
+            }
+        }
+
+        return $this->collRDataContributions;
+    }
+
+    /**
+     * Sets a collection of ChildRDataContribution objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataContributions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataContributions(Collection $rDataContributions, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataContribution[] $rDataContributionsToDelete */
+        $rDataContributionsToDelete = $this->getRDataContributions(new Criteria(), $con)->diff($rDataContributions);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataContributionsScheduledForDeletion = clone $rDataContributionsToDelete;
+
+        foreach ($rDataContributionsToDelete as $rDataContributionRemoved) {
+            $rDataContributionRemoved->setRData(null);
+        }
+
+        $this->collRDataContributions = null;
+        foreach ($rDataContributions as $rDataContribution) {
+            $this->addRDataContribution($rDataContribution);
+        }
+
+        $this->collRDataContributions = $rDataContributions;
+        $this->collRDataContributionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataContribution objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataContribution objects.
+     * @throws PropelException
+     */
+    public function countRDataContributions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataContributionsPartial && !$this->isNew();
+        if (null === $this->collRDataContributions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataContributions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataContributions());
+            }
+
+            $query = ChildRDataContributionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRData($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataContributions);
+    }
+
+    /**
+     * Method called to associate a ChildRDataContribution object to this object
+     * through the ChildRDataContribution foreign key attribute.
+     *
+     * @param  ChildRDataContribution $l ChildRDataContribution
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataContribution(ChildRDataContribution $l)
+    {
+        if ($this->collRDataContributions === null) {
+            $this->initRDataContributions();
+            $this->collRDataContributionsPartial = true;
+        }
+
+        if (!$this->collRDataContributions->contains($l)) {
+            $this->doAddRDataContribution($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataContribution $rDataContribution The ChildRDataContribution object to add.
+     */
+    protected function doAddRDataContribution(ChildRDataContribution $rDataContribution)
+    {
+        $this->collRDataContributions[]= $rDataContribution;
+        $rDataContribution->setRData($this);
+    }
+
+    /**
+     * @param  ChildRDataContribution $rDataContribution The ChildRDataContribution object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataContribution(ChildRDataContribution $rDataContribution)
+    {
+        if ($this->getRDataContributions()->contains($rDataContribution)) {
+            $pos = $this->collRDataContributions->search($rDataContribution);
+            $this->collRDataContributions->remove($pos);
+            if (null === $this->rDataContributionsScheduledForDeletion) {
+                $this->rDataContributionsScheduledForDeletion = clone $this->collRDataContributions;
+                $this->rDataContributionsScheduledForDeletion->clear();
+            }
+            $this->rDataContributionsScheduledForDeletion[]= clone $rDataContribution;
+            $rDataContribution->setRData(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Data is new, it will return
+     * an empty collection; or if this Data has previously
+     * been saved, it will retrieve related RDataContributions from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Data.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataContribution[] List of ChildRDataContribution objects
+     */
+    public function getRDataContributionsJoinRContribution(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataContributionQuery::create(null, $criteria);
+        $query->joinWith('RContribution', $joinBehavior);
+
+        return $this->getRDataContributions($query, $con);
+    }
+
+    /**
+     * Clears out the collRDataBooks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataBooks()
+     */
+    public function clearRDataBooks()
+    {
+        $this->collRDataBooks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataBooks collection loaded partially.
+     */
+    public function resetPartialRDataBooks($v = true)
+    {
+        $this->collRDataBooksPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataBooks collection.
+     *
+     * By default this just sets the collRDataBooks collection to an empty array (like clearcollRDataBooks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataBooks($overrideExisting = true)
+    {
+        if (null !== $this->collRDataBooks && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataBooks = new ObjectCollection();
+        $this->collRDataBooks->setModel('\RDataBook');
+    }
+
+    /**
+     * Gets an array of ChildRDataBook objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataBook[] List of ChildRDataBook objects
+     * @throws PropelException
+     */
+    public function getRDataBooks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataBooksPartial && !$this->isNew();
+        if (null === $this->collRDataBooks || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataBooks) {
+                // return empty collection
+                $this->initRDataBooks();
+            } else {
+                $collRDataBooks = ChildRDataBookQuery::create(null, $criteria)
+                    ->filterByRData($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataBooksPartial && count($collRDataBooks)) {
+                        $this->initRDataBooks(false);
+
+                        foreach ($collRDataBooks as $obj) {
+                            if (false == $this->collRDataBooks->contains($obj)) {
+                                $this->collRDataBooks->append($obj);
+                            }
+                        }
+
+                        $this->collRDataBooksPartial = true;
+                    }
+
+                    return $collRDataBooks;
+                }
+
+                if ($partial && $this->collRDataBooks) {
+                    foreach ($this->collRDataBooks as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataBooks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataBooks = $collRDataBooks;
+                $this->collRDataBooksPartial = false;
+            }
+        }
+
+        return $this->collRDataBooks;
+    }
+
+    /**
+     * Sets a collection of ChildRDataBook objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataBooks A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataBooks(Collection $rDataBooks, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataBook[] $rDataBooksToDelete */
+        $rDataBooksToDelete = $this->getRDataBooks(new Criteria(), $con)->diff($rDataBooks);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataBooksScheduledForDeletion = clone $rDataBooksToDelete;
+
+        foreach ($rDataBooksToDelete as $rDataBookRemoved) {
+            $rDataBookRemoved->setRData(null);
+        }
+
+        $this->collRDataBooks = null;
+        foreach ($rDataBooks as $rDataBook) {
+            $this->addRDataBook($rDataBook);
+        }
+
+        $this->collRDataBooks = $rDataBooks;
+        $this->collRDataBooksPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataBook objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataBook objects.
+     * @throws PropelException
+     */
+    public function countRDataBooks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataBooksPartial && !$this->isNew();
+        if (null === $this->collRDataBooks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataBooks) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataBooks());
+            }
+
+            $query = ChildRDataBookQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRData($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataBooks);
+    }
+
+    /**
+     * Method called to associate a ChildRDataBook object to this object
+     * through the ChildRDataBook foreign key attribute.
+     *
+     * @param  ChildRDataBook $l ChildRDataBook
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataBook(ChildRDataBook $l)
+    {
+        if ($this->collRDataBooks === null) {
+            $this->initRDataBooks();
+            $this->collRDataBooksPartial = true;
+        }
+
+        if (!$this->collRDataBooks->contains($l)) {
+            $this->doAddRDataBook($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataBook $rDataBook The ChildRDataBook object to add.
+     */
+    protected function doAddRDataBook(ChildRDataBook $rDataBook)
+    {
+        $this->collRDataBooks[]= $rDataBook;
+        $rDataBook->setRData($this);
+    }
+
+    /**
+     * @param  ChildRDataBook $rDataBook The ChildRDataBook object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataBook(ChildRDataBook $rDataBook)
+    {
+        if ($this->getRDataBooks()->contains($rDataBook)) {
+            $pos = $this->collRDataBooks->search($rDataBook);
+            $this->collRDataBooks->remove($pos);
+            if (null === $this->rDataBooksScheduledForDeletion) {
+                $this->rDataBooksScheduledForDeletion = clone $this->collRDataBooks;
+                $this->rDataBooksScheduledForDeletion->clear();
+            }
+            $this->rDataBooksScheduledForDeletion[]= clone $rDataBook;
+            $rDataBook->setRData(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Data is new, it will return
+     * an empty collection; or if this Data has previously
+     * been saved, it will retrieve related RDataBooks from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Data.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataBook[] List of ChildRDataBook objects
+     */
+    public function getRDataBooksJoinRBook(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataBookQuery::create(null, $criteria);
+        $query->joinWith('RBook', $joinBehavior);
+
+        return $this->getRDataBooks($query, $con);
+    }
+
+    /**
+     * Clears out the collRDataFormats collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataFormats()
+     */
+    public function clearRDataFormats()
+    {
+        $this->collRDataFormats = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataFormats collection loaded partially.
+     */
+    public function resetPartialRDataFormats($v = true)
+    {
+        $this->collRDataFormatsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataFormats collection.
+     *
+     * By default this just sets the collRDataFormats collection to an empty array (like clearcollRDataFormats());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataFormats($overrideExisting = true)
+    {
+        if (null !== $this->collRDataFormats && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataFormats = new ObjectCollection();
+        $this->collRDataFormats->setModel('\RDataFormat');
+    }
+
+    /**
+     * Gets an array of ChildRDataFormat objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataFormat[] List of ChildRDataFormat objects
+     * @throws PropelException
+     */
+    public function getRDataFormats(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataFormatsPartial && !$this->isNew();
+        if (null === $this->collRDataFormats || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataFormats) {
+                // return empty collection
+                $this->initRDataFormats();
+            } else {
+                $collRDataFormats = ChildRDataFormatQuery::create(null, $criteria)
+                    ->filterByRData($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataFormatsPartial && count($collRDataFormats)) {
+                        $this->initRDataFormats(false);
+
+                        foreach ($collRDataFormats as $obj) {
+                            if (false == $this->collRDataFormats->contains($obj)) {
+                                $this->collRDataFormats->append($obj);
+                            }
+                        }
+
+                        $this->collRDataFormatsPartial = true;
+                    }
+
+                    return $collRDataFormats;
+                }
+
+                if ($partial && $this->collRDataFormats) {
+                    foreach ($this->collRDataFormats as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataFormats[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataFormats = $collRDataFormats;
+                $this->collRDataFormatsPartial = false;
+            }
+        }
+
+        return $this->collRDataFormats;
+    }
+
+    /**
+     * Sets a collection of ChildRDataFormat objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataFormats A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataFormats(Collection $rDataFormats, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataFormat[] $rDataFormatsToDelete */
+        $rDataFormatsToDelete = $this->getRDataFormats(new Criteria(), $con)->diff($rDataFormats);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataFormatsScheduledForDeletion = clone $rDataFormatsToDelete;
+
+        foreach ($rDataFormatsToDelete as $rDataFormatRemoved) {
+            $rDataFormatRemoved->setRData(null);
+        }
+
+        $this->collRDataFormats = null;
+        foreach ($rDataFormats as $rDataFormat) {
+            $this->addRDataFormat($rDataFormat);
+        }
+
+        $this->collRDataFormats = $rDataFormats;
+        $this->collRDataFormatsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataFormat objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataFormat objects.
+     * @throws PropelException
+     */
+    public function countRDataFormats(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataFormatsPartial && !$this->isNew();
+        if (null === $this->collRDataFormats || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataFormats) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataFormats());
+            }
+
+            $query = ChildRDataFormatQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRData($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataFormats);
+    }
+
+    /**
+     * Method called to associate a ChildRDataFormat object to this object
+     * through the ChildRDataFormat foreign key attribute.
+     *
+     * @param  ChildRDataFormat $l ChildRDataFormat
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataFormat(ChildRDataFormat $l)
+    {
+        if ($this->collRDataFormats === null) {
+            $this->initRDataFormats();
+            $this->collRDataFormatsPartial = true;
+        }
+
+        if (!$this->collRDataFormats->contains($l)) {
+            $this->doAddRDataFormat($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataFormat $rDataFormat The ChildRDataFormat object to add.
+     */
+    protected function doAddRDataFormat(ChildRDataFormat $rDataFormat)
+    {
+        $this->collRDataFormats[]= $rDataFormat;
+        $rDataFormat->setRData($this);
+    }
+
+    /**
+     * @param  ChildRDataFormat $rDataFormat The ChildRDataFormat object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataFormat(ChildRDataFormat $rDataFormat)
+    {
+        if ($this->getRDataFormats()->contains($rDataFormat)) {
+            $pos = $this->collRDataFormats->search($rDataFormat);
+            $this->collRDataFormats->remove($pos);
+            if (null === $this->rDataFormatsScheduledForDeletion) {
+                $this->rDataFormatsScheduledForDeletion = clone $this->collRDataFormats;
+                $this->rDataFormatsScheduledForDeletion->clear();
+            }
+            $this->rDataFormatsScheduledForDeletion[]= clone $rDataFormat;
+            $rDataFormat->setRData(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Data is new, it will return
+     * an empty collection; or if this Data has previously
+     * been saved, it will retrieve related RDataFormats from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Data.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataFormat[] List of ChildRDataFormat objects
+     */
+    public function getRDataFormatsJoinRFormat(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataFormatQuery::create(null, $criteria);
+        $query->joinWith('RFormat', $joinBehavior);
+
+        return $this->getRDataFormats($query, $con);
+    }
+
+    /**
+     * Clears out the collRDataIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataIssues()
+     */
+    public function clearRDataIssues()
+    {
+        $this->collRDataIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataIssues collection loaded partially.
+     */
+    public function resetPartialRDataIssues($v = true)
+    {
+        $this->collRDataIssuesPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataIssues collection.
+     *
+     * By default this just sets the collRDataIssues collection to an empty array (like clearcollRDataIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataIssues($overrideExisting = true)
+    {
+        if (null !== $this->collRDataIssues && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataIssues = new ObjectCollection();
+        $this->collRDataIssues->setModel('\RDataIssue');
+    }
+
+    /**
+     * Gets an array of ChildRDataIssue objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataIssue[] List of ChildRDataIssue objects
+     * @throws PropelException
+     */
+    public function getRDataIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataIssuesPartial && !$this->isNew();
+        if (null === $this->collRDataIssues || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataIssues) {
+                // return empty collection
+                $this->initRDataIssues();
+            } else {
+                $collRDataIssues = ChildRDataIssueQuery::create(null, $criteria)
+                    ->filterByRData($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataIssuesPartial && count($collRDataIssues)) {
+                        $this->initRDataIssues(false);
+
+                        foreach ($collRDataIssues as $obj) {
+                            if (false == $this->collRDataIssues->contains($obj)) {
+                                $this->collRDataIssues->append($obj);
+                            }
+                        }
+
+                        $this->collRDataIssuesPartial = true;
+                    }
+
+                    return $collRDataIssues;
+                }
+
+                if ($partial && $this->collRDataIssues) {
+                    foreach ($this->collRDataIssues as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataIssues = $collRDataIssues;
+                $this->collRDataIssuesPartial = false;
+            }
+        }
+
+        return $this->collRDataIssues;
+    }
+
+    /**
+     * Sets a collection of ChildRDataIssue objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataIssues A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataIssues(Collection $rDataIssues, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataIssue[] $rDataIssuesToDelete */
+        $rDataIssuesToDelete = $this->getRDataIssues(new Criteria(), $con)->diff($rDataIssues);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataIssuesScheduledForDeletion = clone $rDataIssuesToDelete;
+
+        foreach ($rDataIssuesToDelete as $rDataIssueRemoved) {
+            $rDataIssueRemoved->setRData(null);
+        }
+
+        $this->collRDataIssues = null;
+        foreach ($rDataIssues as $rDataIssue) {
+            $this->addRDataIssue($rDataIssue);
+        }
+
+        $this->collRDataIssues = $rDataIssues;
+        $this->collRDataIssuesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataIssue objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataIssue objects.
+     * @throws PropelException
+     */
+    public function countRDataIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataIssuesPartial && !$this->isNew();
+        if (null === $this->collRDataIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataIssues) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataIssues());
+            }
+
+            $query = ChildRDataIssueQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRData($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataIssues);
+    }
+
+    /**
+     * Method called to associate a ChildRDataIssue object to this object
+     * through the ChildRDataIssue foreign key attribute.
+     *
+     * @param  ChildRDataIssue $l ChildRDataIssue
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataIssue(ChildRDataIssue $l)
+    {
+        if ($this->collRDataIssues === null) {
+            $this->initRDataIssues();
+            $this->collRDataIssuesPartial = true;
+        }
+
+        if (!$this->collRDataIssues->contains($l)) {
+            $this->doAddRDataIssue($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataIssue $rDataIssue The ChildRDataIssue object to add.
+     */
+    protected function doAddRDataIssue(ChildRDataIssue $rDataIssue)
+    {
+        $this->collRDataIssues[]= $rDataIssue;
+        $rDataIssue->setRData($this);
+    }
+
+    /**
+     * @param  ChildRDataIssue $rDataIssue The ChildRDataIssue object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataIssue(ChildRDataIssue $rDataIssue)
+    {
+        if ($this->getRDataIssues()->contains($rDataIssue)) {
+            $pos = $this->collRDataIssues->search($rDataIssue);
+            $this->collRDataIssues->remove($pos);
+            if (null === $this->rDataIssuesScheduledForDeletion) {
+                $this->rDataIssuesScheduledForDeletion = clone $this->collRDataIssues;
+                $this->rDataIssuesScheduledForDeletion->clear();
+            }
+            $this->rDataIssuesScheduledForDeletion[]= clone $rDataIssue;
+            $rDataIssue->setRData(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Data is new, it will return
+     * an empty collection; or if this Data has previously
+     * been saved, it will retrieve related RDataIssues from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Data.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataIssue[] List of ChildRDataIssue objects
+     */
+    public function getRDataIssuesJoinRIssue(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataIssueQuery::create(null, $criteria);
+        $query->joinWith('RIssue', $joinBehavior);
+
+        return $this->getRDataIssues($query, $con);
+    }
+
+    /**
+     * Clears out the collRDataTemplates collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataTemplates()
+     */
+    public function clearRDataTemplates()
+    {
+        $this->collRDataTemplates = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRDataTemplates collection loaded partially.
+     */
+    public function resetPartialRDataTemplates($v = true)
+    {
+        $this->collRDataTemplatesPartial = $v;
+    }
+
+    /**
+     * Initializes the collRDataTemplates collection.
+     *
+     * By default this just sets the collRDataTemplates collection to an empty array (like clearcollRDataTemplates());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRDataTemplates($overrideExisting = true)
+    {
+        if (null !== $this->collRDataTemplates && !$overrideExisting) {
+            return;
+        }
+        $this->collRDataTemplates = new ObjectCollection();
+        $this->collRDataTemplates->setModel('\RDataTemplate');
+    }
+
+    /**
+     * Gets an array of ChildRDataTemplate objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRDataTemplate[] List of ChildRDataTemplate objects
+     * @throws PropelException
+     */
+    public function getRDataTemplates(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataTemplatesPartial && !$this->isNew();
+        if (null === $this->collRDataTemplates || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRDataTemplates) {
+                // return empty collection
+                $this->initRDataTemplates();
+            } else {
+                $collRDataTemplates = ChildRDataTemplateQuery::create(null, $criteria)
+                    ->filterByRData($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRDataTemplatesPartial && count($collRDataTemplates)) {
+                        $this->initRDataTemplates(false);
+
+                        foreach ($collRDataTemplates as $obj) {
+                            if (false == $this->collRDataTemplates->contains($obj)) {
+                                $this->collRDataTemplates->append($obj);
+                            }
+                        }
+
+                        $this->collRDataTemplatesPartial = true;
+                    }
+
+                    return $collRDataTemplates;
+                }
+
+                if ($partial && $this->collRDataTemplates) {
+                    foreach ($this->collRDataTemplates as $obj) {
+                        if ($obj->isNew()) {
+                            $collRDataTemplates[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataTemplates = $collRDataTemplates;
+                $this->collRDataTemplatesPartial = false;
+            }
+        }
+
+        return $this->collRDataTemplates;
+    }
+
+    /**
+     * Sets a collection of ChildRDataTemplate objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rDataTemplates A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataTemplates(Collection $rDataTemplates, ConnectionInterface $con = null)
+    {
+        /** @var ChildRDataTemplate[] $rDataTemplatesToDelete */
+        $rDataTemplatesToDelete = $this->getRDataTemplates(new Criteria(), $con)->diff($rDataTemplates);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rDataTemplatesScheduledForDeletion = clone $rDataTemplatesToDelete;
+
+        foreach ($rDataTemplatesToDelete as $rDataTemplateRemoved) {
+            $rDataTemplateRemoved->setRData(null);
+        }
+
+        $this->collRDataTemplates = null;
+        foreach ($rDataTemplates as $rDataTemplate) {
+            $this->addRDataTemplate($rDataTemplate);
+        }
+
+        $this->collRDataTemplates = $rDataTemplates;
+        $this->collRDataTemplatesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RDataTemplate objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RDataTemplate objects.
+     * @throws PropelException
+     */
+    public function countRDataTemplates(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataTemplatesPartial && !$this->isNew();
+        if (null === $this->collRDataTemplates || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataTemplates) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRDataTemplates());
+            }
+
+            $query = ChildRDataTemplateQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRData($this)
+                ->count($con);
+        }
+
+        return count($this->collRDataTemplates);
+    }
+
+    /**
+     * Method called to associate a ChildRDataTemplate object to this object
+     * through the ChildRDataTemplate foreign key attribute.
+     *
+     * @param  ChildRDataTemplate $l ChildRDataTemplate
+     * @return $this|\Data The current object (for fluent API support)
+     */
+    public function addRDataTemplate(ChildRDataTemplate $l)
+    {
+        if ($this->collRDataTemplates === null) {
+            $this->initRDataTemplates();
+            $this->collRDataTemplatesPartial = true;
+        }
+
+        if (!$this->collRDataTemplates->contains($l)) {
+            $this->doAddRDataTemplate($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRDataTemplate $rDataTemplate The ChildRDataTemplate object to add.
+     */
+    protected function doAddRDataTemplate(ChildRDataTemplate $rDataTemplate)
+    {
+        $this->collRDataTemplates[]= $rDataTemplate;
+        $rDataTemplate->setRData($this);
+    }
+
+    /**
+     * @param  ChildRDataTemplate $rDataTemplate The ChildRDataTemplate object to remove.
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function removeRDataTemplate(ChildRDataTemplate $rDataTemplate)
+    {
+        if ($this->getRDataTemplates()->contains($rDataTemplate)) {
+            $pos = $this->collRDataTemplates->search($rDataTemplate);
+            $this->collRDataTemplates->remove($pos);
+            if (null === $this->rDataTemplatesScheduledForDeletion) {
+                $this->rDataTemplatesScheduledForDeletion = clone $this->collRDataTemplates;
+                $this->rDataTemplatesScheduledForDeletion->clear();
+            }
+            $this->rDataTemplatesScheduledForDeletion[]= clone $rDataTemplate;
+            $rDataTemplate->setRData(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Data is new, it will return
+     * an empty collection; or if this Data has previously
+     * been saved, it will retrieve related RDataTemplates from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Data.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRDataTemplate[] List of ChildRDataTemplate objects
+     */
+    public function getRDataTemplatesJoinRTemplate(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRDataTemplateQuery::create(null, $criteria);
+        $query->joinWith('RTemplate', $joinBehavior);
+
+        return $this->getRDataTemplates($query, $con);
     }
 
     /**
@@ -2326,6 +4723,1700 @@ abstract class Data implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRDataRefs collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataRefs()
+     */
+    public function clearRDataRefs()
+    {
+        $this->collRDataRefs = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRDataRefs crossRef collection.
+     *
+     * By default this just sets the collRDataRefs collection to an empty collection (like clearRDataRefs());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRDataRefs()
+    {
+        $this->collRDataRefs = new ObjectCollection();
+        $this->collRDataRefsPartial = true;
+
+        $this->collRDataRefs->setModel('\Data');
+    }
+
+    /**
+     * Checks if the collRDataRefs collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRDataRefsLoaded()
+    {
+        return null !== $this->collRDataRefs;
+    }
+
+    /**
+     * Gets a collection of ChildData objects related by a many-to-many relationship
+     * to the current object by way of the R_data_data cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getRDataRefs(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataRefsPartial && !$this->isNew();
+        if (null === $this->collRDataRefs || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRDataRefs) {
+                    $this->initRDataRefs();
+                }
+            } else {
+
+                $query = ChildDataQuery::create(null, $criteria)
+                    ->filterByRDataSrc($this);
+                $collRDataRefs = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRDataRefs;
+                }
+
+                if ($partial && $this->collRDataRefs) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRDataRefs as $obj) {
+                        if (!$collRDataRefs->contains($obj)) {
+                            $collRDataRefs[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataRefs = $collRDataRefs;
+                $this->collRDataRefsPartial = false;
+            }
+        }
+
+        return $this->collRDataRefs;
+    }
+
+    /**
+     * Sets a collection of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_data cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rDataRefs A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataRefs(Collection $rDataRefs, ConnectionInterface $con = null)
+    {
+        $this->clearRDataRefs();
+        $currentRDataRefs = $this->getRDataRefs();
+
+        $rDataRefsScheduledForDeletion = $currentRDataRefs->diff($rDataRefs);
+
+        foreach ($rDataRefsScheduledForDeletion as $toDelete) {
+            $this->removeRDataRef($toDelete);
+        }
+
+        foreach ($rDataRefs as $rDataRef) {
+            if (!$currentRDataRefs->contains($rDataRef)) {
+                $this->doAddRDataRef($rDataRef);
+            }
+        }
+
+        $this->collRDataRefsPartial = false;
+        $this->collRDataRefs = $rDataRefs;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_data cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Data objects
+     */
+    public function countRDataRefs(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataRefsPartial && !$this->isNew();
+        if (null === $this->collRDataRefs || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataRefs) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRDataRefs());
+                }
+
+                $query = ChildDataQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRDataSrc($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRDataRefs);
+        }
+    }
+
+    /**
+     * Associate a ChildData to this object
+     * through the R_data_data cross reference table.
+     *
+     * @param ChildData $rDataRef
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRDataRef(ChildData $rDataRef)
+    {
+        if ($this->collRDataRefs === null) {
+            $this->initRDataRefs();
+        }
+
+        if (!$this->getRDataRefs()->contains($rDataRef)) {
+            // only add it if the **same** object is not already associated
+            $this->collRDataRefs->push($rDataRef);
+            $this->doAddRDataRef($rDataRef);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildData $rDataRef
+     */
+    protected function doAddRDataRef(ChildData $rDataRef)
+    {
+        $rDataData = new ChildRDataData();
+
+        $rDataData->setRDataRef($rDataRef);
+
+        $rDataData->setRDataSrc($this);
+
+        $this->addRDataDataRelatedBySource($rDataData);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rDataRef->isRDataSrcsLoaded()) {
+            $rDataRef->initRDataSrcs();
+            $rDataRef->getRDataSrcs()->push($this);
+        } elseif (!$rDataRef->getRDataSrcs()->contains($this)) {
+            $rDataRef->getRDataSrcs()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rDataRef of this object
+     * through the R_data_data cross reference table.
+     *
+     * @param ChildData $rDataRef
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRDataRef(ChildData $rDataRef)
+    {
+        if ($this->getRDataRefs()->contains($rDataRef)) { $rDataData = new ChildRDataData();
+
+            $rDataData->setRDataRef($rDataRef);
+            if ($rDataRef->isRDataSrcsLoaded()) {
+                //remove the back reference if available
+                $rDataRef->getRDataSrcs()->removeObject($this);
+            }
+
+            $rDataData->setRDataSrc($this);
+            $this->removeRDataDataRelatedBySource(clone $rDataData);
+            $rDataData->clear();
+
+            $this->collRDataRefs->remove($this->collRDataRefs->search($rDataRef));
+
+            if (null === $this->rDataRefsScheduledForDeletion) {
+                $this->rDataRefsScheduledForDeletion = clone $this->collRDataRefs;
+                $this->rDataRefsScheduledForDeletion->clear();
+            }
+
+            $this->rDataRefsScheduledForDeletion->push($rDataRef);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRDataSrcs collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRDataSrcs()
+     */
+    public function clearRDataSrcs()
+    {
+        $this->collRDataSrcs = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRDataSrcs crossRef collection.
+     *
+     * By default this just sets the collRDataSrcs collection to an empty collection (like clearRDataSrcs());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRDataSrcs()
+    {
+        $this->collRDataSrcs = new ObjectCollection();
+        $this->collRDataSrcsPartial = true;
+
+        $this->collRDataSrcs->setModel('\Data');
+    }
+
+    /**
+     * Checks if the collRDataSrcs collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRDataSrcsLoaded()
+    {
+        return null !== $this->collRDataSrcs;
+    }
+
+    /**
+     * Gets a collection of ChildData objects related by a many-to-many relationship
+     * to the current object by way of the R_data_data cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildData[] List of ChildData objects
+     */
+    public function getRDataSrcs(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataSrcsPartial && !$this->isNew();
+        if (null === $this->collRDataSrcs || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRDataSrcs) {
+                    $this->initRDataSrcs();
+                }
+            } else {
+
+                $query = ChildDataQuery::create(null, $criteria)
+                    ->filterByRDataRef($this);
+                $collRDataSrcs = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRDataSrcs;
+                }
+
+                if ($partial && $this->collRDataSrcs) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRDataSrcs as $obj) {
+                        if (!$collRDataSrcs->contains($obj)) {
+                            $collRDataSrcs[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRDataSrcs = $collRDataSrcs;
+                $this->collRDataSrcsPartial = false;
+            }
+        }
+
+        return $this->collRDataSrcs;
+    }
+
+    /**
+     * Sets a collection of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_data cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rDataSrcs A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRDataSrcs(Collection $rDataSrcs, ConnectionInterface $con = null)
+    {
+        $this->clearRDataSrcs();
+        $currentRDataSrcs = $this->getRDataSrcs();
+
+        $rDataSrcsScheduledForDeletion = $currentRDataSrcs->diff($rDataSrcs);
+
+        foreach ($rDataSrcsScheduledForDeletion as $toDelete) {
+            $this->removeRDataSrc($toDelete);
+        }
+
+        foreach ($rDataSrcs as $rDataSrc) {
+            if (!$currentRDataSrcs->contains($rDataSrc)) {
+                $this->doAddRDataSrc($rDataSrc);
+            }
+        }
+
+        $this->collRDataSrcsPartial = false;
+        $this->collRDataSrcs = $rDataSrcs;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Data objects related by a many-to-many relationship
+     * to the current object by way of the R_data_data cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Data objects
+     */
+    public function countRDataSrcs(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRDataSrcsPartial && !$this->isNew();
+        if (null === $this->collRDataSrcs || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRDataSrcs) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRDataSrcs());
+                }
+
+                $query = ChildDataQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRDataRef($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRDataSrcs);
+        }
+    }
+
+    /**
+     * Associate a ChildData to this object
+     * through the R_data_data cross reference table.
+     *
+     * @param ChildData $rDataSrc
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRDataSrc(ChildData $rDataSrc)
+    {
+        if ($this->collRDataSrcs === null) {
+            $this->initRDataSrcs();
+        }
+
+        if (!$this->getRDataSrcs()->contains($rDataSrc)) {
+            // only add it if the **same** object is not already associated
+            $this->collRDataSrcs->push($rDataSrc);
+            $this->doAddRDataSrc($rDataSrc);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildData $rDataSrc
+     */
+    protected function doAddRDataSrc(ChildData $rDataSrc)
+    {
+        $rDataData = new ChildRDataData();
+
+        $rDataData->setRDataSrc($rDataSrc);
+
+        $rDataData->setRDataRef($this);
+
+        $this->addRDataDataRelatedByTarget($rDataData);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rDataSrc->isRDataRefsLoaded()) {
+            $rDataSrc->initRDataRefs();
+            $rDataSrc->getRDataRefs()->push($this);
+        } elseif (!$rDataSrc->getRDataRefs()->contains($this)) {
+            $rDataSrc->getRDataRefs()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rDataSrc of this object
+     * through the R_data_data cross reference table.
+     *
+     * @param ChildData $rDataSrc
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRDataSrc(ChildData $rDataSrc)
+    {
+        if ($this->getRDataSrcs()->contains($rDataSrc)) { $rDataData = new ChildRDataData();
+
+            $rDataData->setRDataSrc($rDataSrc);
+            if ($rDataSrc->isRDataRefsLoaded()) {
+                //remove the back reference if available
+                $rDataSrc->getRDataRefs()->removeObject($this);
+            }
+
+            $rDataData->setRDataRef($this);
+            $this->removeRDataDataRelatedByTarget(clone $rDataData);
+            $rDataData->clear();
+
+            $this->collRDataSrcs->remove($this->collRDataSrcs->search($rDataSrc));
+
+            if (null === $this->rDataSrcsScheduledForDeletion) {
+                $this->rDataSrcsScheduledForDeletion = clone $this->collRDataSrcs;
+                $this->rDataSrcsScheduledForDeletion->clear();
+            }
+
+            $this->rDataSrcsScheduledForDeletion->push($rDataSrc);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRContributions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRContributions()
+     */
+    public function clearRContributions()
+    {
+        $this->collRContributions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRContributions crossRef collection.
+     *
+     * By default this just sets the collRContributions collection to an empty collection (like clearRContributions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRContributions()
+    {
+        $this->collRContributions = new ObjectCollection();
+        $this->collRContributionsPartial = true;
+
+        $this->collRContributions->setModel('\Contributions');
+    }
+
+    /**
+     * Checks if the collRContributions collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRContributionsLoaded()
+    {
+        return null !== $this->collRContributions;
+    }
+
+    /**
+     * Gets a collection of ChildContributions objects related by a many-to-many relationship
+     * to the current object by way of the R_data_contribution cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildContributions[] List of ChildContributions objects
+     */
+    public function getRContributions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRContributionsPartial && !$this->isNew();
+        if (null === $this->collRContributions || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRContributions) {
+                    $this->initRContributions();
+                }
+            } else {
+
+                $query = ChildContributionsQuery::create(null, $criteria)
+                    ->filterByRData($this);
+                $collRContributions = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRContributions;
+                }
+
+                if ($partial && $this->collRContributions) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRContributions as $obj) {
+                        if (!$collRContributions->contains($obj)) {
+                            $collRContributions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRContributions = $collRContributions;
+                $this->collRContributionsPartial = false;
+            }
+        }
+
+        return $this->collRContributions;
+    }
+
+    /**
+     * Sets a collection of Contributions objects related by a many-to-many relationship
+     * to the current object by way of the R_data_contribution cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rContributions A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRContributions(Collection $rContributions, ConnectionInterface $con = null)
+    {
+        $this->clearRContributions();
+        $currentRContributions = $this->getRContributions();
+
+        $rContributionsScheduledForDeletion = $currentRContributions->diff($rContributions);
+
+        foreach ($rContributionsScheduledForDeletion as $toDelete) {
+            $this->removeRContribution($toDelete);
+        }
+
+        foreach ($rContributions as $rContribution) {
+            if (!$currentRContributions->contains($rContribution)) {
+                $this->doAddRContribution($rContribution);
+            }
+        }
+
+        $this->collRContributionsPartial = false;
+        $this->collRContributions = $rContributions;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Contributions objects related by a many-to-many relationship
+     * to the current object by way of the R_data_contribution cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Contributions objects
+     */
+    public function countRContributions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRContributionsPartial && !$this->isNew();
+        if (null === $this->collRContributions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRContributions) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRContributions());
+                }
+
+                $query = ChildContributionsQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRData($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRContributions);
+        }
+    }
+
+    /**
+     * Associate a ChildContributions to this object
+     * through the R_data_contribution cross reference table.
+     *
+     * @param ChildContributions $rContribution
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRContribution(ChildContributions $rContribution)
+    {
+        if ($this->collRContributions === null) {
+            $this->initRContributions();
+        }
+
+        if (!$this->getRContributions()->contains($rContribution)) {
+            // only add it if the **same** object is not already associated
+            $this->collRContributions->push($rContribution);
+            $this->doAddRContribution($rContribution);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildContributions $rContribution
+     */
+    protected function doAddRContribution(ChildContributions $rContribution)
+    {
+        $rDataContribution = new ChildRDataContribution();
+
+        $rDataContribution->setRContribution($rContribution);
+
+        $rDataContribution->setRData($this);
+
+        $this->addRDataContribution($rDataContribution);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rContribution->isRDatasLoaded()) {
+            $rContribution->initRDatas();
+            $rContribution->getRDatas()->push($this);
+        } elseif (!$rContribution->getRDatas()->contains($this)) {
+            $rContribution->getRDatas()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rContribution of this object
+     * through the R_data_contribution cross reference table.
+     *
+     * @param ChildContributions $rContribution
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRContribution(ChildContributions $rContribution)
+    {
+        if ($this->getRContributions()->contains($rContribution)) { $rDataContribution = new ChildRDataContribution();
+
+            $rDataContribution->setRContribution($rContribution);
+            if ($rContribution->isRDatasLoaded()) {
+                //remove the back reference if available
+                $rContribution->getRDatas()->removeObject($this);
+            }
+
+            $rDataContribution->setRData($this);
+            $this->removeRDataContribution(clone $rDataContribution);
+            $rDataContribution->clear();
+
+            $this->collRContributions->remove($this->collRContributions->search($rContribution));
+
+            if (null === $this->rContributionsScheduledForDeletion) {
+                $this->rContributionsScheduledForDeletion = clone $this->collRContributions;
+                $this->rContributionsScheduledForDeletion->clear();
+            }
+
+            $this->rContributionsScheduledForDeletion->push($rContribution);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRBooks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRBooks()
+     */
+    public function clearRBooks()
+    {
+        $this->collRBooks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRBooks crossRef collection.
+     *
+     * By default this just sets the collRBooks collection to an empty collection (like clearRBooks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRBooks()
+    {
+        $this->collRBooks = new ObjectCollection();
+        $this->collRBooksPartial = true;
+
+        $this->collRBooks->setModel('\Books');
+    }
+
+    /**
+     * Checks if the collRBooks collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRBooksLoaded()
+    {
+        return null !== $this->collRBooks;
+    }
+
+    /**
+     * Gets a collection of ChildBooks objects related by a many-to-many relationship
+     * to the current object by way of the R_data_book cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildBooks[] List of ChildBooks objects
+     */
+    public function getRBooks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRBooksPartial && !$this->isNew();
+        if (null === $this->collRBooks || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRBooks) {
+                    $this->initRBooks();
+                }
+            } else {
+
+                $query = ChildBooksQuery::create(null, $criteria)
+                    ->filterByRData($this);
+                $collRBooks = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRBooks;
+                }
+
+                if ($partial && $this->collRBooks) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRBooks as $obj) {
+                        if (!$collRBooks->contains($obj)) {
+                            $collRBooks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRBooks = $collRBooks;
+                $this->collRBooksPartial = false;
+            }
+        }
+
+        return $this->collRBooks;
+    }
+
+    /**
+     * Sets a collection of Books objects related by a many-to-many relationship
+     * to the current object by way of the R_data_book cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rBooks A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRBooks(Collection $rBooks, ConnectionInterface $con = null)
+    {
+        $this->clearRBooks();
+        $currentRBooks = $this->getRBooks();
+
+        $rBooksScheduledForDeletion = $currentRBooks->diff($rBooks);
+
+        foreach ($rBooksScheduledForDeletion as $toDelete) {
+            $this->removeRBook($toDelete);
+        }
+
+        foreach ($rBooks as $rBook) {
+            if (!$currentRBooks->contains($rBook)) {
+                $this->doAddRBook($rBook);
+            }
+        }
+
+        $this->collRBooksPartial = false;
+        $this->collRBooks = $rBooks;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Books objects related by a many-to-many relationship
+     * to the current object by way of the R_data_book cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Books objects
+     */
+    public function countRBooks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRBooksPartial && !$this->isNew();
+        if (null === $this->collRBooks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRBooks) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRBooks());
+                }
+
+                $query = ChildBooksQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRData($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRBooks);
+        }
+    }
+
+    /**
+     * Associate a ChildBooks to this object
+     * through the R_data_book cross reference table.
+     *
+     * @param ChildBooks $rBook
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRBook(ChildBooks $rBook)
+    {
+        if ($this->collRBooks === null) {
+            $this->initRBooks();
+        }
+
+        if (!$this->getRBooks()->contains($rBook)) {
+            // only add it if the **same** object is not already associated
+            $this->collRBooks->push($rBook);
+            $this->doAddRBook($rBook);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildBooks $rBook
+     */
+    protected function doAddRBook(ChildBooks $rBook)
+    {
+        $rDataBook = new ChildRDataBook();
+
+        $rDataBook->setRBook($rBook);
+
+        $rDataBook->setRData($this);
+
+        $this->addRDataBook($rDataBook);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rBook->isRDatasLoaded()) {
+            $rBook->initRDatas();
+            $rBook->getRDatas()->push($this);
+        } elseif (!$rBook->getRDatas()->contains($this)) {
+            $rBook->getRDatas()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rBook of this object
+     * through the R_data_book cross reference table.
+     *
+     * @param ChildBooks $rBook
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRBook(ChildBooks $rBook)
+    {
+        if ($this->getRBooks()->contains($rBook)) { $rDataBook = new ChildRDataBook();
+
+            $rDataBook->setRBook($rBook);
+            if ($rBook->isRDatasLoaded()) {
+                //remove the back reference if available
+                $rBook->getRDatas()->removeObject($this);
+            }
+
+            $rDataBook->setRData($this);
+            $this->removeRDataBook(clone $rDataBook);
+            $rDataBook->clear();
+
+            $this->collRBooks->remove($this->collRBooks->search($rBook));
+
+            if (null === $this->rBooksScheduledForDeletion) {
+                $this->rBooksScheduledForDeletion = clone $this->collRBooks;
+                $this->rBooksScheduledForDeletion->clear();
+            }
+
+            $this->rBooksScheduledForDeletion->push($rBook);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRFormats collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRFormats()
+     */
+    public function clearRFormats()
+    {
+        $this->collRFormats = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRFormats crossRef collection.
+     *
+     * By default this just sets the collRFormats collection to an empty collection (like clearRFormats());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRFormats()
+    {
+        $this->collRFormats = new ObjectCollection();
+        $this->collRFormatsPartial = true;
+
+        $this->collRFormats->setModel('\Formats');
+    }
+
+    /**
+     * Checks if the collRFormats collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRFormatsLoaded()
+    {
+        return null !== $this->collRFormats;
+    }
+
+    /**
+     * Gets a collection of ChildFormats objects related by a many-to-many relationship
+     * to the current object by way of the R_data_format cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildFormats[] List of ChildFormats objects
+     */
+    public function getRFormats(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRFormatsPartial && !$this->isNew();
+        if (null === $this->collRFormats || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRFormats) {
+                    $this->initRFormats();
+                }
+            } else {
+
+                $query = ChildFormatsQuery::create(null, $criteria)
+                    ->filterByRData($this);
+                $collRFormats = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRFormats;
+                }
+
+                if ($partial && $this->collRFormats) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRFormats as $obj) {
+                        if (!$collRFormats->contains($obj)) {
+                            $collRFormats[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRFormats = $collRFormats;
+                $this->collRFormatsPartial = false;
+            }
+        }
+
+        return $this->collRFormats;
+    }
+
+    /**
+     * Sets a collection of Formats objects related by a many-to-many relationship
+     * to the current object by way of the R_data_format cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rFormats A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRFormats(Collection $rFormats, ConnectionInterface $con = null)
+    {
+        $this->clearRFormats();
+        $currentRFormats = $this->getRFormats();
+
+        $rFormatsScheduledForDeletion = $currentRFormats->diff($rFormats);
+
+        foreach ($rFormatsScheduledForDeletion as $toDelete) {
+            $this->removeRFormat($toDelete);
+        }
+
+        foreach ($rFormats as $rFormat) {
+            if (!$currentRFormats->contains($rFormat)) {
+                $this->doAddRFormat($rFormat);
+            }
+        }
+
+        $this->collRFormatsPartial = false;
+        $this->collRFormats = $rFormats;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Formats objects related by a many-to-many relationship
+     * to the current object by way of the R_data_format cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Formats objects
+     */
+    public function countRFormats(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRFormatsPartial && !$this->isNew();
+        if (null === $this->collRFormats || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRFormats) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRFormats());
+                }
+
+                $query = ChildFormatsQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRData($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRFormats);
+        }
+    }
+
+    /**
+     * Associate a ChildFormats to this object
+     * through the R_data_format cross reference table.
+     *
+     * @param ChildFormats $rFormat
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRFormat(ChildFormats $rFormat)
+    {
+        if ($this->collRFormats === null) {
+            $this->initRFormats();
+        }
+
+        if (!$this->getRFormats()->contains($rFormat)) {
+            // only add it if the **same** object is not already associated
+            $this->collRFormats->push($rFormat);
+            $this->doAddRFormat($rFormat);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildFormats $rFormat
+     */
+    protected function doAddRFormat(ChildFormats $rFormat)
+    {
+        $rDataFormat = new ChildRDataFormat();
+
+        $rDataFormat->setRFormat($rFormat);
+
+        $rDataFormat->setRData($this);
+
+        $this->addRDataFormat($rDataFormat);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rFormat->isRDatasLoaded()) {
+            $rFormat->initRDatas();
+            $rFormat->getRDatas()->push($this);
+        } elseif (!$rFormat->getRDatas()->contains($this)) {
+            $rFormat->getRDatas()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rFormat of this object
+     * through the R_data_format cross reference table.
+     *
+     * @param ChildFormats $rFormat
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRFormat(ChildFormats $rFormat)
+    {
+        if ($this->getRFormats()->contains($rFormat)) { $rDataFormat = new ChildRDataFormat();
+
+            $rDataFormat->setRFormat($rFormat);
+            if ($rFormat->isRDatasLoaded()) {
+                //remove the back reference if available
+                $rFormat->getRDatas()->removeObject($this);
+            }
+
+            $rDataFormat->setRData($this);
+            $this->removeRDataFormat(clone $rDataFormat);
+            $rDataFormat->clear();
+
+            $this->collRFormats->remove($this->collRFormats->search($rFormat));
+
+            if (null === $this->rFormatsScheduledForDeletion) {
+                $this->rFormatsScheduledForDeletion = clone $this->collRFormats;
+                $this->rFormatsScheduledForDeletion->clear();
+            }
+
+            $this->rFormatsScheduledForDeletion->push($rFormat);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRIssues()
+     */
+    public function clearRIssues()
+    {
+        $this->collRIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRIssues crossRef collection.
+     *
+     * By default this just sets the collRIssues collection to an empty collection (like clearRIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRIssues()
+    {
+        $this->collRIssues = new ObjectCollection();
+        $this->collRIssuesPartial = true;
+
+        $this->collRIssues->setModel('\Issues');
+    }
+
+    /**
+     * Checks if the collRIssues collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRIssuesLoaded()
+    {
+        return null !== $this->collRIssues;
+    }
+
+    /**
+     * Gets a collection of ChildIssues objects related by a many-to-many relationship
+     * to the current object by way of the R_data_issue cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getRIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesPartial && !$this->isNew();
+        if (null === $this->collRIssues || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRIssues) {
+                    $this->initRIssues();
+                }
+            } else {
+
+                $query = ChildIssuesQuery::create(null, $criteria)
+                    ->filterByRData($this);
+                $collRIssues = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRIssues;
+                }
+
+                if ($partial && $this->collRIssues) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRIssues as $obj) {
+                        if (!$collRIssues->contains($obj)) {
+                            $collRIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRIssues = $collRIssues;
+                $this->collRIssuesPartial = false;
+            }
+        }
+
+        return $this->collRIssues;
+    }
+
+    /**
+     * Sets a collection of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_data_issue cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rIssues A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRIssues(Collection $rIssues, ConnectionInterface $con = null)
+    {
+        $this->clearRIssues();
+        $currentRIssues = $this->getRIssues();
+
+        $rIssuesScheduledForDeletion = $currentRIssues->diff($rIssues);
+
+        foreach ($rIssuesScheduledForDeletion as $toDelete) {
+            $this->removeRIssue($toDelete);
+        }
+
+        foreach ($rIssues as $rIssue) {
+            if (!$currentRIssues->contains($rIssue)) {
+                $this->doAddRIssue($rIssue);
+            }
+        }
+
+        $this->collRIssuesPartial = false;
+        $this->collRIssues = $rIssues;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_data_issue cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Issues objects
+     */
+    public function countRIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesPartial && !$this->isNew();
+        if (null === $this->collRIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRIssues) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRIssues());
+                }
+
+                $query = ChildIssuesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRData($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRIssues);
+        }
+    }
+
+    /**
+     * Associate a ChildIssues to this object
+     * through the R_data_issue cross reference table.
+     *
+     * @param ChildIssues $rIssue
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRIssue(ChildIssues $rIssue)
+    {
+        if ($this->collRIssues === null) {
+            $this->initRIssues();
+        }
+
+        if (!$this->getRIssues()->contains($rIssue)) {
+            // only add it if the **same** object is not already associated
+            $this->collRIssues->push($rIssue);
+            $this->doAddRIssue($rIssue);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildIssues $rIssue
+     */
+    protected function doAddRIssue(ChildIssues $rIssue)
+    {
+        $rDataIssue = new ChildRDataIssue();
+
+        $rDataIssue->setRIssue($rIssue);
+
+        $rDataIssue->setRData($this);
+
+        $this->addRDataIssue($rDataIssue);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rIssue->isRDatasLoaded()) {
+            $rIssue->initRDatas();
+            $rIssue->getRDatas()->push($this);
+        } elseif (!$rIssue->getRDatas()->contains($this)) {
+            $rIssue->getRDatas()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rIssue of this object
+     * through the R_data_issue cross reference table.
+     *
+     * @param ChildIssues $rIssue
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRIssue(ChildIssues $rIssue)
+    {
+        if ($this->getRIssues()->contains($rIssue)) { $rDataIssue = new ChildRDataIssue();
+
+            $rDataIssue->setRIssue($rIssue);
+            if ($rIssue->isRDatasLoaded()) {
+                //remove the back reference if available
+                $rIssue->getRDatas()->removeObject($this);
+            }
+
+            $rDataIssue->setRData($this);
+            $this->removeRDataIssue(clone $rDataIssue);
+            $rDataIssue->clear();
+
+            $this->collRIssues->remove($this->collRIssues->search($rIssue));
+
+            if (null === $this->rIssuesScheduledForDeletion) {
+                $this->rIssuesScheduledForDeletion = clone $this->collRIssues;
+                $this->rIssuesScheduledForDeletion->clear();
+            }
+
+            $this->rIssuesScheduledForDeletion->push($rIssue);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRTemplates collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRTemplates()
+     */
+    public function clearRTemplates()
+    {
+        $this->collRTemplates = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRTemplates crossRef collection.
+     *
+     * By default this just sets the collRTemplates collection to an empty collection (like clearRTemplates());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRTemplates()
+    {
+        $this->collRTemplates = new ObjectCollection();
+        $this->collRTemplatesPartial = true;
+
+        $this->collRTemplates->setModel('\Templates');
+    }
+
+    /**
+     * Checks if the collRTemplates collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRTemplatesLoaded()
+    {
+        return null !== $this->collRTemplates;
+    }
+
+    /**
+     * Gets a collection of ChildTemplates objects related by a many-to-many relationship
+     * to the current object by way of the R_data_template cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildData is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildTemplates[] List of ChildTemplates objects
+     */
+    public function getRTemplates(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRTemplatesPartial && !$this->isNew();
+        if (null === $this->collRTemplates || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRTemplates) {
+                    $this->initRTemplates();
+                }
+            } else {
+
+                $query = ChildTemplatesQuery::create(null, $criteria)
+                    ->filterByRData($this);
+                $collRTemplates = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRTemplates;
+                }
+
+                if ($partial && $this->collRTemplates) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRTemplates as $obj) {
+                        if (!$collRTemplates->contains($obj)) {
+                            $collRTemplates[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRTemplates = $collRTemplates;
+                $this->collRTemplatesPartial = false;
+            }
+        }
+
+        return $this->collRTemplates;
+    }
+
+    /**
+     * Sets a collection of Templates objects related by a many-to-many relationship
+     * to the current object by way of the R_data_template cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rTemplates A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildData The current object (for fluent API support)
+     */
+    public function setRTemplates(Collection $rTemplates, ConnectionInterface $con = null)
+    {
+        $this->clearRTemplates();
+        $currentRTemplates = $this->getRTemplates();
+
+        $rTemplatesScheduledForDeletion = $currentRTemplates->diff($rTemplates);
+
+        foreach ($rTemplatesScheduledForDeletion as $toDelete) {
+            $this->removeRTemplate($toDelete);
+        }
+
+        foreach ($rTemplates as $rTemplate) {
+            if (!$currentRTemplates->contains($rTemplate)) {
+                $this->doAddRTemplate($rTemplate);
+            }
+        }
+
+        $this->collRTemplatesPartial = false;
+        $this->collRTemplates = $rTemplates;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Templates objects related by a many-to-many relationship
+     * to the current object by way of the R_data_template cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Templates objects
+     */
+    public function countRTemplates(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRTemplatesPartial && !$this->isNew();
+        if (null === $this->collRTemplates || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRTemplates) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRTemplates());
+                }
+
+                $query = ChildTemplatesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRData($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRTemplates);
+        }
+    }
+
+    /**
+     * Associate a ChildTemplates to this object
+     * through the R_data_template cross reference table.
+     *
+     * @param ChildTemplates $rTemplate
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function addRTemplate(ChildTemplates $rTemplate)
+    {
+        if ($this->collRTemplates === null) {
+            $this->initRTemplates();
+        }
+
+        if (!$this->getRTemplates()->contains($rTemplate)) {
+            // only add it if the **same** object is not already associated
+            $this->collRTemplates->push($rTemplate);
+            $this->doAddRTemplate($rTemplate);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildTemplates $rTemplate
+     */
+    protected function doAddRTemplate(ChildTemplates $rTemplate)
+    {
+        $rDataTemplate = new ChildRDataTemplate();
+
+        $rDataTemplate->setRTemplate($rTemplate);
+
+        $rDataTemplate->setRData($this);
+
+        $this->addRDataTemplate($rDataTemplate);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rTemplate->isRDatasLoaded()) {
+            $rTemplate->initRDatas();
+            $rTemplate->getRDatas()->push($this);
+        } elseif (!$rTemplate->getRDatas()->contains($this)) {
+            $rTemplate->getRDatas()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rTemplate of this object
+     * through the R_data_template cross reference table.
+     *
+     * @param ChildTemplates $rTemplate
+     * @return ChildData The current object (for fluent API support)
+     */
+    public function removeRTemplate(ChildTemplates $rTemplate)
+    {
+        if ($this->getRTemplates()->contains($rTemplate)) { $rDataTemplate = new ChildRDataTemplate();
+
+            $rDataTemplate->setRTemplate($rTemplate);
+            if ($rTemplate->isRDatasLoaded()) {
+                //remove the back reference if available
+                $rTemplate->getRDatas()->removeObject($this);
+            }
+
+            $rDataTemplate->setRData($this);
+            $this->removeRDataTemplate(clone $rDataTemplate);
+            $rDataTemplate->clear();
+
+            $this->collRTemplates->remove($this->collRTemplates->search($rTemplate));
+
+            if (null === $this->rTemplatesScheduledForDeletion) {
+                $this->rTemplatesScheduledForDeletion = clone $this->collRTemplates;
+                $this->rTemplatesScheduledForDeletion->clear();
+            }
+
+            $this->rTemplatesScheduledForDeletion->push($rTemplate);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -2374,14 +6465,98 @@ abstract class Data implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collRDataDatasRelatedBySource) {
+                foreach ($this->collRDataDatasRelatedBySource as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataDatasRelatedByTarget) {
+                foreach ($this->collRDataDatasRelatedByTarget as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataContributions) {
+                foreach ($this->collRDataContributions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataBooks) {
+                foreach ($this->collRDataBooks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataFormats) {
+                foreach ($this->collRDataFormats as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataIssues) {
+                foreach ($this->collRDataIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataTemplates) {
+                foreach ($this->collRDataTemplates as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collDataVersions) {
                 foreach ($this->collDataVersions as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRDataRefs) {
+                foreach ($this->collRDataRefs as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRDataSrcs) {
+                foreach ($this->collRDataSrcs as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRContributions) {
+                foreach ($this->collRContributions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRBooks) {
+                foreach ($this->collRBooks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRFormats) {
+                foreach ($this->collRFormats as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRIssues) {
+                foreach ($this->collRIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRTemplates) {
+                foreach ($this->collRTemplates as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collRDataDatasRelatedBySource = null;
+        $this->collRDataDatasRelatedByTarget = null;
+        $this->collRDataContributions = null;
+        $this->collRDataBooks = null;
+        $this->collRDataFormats = null;
+        $this->collRDataIssues = null;
+        $this->collRDataTemplates = null;
         $this->collDataVersions = null;
+        $this->collRDataRefs = null;
+        $this->collRDataSrcs = null;
+        $this->collRContributions = null;
+        $this->collRBooks = null;
+        $this->collRFormats = null;
+        $this->collRIssues = null;
+        $this->collRTemplates = null;
         $this->auserSysRef = null;
         $this->aContributions = null;
         $this->aTemplates = null;

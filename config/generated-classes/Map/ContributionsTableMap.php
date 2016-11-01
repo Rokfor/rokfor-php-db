@@ -252,6 +252,13 @@ class ContributionsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
+        $this->addRelation('Contributionscache', '\\Contributionscache', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_forcontribution',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'Contributionscaches', false);
         $this->addRelation('Data', '\\Data', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -259,6 +266,13 @@ class ContributionsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Datas', false);
+        $this->addRelation('RDataContribution', '\\RDataContribution', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_contributionid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataContributions', false);
         $this->addRelation('ContributionsVersion', '\\ContributionsVersion', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -266,6 +280,7 @@ class ContributionsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', null, 'ContributionsVersions', false);
+        $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
     } // buildRelations()
 
     /**
@@ -287,7 +302,9 @@ class ContributionsTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        ContributionscacheTableMap::clearInstancePool();
         DataTableMap::clearInstancePool();
+        RDataContributionTableMap::clearInstancePool();
         ContributionsVersionTableMap::clearInstancePool();
     }
 

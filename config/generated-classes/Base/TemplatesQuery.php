@@ -58,7 +58,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
  *
- * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildTemplatesQuery leftJoinRDataTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataTemplate relation
+ * @method     ChildTemplatesQuery rightJoinRDataTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataTemplate relation
+ * @method     ChildTemplatesQuery innerJoinRDataTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataTemplate relation
+ *
+ * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery|\RDataTemplateQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildTemplates findOne(ConnectionInterface $con = null) Return the first ChildTemplates matching the query
  * @method     ChildTemplates findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTemplates matching the query, or a new ChildTemplates object populated from the query conditions when no match is found
@@ -845,6 +849,79 @@ abstract class TemplatesQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RDataTemplate object
+     *
+     * @param \RDataTemplate|ObjectCollection $rDataTemplate the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTemplatesQuery The current query, for fluid interface
+     */
+    public function filterByRDataTemplate($rDataTemplate, $comparison = null)
+    {
+        if ($rDataTemplate instanceof \RDataTemplate) {
+            return $this
+                ->addUsingAlias(TemplatesTableMap::COL_ID, $rDataTemplate->getTemplateid(), $comparison);
+        } elseif ($rDataTemplate instanceof ObjectCollection) {
+            return $this
+                ->useRDataTemplateQuery()
+                ->filterByPrimaryKeys($rDataTemplate->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRDataTemplate() only accepts arguments of type \RDataTemplate or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RDataTemplate relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTemplatesQuery The current query, for fluid interface
+     */
+    public function joinRDataTemplate($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RDataTemplate');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RDataTemplate');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RDataTemplate relation RDataTemplate object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RDataTemplateQuery A secondary query class using the current class as primary query
+     */
+    public function useRDataTemplateQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRDataTemplate($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RDataTemplate', '\RDataTemplateQuery');
+    }
+
+    /**
      * Filter the query by a related Fieldpostprocessor object
      * using the R_fieldpostprocessor_forfield table as cross reference
      *
@@ -858,6 +935,23 @@ abstract class TemplatesQuery extends ModelCriteria
         return $this
             ->useRFieldpostprocessorForfieldQuery()
             ->filterByFieldpostprocessor($fieldpostprocessor, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Data object
+     * using the R_data_template table as cross reference
+     *
+     * @param Data $data the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTemplatesQuery The current query, for fluid interface
+     */
+    public function filterByRData($data, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRDataTemplateQuery()
+            ->filterByRData($data, $comparison)
             ->endUse();
     }
 

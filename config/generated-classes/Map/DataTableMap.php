@@ -194,7 +194,7 @@ class DataTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
         $this->addForeignKey('_forcontribution', 'Forcontribution', 'INTEGER', '_contributions', 'id', false, 4, null);
         $this->addForeignKey('_fortemplatefield', 'Fortemplatefield', 'INTEGER', '_templates', 'id', false, 32, null);
-        $this->addColumn('_content', 'Content', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('_content', 'Content', 'CLOB', false, null, null);
         $this->addColumn('_isjson', 'Isjson', 'BOOLEAN', false, 1, null);
         $this->addForeignKey('__user__', 'UserSys', 'INTEGER', 'users', 'id', false, 4, null);
         $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
@@ -233,6 +233,55 @@ class DataTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
+        $this->addRelation('RDataDataRelatedBySource', '\\RDataData', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_src',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataDatasRelatedBySource', false);
+        $this->addRelation('RDataDataRelatedByTarget', '\\RDataData', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_ref',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataDatasRelatedByTarget', false);
+        $this->addRelation('RDataContribution', '\\RDataContribution', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_dataid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataContributions', false);
+        $this->addRelation('RDataBook', '\\RDataBook', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_dataid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataBooks', false);
+        $this->addRelation('RDataFormat', '\\RDataFormat', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_dataid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataFormats', false);
+        $this->addRelation('RDataIssue', '\\RDataIssue', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_dataid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataIssues', false);
+        $this->addRelation('RDataTemplate', '\\RDataTemplate', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_dataid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RDataTemplates', false);
         $this->addRelation('DataVersion', '\\DataVersion', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -240,6 +289,13 @@ class DataTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', null, 'DataVersions', false);
+        $this->addRelation('RDataRef', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDataRefs');
+        $this->addRelation('RDataSrc', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDataSrcs');
+        $this->addRelation('RContribution', '\\Contributions', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RContributions');
+        $this->addRelation('RBook', '\\Books', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RBooks');
+        $this->addRelation('RFormat', '\\Formats', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RFormats');
+        $this->addRelation('RIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RIssues');
+        $this->addRelation('RTemplate', '\\Templates', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RTemplates');
     } // buildRelations()
 
     /**
@@ -261,6 +317,12 @@ class DataTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        RDataDataTableMap::clearInstancePool();
+        RDataContributionTableMap::clearInstancePool();
+        RDataBookTableMap::clearInstancePool();
+        RDataFormatTableMap::clearInstancePool();
+        RDataIssueTableMap::clearInstancePool();
+        RDataTemplateTableMap::clearInstancePool();
         DataVersionTableMap::clearInstancePool();
     }
 

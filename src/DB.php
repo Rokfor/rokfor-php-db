@@ -1060,6 +1060,14 @@ class DB
     return json_encode(['lockdate'=>time()]);
   }
   
+  function NewContributionCache($contribution, $data = [], $hash = "") {
+    $c = new \Contributionscache();
+    $c->setContributions($contribution)
+      ->setCache(json_encode($data))
+      ->setSignature($hash)
+      ->save();
+  }
+  
   /**
    * NewContribution
    * 
@@ -1135,8 +1143,10 @@ class DB
     foreach ($ids as $id) {
       $c = $this->ContributionsQuery()->findPk($id);
       $new = $c->copy(true);
-      $new->setName($c->getName() . "[".$suffix."]");
-
+      $new
+        ->setName($c->getName() . "[".$suffix."]")
+        ->setCache("");
+      
       /* Clear References in New Contribution */
       if ($_nodes = json_decode($new->getConfigSys(), true)) {
         if ($_nodes["referenced"]) {
@@ -1509,7 +1519,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   private function _clearReferencedObjects($source) {
-    $_id = $source->getId();
+    /*$_id = $source->getId();
     if ($_id) {
       if ($_nodes = json_decode($source->getConfigSys())) {
         if (is_array($_nodes->referenced)) {
@@ -1530,7 +1540,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           }
         }
       }
-    }
+    }*/
   }
   
 
@@ -1542,58 +1552,44 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @return void
    * @author Urs Hofer
    */
-  private function _updateReferencedObjects($fieldid, $data = []) {
-    $field = $this->getField($fieldid);    
-    if ($field->getTemplates()->getFieldtype() == "TypologySelect" || $field->getTemplates()->getFieldtype() == "TypologyKeyword") {
-      $settings = json_decode($field->getTemplates()->getConfigSys());
-      $_oldvals = json_decode($field->getContent());
-      $_oldref = false;
-      $_newref = false;
-      
-      $_decoded = (is_array($data) || is_object($data) || is_numeric($data)) 
+  private function _updateReferencedObjects($field, $data = []) {
+    $type     = $field->getTemplates();
+    if ($type->getFieldtype() == "TypologySelect" || $type->getFieldtype() == "TypologyKeyword") {
+      $settings = json_decode($type->getConfigSys());      
+      $decoded  = (is_array($data) || is_object($data) || is_numeric($data)) 
                   ? $data
                   : json_decode($data);
-      
-      // Contributional: Store contribution-id of the field in the target contribution
-      if ($settings->history_command == "contributional") {
-        $_oldref = $this->ContributionsQuery()->filterById($_oldvals);
-        $_newref = $this->ContributionsQuery()->filterById($_decoded);
+      $getAction = false;
+      $queryAction = false;
+      switch ($settings->history_command) {
+        case 'contributional':
+          $getAction = 'setRContributions';
+          $queryAction = 'ContributionsQuery';
+          break;
+        case 'books':
+          $getAction = 'setRBooks';
+          $queryAction = 'BooksQuery';
+          break;
+        case 'issues':
+          $getAction = 'setRIssues';
+          $queryAction = 'IssuesQuery';
+          break;
+        case 'chapters':
+          $getAction = 'setRFormats';
+          $queryAction = 'FormatsQuery';
+          break;      
+        case 'structural':
+          $getAction = 'setRTemplates';
+          $queryAction = 'TemplatesQuery';
+          break;
+        //case 'self':
+        case 'other':
+          $getAction = 'setRDataRefs';
+          $queryAction = 'DataQuery';
+          break;
       }
-      
-      // Books: Store contribution-id of the field in the target contribution
-      else if ($settings->history_command == "books") {
-        $_oldref = $this->BooksQuery()->filterById($_oldvals); 
-        $_newref = $this->BooksQuery()->filterById($_decoded); 
-      }
-      else if ($settings->history_command == "issues") {
-        $_oldref = $this->IssuesQuery()->filterById($_oldvals); 
-        $_newref = $this->IssuesQuery()->filterById($_decoded);
-      }
-      else if ($settings->history_command == "chapters") {
-        $_oldref = $this->FormatsQuery()->filterById($_oldvals); 
-        $_newref = $this->FormatsQuery()->filterById($_decoded);
-      }
-      
-      if ($_oldref && $_newref) {
-        // Delete old References: Possible to de-click values
-        foreach ($_oldref as $_ref) {
-          if ($_nodes = json_decode($_ref->getConfigSys(), true)) {
-            if ($_nodes["referenced"][$fieldid]) {
-              unset($_nodes["referenced"][$fieldid]);
-              $_ref->setConfigSys(json_encode($_nodes))->save();
-            }
-          }
-        }
-        // Store new References
-        foreach ($_newref as $_ref) {
-          $_nodes = json_decode($_ref->getConfigSys(), true);
-          if (!$_nodes || !is_array($_nodes)) {
-            $_nodes = [];
-          }
-          if (!is_array($_nodes["referenced"])) $_nodes["referenced"] = [];
-          $_nodes["referenced"][$fieldid] = $field->getForcontribution();
-          $_ref->setConfigSys(json_encode($_nodes))->save();
-        }
+      if ($getAction && $queryAction) {
+        $field->$getAction($this->$queryAction()->filterById($decoded)->find());
       }
     }
   }
@@ -1622,7 +1618,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $access = ($this->rights["templates"]=== true || is_object($this->rights["templates"]) && in_array($tname->getId(), $this->rights["templates"]->getPrimaryKeys()));
       if ($access) {
         // Update Contributional References for Relative Fields
-        $this->_updateReferencedObjects($fieldid, $data);
+        $this->_updateReferencedObjects($field, $data);
         // Json is always true unless it is a number or a plain text field
         $field->setIsjson($this->_determineJsonForField($field));
 
@@ -1797,11 +1793,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->_endif()
                 ->_if($status)
                   ->filterByStatus($status)
-                ->_endif();
+                ->_endif()
+                ;
       
         if ($count === true) return $q->count();
-      
-        // Return Sorted Results
     
         foreach ($sort as $_key=>$_sort) {
           $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
@@ -1837,12 +1832,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           }
         }
 
-        return $q->_if($offset)
+        $q =  $q->_if($offset)
                   ->offset((int)$offset)
                 ->_endif()
                 ->_if($limit)
                   ->limit((int)$limit)
                 ->_endif();
+        return $q;
       }
       else return false;
   }
@@ -2169,7 +2165,119 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */  
   function getContribution($id, $public = false, $overrule_user_rights = false) {
-    if ($_c = $this->ContributionsQuery()->findPk($id)) {
+    if ($_c = $this
+      ->ContributionsQuery()
+/*      ->joinWith('Contributions.Formats')
+      ->joinWith('Contributions.Issues')
+      ->joinWith('Contributions.Templatenames')
+      ->joinWith('Formats.Books')
+
+      // RefContrib: Loading Related Contributions - first, join Data Cross Table
+      ->joinWith('Contributions.RDataContribution _ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('_ReferencedFields.RData ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('ReferencedFields.Contributions RefContrib', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('ReferencedFields.Templates ReferencedFieldsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+        
+          // RefContrib: Loading Related Tables
+          ->joinWith('RefContrib.Data RefContribData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('RefContrib.Formats RefContribFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('RefContrib.Issues RefContribIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('RefContrib.Templatenames RefContribTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('RefContribData.Templates RefContribTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+          ->joinWith('RefContribFormats.Books RefContribBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)  
+*/
+
+/*            
+        
+        Alle mit Stern vorne bringen eigentlich nix... die andern schon
+        
+        
+*            // Data Issue Relation
+*            ->joinWith('RefContribData.RDataIssue __LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('__LinkedIssue.RIssue RLinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            // Data Book Relation
+*            ->joinWith('RefContribData.RDataBook __LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('__LinkedBook.RBook RLinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            // Data Book Relation
+*            ->joinWith('RefContribData.RDataFormat __LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('__LinkedFormat.RFormat RLinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            // Data Book Relation
+*            ->joinWith('RefContribData.RDataTemplate __LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('__LinkedTemplate.RTemplate RLinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)    
+*            // Data Contribution Relation
+*            ->joinWith('RefContribData.RDataContribution __LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('__LinkedContribution.RContribution RLinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*                // Joining Contribution Data of a Linked Contribution
+*                ->joinWith('RLinkedContribution.Data RLinkedContributionData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*                ->joinWith('RLinkedContribution.Formats RLinkedContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*                ->joinWith('RLinkedContribution.Issues RLinkedContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*                ->joinWith('RLinkedContribution.Templatenames RLinkedContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*                ->joinWith('RLinkedContributionData.Templates RLinkedContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*                ->joinWith('RLinkedContributionFormats.Books RLinkedContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*            
+*                                          
+*          // LinkedData: Data to other Data Relation of this Contribution
+*          ->joinWith('RefContribData.Contributions RefContribDataContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('RefContribDataContribution.Formats RefContribDataContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*          ->joinWith('RefContribDataContribution.Issues RefContribDataContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*          ->joinWith('RefContribDataContribution.Templatenames RefContribDataContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*          ->joinWith('RefContribData.Templates RefContribDataContributionTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*          ->joinWith('RefContribDataContributionFormats.Books RefContribDataContributionBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*
+*          // One Step Nested
+*          ->joinWith('RefContrib.RDataContribution __ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('__ReferencedFields.RData RReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*          ->joinWith('RReferencedFields.Contributions RRefContrib', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('RReferencedFields.Templates RReferencedFieldsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('RRefContrib.Data RRefContribData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*            ->joinWith('RRefContrib.Formats RRefContribFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*            ->joinWith('RRefContrib.Issues RRefContribIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*            ->joinWith('RRefContrib.Templatenames RRefContribTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*            ->joinWith('RRefContribData.Templates RRefContribTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*            ->joinWith('RRefContribFormats.Books RRefContribBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*/
+
+        
+      // Data of this Contribution
+/*      ->joinWith('Contributions.Data')
+      ->joinWith('Data.Templates')
+*/
+
+/*          // LinkedData: Data to other Data Relation of this Contribution
+*          ->joinWith('Data.RDataDataRelatedBySource _LinkedData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('_LinkedData.RDataRef LinkedData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*          ->joinWith('LinkedData.Contributions LinkedDataContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('LinkedDataContribution.Formats LinkedDataContributionsFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*          ->joinWith('LinkedDataContribution.Issues LinkedDataContributionsIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*          ->joinWith('LinkedDataContribution.Templatenames LinkedDataContributionsTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+*          ->joinWith('LinkedData.Templates LinkedDataContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*          ->joinWith('LinkedDataContributionsFormats.Books LinkedDataContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*/
+
+/*      // Data Issue Relation
+      ->joinWith('Data.RDataIssue _LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('_LinkedIssue.RIssue LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      // Data Book Relation
+      ->joinWith('Data.RDataBook _LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('_LinkedBook.RBook LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      // Data Book Relation
+      ->joinWith('Data.RDataFormat _LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('_LinkedFormat.RFormat LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      // Data Book Relation
+      ->joinWith('Data.RDataTemplate _LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('_LinkedTemplate.RTemplate LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      // Data Contribution Relation
+      ->joinWith('Data.RDataContribution _LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+      ->joinWith('_LinkedContribution.RContribution LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+          // Joining Contribution Data of a Linked Contribution
+          ->joinWith('LinkedContribution.Data LinkedContributionData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+          ->joinWith('LinkedContribution.Formats LinkedContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('LinkedContribution.Issues LinkedContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('LinkedContribution.Templatenames LinkedContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
+          ->joinWith('LinkedContributionData.Templates LinkedContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+          ->joinWith('LinkedContributionFormats.Books LinkedContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*/
+      ->findPk($id)) {
       if (
         (($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($_c->getForissue(), $this->rights["issues"]->getPrimaryKeys()))) &&
         ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($_c->getForchapter(), $this->rights["formats"]->getPrimaryKeys()))) &&
