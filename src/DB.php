@@ -411,6 +411,28 @@ class DB
     return \LogQuery::create();
   }
   
+  function ContributionsVersionQuery() {
+    return \ContributionsVersionQuery::create();
+  }
+  
+  function DataVersionQuery() {
+    return \DataVersionQuery::create();
+  }  
+
+  function DisableVersioning() {
+    if (\ContributionsQuery::isVersioningEnabled()) {
+      \ContributionsQuery::disableVersioning();
+      \DataQuery::disableVersioning();
+      return true;
+    }
+    return false;
+  }
+  
+  function EnableVersioning() {
+    \ContributionsQuery::enableVersioning();
+    \DataQuery::enableVersioning();
+  }
+  
   function PDO() {
     return $this->serviceContainer->getConnection()->getWrappedConnection();
   }
@@ -1160,8 +1182,8 @@ class DB
       $this->duplicateData($new);
     }
     if ($restoreVersioning) {
-      \ContributionsQuery::disableVersioning();
-      \DataQuery::disableVersioning();
+      \ContributionsQuery::enableVersioning();
+      \DataQuery::enableVersioning();
     }     
   }
     

@@ -5,7 +5,7 @@
  * up to version 1477945744.
  * Generated on 2016-10-31 20:29:04 by urshofer
  */
-class PropelMigration_1477945744
+class PropelMigration_1477824860
 {
     public $comment = '';
 
