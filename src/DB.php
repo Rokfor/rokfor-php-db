@@ -1279,10 +1279,8 @@ class DB
   private function _getMimeType($file) {
     $type = $file->getClientMediaType();
     // Nasty Firefox Bug handeled here...
-    if ($type === "application/force-download") {
-      if (strtolower(pathinfo( $file->getClientFilename(), PATHINFO_EXTENSION)) === "pdf") {
-        $type = "application/pdf";
-      }
+    if (stristr(strtolower($_SERVER['HTTP_USER_AGENT']), "firefox") && strtolower(pathinfo( $file->getClientFilename(), PATHINFO_EXTENSION)) === "pdf") {
+      $type = "application/pdf";
     }
     return $type;
   }
