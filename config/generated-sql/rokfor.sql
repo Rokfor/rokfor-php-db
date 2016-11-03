@@ -458,50 +458,6 @@ CREATE TABLE `_contributions_cache`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
--- _data
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `_data`;
-
-CREATE TABLE `_data`
-(
-    `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
-    `_forcontribution` INTEGER(4),
-    `_fortemplatefield` INTEGER(32),
-    `_content` LONGTEXT,
-    `_isjson` TINYINT(1),
-    `__user__` INTEGER(4),
-    `__config__` TEXT,
-    `__split__` TEXT,
-    `__parentnode__` INTEGER(32),
-    `__sort__` INTEGER(32),
-    `version` INTEGER DEFAULT 0,
-    `version_created_at` DATETIME,
-    `version_created_by` VARCHAR(100),
-    `version_comment` VARCHAR(255),
-    PRIMARY KEY (`id`),
-    INDEX `_user_index` (`__user__`),
-    INDEX `_dataforcontribution_index` (`_forcontribution`),
-    FULLTEXT INDEX `_content` (`_content`),
-    INDEX `_datafortemplatefield_index` (`_fortemplatefield`),
-    CONSTRAINT `user_ref_data`
-        FOREIGN KEY (`__user__`)
-        REFERENCES `users` (`id`)
-        ON UPDATE SET NULL
-        ON DELETE SET NULL,
-    CONSTRAINT `d_contribution_fk`
-        FOREIGN KEY (`_forcontribution`)
-        REFERENCES `_contributions` (`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT `d_template_fk`
-        FOREIGN KEY (`_fortemplatefield`)
-        REFERENCES `_templates` (`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
 -- R_data_data
 -- ---------------------------------------------------------------------
 
@@ -959,6 +915,50 @@ CREATE TABLE `_data_version`
     CONSTRAINT `_data_version_fk_32c4d1`
         FOREIGN KEY (`id`)
         REFERENCES `_data` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- _data
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `_data`;
+
+CREATE TABLE `_data`
+(
+    `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
+    `_forcontribution` INTEGER(4),
+    `_fortemplatefield` INTEGER(32),
+    `_content` LONGTEXT,
+    `_isjson` TINYINT(1),
+    `__user__` INTEGER(4),
+    `__config__` TEXT,
+    `__split__` TEXT,
+    `__parentnode__` INTEGER(32),
+    `__sort__` INTEGER(32),
+    `version` INTEGER DEFAULT 0,
+    `version_created_at` DATETIME,
+    `version_created_by` VARCHAR(100),
+    `version_comment` VARCHAR(255),
+    PRIMARY KEY (`id`),
+    INDEX `_user_index` (`__user__`),
+    INDEX `_dataforcontribution_index` (`_forcontribution`),
+    FULLTEXT INDEX `_content` (`_content`),
+    INDEX `_datafortemplatefield_index` (`_fortemplatefield`),
+    CONSTRAINT `user_ref_data`
+        FOREIGN KEY (`__user__`)
+        REFERENCES `users` (`id`)
+        ON UPDATE SET NULL
+        ON DELETE SET NULL,
+    CONSTRAINT `d_contribution_fk`
+        FOREIGN KEY (`_forcontribution`)
+        REFERENCES `_contributions` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `d_template_fk`
+        FOREIGN KEY (`_fortemplatefield`)
+        REFERENCES `_templates` (`id`)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

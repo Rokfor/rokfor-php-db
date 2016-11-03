@@ -57,7 +57,7 @@ class DB
    *
    * @var string
    */
-  private $proxy_prefix;
+  //private $proxy_prefix;
   
   
   /**
@@ -137,7 +137,6 @@ class DB
       static::$s3 = false;
     }
     
-    $this->proxy_prefix = '/rf/proxy?';
     $this->asset_prefix = '/asset/';
   }
   
@@ -152,30 +151,29 @@ class DB
         'SourceFile' => $source,
     ));
     $this->defaultLogger->info("uploaded $source with status " . ($private ? 'private' : 'public-read'));
-//    return $result['ObjectURL'];
     return pathinfo($result['ObjectURL'], PATHINFO_BASENAME);
   }
   
   function _add_proxy_single_file($url, $private = true, $contribution = false, $field = false) {
-    // Private: Proxy thru local tunnel
-    if ($private === true) {
-      return $this->proxy_prefix.base64_encode($url);
-    }
-    
-    // Public Pages available: Show directly
-    if (static::$s3->public === true) {
-      return static::$s3->endpoint . '/' . static::$s3->bucket . '/' .static::$s3->folder . '/' . $url;
-    }
-    
-    // All other cases: Proxy thru Asset tunnel
-    else {
-      return $this->asset_prefix.$contribution.'/'.$field.'/'.$url;
-    }
+    return $this->asset_prefix.$contribution.'/'.$field.'/'.$url;
   }
 
-  function presign_file($file) {
-    $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
-    return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
+  function presign_file($file, $public = false, $absolute = true) {
+    if (static::$s3 !== false) {    
+      $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
+      return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
+    }
+    else {
+      $path = $public === false
+                ? $this->paths['privatesys'] 
+                : $this->paths['sys'];
+      if (file_exists($path.$this->paths['webthumbs'].$file))
+        return (($absolute?$path:'').$this->paths['webthumbs'].$file);
+      else if (file_exists($path.$this->paths['web'].$file))
+        return (($absolute?$path:'').$this->paths['web'].$file);
+      else
+        return false;
+    }
   }
   
   function s3_file_info($file) {
@@ -189,70 +187,32 @@ class DB
 
   
   function _remove_proxy_single_file($url, $private = true) {
-    /* Private Files: Run over secured proxy */
-    if ($private) {
-      if (stristr($url, $this->proxy_prefix )) {
-        $encoded = base64_decode(substr($url, strlen($this->proxy_prefix)));
-        if ($encoded) {
-          if (static::$s3 !== false) {
-            return $encoded;
-          }
-          else {
-            if (substr($encoded, 0, strlen($this->paths['web'])) === $this->paths['web']) {
-              return substr($encoded, strlen($this->paths['web']));
-            }
-            if (substr($encoded, 0, strlen($this->paths['webthumbs'])) === $this->paths['webthumbs']) {
-              return substr($encoded, strlen($this->paths['webthumbs']));
-            } 
-            return $encoded;       
-          }
-        }
-      }
-    }
-    /* Non Private Files are redirected over assets proxy */
-    else {
-      if (static::$s3 !== false) {
-        return pathinfo($url, PATHINFO_BASENAME);
-      }
-    }
-
-    return $url;
+    return pathinfo($url, PATHINFO_BASENAME);
   }
 
-  function sign_request(&$fields, $private = false, $proxy_prefix = false, $contribution = false, $field = false) {
-    if ($proxy_prefix) {
-      $this->proxy_prefix = $proxy_prefix;
-    }
+  function sign_request(&$fields, $private = false, $contribution = false, $field = false) {
     if (is_array($fields)) {
       foreach ($fields as $key => &$v) {
-        $v[1]              = $this->_add_proxy_single_file(static::$s3 !== false ? $v[1] : $this->paths['web'].$v[1], $private, $contribution, $field);
+        $v[1]              = $this->_add_proxy_single_file($v[1], $private, $contribution, $field);
         if (is_object($v[2])) {
-          $v[2]->thumbnail = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]->thumbnail : $this->paths['webthumbs'].$v[2]->thumbnail, $private, $contribution, $field);
+          $v[2]->thumbnail = $this->_add_proxy_single_file($v[2]->thumbnail, $private, $contribution, $field);
           if (is_array($v[2]->scaled)) {
             foreach ($v[2]->scaled as &$s) {
-              $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
+              $s = $this->_add_proxy_single_file($s, $private, $contribution, $field);
             }
           }
         }
         else {
-          $v[2]['thumbnail'] = $this->_add_proxy_single_file(static::$s3 !== false ? $v[2]['thumbnail'] : $this->paths['webthumbs'].$v[2]['thumbnail'], $private, $contribution, $field);
+          $v[2]['thumbnail'] = $this->_add_proxy_single_file($v[2]['thumbnail'], $private, $contribution, $field);
           if (is_array($v[2]['scaled'])) {
             foreach ($v[2]['scaled'] as &$s) {
-              $s = $this->_add_proxy_single_file(static::$s3 !== false ? $s : $this->paths['web'].$s, $private, $contribution, $field);
+              $s = $this->_add_proxy_single_file($s, $private, $contribution, $field);
             }
           }
         }
       }
     }
   }
-
-  
-/*  function unsign_request(&$fields, $proxy_prefix = false) {
-    if ($proxy_prefix) {
-      $this->proxy_prefix = $proxy_prefix;
-    }
-    $this->_sign_request($fields, true);
-  }*/  
   
   
   function proxy($s3url, &$response) {
@@ -1166,8 +1126,7 @@ class DB
       $c = $this->ContributionsQuery()->findPk($id);
       $new = $c->copy(true);
       $new
-        ->setName($c->getName() . "[".$suffix."]")
-        ->setCache("");
+        ->setName($c->getName() . "[".$suffix."]");
       
       /* Clear References in New Contribution */
       if ($_nodes = json_decode($new->getConfigSys(), true)) {
@@ -1350,7 +1309,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $image = $manager->make($path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
         $image->save($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
-
+        
         // S3 Storage
         if (static::$s3 !== false) {
           $thumb_url = $this->s3_move($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $escapedFileName.$this->paths['thmbsuffix'], $private);
@@ -1428,7 +1387,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         // Attach to Data
         $newindex = array_push($oldVal, [$caption, $escapedFileName, $versions]);
         $original_url = $escapedFileName;
-        $relative_url = $this->paths['web'].$escapedFileName;
+        $relative_url = $escapedFileName;
       }
       else {
         // Attach to Data
@@ -1440,11 +1399,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ->setIsjson(true)
         ->save();
       // Proxify if private
-      if ($private === true || static::$s3 !== false) {
+//      if ($private === true || static::$s3 !== false) {
+//      echo("$original_url / $thumb_url / $relative_url \n");
         $original_url = $this->_add_proxy_single_file($original_url, $private, $field->getForcontribution(), $fieldid);
         $thumb_url    = $this->_add_proxy_single_file($thumb_url, $private, $field->getForcontribution(), $fieldid);
         $relative_url = $this->_add_proxy_single_file($relative_url, $private, $field->getForcontribution(), $fieldid);
-      }
+//      die("$original_url / $thumb_url / $relative_url");
+//      }
       return true;
     }
     else
@@ -1484,12 +1445,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
 
       // Copy scaled versions from old data
-      if ($private === true || static::$s3 !== false) {
+      // if ($private === true || static::$s3 !== false) {
         foreach ($tabledata as $key => $i) {
           $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1], $private);
           $this->defaultLogger->info($tabledata[$key][1]);
         }
-      }
+      //}
       foreach ($tabledata as $key => $i) {
         if ($oldimages[$i[1]][1] === $i[1]) {
           $tabledata[$key][2] = $oldimages[$i[1]][2];
