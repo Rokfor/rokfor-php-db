@@ -435,7 +435,7 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  private function DeleteFiles($delete, $thumbs, $scaled, $private = false) {
+  function DeleteFiles($delete, $thumbs, $scaled, $private = false) {
     $path = $private === true 
               ? $this->paths['privatesys'] 
               : $this->paths['sys'];
@@ -1274,7 +1274,28 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       if (!$oldVal) {
         $oldVal = [];
       }
-      $caption = $default_caption;
+
+      // Check passed default captions
+      if (count($settings['caption_variants']) == 1) {
+        if (is_array($default_caption)) {
+          $caption = (string)$default_caption[0];
+        }
+        else { 
+          $caption = $default_caption;
+        }
+      }
+      else {
+        $caption = [];
+        foreach ($settings['caption_variants'] as $_key=>$_cap_variant) {
+          if (is_array($default_caption)) {
+            $caption[] = $default_caption[$_key] ? $default_caption[$_key] : $default_caption[0];
+          }
+          else { 
+            $caption[] = $default_caption;
+          }
+        }
+      }
+
       if ($settings["growing"]==false) {
         $caption = $oldVal[0][0] ? $oldVal[0][0] : $default_caption;
         $oldVal = [];
@@ -1316,7 +1337,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           $versions['thumbnail'] = $thumb_url;
         }
         else {
-          $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];          
+          $thumb_url = $escapedFileName.$this->paths['thmbsuffix'];          
           $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
         }
 
@@ -1370,7 +1391,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         }
         else {
           $this->copy($path.$this->paths['webthumbs'].$this->paths['icon'], $path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix']);
-          $thumb_url = $this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'];
+          $thumb_url = $escapedFileName.$this->paths['thmbsuffix'];
           $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
         }
       }
