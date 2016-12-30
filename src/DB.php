@@ -990,6 +990,7 @@ class DB
       $this->ContributionsQuery()
         ->findPk($value)
         ->setSort($_s++) 
+        ->updateCache()
         ->save(); 
     }    
     return true;
