@@ -300,9 +300,36 @@ class PropelMigration_1452074796
           $stmt->execute();
           $result = $stmt->fetch(PDO::FETCH_ASSOC);
           
+          $sql2 = "SELECT * FROM _templates WHERE id = " . $data->getFortemplatefield();
+          $stmt2 = $pdo->prepare($sql2);
+          $stmt2->execute();
+          $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+          
+          
           switch ($data->getTemplates()->getFieldtype()) {
     				case 'Bild':
     					$_parsed_text = $this->_splitTableData($result['_databinary']);
+              
+              
+              foreach ($_parsed_text as $__key => &$__value) {
+                # code...: $__value[0] == caption $__value[1] == original $__value[2] = scales/thumbs
+
+                $_versions = [];
+                for ($i=0; $i < count(split(';', $result2['_imagewidth'])) ; $i++) { 
+                  if ($i==0) {
+                    $_versions[] = $__value[1].'-preview.jpg';
+                  }
+                  else {
+                    $_versions[] = $__value[1].'-preview'.$i.'.jpg';
+                  }
+                }
+
+                $__value[2] = [
+                  "thumbnail" => $__value[1]."-thmb.jpg",
+                  "scaled"    => $_versions
+                ];
+              }
+              
               $_is_json = true;
     					break;
     				case 'Tabelle':
