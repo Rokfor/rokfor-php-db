@@ -5,7 +5,7 @@ namespace Rokfor;
 
 /**
  * Rokfor DB
- * 
+ *
  *
  * @package Rokfor.DB
  * @author Urs Hofer
@@ -13,14 +13,14 @@ namespace Rokfor;
 
 class DB
 {
-  
+
   /**
    * Propel ServiceContainer
    *
    * @var string
    */
   private $serviceContainer;
-  
+
   /**
    * current user after login
    * required for all store actions
@@ -28,52 +28,52 @@ class DB
    * @var string
    */
   private $currentUser;
-  
+
   /**
    * Propel Manager
    *
    * @var string
    */
   private $manager;
-  
-  
+
+
   /**
    * Rights for a user
    *
    * @var array
    */
   private $rights;
-    
+
   /**
    * paths for several upload actions
    *
    * @var array
    */
   private $paths;
-  
-  
+
+
   /**
    * proxy redirect prefix for private binary uploads
    *
    * @var string
    */
   //private $proxy_prefix;
-  
-  
+
+
   /**
    * s3 storage client
    *
    * @var string
    */
   private static $s3;
-    
+
   function __construct($host, $user, $pass, $dbname, $log, $level, $patharray = [], $socket = false, $port = false, $versioning = false)
   {
-    $socket = $socket 
-              ? "unix_socket=".$socket.";" 
+    $socket = $socket
+              ? "unix_socket=".$socket.";"
               : "";
-    $port = $port 
-            ? "port=".$port.";" 
+    $port = $port
+            ? "port=".$port.";"
             : "";
 
     $this->serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
@@ -94,7 +94,7 @@ class DB
     $this->manager->setName('rokfor');
     $this->serviceContainer->setConnectionManager('rokfor', $this->manager);
     $this->serviceContainer->setDefaultDatasource('rokfor');
-    
+
     $this->currentUser = false;
     $this->paths = [
       'sys'       => $patharray['sys']        ? $patharray['sys']         : __DIR__. '/../public',
@@ -115,7 +115,7 @@ class DB
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
     }
-    
+
     if ($patharray['s3'] === true) {
       static::$s3 = new \stdClass();
       static::$s3->client = \Aws\S3\S3Client::factory(array(
@@ -129,17 +129,17 @@ class DB
       ));
       static::$s3->bucket = $patharray['s3_aws_bucket'];
       static::$s3->public = $patharray['s3_aws_public_pages'];
-      static::$s3->endpoint = $patharray['s3_aws_endpoint'];      
+      static::$s3->endpoint = $patharray['s3_aws_endpoint'];
       static::$s3->folder = md5($dbname);
       static::$s3->client->registerStreamWrapper();
     }
     else {
       static::$s3 = false;
     }
-    
+
     $this->asset_prefix = '/asset/';
   }
-  
+
   private function s3_upload($source, $dest, $private) {
     if (substr($dest, 0, 1) != '/') {
       $dest = '/'. $dest;
@@ -153,19 +153,19 @@ class DB
     $this->defaultLogger->info("uploaded $source with status " . ($private ? 'private' : 'public-read'));
     return pathinfo($result['ObjectURL'], PATHINFO_BASENAME);
   }
-  
+
   function _add_proxy_single_file($url, $private = true, $contribution = false, $field = false) {
     return $this->asset_prefix.$contribution.'/'.$field.'/'.$url;
   }
 
   function presign_file($file, $public = false, $absolute = true) {
-    if (static::$s3 !== false) {    
+    if (static::$s3 !== false) {
       $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
       return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
     }
     else {
       $path = $public === false
-                ? $this->paths['privatesys'] 
+                ? $this->paths['privatesys']
                 : $this->paths['sys'];
       if (file_exists($path.$this->paths['webthumbs'].$file))
         return (($absolute?$path:'').$this->paths['webthumbs'].$file);
@@ -175,7 +175,7 @@ class DB
         return false;
     }
   }
-  
+
   function s3_file_info($file) {
     $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
     $result =  static::$s3->client->getObject(array(
@@ -185,7 +185,7 @@ class DB
     return $result;
   }
 
-  
+
   function _remove_proxy_single_file($url, $private = true) {
     return pathinfo($url, PATHINFO_BASENAME);
   }
@@ -213,11 +213,11 @@ class DB
       }
     }
   }
-  
-  
+
+
   function proxy($s3url, &$response) {
     /* S3 File Proxying */
-    if (static::$s3 !== false) {    
+    if (static::$s3 !== false) {
       $key = static::$s3->folder . '/' . pathinfo($s3url, PATHINFO_BASENAME);
       $this->defaultLogger->info("s3 proxying $key");
       if ($this->s3_file_exists($key)) {
@@ -231,8 +231,8 @@ class DB
                 ->withHeader('Content-Type', $result['ContentType'])
                 ->withHeader('Content-Length', $result['ContentLength'])
                 ->withHeader('Content-Disposition', 'attachment; filename="'.pathinfo($s3url, PATHINFO_BASENAME).'"');
-                  
-        $r->getBody()->write($body->read($result['ContentLength']));    
+
+        $r->getBody()->write($body->read($result['ContentLength']));
       }
       else {
         $r = $response->withHeader('Content-type', 'application/json')->withStatus(404);
@@ -248,7 +248,7 @@ class DB
                 ->withHeader('Content-Type', mime_content_type($localfile))
                 ->withHeader('Content-Length', filesize($localfile))
                 ->withHeader('Content-Disposition', 'attachment; filename="'.basename($localfile).'"');
-        $r->getBody()->write(file_get_contents($localfile));            
+        $r->getBody()->write(file_get_contents($localfile));
       }
       else {
         $r = $response->withHeader('Content-type', 'application/json')->withStatus(404);
@@ -264,7 +264,7 @@ class DB
     @unlink($source);
     return $ObjectURL;
   }
-  
+
   private function s3_unlink($filename) {
     $deleteFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
     try {
@@ -275,23 +275,23 @@ class DB
     } catch (Exception $e) {
       return false;
     }
-    $this->defaultLogger->info("s3 unlink $deleteFile");  
+    $this->defaultLogger->info("s3 unlink $deleteFile");
     return $result['DeleteMarker'];
-  } 
+  }
 
   private function s3_file_exists($filename) {
 //    $this->defaultLogger->info($deleteFile);
     $checkFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
     $keyExists = file_exists("s3://".static::$s3->bucket."/".$checkFile);
     if ($keyExists) {
-      $this->defaultLogger->info("s3 file exists $checkFile");  
+      $this->defaultLogger->info("s3 file exists $checkFile");
     }
     return $keyExists;
   }
-  
+
   private function s3_copy($source, $dest, $private) {
     $sourceFile = static::$s3->folder . '/' . pathinfo($source, PATHINFO_BASENAME);
-    $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);    
+    $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);
   //  $this->defaultLogger->info("s3 copy: " . $sourceFile . " TO: ". $destFile);
     $result = static::$s3->client->copyObject(array(
       'ACL'        =>  $private ? 'private' : 'public-read',
@@ -303,8 +303,8 @@ class DB
     $destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
     return pathinfo($destUrl, PATHINFO_BASENAME);
   }
-    
-  
+
+
   private function copy($source, $dest) {
     return @copy($source, $dest);
   }
@@ -320,16 +320,16 @@ class DB
 
   private function file_exists($filename) {
     if (static::$s3 !== false) {
-      return $this->s3_file_exists($filename);      
+      return $this->s3_file_exists($filename);
     }
     else {
       return file_exists($filename);
     }
   }
-  
+
   private function RightsQuery() {
     return \RightsQuery::create();
-  }  
+  }
 
   private function BooksQuery() {
     return \BooksQuery::create();
@@ -342,7 +342,7 @@ class DB
   private function IssuesQuery() {
     return \IssuesQuery::create();
   }
-  
+
   private function FormatsQuery() {
     return \FormatsQuery::create();
   }
@@ -358,26 +358,26 @@ class DB
   private function DataQuery() {
     return \DataQuery::create();
   }
-  
+
   private function UsersQuery() {
     return \UsersQuery::create();
   }
-  
+
   private function Contributions() {
     return new \Contributions();
   }
-  
+
   private function LogQuery() {
     return \LogQuery::create();
   }
-  
+
   function ContributionsVersionQuery() {
     return \ContributionsVersionQuery::create();
   }
-  
+
   function DataVersionQuery() {
     return \DataVersionQuery::create();
-  }  
+  }
 
   function DisableVersioning() {
     if (\ContributionsQuery::isVersioningEnabled()) {
@@ -387,12 +387,12 @@ class DB
     }
     return false;
   }
-  
+
   function EnableVersioning() {
     \ContributionsQuery::enableVersioning();
     \DataQuery::enableVersioning();
   }
-  
+
   function PDO() {
     return $this->serviceContainer->getConnection()->getWrappedConnection();
   }
@@ -406,11 +406,11 @@ class DB
     $_manager->setWorkingDirectory(dirname(__FILE__).'/../config/generated-sql');
     return $_manager->insertSql("rokfor");
   }
-  
+
   /**
    * returns true if the field has to be stored as json encoded string
    *
-   * @param string $field 
+   * @param string $field
    * @return void
    * @author Urs Hofer
    */
@@ -423,7 +423,7 @@ class DB
       case 'Text':
         if (!$settings['arrayeditor'])
           return false;
-        break;      
+        break;
     }
     return true;
   }
@@ -431,19 +431,19 @@ class DB
   /**
    * deletes an array of files, inclusive possible thumbs and previews
    *
-   * @param string $delete 
+   * @param string $delete
    * @return void
    * @author Urs Hofer
    */
   function DeleteFiles($delete, $thumbs, $scaled, $private = false) {
-    $path = $private === true 
-              ? $this->paths['privatesys'] 
+    $path = $private === true
+              ? $this->paths['privatesys']
               : $this->paths['sys'];
-    
+
     if (is_array($delete))
       foreach ($delete as $file) {
         // Original
-        $this->unlink($path.$this->paths['web'], $file);      
+        $this->unlink($path.$this->paths['web'], $file);
       }
     if (is_array($thumbs))
       foreach ($thumbs as $file) {
@@ -453,38 +453,38 @@ class DB
     if (is_array($scaled))
       foreach ($scaled as $file) {
         // Scaled Versions
-        $this->unlink($path.$this->paths['web'], $file);      
+        $this->unlink($path.$this->paths['web'], $file);
       }
   }
-  
+
   /**
    * copies a file inclusive thumbs and scaled versions, returns the new filename
    *
-   * @param string $delete 
+   * @param string $delete
    * @return void
    * @author Urs Hofer
    */
   private function CopyFiles($file, $versions, $private) {
     $newversions = ['thumbnail' => "", 'scaled' => []];
     $copy_suffix = uniqid("_");
-    $path = $private === true 
-              ? $this->paths['privatesys'] 
+    $path = $private === true
+              ? $this->paths['privatesys']
               : $this->paths['sys'];
 
     // Original
-    $parts = pathinfo($file);    
+    $parts = pathinfo($file);
     $newname = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
     if (static::$s3 !== false) {
-      $newname = $this->s3_copy($path.$this->paths['web'].$file, $path.$this->paths['web'].$newname, $private);      
+      $newname = $this->s3_copy($path.$this->paths['web'].$file, $path.$this->paths['web'].$newname, $private);
     }
     else {
-      $this->copy($path.$this->paths['web'].$file, $path.$this->paths['web'].$newname);      
+      $this->copy($path.$this->paths['web'].$file, $path.$this->paths['web'].$newname);
     }
 
 
     // Thumb
     if ($versions['thumbnail']) {
-      $parts = pathinfo($versions['thumbnail']);    
+      $parts = pathinfo($versions['thumbnail']);
       $newversions['thumbnail'] = $parts['filename'].$copy_suffix.'.'.$parts['extension'];
       if (static::$s3 !== false) {
         $newversions['thumbnail'] = $this->s3_copy($path.$this->paths['webthumbs'].$versions['thumbnail'], $path.$this->paths['webthumbs'].$newversions['thumbnail'], $private);
@@ -509,7 +509,7 @@ class DB
     }
     return array($newname, $newversions);
   }
-  
+
   /**
    * return user object
    *
@@ -525,28 +525,28 @@ class DB
         break;
       case 'admin':
         $level = 2;
-        break;    
+        break;
       case 'root':
         $level = 3;
-        break;              
+        break;
       default:
         $level = 0;
         break;
     }
     return [
       "id"        => $this->currentUser->getId(),
-      "username"  => $this->currentUser->getUsername(), 
+      "username"  => $this->currentUser->getUsername(),
       "level"     => $level,
-      "role"      => $this->currentUser->getUsergroup(), 
-      "email"     => $this->currentUser->getEmail(), 
-      "api"       => $this->currentUser->getRoapikey(), 
-      "rwapi"     => $this->currentUser->getRwapikey(), 
+      "role"      => $this->currentUser->getUsergroup(),
+      "email"     => $this->currentUser->getEmail(),
+      "api"       => $this->currentUser->getRoapikey(),
+      "rwapi"     => $this->currentUser->getRwapikey(),
       "group"     => $this->currentUser->getRightss()->toArray()
     ];
-    
+
   }
-  
-  
+
+
   /**
    * returns all users - only if logged in as root
    *
@@ -556,7 +556,7 @@ class DB
   function getUsers() {
     return $this->usersQuery();
   }
-  
+
   /**
    * creates a new user
    *
@@ -565,42 +565,42 @@ class DB
    */
   function newUser() {
     return new \Users();
-  }  
-  
+  }
+
   /**
    * checks the password of the current user
    *
-   * @param string $pw 
+   * @param string $pw
    * @return void
    * @author Urs Hofer
    */
   function checkPassword($pw) {
     return md5($pw) == $this->currentUser->getPassword();
   }
-  
-  
+
+
   /**
    * returns the user query by Email
    *
-   * @param string $email 
+   * @param string $email
    * @return void
    * @author Urs Hofer
    */
   function getUserByEmail($email) {
     $q = $this->UsersQuery()->filterByEmail($email);
     if ($q->count() > 0) {
-      return $q; 
+      return $q;
     }
     else {
       return false;
     }
   }
-  
+
   /**
-   * password quality 
+   * password quality
    *
-   * @param string $pwd 
-   * @param string $errors 
+   * @param string $pwd
+   * @param string $errors
    * @return void
    * @author Urs Hofer
    */
@@ -616,14 +616,14 @@ class DB
 
     if (!preg_match("#[a-zA-Z]+#", $pwd)) {
         $errors[] = "password_atleast_letter";
-    }     
+    }
     return ($errors == $errors_init);
   }
-  
+
   /**
    * sets a new passwor the password of the current user
    *
-   * @param string $pw 
+   * @param string $pw
    * @return void
    * @author Urs Hofer
    */
@@ -645,12 +645,12 @@ class DB
     }
     $this->currentUser->setPassword(md5($new1))->save();
     return true;
-  }  
-  
+  }
+
   /**
    * sets a new passwor the password of the current user
    *
-   * @param string $pw 
+   * @param string $pw
    * @return void
    * @author Urs Hofer
    */
@@ -662,7 +662,7 @@ class DB
     if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
       $error[] = 'profile_error_mail';
       return false;
-    }    
+    }
     if ($this->UsersQuery()->filterByUsername($name)->count() > 0 && $name <> $this->currentUser->getUsername()) {
       $error[] = 'profile_error_usernameexists';
       return false;
@@ -675,13 +675,13 @@ class DB
       ->setRwapikey($rwapi)
       ->save();
     return true;
-  }  
-  
-  
+  }
+
+
   /**
    * set user rights: Populates $this->rights and $this->currentUser
    *
-   * @param Childobject\User $user 
+   * @param Childobject\User $user
    * @return void
    * @author Urs Hofer
    */
@@ -706,7 +706,7 @@ class DB
                                 ->useRRightsForuserQuery()
                                   ->filterByUserid($userid)
                                 ->endUse()
-                                ->find(); 
+                                ->find();
           foreach ($rights as $right) {
             $this->rights = [
                 "role"  =>  $user->getUsergroup(),
@@ -715,7 +715,7 @@ class DB
                 "templates" => $right->getTemplatenamess(),
                 "formats"   => $right->getFormatss()
             ];
-          } 
+          }
           break;
         default:
           $this->rights = null;
@@ -725,11 +725,11 @@ class DB
     }
     else {
       $this->currentUser = false;
-      $this->rights = null;      
+      $this->rights = null;
       return false;
     }
   }
-  
+
   /**
    * returns a templatenames Query order by sort
    *
@@ -752,27 +752,27 @@ class DB
     return $this->TemplatenamesQuery()
                 ->findPk($id);
   }
-  
+
   /**
    * returns a formats Query
    *
    * @return \Childobject\Template
    * @author Urs Hofer
-   */  
+   */
   function getFormats() {
     return $this->FormatsQuery();
   }
-  
+
   /**
    * returns a formats Query
    *
    * @return \Childobject\Template
    * @author Urs Hofer
-   */  
+   */
   function getData() {
     return $this->DataQuery();
-  }  
-  
+  }
+
   /**
    * returns rights query
    *
@@ -781,15 +781,15 @@ class DB
    */
   function getRights() {
     return $this->RightsQuery();
-  }  
-  
+  }
+
   /**
    * returns book object by id
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Book()
    * @author Urs Hofer
-   */  
+   */
   function getRight($id) {
     return $this->RightsQuery()->findPk($id);
   }
@@ -802,8 +802,8 @@ class DB
    */
   function newRight() {
     return new \Rights();
-  }  
-  
+  }
+
   /**
    * returns a whole book/issue/chapter structure according to the
    * rights of the current user.
@@ -811,23 +811,23 @@ class DB
    * the corresponding chapter/issue/book name as value.
    * valid_paths are used to check if latest log entries are still pointing
    * to existing chapters and issues.
-   * 
    *
-   * @param string $url_prefix 
+   *
+   * @param string $url_prefix
    * @return array
    * @author Urs Hofer
    */
   function getStructure($url_prefix = "", $bookid = false, &$valid_paths = []) {
     $criteria = new \Propel\Runtime\ActiveQuery\Criteria();
-    $criteria->addAscendingOrderByColumn(__sort__);  
+    $criteria->addAscendingOrderByColumn(__sort__);
     $retval = [];
-    
+
     $books = $this->BooksQuery()
                   ->_if($bookid)
                     ->filterById($bookid)
                   ->_endif()
                   ->orderBySort('asc');
-        
+
     foreach ($books as $book) {
       if ($this->rights["books"] === true || (is_object($this->rights["books"]) && in_array($book->getId(), $this->rights["books"]->getPrimaryKeys()))) {
         $c = [];
@@ -873,10 +873,10 @@ class DB
     }
     return $retval;
   }
-  
+
   /**
    * returns available issues for a user
-   * 
+   *
    *
    * @param int $issueid
    * @return array
@@ -884,7 +884,7 @@ class DB
    */
   function getStructureByIssues($issueid = false) {
     $retval = [];
-    
+
     $issues = $this->IssuesQuery()
                   ->_if($issueid)
                     ->filterById($issueid)
@@ -902,10 +902,10 @@ class DB
     }
     return $retval;
   }
-  
+
   /**
    * returns available chapters for a user
-   * 
+   *
    *
    * @param int $issueid
    * @return array
@@ -929,13 +929,13 @@ class DB
       }
     }
     return $retval;
-  }  
-  
+  }
+
   /**
    * return template id and name for a chapter
    * according to the current user
    *
-   * @param string $format 
+   * @param string $format
    * @return void
    * @author Urs Hofer
    */
@@ -956,29 +956,29 @@ class DB
    * return template id and name for a chapter
    * according to the current user
    *
-   * @param string $format 
+   * @param string $format
    * @return void
    * @author Urs Hofer
    */
   function getTemplatefields() {
     return $this->TemplatesQuery();
   }
-  
+
   /**
    * return template field by id
    *
-   * @param string $format 
+   * @param string $format
    * @return void
    * @author Urs Hofer
    */
   function getTemplatefield($value) {
     return $this->TemplatesQuery()->findPk($value);
   }
-  
+
   /**
    * reorder a bunch of contributions defined by their ids
    *
-   * @param array $id 
+   * @param array $id
    * @return bool
    * @author Urs Hofer
    */
@@ -989,19 +989,19 @@ class DB
     foreach ($ids as $value) {
       $this->ContributionsQuery()
         ->findPk($value)
-        ->setSort($_s++) 
+        ->setSort($_s++)
         ->updateCache()
-        ->save(); 
-    }    
+        ->save();
+    }
     return true;
   }
-  
+
   /**
    * delete a bunch of contributions defined by their ids or id
    * check if there are binaries linked to the files and delete them
    * from the server as well (call FileModify with empty data)
    *
-   * @param mixed $id 
+   * @param mixed $id
    * @return void
    * @author Urs Hofer
    */
@@ -1015,13 +1015,13 @@ class DB
     $this->ContributionsQuery()
       ->filterById($ids)
       ->delete();
-  }  
-  
+  }
+
   /**
    * change the state a bunch of contributions defined by their ids or id
    *
-   * @param mixed $ids 
-   * @param string $state 
+   * @param mixed $ids
+   * @param string $state
    * @return void
    * @author Urs Hofer
    */
@@ -1031,8 +1031,8 @@ class DB
     $this->ContributionsQuery()
       ->filterById($ids)
       ->update(array('Status' => $state));
-  }  
-  
+  }
+
   /**
    * prepares the json statement for the config field of a new contribution
    *
@@ -1042,7 +1042,7 @@ class DB
   function ContributionDefaultConfig() {
     return json_encode(['lockdate'=>time()]);
   }
-  
+
   function NewContributionCache($contribution, $data = [], $hash = "") {
     $c = new \Contributionscache();
     $c->setContributions($contribution)
@@ -1050,17 +1050,17 @@ class DB
       ->setSignature($hash)
       ->save();
   }
-  
+
   /**
    * NewContribution
-   * 
+   *
    * Adds a Contribution and Data Fields according to the given Template
    *
-   * @param ChildIssues $issue 
-   * @param ChildFormats $format 
-   * @param int $templateid 
-   * @param string $name 
-   * @param string $status 
+   * @param ChildIssues $issue
+   * @param ChildFormats $format
+   * @param int $templateid
+   * @param string $name
+   * @param string $status
    * @return $this|\Contributions Contribution
    * @author Urs Hofer
    */
@@ -1077,14 +1077,14 @@ class DB
       return false;
     if (!$template)
       return false;
-    
+
     $c = new \Contributions();
     $c->setIssues($issue)
       ->setFormats($format)
       ->setTemplatenames($template)
       ->setStatus($status)
       ->setNewdate(time())
-      ->setModdate(time())        
+      ->setModdate(time())
       ->setName($name)
       ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
@@ -1103,23 +1103,23 @@ class DB
     }
     return $c;
   }
-  
+
   /**
    * undocumented function
    *
-   * @param array $ids 
-   * @param string $suffix 
+   * @param array $ids
+   * @param string $suffix
    * @return void
    * @author Urs Hofer
    */
   function CloneContributions($ids, $suffix) {
     if (!is_array($ids))
-      return false;   
+      return false;
     if (\ContributionsQuery::isVersioningEnabled()) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
       $restoreVersioning = true;
-    }     
+    }
     else {
       $restoreVersioning = false;
     }
@@ -1128,25 +1128,30 @@ class DB
       $new = $c->copy(true);
       $new
         ->setName($c->getName() . "[".$suffix."]");
-      
+
       /* Clear References in New Contribution */
       if ($_nodes = json_decode($new->getConfigSys(), true)) {
         if ($_nodes["referenced"]) {
           $_nodes["referenced"] = [];
           $new->setConfigSys(json_encode($_nodes));
         }
-      }      
-      
+      }
+
       /* Save */
       $new->save();
+      /* Set Sort to new Id */
+      $new
+        ->setSort($new->getId())
+        ->save();
+        
       $this->duplicateData($new);
     }
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
       \DataQuery::enableVersioning();
-    }     
+    }
   }
-    
+
   /**
    * Import Data from one contribution into another of the same type
    *
@@ -1156,7 +1161,7 @@ class DB
    * @author Urs Hofer
    */
   function ImportContribution($sourceid, $destinationid) {
-    $_c = $this->getContribution($destinationid);    
+    $_c = $this->getContribution($destinationid);
     $_source = $this->getContribution($sourceid);
     if ($_source && $_c->getFortemplate() == $_source->getFortemplate()) {
       $_olddata = [];
@@ -1174,7 +1179,7 @@ class DB
       return false;
     }
   }
-  
+
   /**
    * Changes a Template of a contribution and delete/adds fields
    *
@@ -1188,8 +1193,8 @@ class DB
     $criteria = new \Propel\Runtime\ActiveQuery\Criteria();
     $criteria->addAscendingOrderByColumn(__sort__);
     $_template = $this->TemplatenamesQuery()->findPk($templateid);
-    $_c = $this->getContribution($contributionid);   
-    $_oldfields = $_c->getDatas($criteria); 
+    $_c = $this->getContribution($contributionid);
+    $_oldfields = $_c->getDatas($criteria);
     $_newfields = $_template->getTemplatess($criteria);
 
     if ($_template) {
@@ -1198,17 +1203,17 @@ class DB
       $_addcount = 0;
       $_modcount = 0;
       if (count($_oldfields) > count($_newfields)) {
-        for ($delfield=count($_newfields); $delfield < count($_oldfields); $delfield++) { 
+        for ($delfield=count($_newfields); $delfield < count($_oldfields); $delfield++) {
           $this->deleteField($_oldfields[$delfield]);
           $_delcount++;
         }
       }
       // Fields of new Template
-      $_sort = 0;      
+      $_sort = 0;
       foreach ($_newfields as $templatefield) {
         // Use old
         if ($_oldfields[$_sort]) {
-          if ($_oldfields[$_sort]->getTemplates()->getFieldtype() == 'Bild' && 
+          if ($_oldfields[$_sort]->getTemplates()->getFieldtype() == 'Bild' &&
           $_oldfields[$_sort]->getTemplates()->getFieldtype() != $templatefield->getFieldtype()) {
             $this->FileModify($_oldfields[$_sort]->getId(), []);
           }
@@ -1225,7 +1230,7 @@ class DB
           ->setUserSysRef($this->currentUser)
           ->setSort($_sort)
           ->save();
-        $_sort++;        
+        $_sort++;
       }
       // Update contributions reference
       $_c->setTemplatenames($_template)->save();
@@ -1235,7 +1240,7 @@ class DB
       return false;
     }
   }
-  
+
   private function _getMimeType($file) {
     $type = $file->getClientMediaType();
     // Nasty Firefox Bug handeled here...
@@ -1244,7 +1249,7 @@ class DB
     }
     return $type;
   }
-  
+
   /**
    * FileStore
    *
@@ -1264,8 +1269,8 @@ class DB
 
       // Private Storage
       $private = $field->getTemplates()->getTemplatenames()->getPublic() ? false : true;
-      $path = $private === true 
-                ? $this->paths['privatesys'] 
+      $path = $private === true
+                ? $this->paths['privatesys']
                 : $this->paths['sys'];
 
 $this->defaultLogger->info("PRIVATE: " . $private);
@@ -1281,7 +1286,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         if (is_array($default_caption)) {
           $caption = (string)$default_caption[0];
         }
-        else { 
+        else {
           $caption = $default_caption;
         }
       }
@@ -1291,7 +1296,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           if (is_array($default_caption)) {
             $caption[] = $default_caption[$_key] ? $default_caption[$_key] : $default_caption[0];
           }
-          else { 
+          else {
             $caption[] = $default_caption;
           }
         }
@@ -1309,7 +1314,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $escapedFileName = time()."_".$escapedFileName;
         $this->defaultLogger->info("APPENDING: " . $escapedFileName);
       }
-      
+
       // Process
       if (in_array($this->_getMimeType($file), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
 
@@ -1318,7 +1323,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
         $manager = new \Intervention\Image\ImageManager(array('driver' => $driver));
-        $supported_types = $driver == 'imagick' 
+        $supported_types = $driver == 'imagick'
                             ? ['image/jpeg' => 'jpg',
                                'image/jpg'  => 'jpg',
                                'image/png'  => 'png',
@@ -1331,18 +1336,18 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $image = $manager->make($path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
         $image->save($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
-        
+
         // S3 Storage
         if (static::$s3 !== false) {
           $thumb_url = $this->s3_move($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $escapedFileName.$this->paths['thmbsuffix'], $private);
           $versions['thumbnail'] = $thumb_url;
         }
         else {
-          $thumb_url = $escapedFileName.$this->paths['thmbsuffix'];          
+          $thumb_url = $escapedFileName.$this->paths['thmbsuffix'];
           $versions['thumbnail'] = $escapedFileName.$this->paths['thmbsuffix'];
         }
 
-        $_copy = 0;        
+        $_copy = 0;
         foreach ($settings['imagesize'] as $size_per_image) {
           $image = $manager->make($path.$this->paths['web'].$escapedFileName);
           $width = $size_per_image['width'];
@@ -1365,7 +1370,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             $constraint->aspectRatio();
           });
           $image->save($path.$this->paths['web'].$_processfile, $this->paths['quality']);
-          
+
           // S3 Storage
           if (static::$s3 !== false) {
             array_push($versions['scaled'], $this->s3_move($path.$this->paths['web'].$_processfile, $escapedFileName.$_ext, $private));
@@ -1374,7 +1379,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             array_push($versions['scaled'], $escapedFileName.$_ext);
           }
         }
-        
+
         if (static::$s3 !== false) {
           $original_url = $this->s3_move($path.$this->paths['web'].$escapedFileName, $escapedFileName, $private);
         }
@@ -1383,7 +1388,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       // Also for process mime types which just failed because of missing size parameters
       else if (in_array($this->_getMimeType($file), $this->paths['store']) || in_array($this->_getMimeType($file), $this->paths['process'])) {
         $file->moveTo($path.$this->paths['web'].$escapedFileName);
-        
+
         // S3 Storage
         if (static::$s3 !== false) {
           $original_url = $this->s3_move($path.$this->paths['web'].$escapedFileName, $escapedFileName, $private);
@@ -1403,7 +1408,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $relative_url = false;
         return false;
       }
-      
+
       // Update References
       if (static::$s3 === false) {
         // Attach to Data
@@ -1493,7 +1498,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         }
         if (is_array($i[2]['scaled'])) {
           $scaled  = array_merge($scaled, $i[2]['scaled']);
-        }        
+        }
       }
       $this->DeleteFiles($delete, $thumbs, $scaled, $private);
 
@@ -1501,7 +1506,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $this->defaultLogger->info("THMB: " . join(",", $thumbs));
       $this->defaultLogger->info("SCLD: " . join(",", $scaled));
       $this->defaultLogger->info("STORE: " . print_r($tabledata, true));
-      
+
       //      print_r($delete);
       //      print_r($newdata);
       //      print_r($olddata);
@@ -1513,11 +1518,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     else
       return false;
   }
-  
+
   /**
    * sets the value of a referenced field to -1 if the source object is deleted
    *
-   * @param string $source 
+   * @param string $source
    * @return void
    * @author Urs Hofer
    */
@@ -1539,27 +1544,27 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 $_oldval[] = -1;
               }
               $_f->setContent(json_encode($_oldval))->save();
-            }        
+            }
           }
         }
       }
     }*/
   }
-  
+
 
   /**
    * updates the contribution backreferences stored in the _config_ field of a contribution
    *
-   * @param string $field 
-   * @param string $data 
+   * @param string $field
+   * @param string $data
    * @return void
    * @author Urs Hofer
    */
   private function _updateReferencedObjects($field, $data = []) {
     $type     = $field->getTemplates();
     if ($type->getFieldtype() == "TypologySelect" || $type->getFieldtype() == "TypologyKeyword") {
-      $settings = json_decode($type->getConfigSys());      
-      $decoded  = (is_array($data) || is_object($data) || is_numeric($data)) 
+      $settings = json_decode($type->getConfigSys());
+      $decoded  = (is_array($data) || is_object($data) || is_numeric($data))
                   ? $data
                   : json_decode($data);
       $getAction = false;
@@ -1580,7 +1585,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         case 'chapters':
           $getAction = 'setRFormats';
           $queryAction = 'FormatsQuery';
-          break;      
+          break;
         case 'structural':
           $getAction = 'setRTemplates';
           $queryAction = 'TemplatesQuery';
@@ -1596,12 +1601,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
     }
   }
-  
-  
+
+
 
   /**
    * setField
-   * 
+   *
    * Stores the Data of a specific Field
    * If the field has a json attribut set to true and the data is of type object
    * or array, the data will be transformed into a json string before save.
@@ -1609,11 +1614,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @param integer $fieldid Data Field Primary Key
    * @param mixed $data Either jsonized string, plain string or $FILES array
    * @param string $action either NULL, add, delete or modify
-   * @param string $idx 
+   * @param string $idx
    * @return void
    * @author Urs Hofer
    */
-  
+
   function setField($fieldid, &$data) {
     $field = $this->getField($fieldid);
     if ($field) {
@@ -1636,11 +1641,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     else
       return false;
   }
-  
+
   /**
    * deletes a field, and if it is of binary type, the associated files as well
    *
-   * @param \Childobject\Field $field 
+   * @param \Childobject\Field $field
    * @return void
    * @author Urs Hofer
    */
@@ -1650,11 +1655,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     $field->delete();
   }
-  
+
   /**
    * returns data object by id
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Data()
    * @author Urs Hofer
    */
@@ -1665,10 +1670,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * returns book object by id
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Book()
    * @author Urs Hofer
-   */  
+   */
   function getBook($id) {
     return $this->BooksQuery()->findPk($id);
   }
@@ -1676,18 +1681,18 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * returns all books
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Book()
    * @author Urs Hofer
-   */  
+   */
   function getBooks() {
     return $this->BooksQuery();
   }
-  
+
   /**
    * returns Format object by id
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Format()
    * @author Urs Hofer
    */
@@ -1698,48 +1703,48 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * returns Issue object by id
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Issue()
    * @author Urs Hofer
    */
   function getIssue($id) {
     return $this->IssuesQuery()->findPk($id);
   }
-  
+
   /**
    * returns all Issues
    *
-   * @param int $id 
+   * @param int $id
    * @return Childobject\Issue()
    * @author Urs Hofer
    */
   function getIssues() {
     return $this->IssuesQuery();
-  }  
-  
+  }
+
   /**
    * returns Contributions Collection by issue and chapter
    *
    * @param int $issueid
-   * @param int $chapterid 
+   * @param int $chapterid
    * @return Childcollection\ContributionsQuery()
    * @author Urs Hofer
-   */  
+   */
   function getContributions($issueid, $chapterid, $sortmode = 'asc', $status = false, $limit = false, $offset = false, $count = false, $templateid = false) {
-    
-    
+
+
     /**
      * Sort Mode
-     * 
+     *
      **/
-    
-    $sort = [];  
+
+    $sort = [];
     $directions = [];
 
     // Default:
     if ($sortmode == "asc" || $sortmode == "desc") {
       $directions[] = $sortmode;
-      $sort[] = 'orderBySort'; 
+      $sort[] = 'orderBySort';
     }
     else {
       list($_sortarray,$_direction) = explode(":", $sortmode);
@@ -1760,10 +1765,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             break;
           case 'chapter':
             $sort[] = 'orderByChapter';
-            break;          
+            break;
           case 'issue':
             $sort[] = 'orderByIssue';
-            break;          
+            break;
           default:
             if ($_sort != false && $_sort != "sort") {
               $sort[] = $_sort;
@@ -1772,22 +1777,22 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         }
       }
     }
-    
-    
+
+
     if (
       ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && (
-        is_array($issueid) 
+        is_array($issueid)
           ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) > 0
           : in_array($issueid, $this->rights["issues"]->getPrimaryKeys())
         ))) &&
       ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && (
-        is_array($chapterid) 
+        is_array($chapterid)
           ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) > 0
           : in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())
-          
+
         )))
     ) {
-      
+
       $q = $this->ContributionsQuery()
                 ->filterByForissue($issueid)
                 ->filterByForchapter($chapterid)
@@ -1798,9 +1803,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                   ->filterByStatus($status)
                 ->_endif()
                 ;
-      
+
         if ($count === true) return $q->count();
-    
+
         foreach ($sort as $_key=>$_sort) {
           $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
                         ? $directions[$_key]
@@ -1818,13 +1823,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                       ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
                     ->endUse()
                     ->orderBy('chaptersort', $direction);
-              break;          
+              break;
             case 'orderByIssue':
               $q = $q->useIssuesQuery('IssueSortColumn')
                       ->withColumn('IssueSortColumn.__sort__', 'issuesort')
                     ->endUse()
                     ->orderBy('issuesort', $direction);
-              break;          
+              break;
             default:
               $q = $q->withColumn('SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
                     ->useDataQuery('SortColumn_'.$_sort)
@@ -1845,18 +1850,18 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
       else return false;
   }
-  
+
   /**
    * returns all contributions matching string in the name
    *
-   * @param string $string 
+   * @param string $string
    * @return ChildCollection\ContributionsQuery()
    * @author Urs Hofer
    */
   function searchContributions($string = "", $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false, $templateid = false) {
     // Checks: if issue id is set, only check for the rights for this issue
     if ($issueid) {
-      if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys())))) 
+      if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))))
         return false;
     }
     // Checks: if issue is not sent and user is regular, set issue to available primary keys
@@ -1864,28 +1869,28 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $issueid = $this->rights["issues"]->getPrimaryKeys();
     }
 
-    // Checks: if chapter id is set, only check for the rights for this issue    
+    // Checks: if chapter id is set, only check for the rights for this issue
     if ($chapterid) {
       if (!($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($chapterid, $this->rights["formats"]->getPrimaryKeys()))))
         return false;
-    }  
+    }
     // Checks: if chapter is not sent and user is regular, set chapters to available primary keys
     elseif ($this->rights["formats"] !== true) {
       $chapterid = $this->rights["formats"]->getPrimaryKeys();
     }
-    
+
     /**
      * Sort Mode
-     * 
+     *
      **/
-    
-    $sort = [];  
+
+    $sort = [];
     $directions = [];
 
     // Default:
     if ($sortmode == "asc" || $sortmode == "desc") {
       $directions[] = $sortmode;
-      $sort[] = 'orderBySort'; 
+      $sort[] = 'orderBySort';
     }
     else {
       list($_sortarray,$_direction) = explode(":", $sortmode);
@@ -1906,10 +1911,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             break;
           case 'chapter':
             $sort[] = 'orderByChapter';
-            break;          
+            break;
           case 'issue':
             $sort[] = 'orderByIssue';
-            break;          
+            break;
           default:
             if ($_sort != false && $_sort != "sort") {
               $sort[] = $_sort;
@@ -1918,7 +1923,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         }
       }
     }
-    
+
     /**
      * Initialize Query
      **/
@@ -1942,17 +1947,17 @@ $this->defaultLogger->info("PRIVATE: " . $private);
      * $string contains the query, divided by | multiple "or"
      * $filterfield: single or divided by |, either sort, id, date or field id
      * $filtermode: single or divided by |, default: like
-     * 
+     *
      * filterfields and filtermode need can be defined for each search term
-     * if not, the default filtermode ("like") and filterfield (all fields) is 
+     * if not, the default filtermode ("like") and filterfield (all fields) is
      * used for the search.
-     * 
+     *
      * ?query=Word1|Word2                     Searches for Word1 OR Word2 in all fields
      * ?query=Word1|Word2&filter=12:eq        Word1 matches field 12 OR Word2 matches everywhere
      * ?query=Word1+Word2&filter=1|2:eq+12    Word1 matches field 1 or 2 AND Word2 matches everywhere
      */
-    
-  
+
+
     // Filter Fields: If passed, only the selected fields are searched for a valoue
 //    $filterfieldids = [];
     $filterby    = [];
@@ -1965,28 +1970,28 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         switch ($f) {
           case 'sort':
             $filterby[] = [
-              'method' => 'filterBySort',    
+              'method' => 'filterBySort',
               'column' => '_contributions.__sort__',
               'mode' => $_filter
             ];
             break;
           case 'id':
             $filterby[] = [
-              'method' => 'filterById',      
+              'method' => 'filterById',
               'column' => '_contributions.id',
               'mode' => $_filter
             ];
-            break;          
+            break;
           case 'date':
             $filterby[] = [
-              'method' => 'filterByNewdate', 
+              'method' => 'filterByNewdate',
               'column' => '_contributions._newdate',
               'mode' => $_filter
             ];
             break;
           default:
             $filterby[] = [
-              'method' => false, 
+              'method' => false,
               'column' => is_numeric($f) ? (int)$f : false,
               'mode' => $_filter
             ];
@@ -1996,7 +2001,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
       }
     }
-    
+
 //    print_r(preg_split('/([\|\+])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE));
 //    die();
 //    Array
@@ -2013,9 +2018,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $_key = 0;
 
     foreach (preg_split('/([\|\+])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE) as $_s) {
-      
+
       // Delimiter
-      
+
       if ($_s == "|") {
         $q = $q->_or();
         continue;
@@ -2024,17 +2029,17 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $q = $q->_and();
         continue;
       }
-      
+
       // Get Current Filter
-      
-      $_filter = $filterby[$_key] 
-                 ? $filterby[$_key] 
+
+      $_filter = $filterby[$_key]
+                 ? $filterby[$_key]
                  : [
-                    'method' => false, 
+                    'method' => false,
                     'column' => false,
                     'mode'   => 'like'
                   ];
-      
+
       if ($_filter['method']) {
         $q = $q->_if($_filter['mode'] == "like")
                  ->{$_filter['method']}('%'.$_s.'%')
@@ -2093,30 +2098,30 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                  ->_endif()
                  ->_if($_filter['mode'] == "lte")
                    ->condition('_data', 'CAST(_data._content AS UNSIGNED) <= ?', (int)$_s)
-                 ->_endif()                                  
+                 ->_endif()
                  ->_if($_filter['mode'] == "gte")
                    ->condition('_data', 'CAST(_data._content AS UNSIGNED) >= ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "eq")
                    ->condition('_data', '_data._content = ?', $_s)
                  ->_endif()
-                 ->_if($_filter['column'])                               
+                 ->_if($_filter['column'])
                    ->where(array('_field', '_data'), 'and')
                  ->_else()
                    ->where(array('_data'))
                  ->_endif()
              ->endUse();
       }
-      
+
       $_key++;
-      
+
     }
     // Return Counts Here
-    
+
     if ($count === true) return $q->count();
-    
+
     // Return Sorted Results
-    
+
     foreach ($sort as $_key=>$_sort) {
       $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
                     ? $directions[$_key]
@@ -2133,13 +2138,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                   ->withColumn('ChapterSortColumn.__sort__', 'chaptersort')
                 ->endUse()
                 ->orderBy('chaptersort', $direction);
-          break;          
+          break;
         case 'orderByIssue':
           $q = $q->useIssuesQuery('IssueSortColumn')
                   ->withColumn('IssueSortColumn.__sort__', 'issuesort')
                 ->endUse()
                 ->orderBy('issuesort', $direction);
-          break;          
+          break;
         default:
           $q = $q->withColumn('SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
                 ->useDataQuery('SortColumn_'.$_sort)
@@ -2162,11 +2167,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * returns Contribution object by id. If public == true, return the contribution only if the status is not open
    *
-   * @param int $id 
+   * @param int $id
    * @param bool $checkstate
    * @return Childobject\Contribution()
    * @author Urs Hofer
-   */  
+   */
   function getContribution($id, $public = false, $overrule_user_rights = false) {
     if ($_c = $this
       ->ContributionsQuery()
@@ -2177,70 +2182,70 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
       // RefContrib: Loading Related Contributions - first, join Data Cross Table
       ->joinWith('Contributions.RDataContribution _ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-      ->joinWith('_ReferencedFields.RData ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('_ReferencedFields.RData ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
       ->joinWith('ReferencedFields.Contributions RefContrib', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
       ->joinWith('ReferencedFields.Templates ReferencedFieldsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-        
+
           // RefContrib: Loading Related Tables
-          ->joinWith('RefContrib.Data RefContribData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('RefContrib.Formats RefContribFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('RefContrib.Issues RefContribIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('RefContrib.Templatenames RefContribTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('RefContribData.Templates RefContribTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-          ->joinWith('RefContribFormats.Books RefContribBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)  
+          ->joinWith('RefContrib.Data RefContribData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('RefContrib.Formats RefContribFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('RefContrib.Issues RefContribIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('RefContrib.Templatenames RefContribTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('RefContribData.Templates RefContribTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('RefContribFormats.Books RefContribBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 */
 
-/*            
-        
+/*
+
         Alle mit Stern vorne bringen eigentlich nix... die andern schon
-        
-        
+
+
 *            // Data Issue Relation
 *            ->joinWith('RefContribData.RDataIssue __LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*            ->joinWith('__LinkedIssue.RIssue RLinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            ->joinWith('__LinkedIssue.RIssue RLinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *            // Data Book Relation
 *            ->joinWith('RefContribData.RDataBook __LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*            ->joinWith('__LinkedBook.RBook RLinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            ->joinWith('__LinkedBook.RBook RLinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *            // Data Book Relation
 *            ->joinWith('RefContribData.RDataFormat __LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*            ->joinWith('__LinkedFormat.RFormat RLinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            ->joinWith('__LinkedFormat.RFormat RLinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *            // Data Book Relation
 *            ->joinWith('RefContribData.RDataTemplate __LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*            ->joinWith('__LinkedTemplate.RTemplate RLinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)    
+*            ->joinWith('__LinkedTemplate.RTemplate RLinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *            // Data Contribution Relation
 *            ->joinWith('RefContribData.RDataContribution __LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*            ->joinWith('__LinkedContribution.RContribution RLinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*            ->joinWith('__LinkedContribution.RContribution RLinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *                // Joining Contribution Data of a Linked Contribution
-*                ->joinWith('RLinkedContribution.Data RLinkedContributionData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
-*                ->joinWith('RLinkedContribution.Formats RLinkedContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*                ->joinWith('RLinkedContribution.Issues RLinkedContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*                ->joinWith('RLinkedContribution.Templatenames RLinkedContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*                ->joinWith('RLinkedContributionData.Templates RLinkedContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-*                ->joinWith('RLinkedContributionFormats.Books RLinkedContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-*            
-*                                          
+*                ->joinWith('RLinkedContribution.Data RLinkedContributionData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*                ->joinWith('RLinkedContribution.Formats RLinkedContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*                ->joinWith('RLinkedContribution.Issues RLinkedContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*                ->joinWith('RLinkedContribution.Templatenames RLinkedContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*                ->joinWith('RLinkedContributionData.Templates RLinkedContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*                ->joinWith('RLinkedContributionFormats.Books RLinkedContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*
+*
 *          // LinkedData: Data to other Data Relation of this Contribution
 *          ->joinWith('RefContribData.Contributions RefContribDataContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*          ->joinWith('RefContribDataContribution.Formats RefContribDataContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*          ->joinWith('RefContribDataContribution.Issues RefContribDataContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*          ->joinWith('RefContribDataContribution.Templatenames RefContribDataContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*          ->joinWith('RefContribData.Templates RefContribDataContributionTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-*          ->joinWith('RefContribDataContributionFormats.Books RefContribDataContributionBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*          ->joinWith('RefContribDataContribution.Formats RefContribDataContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('RefContribDataContribution.Issues RefContribDataContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('RefContribDataContribution.Templatenames RefContribDataContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('RefContribData.Templates RefContribDataContributionTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('RefContribDataContributionFormats.Books RefContribDataContributionBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *
 *          // One Step Nested
 *          ->joinWith('RefContrib.RDataContribution __ReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*          ->joinWith('__ReferencedFields.RData RReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*          ->joinWith('__ReferencedFields.RData RReferencedFields', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *          ->joinWith('RReferencedFields.Contributions RRefContrib', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *          ->joinWith('RReferencedFields.Templates RReferencedFieldsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*            ->joinWith('RRefContrib.Data RRefContribData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*            ->joinWith('RRefContrib.Formats RRefContribFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*            ->joinWith('RRefContrib.Issues RRefContribIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*            ->joinWith('RRefContrib.Templatenames RRefContribTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*            ->joinWith('RRefContribData.Templates RRefContribTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-*            ->joinWith('RRefContribFormats.Books RRefContribBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*            ->joinWith('RRefContrib.Data RRefContribData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('RRefContrib.Formats RRefContribFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('RRefContrib.Issues RRefContribIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('RRefContrib.Templatenames RRefContribTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('RRefContribData.Templates RRefContribTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*            ->joinWith('RRefContribFormats.Books RRefContribBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 */
 
-        
+
       // Data of this Contribution
 /*      ->joinWith('Contributions.Data')
       ->joinWith('Data.Templates')
@@ -2248,37 +2253,37 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
 /*          // LinkedData: Data to other Data Relation of this Contribution
 *          ->joinWith('Data.RDataDataRelatedBySource _LinkedData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*          ->joinWith('_LinkedData.RDataRef LinkedData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+*          ->joinWith('_LinkedData.RDataRef LinkedData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 *          ->joinWith('LinkedData.Contributions LinkedDataContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-*          ->joinWith('LinkedDataContribution.Formats LinkedDataContributionsFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*          ->joinWith('LinkedDataContribution.Issues LinkedDataContributionsIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*          ->joinWith('LinkedDataContribution.Templatenames LinkedDataContributionsTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-*          ->joinWith('LinkedData.Templates LinkedDataContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-*          ->joinWith('LinkedDataContributionsFormats.Books LinkedDataContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+*          ->joinWith('LinkedDataContribution.Formats LinkedDataContributionsFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('LinkedDataContribution.Issues LinkedDataContributionsIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('LinkedDataContribution.Templatenames LinkedDataContributionsTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('LinkedData.Templates LinkedDataContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+*          ->joinWith('LinkedDataContributionsFormats.Books LinkedDataContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 */
 
 /*      // Data Issue Relation
       ->joinWith('Data.RDataIssue _LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-      ->joinWith('_LinkedIssue.RIssue LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('_LinkedIssue.RIssue LinkedIssue', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
       // Data Book Relation
       ->joinWith('Data.RDataBook _LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-      ->joinWith('_LinkedBook.RBook LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('_LinkedBook.RBook LinkedBook', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
       // Data Book Relation
       ->joinWith('Data.RDataFormat _LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-      ->joinWith('_LinkedFormat.RFormat LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('_LinkedFormat.RFormat LinkedFormat', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
       // Data Book Relation
       ->joinWith('Data.RDataTemplate _LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-      ->joinWith('_LinkedTemplate.RTemplate LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('_LinkedTemplate.RTemplate LinkedTemplate', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
       // Data Contribution Relation
       ->joinWith('Data.RDataContribution _LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
-      ->joinWith('_LinkedContribution.RContribution LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
+      ->joinWith('_LinkedContribution.RContribution LinkedContribution', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
           // Joining Contribution Data of a Linked Contribution
-          ->joinWith('LinkedContribution.Data LinkedContributionData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)      
-          ->joinWith('LinkedContribution.Formats LinkedContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('LinkedContribution.Issues LinkedContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('LinkedContribution.Templatenames LinkedContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)        
-          ->joinWith('LinkedContributionData.Templates LinkedContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
-          ->joinWith('LinkedContributionFormats.Books LinkedContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)                                
+          ->joinWith('LinkedContribution.Data LinkedContributionData', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('LinkedContribution.Formats LinkedContributionFormats', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('LinkedContribution.Issues LinkedContributionIssues', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('LinkedContribution.Templatenames LinkedContributionTemplatenames', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('LinkedContributionData.Templates LinkedContributionsTemplates', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
+          ->joinWith('LinkedContributionFormats.Books LinkedContributionsBooks', \Propel\Runtime\ActiveQuery\Criteria::LEFT_JOIN)
 */
       ->findPk($id)) {
       if (
@@ -2288,7 +2293,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ||
         ($overrule_user_rights === true && ($public === false || $_c->getStatus() != "Open"))
       ) {
-        return $_c; 
+        return $_c;
       }
       else {
         return false;
@@ -2296,35 +2301,35 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     else {
       return null;
-    } 
-  }  
-  
+    }
+  }
+
   /**
    * returns all contributions with a certain template
    *
-   * @param Childobject\Template() $template 
+   * @param Childobject\Template() $template
    * @return collection contributions
    * @author Urs Hofer
    */
   function getContributionsByTemplate($template) {
     return $this->ContributionsQuery()->filterByTemplatenames($template);
   }
-  
+
   /**
    * return all templatenames of a certain chapter
    *
-   * @param Childobject\Chapter() $chapter 
+   * @param Childobject\Chapter() $chapter
    * @return collection templatenames
    * @author Urs Hofer
    */
   function getTemplatenamesByFormats($chapter) {
     return $this->TemplatenamesQuery()->filterByFormats($chapter)->orderByName();
   }
-  
+
   /**
    * adds a message into the log for the current user
    *
-   * @param string $message 
+   * @param string $message
    * @return collection LogQuery
    * @author Urs Hofer
    */
@@ -2353,12 +2358,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ->setSplit($count)
         ->save();
   }
-  
+
   /**
    * returns a log entries by type and latest date, optionally filtered by a callback
    * which is applied on the __config__ field.
    *
-   * @param string $type 
+   * @param string $type
    * @return collection LogQuery
    * @author Urs Hofer
    */
@@ -2375,15 +2380,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
          ->limit($limit);
     return $this->applyCallbackAndLimitToLog($log, $callback);
   }
-  
+
   /**
    * returns a log entries by type and max count of usage, optionally filtered by a callback
    * which is applied on the __config__ field.
    *
-   * @param string $type 
+   * @param string $type
    * @return collection LogQuery
    * @author Urs Hofer
-   */  
+   */
   function getFavouriteLog($type = 'get_contributions', $callback = false, $limit = 10) {
     if (!$this->currentUser) return false;
 
@@ -2402,7 +2407,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * callback wrapper function applied to the logfile
    *
-   * @param string $type 
+   * @param string $type
    * @return collection LogQuery
    * @author Urs Hofer
    */
@@ -2419,12 +2424,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     return $retval;
   }
-  
-  
+
+
   /**
    * adds a book
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
    */
@@ -2436,10 +2441,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_newsort = $last->getSort()+1;
     else
       $_newsort = 0;
-    
+
     $c = new \Books();
     $c->setName($name)
-      ->setUserSysRef($this->currentUser)      
+      ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
       ->save();
   }
@@ -2447,9 +2452,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * adds an issue
    *
-   * @param string $name 
-   * @param int $forbook 
-   * @param string $status 
+   * @param string $name
+   * @param int $forbook
+   * @param string $status
    * @return void
    * @author Urs Hofer
    */
@@ -2461,12 +2466,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_newsort = $last->getSort()+1;
     else
       $_newsort = 0;
-    
+
     $c = new \Issues();
     $c->setName($name)
       ->setForbook($forbook)
       ->setStatus($status)
-      ->setUserSysRef($this->currentUser)        
+      ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
       ->save();
   }
@@ -2474,7 +2479,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * sets the issue state to open
    *
-   * @param int $id 
+   * @param int $id
    * @return void
    * @author Urs Hofer
    */
@@ -2487,7 +2492,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * sets the issue state to close
    *
-   * @param int $id 
+   * @param int $id
    * @return void
    * @author Urs Hofer
    */
@@ -2496,12 +2501,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
          ->setStatus("closed")
          ->save();
   }
-  
+
   /**
    * adds a chapter
    *
-   * @param string $name 
-   * @param int $forbook 
+   * @param string $name
+   * @param int $forbook
    * @return void
    * @author Urs Hofer
    */
@@ -2513,13 +2518,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_newsort = $last->getSort()+1;
     else
       $_newsort = 0;
-    
+
     $c = new \Formats();
     $c->setName($name)
       ->setForbook($forbook)
-      ->setUserSysRef($this->currentUser)        
+      ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
-      ->save();    
+      ->save();
   }
 
   /**
@@ -2535,8 +2540,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     foreach ($sortarray as $sort=>$id) {
       $this->BooksQuery()
         ->findPk($id)
-        ->setSort($sort) 
-        ->save(); 
+        ->setSort($sort)
+        ->save();
     }
   }
 
@@ -2553,8 +2558,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     foreach ($sortarray as $sort=>$id) {
       $this->IssuesQuery()
         ->findPk($id)
-        ->setSort($sort) 
-        ->save(); 
+        ->setSort($sort)
+        ->save();
     }
   }
 
@@ -2571,19 +2576,19 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     foreach ($sortarray as $sort=>$id) {
       $this->FormatsQuery()
         ->findPk($id)
-        ->setSort($sort) 
-        ->save(); 
-    }    
+        ->setSort($sort)
+        ->save();
+    }
   }
 
   /**
    * renames a book
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function renameBook($id, $name) {
     $this->getBook($id)
          ->setName($name)
@@ -2593,11 +2598,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * change rights of a book
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function rightsBook($id, $rights) {
     $b = $this->getBook($id);
     foreach($b->getRightss() as $f) {$b->removeRights($f);}
@@ -2608,15 +2613,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     $b->save();
   }
-  
+
   /**
    * change settingsBook of a book
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function settingsBook($id, $rights) {
     $b = $this->getBook($id);
     if ($b) {
@@ -2624,12 +2629,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $b->save();
     }
   }
-  
+
 
   /**
    * renames an issue
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
@@ -2637,17 +2642,17 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function renameIssue($id, $name) {
     $this->getIssue($id)
          ->setName($name)
-         ->save();    
+         ->save();
   }
-  
+
   /**
    * change rights of a issue
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function rightsIssue($id, $rights) {
     $b = $this->getIssue($id);
     foreach($b->getRightss() as $f) {$b->removeRights($f);}
@@ -2657,28 +2662,28 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $b->addRights($this->getRight($value["value"]));
     }
     $b->save();
-  }  
-  
+  }
+
   /**
    * change config of a issue
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function settingsIssue($id, $rights) {
     $b = $this->getIssue($id);
     if ($b) {
       $b->setConfigSys($rights);
       $b->save();
     }
-  }  
+  }
 
   /**
    * renames a chapter
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
@@ -2686,17 +2691,17 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function renameChapter($id, $name) {
     $this->getFormat($id)
          ->setName($name)
-         ->save();        
+         ->save();
   }
-  
+
   /**
    * change rights of a chapter
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function rightsChapter($id, $rights) {
     $b = $this->getFormat($id);
     foreach($b->getRightss() as $f) {$b->removeRights($f);}
@@ -2706,28 +2711,28 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $b->addRights($this->getRight($value["value"]));
     }
     $b->save();
-  }    
-  
+  }
+
   /**
    * change rights of a chapter
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function settingsChapter($id, $rights) {
     $b = $this->getFormat($id);
     if ($b) {
       $b->setConfigSys($rights);
       $b->save();
     }
-  }    
+  }
 
   /**
    * deletes a book with all content and binaries
    *
-   * @param int $id 
+   * @param int $id
    * @return void
    * @author Urs Hofer
    */
@@ -2755,7 +2760,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * deletes a issue with all content and binaries
    *
-   * @param int $id 
+   * @param int $id
    * @return void
    * @author Urs Hofer
    */
@@ -2768,15 +2773,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       foreach ($this->ContributionsQuery()->filterByForissue($id) as $contribution) {
         $this->deleteData($contribution);
         $this->_clearReferencedObjects($contribution);
-      }    
-      $_issue->delete();    
+      }
+      $_issue->delete();
     }
   }
 
   /**
    * deletes a chapter with all content and binaries
    *
-   * @param int $id 
+   * @param int $id
    * @return void
    * @author Urs Hofer
    */
@@ -2802,21 +2807,21 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_chapter->delete();
     }
   }
-  
+
   /**
    * duplicates a book with all content
    *
-   * @param int $id 
-   * @param string $suffix 
+   * @param int $id
+   * @param string $suffix
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function duplicateBook($id, $suffix = "Copy") {
     if (\ContributionsQuery::isVersioningEnabled()) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
       $restoreVersioning = true;
-    }     
+    }
     else {
       $restoreVersioning = false;
     }
@@ -2824,8 +2829,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->copy(true);
     $new
       ->setName($new->getName() . "[".$suffix."]")
-      ->save();  
-    /* Not necessary. Deep copy of books copy only direct affiliated data 
+      ->save();
+    /* Not necessary. Deep copy of books copy only direct affiliated data
     foreach ($this->IssuesQuery()->filterByForbook($new->getId()) as $issue) {
       foreach ($this->ContributionsQuery()->filterByIssues($issue) as $contribution) {
         $this->duplicateData($contribution);
@@ -2834,14 +2839,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
       \DataQuery::enableVersioning();
-    }    
+    }
   }
 
   /**
    * duplicates a issue with all content if deep is true
    *
-   * @param int $id 
-   * @param string $suffix 
+   * @param int $id
+   * @param string $suffix
    * @param bool $deep
    * @return void
    * @author Urs Hofer
@@ -2851,16 +2856,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
       $restoreVersioning = true;
-    }     
+    }
     else {
       $restoreVersioning = false;
     }
-    
+
     $new = $this->getIssue($id)
                 ->copy($deep);
     $new
       ->setName($new->getName() . "[".$suffix."]")
-      ->save();  
+      ->save();
     if ($deep === true) {
       foreach ($this->ContributionsQuery()->filterByForissue($new->getId()) as $contribution) {
         $this->duplicateData($contribution);
@@ -2875,8 +2880,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * duplicates a chapter with all content
    *
-   * @param int $id 
-   * @param string $suffix 
+   * @param int $id
+   * @param string $suffix
    * @return void
    * @author Urs Hofer
    */
@@ -2885,16 +2890,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
       $restoreVersioning = true;
-    }     
+    }
     else {
       $restoreVersioning = false;
     }
-    
+
     $new = $this->getFormat($id)
                 ->copy($deep);
     $new
       ->setName($new->getName() . "[".$suffix."]")
-      ->save(); 
+      ->save();
     if ($deep === true) {
       foreach ($this->ContributionsQuery()->filterByForchapter($new->getId()) as $contribution) {
         $this->duplicateData($contribution);
@@ -2905,11 +2910,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       \DataQuery::enableVersioning();
     }
   }
-  
+
   /**
    * adds a template (without any fields)
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
    */
@@ -2921,34 +2926,34 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_newsort = $last->getSort()+1;
     else
       $_newsort = 0;
-    
+
     $c = new \Templatenames();
     $c->setName($name)
       ->setSort($_newsort)
       ->save();
   }
-  
+
   /**
    * renames a template
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function renameTemplates($id, $name) {
     $this->TemplatenamesQuery()
          ->findPk($id)
          ->setName($name)
          ->save();
   }
-  
+
   /**
    * deletes a template and all contributions attached to it
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function deleteTemplates($id) {
     foreach ($this->ContributionsQuery()->filterByFortemplate($id) as $contribution) {
         $this->deleteData($contribution);
@@ -2957,23 +2962,23 @@ $this->defaultLogger->info("PRIVATE: " . $private);
          ->findPk($id)
          ->delete();
   }
-  
+
   /**
    * duplicates a template
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function duplicateTemplates($id, $suffix = "Copy") {
     if (\ContributionsQuery::isVersioningEnabled()) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
       $restoreVersioning = true;
-    }     
+    }
     else {
       $restoreVersioning = false;
-    }    
+    }
 
     $new = $this->TemplatenamesQuery()
                 ->findPk($id)
@@ -2981,9 +2986,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $new
       ->setName($new->getName() . "[".$suffix."]")
       ->save();
-    
+
     /* Clone Affiliated Fields */
-    
+
     foreach ($this->TemplatesQuery()->filterByFortemplate($id) as $f) {
       $clone = $f->copy();
       $clone
@@ -2995,16 +3000,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
       \DataQuery::enableVersioning();
-    }    
-  }  
-  
+    }
+  }
+
   /**
    * renames a template
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function updateTemplates($id, $data) {
     $t = $this->TemplatenamesQuery()->findPk($id);
     // Clear all relations first
@@ -3023,10 +3028,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
       elseif ($value["name"] == "Books") {
         $t->addBooks($this->getBook($value["value"]));
-      }      
+      }
       elseif ($value["name"] == "Rights") {
         $t->addRights($this->getRight($value["value"]));
-      }            
+      }
       elseif ($value["name"] == "Public") {
         $t->setPublic(true);
         $this->defaultLogger->info("set public: true");
@@ -3037,13 +3042,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     $t->save();
   }
-  
+
 
   /**
    * adds a field into a template
    *
-   * @param int $fortemplate 
-   * @param string $name 
+   * @param int $fortemplate
+   * @param string $name
    * @return void
    * @author Urs Hofer
    */
@@ -3055,14 +3060,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $_newsort = $last->getSort()+1;
     else
       $_newsort = 0;
-    
+
     $t = new \Templates();
     $t->setFieldname($name)
       ->setFieldtype($type)
       ->setFortemplate($fortemplate)
       ->setSort($_newsort)
       ->save();
-    
+
     // Add the field to the contributions
     foreach ($this->ContributionsQuery()->filterByFortemplate($fortemplate) as $c) {
       $d = new \Data();
@@ -3072,17 +3077,17 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ->setSort($_newsort)
         ->save();
     }
-    
+
   }
-  
+
   /**
    * deletes a field. if it's a binary field, deletes binaries first.
    * data related in contributions are deleted via mysql delete constraint
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function deleteTemplatefield($id) {
     $f = $this->TemplatesQuery()->findPk($id);
     if ($f->getFieldtype() == "Bild") {
@@ -3092,24 +3097,24 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     $f->delete();
   }
-  
+
   /**
    * duplicates a field and all data in contributions recursively
    *
-   * @param string $name 
+   * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function duplicateTemplatefield($id, $suffix = "Copy") {
     if (\ContributionsQuery::isVersioningEnabled()) {
       \ContributionsQuery::disableVersioning();
       \DataQuery::disableVersioning();
       $restoreVersioning = true;
-    }     
+    }
     else {
       $restoreVersioning = false;
-    } 
-    
+    }
+
     $new = $this->TemplatesQuery()
                 ->findPk($id)
                 ->copy(true); // Deep Copy: We need it in the already stored documents
@@ -3121,47 +3126,47 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       \ContributionsQuery::enableVersioning();
       \DataQuery::enableVersioning();
     }
-  }   
-  
-  
-  
+  }
+
+
+
   /**
    * renames a field in a template
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function renameTemplatefield($id, $name) {
     $this->TemplatesQuery()
          ->findPk($id)
          ->setFieldname($name)
          ->save();
   }
-  
+
   /**
    * sorts the fields of a template
    *
-   * @param int $id 
+   * @param int $id
    * @param string $name
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function sortTemplatefield($fortemplate, $sortarray) {
     if (!is_array($sortarray))
       return false;
     foreach ($sortarray as $sort=>$id) {
       $this->TemplatesQuery()
         ->findPk($id)
-        ->setSort($sort) 
+        ->setSort($sort)
         ->save();
       $this->DataQuery()
-        ->filterByFortemplatefield($id) 
+        ->filterByFortemplatefield($id)
         ->update(array('Sort' => $sort));
-    }    
+    }
   }
-  
+
   /**
    * updates the field settings
    *
@@ -3169,7 +3174,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @param array $data
    * @return void
    * @author Urs Hofer
-   */  
+   */
   function updateTemplatefield($id, $data) {
     $t = $this->TemplatesQuery()->findPk($id);
     /*
@@ -3177,7 +3182,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     [0] => Array
         (
             [name] => Fieldtype
-            [value] => 
+            [value] =>
         )
 
     [1] => Array
@@ -3195,7 +3200,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     [3] => Array
         (
             [name] => Helpimage
-            [value] => 
+            [value] =>
         )
 
 )
@@ -3207,13 +3212,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     }
     $t->save();
   }
-  
-  
+
+
   /**
    * duplicates the data of upload fields of a contribution
    *
-   * @param array $ids 
-   * @param string $suffix 
+   * @param array $ids
+   * @param string $suffix
    * @return void
    * @author Urs Hofer
    */
@@ -3231,24 +3236,24 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
     }
   }
-  
+
   /**
    * deletes the data of upload fields of a contribution
    *
-   * @param array $ids 
-   * @param string $suffix 
+   * @param array $ids
+   * @param string $suffix
    * @return void
    * @author Urs Hofer
    */
-  function deleteData($contribution) {  
+  function deleteData($contribution) {
     foreach ($contribution->getDatas() as $field) {
       // Delete Images
       if ($field->getTemplates()->getFieldtype() == "Bild") {
         $this->FileModify($field->getId(), []);
       }
     }
-  }  
+  }
 
-} // END class 
+} // END class
 
 ?>
