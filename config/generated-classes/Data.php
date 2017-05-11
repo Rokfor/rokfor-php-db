@@ -166,7 +166,9 @@ class Data extends BaseData
               $_decoded = json_decode($_b->getContent(), true);
               if (is_array($_decoded)) {
                 foreach($_decoded as $_d) {
-                  $retval[$_d] = ["id"=>$_d,"value"=>$_d];
+                  if ($_d >= 0) {
+                    $retval[$_d] = ["id"=>$_d,"value"=>$_d];
+                  }
                 }
               }
             }
