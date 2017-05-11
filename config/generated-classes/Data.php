@@ -32,27 +32,27 @@ class Data extends BaseData
       $field = \TemplatesQuery::create()->findPk($settings['fromfield']);
     else
       $field = $thisfield;
-    
+
     if ($settings['fromtemplate'])
       $template = \TemplatenamesQuery::create()->findPk($settings['fromtemplate']);
     else
       $template = $thisfield->getTemplatenames();
-    
+
     if ($settings['fromissue'])
       $issue =  \IssuesQuery::create()->findPk($settings['fromissue']);
     else
       $issue =  $contribution->getIssues();
-    
+
     if ($settings['frombook'])
       $book = \BooksQuery::create()->findPk($settings['frombook']);
     else
       $book = $contribution->getIssues()->getBooks();
-        
-    if ($settings['fromchapter']) 
+
+    if ($settings['fromchapter'])
       $chapter = \FormatsQuery::create()->findPk($settings['fromchapter']);
     else
       $chapter = $contribution->getFormats();
-    
+
     if (!$chapter || !$book || !$issue || !$template || !$field) {
       array_push($retval, ["id"=>-1,"value"=>"Error - adjust template settings"]);
     }
@@ -97,13 +97,13 @@ class Data extends BaseData
                                             ->_endif();
           foreach($formats as $_b) {
             array_push($retval, ["id"=>$_b->getId(),"value"=>$_b->getName()]);
-          }      
+          }
           break;
         //
         // CLOUD HISTORY
         // TODO
         // Returns cloud matrix data for a field.
-        //         
+        //
         case 'cloud':
             array_push($retval, ["id"=>-1,"value"=>"not yet implemented"]);
         //
@@ -112,7 +112,7 @@ class Data extends BaseData
         // option: restrict_to_open(bool): true = open contributions / false = all contributions
         // option: fromfield (necessary for other history)
         // Returns chapters of a book
-        //        
+        //
         case 'other':
           $_data = \DataQuery::create()->filterByTemplates($field)
                                        ->_if($settings['restrict_to_issue'])
@@ -142,7 +142,7 @@ class Data extends BaseData
         // option: restrict_to_open(bool): true = open contributions / false = all contributions
         // option: fromfield (necessary for other history)
         // Returns chapters of a book
-        //              
+        //
         case 'self':
           $_data = \DataQuery::create()->filterByTemplates($field)
                                        ->_if($settings['restrict_to_issue'])
@@ -170,7 +170,7 @@ class Data extends BaseData
                 }
               }
             }
-          ksort($retval);    
+          ksort($retval);
           break;
           //}
         //
@@ -180,7 +180,7 @@ class Data extends BaseData
         // option: restrict_to_chapter(bool): true = fromchapter or self / false = all chapters
         // option: fromtemplate(string), otherwise self
         // Returns contributions of a issue
-        //         
+        //
         case 'contributional':
           $_data = \ContributionsQuery::create()->_if($settings['restrict_to_issue'])
                                                   ->filterByIssues($issue)
@@ -192,7 +192,7 @@ class Data extends BaseData
                                                   ->_or()
                                                   ->filterByStatus('Close')
                                                   ->_or()
-                                                  ->filterByStatus('Draft')                                                        
+                                                  ->filterByStatus('Draft')
                                                 ->_endif()
                                                 ->_if($settings['restrict_to_chapter'])
                                                   ->filterByFormats($chapter)
@@ -207,7 +207,7 @@ class Data extends BaseData
                                                 ->_endif();
           foreach($_data as $_b) {
             array_push($retval, ["id"=>$_b->getId(),"value"=>$_b->getName()]);
-          }        
+          }
           break;
         //
         // STRUCTURAL HISTORY
@@ -232,16 +232,16 @@ class Data extends BaseData
           }
           break;
 
-      } 
+      }
 
       // Always add a disabled state
-    
-      array_push($retval, ["id"=>-1,"value"=>"* Disabled *"]);
-    
+
+      // array_push($retval, ["id"=>-1,"value"=>"* Disabled *"]);
+
     }
     return $retval;
   }
-  
+
   /**
    * decodes the content from json
    * it the result is not an array, it will be created
@@ -255,14 +255,14 @@ class Data extends BaseData
     $data = json_decode($_c, true);
     return (!is_array($data)?[$data]:$data);
   }
-  
+
   /**
    * returns the relations of a data field as array of int
    *
    * @return void
    * @author Urs Hofer
-   */  
-  function getRelationsAsArray($history_command) 
+   */
+  function getRelationsAsArray($history_command)
   {
     if ($relations = $this->getRelationsAsObject($history_command)) {
       if (is_array($relations)) {
@@ -274,17 +274,17 @@ class Data extends BaseData
       }
       return (count($ids) == 0 ? [-1] : $ids);
     }
-    return false;
+    return [];
   }
-  
-  
+
+
   /**
    * returns the relations of a data field as array of int
    *
    * @return void
    * @author Urs Hofer
-   */  
-  function getRelationsAsObject($history_command) 
+   */
+  function getRelationsAsObject($history_command)
   {
     $getAction = false;
     switch ($history_command) {
@@ -299,7 +299,7 @@ class Data extends BaseData
         break;
       case 'chapters':
         $getAction = 'getRFormats';
-        break;      
+        break;
       case 'structural':
         $getAction = 'getRTemplates';
         break;
@@ -316,7 +316,7 @@ class Data extends BaseData
     }
     return false;
   }
-  
-  
-  
+
+
+
 }
