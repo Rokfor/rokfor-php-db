@@ -236,7 +236,7 @@ class Data extends BaseData
 
       // Always add a disabled state
 
-      // array_push($retval, ["id"=>-1,"value"=>"* Disabled *"]);
+      array_push($retval, ["id"=>-1,"value"=>"* Disabled *"]);
 
     }
     return $retval;
