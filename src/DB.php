@@ -647,6 +647,36 @@ class DB
     return true;
   }
 
+
+
+  function updateRemindedPassword($u, $new1, $new2, &$error) {
+    if ($new1 <> $new2) {
+      $error[] = 'profile_error_pwnotmatch';
+      return false;
+    }
+    if (!$this->checkPasswordStrength($new1, $error)) {
+      return false;
+    }
+    if ($new1 == $u->getPassword()) {
+      $error[] = 'profile_error_pwsameasold';
+      return false;
+    }
+    if (!$this->checkPassword($pw)) {
+      $error[] = 'profile_error_oldpwwrong';
+      return false;
+    }
+    $u->setPassword(md5($new1))->save();
+    return true;
+  }
+
+
+
+
+
+
+
+
+
   /**
    * sets a new passwor the password of the current user
    *
@@ -1143,7 +1173,7 @@ class DB
       $new
         ->setSort($new->getId())
         ->save();
-        
+
       $this->duplicateData($new);
     }
     if ($restoreVersioning) {
