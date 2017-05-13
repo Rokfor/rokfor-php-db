@@ -661,10 +661,6 @@ class DB
       $error[] = 'profile_error_pwsameasold';
       return false;
     }
-    if (!$this->checkPassword($pw)) {
-      $error[] = 'profile_error_oldpwwrong';
-      return false;
-    }
     $u->setPassword(md5($new1))->save();
     return true;
   }
