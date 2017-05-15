@@ -562,10 +562,23 @@ class DB
   /**
    * creates a new user
    *
+   * @param string $checkUserName
+   * @param string $checkUserEmail
    * @return void
    * @author Urs Hofer
    */
-  function newUser() {
+  function newUser($checkUserName = false, $checkUserEmail = false) {
+
+    if ($checkUserName || $checkUserEmail) {
+      $q = $this->UsersQuery()
+              ->filterByEmail($checkUserEmail)
+              ->_or()
+              ->filterByUsername($checkUserName);
+      if ($q->count() > 0) {
+        return false;
+      }
+    }
+
     return new \Users();
   }
 
