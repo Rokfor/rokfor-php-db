@@ -541,6 +541,8 @@ class DB
       "email"     => $this->currentUser->getEmail(),
       "api"       => $this->currentUser->getRoapikey(),
       "rwapi"     => $this->currentUser->getRwapikey(),
+      "ip"        => $this->currentUser->getIp(),
+      "config"    => json_decode($this->currentUser->getConfigSys()),
       "group"     => $this->currentUser->getRightss()->toArray()
     ];
 
@@ -680,7 +682,7 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  function updateProfile($name, $mail, $api, &$error, $rwapi = false) {
+  function updateProfile($name, $mail, $api, &$error, $rwapi = false, $ip = false, $config = false) {
     if (strlen($name) < 3) {
       $error[] = 'profile_error_nameempty';
       return false;
@@ -699,6 +701,8 @@ class DB
       ->setEmail($mail)
       ->setRoapikey($api)
       ->setRwapikey($rwapi)
+      ->setIp(trim($ip))
+      ->setConfigSys($config)
       ->save();
     return true;
   }
