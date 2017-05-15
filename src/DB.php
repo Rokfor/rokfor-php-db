@@ -560,25 +560,42 @@ class DB
   }
 
   /**
-   * creates a new user
+   * checks email and username for existence
    *
    * @param string $checkUserName
    * @param string $checkUserEmail
    * @return void
    * @author Urs Hofer
    */
-  function newUser($checkUserName = false, $checkUserEmail = false) {
+  function checkUser($checkUserName, $checkUserEmail, $checkPass = false, $ownId = false) {
+    $errors = [];
+    if ($checkPass && !$this->checkPasswordStrength($checkPass, $errors)) {
+      return true;
+    }
 
-    if ($checkUserName || $checkUserEmail) {
+    if ($checkUserName != "" && $checkUserEmail != "") {
       $q = $this->UsersQuery()
               ->filterByEmail($checkUserEmail)
               ->_or()
-              ->filterByUsername($checkUserName);
-      if ($q->count() > 0) {
+              ->filterByUsername($checkUserName)
+              ->_if($ownId)
+                ->filterById($ownId, \Propel\Runtime\ActiveQuery\Criteria::NOT_EQUAL)
+              ->_endif();
+      if ($q->count() == 0) {
         return false;
       }
     }
+    return true;
+  }
 
+
+  /**
+   * creates a new user
+   *
+   * @return void
+   * @author Urs Hofer
+   */
+  function newUser() {
     return new \Users();
   }
 
