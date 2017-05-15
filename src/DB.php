@@ -568,10 +568,11 @@ class DB
    * @author Urs Hofer
    */
   function checkUser($checkUserName, $checkUserEmail, $checkPass = false, $ownId = false, &$err = false) {
-    if ($err)
-      $errors = &$err;
-    else
+    if ($err === false)
       $errors = [];
+    else
+      $errors = &$err;
+
     if ($checkPass && !$this->checkPasswordStrength($checkPass, $errors)) {
       return true;
     }
