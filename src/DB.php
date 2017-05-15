@@ -567,8 +567,11 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  function checkUser($checkUserName, $checkUserEmail, $checkPass = false, $ownId = false) {
-    $errors = [];
+  function checkUser($checkUserName, $checkUserEmail, $checkPass = false, $ownId = false, &$err = false) {
+    if ($err)
+      $errors = &$err;
+    else
+      $errors = [];
     if ($checkPass && !$this->checkPasswordStrength($checkPass, $errors)) {
       return true;
     }
