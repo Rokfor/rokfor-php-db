@@ -27,6 +27,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsersQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     ChildUsersQuery orderByRoapikey($order = Criteria::ASC) Order by the roapikey column
  * @method     ChildUsersQuery orderByRwapikey($order = Criteria::ASC) Order by the rwapikey column
+ * @method     ChildUsersQuery orderByIp($order = Criteria::ASC) Order by the __ip__ column
+ * @method     ChildUsersQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
  *
  * @method     ChildUsersQuery groupById() Group by the id column
  * @method     ChildUsersQuery groupByUsername() Group by the username column
@@ -35,6 +37,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsersQuery groupByEmail() Group by the email column
  * @method     ChildUsersQuery groupByRoapikey() Group by the roapikey column
  * @method     ChildUsersQuery groupByRwapikey() Group by the rwapikey column
+ * @method     ChildUsersQuery groupByIp() Group by the __ip__ column
+ * @method     ChildUsersQuery groupByConfigSys() Group by the __config__ column
  *
  * @method     ChildUsersQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUsersQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -75,7 +79,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsers findOneByUsergroup(string $usergroup) Return the first ChildUsers filtered by the usergroup column
  * @method     ChildUsers findOneByEmail(string $email) Return the first ChildUsers filtered by the email column
  * @method     ChildUsers findOneByRoapikey(string $roapikey) Return the first ChildUsers filtered by the roapikey column
- * @method     ChildUsers findOneByRwapikey(string $rwapikey) Return the first ChildUsers filtered by the rwapikey column *
+ * @method     ChildUsers findOneByRwapikey(string $rwapikey) Return the first ChildUsers filtered by the rwapikey column
+ * @method     ChildUsers findOneByIp(string $__ip__) Return the first ChildUsers filtered by the __ip__ column
+ * @method     ChildUsers findOneByConfigSys(string $__config__) Return the first ChildUsers filtered by the __config__ column *
 
  * @method     ChildUsers requirePk($key, ConnectionInterface $con = null) Return the ChildUsers by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUsers requireOne(ConnectionInterface $con = null) Return the first ChildUsers matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -87,6 +93,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsers requireOneByEmail(string $email) Return the first ChildUsers filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUsers requireOneByRoapikey(string $roapikey) Return the first ChildUsers filtered by the roapikey column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUsers requireOneByRwapikey(string $rwapikey) Return the first ChildUsers filtered by the rwapikey column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUsers requireOneByIp(string $__ip__) Return the first ChildUsers filtered by the __ip__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUsers requireOneByConfigSys(string $__config__) Return the first ChildUsers filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUsers[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUsers objects based on current ModelCriteria
  * @method     ChildUsers[]|ObjectCollection findById(int $id) Return ChildUsers objects filtered by the id column
@@ -96,6 +104,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsers[]|ObjectCollection findByEmail(string $email) Return ChildUsers objects filtered by the email column
  * @method     ChildUsers[]|ObjectCollection findByRoapikey(string $roapikey) Return ChildUsers objects filtered by the roapikey column
  * @method     ChildUsers[]|ObjectCollection findByRwapikey(string $rwapikey) Return ChildUsers objects filtered by the rwapikey column
+ * @method     ChildUsers[]|ObjectCollection findByIp(string $__ip__) Return ChildUsers objects filtered by the __ip__ column
+ * @method     ChildUsers[]|ObjectCollection findByConfigSys(string $__config__) Return ChildUsers objects filtered by the __config__ column
  * @method     ChildUsers[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -188,7 +198,7 @@ abstract class UsersQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, username, password, usergroup, email, roapikey, rwapikey FROM users WHERE id = :p0';
+        $sql = 'SELECT id, username, password, usergroup, email, roapikey, rwapikey, __ip__, __config__ FROM users WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -491,6 +501,64 @@ abstract class UsersQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UsersTableMap::COL_RWAPIKEY, $rwapikey, $comparison);
+    }
+
+    /**
+     * Filter the query on the __ip__ column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIp('fooValue');   // WHERE __ip__ = 'fooValue'
+     * $query->filterByIp('%fooValue%'); // WHERE __ip__ LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $ip The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByIp($ip = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($ip)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $ip)) {
+                $ip = str_replace('*', '%', $ip);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UsersTableMap::COL___IP__, $ip, $comparison);
+    }
+
+    /**
+     * Filter the query on the __config__ column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $configSys The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUsersQuery The current query, for fluid interface
+     */
+    public function filterByConfigSys($configSys = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($configSys)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $configSys)) {
+                $configSys = str_replace('*', '%', $configSys);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UsersTableMap::COL___CONFIG__, $configSys, $comparison);
     }
 
     /**

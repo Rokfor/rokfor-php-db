@@ -59,7 +59,7 @@ class UsersTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UsersTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -107,6 +107,16 @@ class UsersTableMap extends TableMap
     const COL_RWAPIKEY = 'users.rwapikey';
 
     /**
+     * the column name for the __ip__ field
+     */
+    const COL___IP__ = 'users.__ip__';
+
+    /**
+     * the column name for the __config__ field
+     */
+    const COL___CONFIG__ = 'users.__config__';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -118,11 +128,11 @@ class UsersTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Username', 'Password', 'Usergroup', 'Email', 'Roapikey', 'Rwapikey', ),
-        self::TYPE_CAMELNAME     => array('id', 'username', 'password', 'usergroup', 'email', 'roapikey', 'rwapikey', ),
-        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID, UsersTableMap::COL_USERNAME, UsersTableMap::COL_PASSWORD, UsersTableMap::COL_USERGROUP, UsersTableMap::COL_EMAIL, UsersTableMap::COL_ROAPIKEY, UsersTableMap::COL_RWAPIKEY, ),
-        self::TYPE_FIELDNAME     => array('id', 'username', 'password', 'usergroup', 'email', 'roapikey', 'rwapikey', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'Username', 'Password', 'Usergroup', 'Email', 'Roapikey', 'Rwapikey', 'Ip', 'ConfigSys', ),
+        self::TYPE_CAMELNAME     => array('id', 'username', 'password', 'usergroup', 'email', 'roapikey', 'rwapikey', 'ip', 'configSys', ),
+        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID, UsersTableMap::COL_USERNAME, UsersTableMap::COL_PASSWORD, UsersTableMap::COL_USERGROUP, UsersTableMap::COL_EMAIL, UsersTableMap::COL_ROAPIKEY, UsersTableMap::COL_RWAPIKEY, UsersTableMap::COL___IP__, UsersTableMap::COL___CONFIG__, ),
+        self::TYPE_FIELDNAME     => array('id', 'username', 'password', 'usergroup', 'email', 'roapikey', 'rwapikey', '__ip__', '__config__', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -132,11 +142,11 @@ class UsersTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Username' => 1, 'Password' => 2, 'Usergroup' => 3, 'Email' => 4, 'Roapikey' => 5, 'Rwapikey' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'email' => 4, 'roapikey' => 5, 'rwapikey' => 6, ),
-        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID => 0, UsersTableMap::COL_USERNAME => 1, UsersTableMap::COL_PASSWORD => 2, UsersTableMap::COL_USERGROUP => 3, UsersTableMap::COL_EMAIL => 4, UsersTableMap::COL_ROAPIKEY => 5, UsersTableMap::COL_RWAPIKEY => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'email' => 4, 'roapikey' => 5, 'rwapikey' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Username' => 1, 'Password' => 2, 'Usergroup' => 3, 'Email' => 4, 'Roapikey' => 5, 'Rwapikey' => 6, 'Ip' => 7, 'ConfigSys' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'email' => 4, 'roapikey' => 5, 'rwapikey' => 6, 'ip' => 7, 'configSys' => 8, ),
+        self::TYPE_COLNAME       => array(UsersTableMap::COL_ID => 0, UsersTableMap::COL_USERNAME => 1, UsersTableMap::COL_PASSWORD => 2, UsersTableMap::COL_USERGROUP => 3, UsersTableMap::COL_EMAIL => 4, UsersTableMap::COL_ROAPIKEY => 5, UsersTableMap::COL_RWAPIKEY => 6, UsersTableMap::COL___IP__ => 7, UsersTableMap::COL___CONFIG__ => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'username' => 1, 'password' => 2, 'usergroup' => 3, 'email' => 4, 'roapikey' => 5, 'rwapikey' => 6, '__ip__' => 7, '__config__' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -163,6 +173,8 @@ class UsersTableMap extends TableMap
         $this->addColumn('email', 'Email', 'LONGVARCHAR', false, null, null);
         $this->addColumn('roapikey', 'Roapikey', 'LONGVARCHAR', false, null, null);
         $this->addColumn('rwapikey', 'Rwapikey', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__ip__', 'Ip', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('__config__', 'ConfigSys', 'LONGVARCHAR', false, null, null);
     } // initialize()
 
     /**
@@ -377,6 +389,8 @@ class UsersTableMap extends TableMap
             $criteria->addSelectColumn(UsersTableMap::COL_EMAIL);
             $criteria->addSelectColumn(UsersTableMap::COL_ROAPIKEY);
             $criteria->addSelectColumn(UsersTableMap::COL_RWAPIKEY);
+            $criteria->addSelectColumn(UsersTableMap::COL___IP__);
+            $criteria->addSelectColumn(UsersTableMap::COL___CONFIG__);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.username');
@@ -385,6 +399,8 @@ class UsersTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.email');
             $criteria->addSelectColumn($alias . '.roapikey');
             $criteria->addSelectColumn($alias . '.rwapikey');
+            $criteria->addSelectColumn($alias . '.__ip__');
+            $criteria->addSelectColumn($alias . '.__config__');
         }
     }
 

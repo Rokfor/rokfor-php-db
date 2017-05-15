@@ -673,6 +673,8 @@
     <column name="email" phpName="Email" type="LONGVARCHAR"/>
     <column name="roapikey" phpName="Roapikey" type="LONGVARCHAR"/>
     <column name="rwapikey" phpName="Rwapikey" type="LONGVARCHAR"/>
+    <column name="__ip__" phpName="Ip" type="LONGVARCHAR"/>
+    <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
     <index name="id">
       <index-column name="id"/>
     </index>

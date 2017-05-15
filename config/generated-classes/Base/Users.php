@@ -118,6 +118,18 @@ abstract class Users implements ActiveRecordInterface
     protected $rwapikey;
 
     /**
+     * The value for the __ip__ field.
+     * @var        string
+     */
+    protected $__ip__;
+
+    /**
+     * The value for the __config__ field.
+     * @var        string
+     */
+    protected $__config__;
+
+    /**
      * @var        ObjectCollection|ChildRRightsForuser[] Collection to store aggregation of ChildRRightsForuser objects.
      */
     protected $collRRightsForusers;
@@ -501,6 +513,26 @@ abstract class Users implements ActiveRecordInterface
     }
 
     /**
+     * Get the [__ip__] column value.
+     *
+     * @return string
+     */
+    public function getIp()
+    {
+        return $this->__ip__;
+    }
+
+    /**
+     * Get the [__config__] column value.
+     *
+     * @return string
+     */
+    public function getConfigSys()
+    {
+        return $this->__config__;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -641,6 +673,46 @@ abstract class Users implements ActiveRecordInterface
     } // setRwapikey()
 
     /**
+     * Set the value of [__ip__] column.
+     *
+     * @param string $v new value
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function setIp($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->__ip__ !== $v) {
+            $this->__ip__ = $v;
+            $this->modifiedColumns[UsersTableMap::COL___IP__] = true;
+        }
+
+        return $this;
+    } // setIp()
+
+    /**
+     * Set the value of [__config__] column.
+     *
+     * @param string $v new value
+     * @return $this|\Users The current object (for fluent API support)
+     */
+    public function setConfigSys($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->__config__ !== $v) {
+            $this->__config__ = $v;
+            $this->modifiedColumns[UsersTableMap::COL___CONFIG__] = true;
+        }
+
+        return $this;
+    } // setConfigSys()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -696,6 +768,12 @@ abstract class Users implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UsersTableMap::translateFieldName('Rwapikey', TableMap::TYPE_PHPNAME, $indexType)];
             $this->rwapikey = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UsersTableMap::translateFieldName('Ip', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->__ip__ = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UsersTableMap::translateFieldName('ConfigSys', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->__config__ = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -704,7 +782,7 @@ abstract class Users implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = UsersTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = UsersTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Users'), 0, $e);
@@ -1071,6 +1149,12 @@ abstract class Users implements ActiveRecordInterface
         if ($this->isColumnModified(UsersTableMap::COL_RWAPIKEY)) {
             $modifiedColumns[':p' . $index++]  = 'rwapikey';
         }
+        if ($this->isColumnModified(UsersTableMap::COL___IP__)) {
+            $modifiedColumns[':p' . $index++]  = '__ip__';
+        }
+        if ($this->isColumnModified(UsersTableMap::COL___CONFIG__)) {
+            $modifiedColumns[':p' . $index++]  = '__config__';
+        }
 
         $sql = sprintf(
             'INSERT INTO users (%s) VALUES (%s)',
@@ -1102,6 +1186,12 @@ abstract class Users implements ActiveRecordInterface
                         break;
                     case 'rwapikey':
                         $stmt->bindValue($identifier, $this->rwapikey, PDO::PARAM_STR);
+                        break;
+                    case '__ip__':
+                        $stmt->bindValue($identifier, $this->__ip__, PDO::PARAM_STR);
+                        break;
+                    case '__config__':
+                        $stmt->bindValue($identifier, $this->__config__, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1186,6 +1276,12 @@ abstract class Users implements ActiveRecordInterface
             case 6:
                 return $this->getRwapikey();
                 break;
+            case 7:
+                return $this->getIp();
+                break;
+            case 8:
+                return $this->getConfigSys();
+                break;
             default:
                 return null;
                 break;
@@ -1223,6 +1319,8 @@ abstract class Users implements ActiveRecordInterface
             $keys[4] => $this->getEmail(),
             $keys[5] => $this->getRoapikey(),
             $keys[6] => $this->getRwapikey(),
+            $keys[7] => $this->getIp(),
+            $keys[8] => $this->getConfigSys(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1375,6 +1473,12 @@ abstract class Users implements ActiveRecordInterface
             case 6:
                 $this->setRwapikey($value);
                 break;
+            case 7:
+                $this->setIp($value);
+                break;
+            case 8:
+                $this->setConfigSys($value);
+                break;
         } // switch()
 
         return $this;
@@ -1421,6 +1525,12 @@ abstract class Users implements ActiveRecordInterface
         }
         if (array_key_exists($keys[6], $arr)) {
             $this->setRwapikey($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setIp($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setConfigSys($arr[$keys[8]]);
         }
     }
 
@@ -1483,6 +1593,12 @@ abstract class Users implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UsersTableMap::COL_RWAPIKEY)) {
             $criteria->add(UsersTableMap::COL_RWAPIKEY, $this->rwapikey);
+        }
+        if ($this->isColumnModified(UsersTableMap::COL___IP__)) {
+            $criteria->add(UsersTableMap::COL___IP__, $this->__ip__);
+        }
+        if ($this->isColumnModified(UsersTableMap::COL___CONFIG__)) {
+            $criteria->add(UsersTableMap::COL___CONFIG__, $this->__config__);
         }
 
         return $criteria;
@@ -1576,6 +1692,8 @@ abstract class Users implements ActiveRecordInterface
         $copyObj->setEmail($this->getEmail());
         $copyObj->setRoapikey($this->getRoapikey());
         $copyObj->setRwapikey($this->getRwapikey());
+        $copyObj->setIp($this->getIp());
+        $copyObj->setConfigSys($this->getConfigSys());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -3446,6 +3564,8 @@ abstract class Users implements ActiveRecordInterface
         $this->email = null;
         $this->roapikey = null;
         $this->rwapikey = null;
+        $this->__ip__ = null;
+        $this->__config__ = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
