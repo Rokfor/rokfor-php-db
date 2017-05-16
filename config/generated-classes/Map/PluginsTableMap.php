@@ -172,9 +172,9 @@ class PluginsTableMap extends TableMap
         $this->addColumn('__split__', 'Split', 'LONGVARCHAR', false, null, null);
         $this->addColumn('__parentnode__', 'Parentnode', 'INTEGER', false, 32, null);
         $this->addColumn('__sort__', 'Sort', 'INTEGER', false, 32, null);
-        $this->addColumn('_page', 'Page', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_config', 'Config', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_callback', 'Callback', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('_page', 'Page', 'CLOB', false, null, null);
+        $this->addColumn('_config', 'Config', 'CLOB', false, null, null);
+        $this->addColumn('_callback', 'Callback', 'CLOB', false, null, null);
     } // initialize()
 
     /**
@@ -182,13 +182,46 @@ class PluginsTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Pdf', '\\Pdf', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('RIssuesAllplugin', '\\RIssuesAllplugin', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':_plugin',
+    0 => ':_pluginid',
     1 => ':id',
   ),
-), 'CASCADE', 'CASCADE', 'Pdfs', false);
+), 'CASCADE', 'CASCADE', 'RIssuesAllplugins', false);
+        $this->addRelation('RIssuesNarrationplugin', '\\RIssuesNarrationplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_pluginid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesNarrationplugins', false);
+        $this->addRelation('RIssuesRtfplugin', '\\RIssuesRtfplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_pluginid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesRtfplugins', false);
+        $this->addRelation('RIssuesSingleplugin', '\\RIssuesSingleplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_pluginid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesSingleplugins', false);
+        $this->addRelation('RIssuesXmlplugin', '\\RIssuesXmlplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_pluginid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesXmlplugins', false);
+        $this->addRelation('AllIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'AllIssues');
+        $this->addRelation('NarrationIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'NarrationIssues');
+        $this->addRelation('RtfIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RtfIssues');
+        $this->addRelation('SingleIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'SingleIssues');
+        $this->addRelation('XmlIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'XmlIssues');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _plugins     * by a foreign key with ON DELETE CASCADE
@@ -197,7 +230,11 @@ class PluginsTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        PdfTableMap::clearInstancePool();
+        RIssuesAllpluginTableMap::clearInstancePool();
+        RIssuesNarrationpluginTableMap::clearInstancePool();
+        RIssuesRtfpluginTableMap::clearInstancePool();
+        RIssuesSinglepluginTableMap::clearInstancePool();
+        RIssuesXmlpluginTableMap::clearInstancePool();
     }
 
     /**

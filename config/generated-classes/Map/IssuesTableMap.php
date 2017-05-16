@@ -214,6 +214,41 @@ class IssuesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
+        $this->addRelation('RIssuesAllplugin', '\\RIssuesAllplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_issueid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesAllplugins', false);
+        $this->addRelation('RIssuesNarrationplugin', '\\RIssuesNarrationplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_issueid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesNarrationplugins', false);
+        $this->addRelation('RIssuesRtfplugin', '\\RIssuesRtfplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_issueid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesRtfplugins', false);
+        $this->addRelation('RIssuesSingleplugin', '\\RIssuesSingleplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_issueid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesSingleplugins', false);
+        $this->addRelation('RIssuesXmlplugin', '\\RIssuesXmlplugin', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_issueid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RIssuesXmlplugins', false);
         $this->addRelation('RRightsForissue', '\\RRightsForissue', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -235,6 +270,11 @@ class IssuesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RDataIssues', false);
+        $this->addRelation('AllPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'AllPlugins');
+        $this->addRelation('NarrationPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'NarrationPlugins');
+        $this->addRelation('RtfPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RtfPlugins');
+        $this->addRelation('SinglePlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'SinglePlugins');
+        $this->addRelation('XmlPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'XmlPlugins');
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
         $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
     } // buildRelations()
@@ -245,6 +285,11 @@ class IssuesTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        RIssuesAllpluginTableMap::clearInstancePool();
+        RIssuesNarrationpluginTableMap::clearInstancePool();
+        RIssuesRtfpluginTableMap::clearInstancePool();
+        RIssuesSinglepluginTableMap::clearInstancePool();
+        RIssuesXmlpluginTableMap::clearInstancePool();
         RRightsForissueTableMap::clearInstancePool();
         ContributionsTableMap::clearInstancePool();
         RDataIssueTableMap::clearInstancePool();

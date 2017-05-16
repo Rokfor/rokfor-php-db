@@ -2,10 +2,20 @@
 
 namespace Base;
 
-use \Pdf as ChildPdf;
-use \PdfQuery as ChildPdfQuery;
+use \Issues as ChildIssues;
+use \IssuesQuery as ChildIssuesQuery;
 use \Plugins as ChildPlugins;
 use \PluginsQuery as ChildPluginsQuery;
+use \RIssuesAllplugin as ChildRIssuesAllplugin;
+use \RIssuesAllpluginQuery as ChildRIssuesAllpluginQuery;
+use \RIssuesNarrationplugin as ChildRIssuesNarrationplugin;
+use \RIssuesNarrationpluginQuery as ChildRIssuesNarrationpluginQuery;
+use \RIssuesRtfplugin as ChildRIssuesRtfplugin;
+use \RIssuesRtfpluginQuery as ChildRIssuesRtfpluginQuery;
+use \RIssuesSingleplugin as ChildRIssuesSingleplugin;
+use \RIssuesSinglepluginQuery as ChildRIssuesSinglepluginQuery;
+use \RIssuesXmlplugin as ChildRIssuesXmlplugin;
+use \RIssuesXmlpluginQuery as ChildRIssuesXmlpluginQuery;
 use \Exception;
 use \PDO;
 use Map\PluginsTableMap;
@@ -118,10 +128,84 @@ abstract class Plugins implements ActiveRecordInterface
     protected $_callback;
 
     /**
-     * @var        ObjectCollection|ChildPdf[] Collection to store aggregation of ChildPdf objects.
+     * @var        ObjectCollection|ChildRIssuesAllplugin[] Collection to store aggregation of ChildRIssuesAllplugin objects.
      */
-    protected $collPdfs;
-    protected $collPdfsPartial;
+    protected $collRIssuesAllplugins;
+    protected $collRIssuesAllpluginsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRIssuesNarrationplugin[] Collection to store aggregation of ChildRIssuesNarrationplugin objects.
+     */
+    protected $collRIssuesNarrationplugins;
+    protected $collRIssuesNarrationpluginsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRIssuesRtfplugin[] Collection to store aggregation of ChildRIssuesRtfplugin objects.
+     */
+    protected $collRIssuesRtfplugins;
+    protected $collRIssuesRtfpluginsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRIssuesSingleplugin[] Collection to store aggregation of ChildRIssuesSingleplugin objects.
+     */
+    protected $collRIssuesSingleplugins;
+    protected $collRIssuesSinglepluginsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRIssuesXmlplugin[] Collection to store aggregation of ChildRIssuesXmlplugin objects.
+     */
+    protected $collRIssuesXmlplugins;
+    protected $collRIssuesXmlpluginsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Cross Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collAllIssues;
+
+    /**
+     * @var bool
+     */
+    protected $collAllIssuesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Cross Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collNarrationIssues;
+
+    /**
+     * @var bool
+     */
+    protected $collNarrationIssuesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Cross Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collRtfIssues;
+
+    /**
+     * @var bool
+     */
+    protected $collRtfIssuesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Cross Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collSingleIssues;
+
+    /**
+     * @var bool
+     */
+    protected $collSingleIssuesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildIssues[] Cross Collection to store aggregation of ChildIssues objects.
+     */
+    protected $collXmlIssues;
+
+    /**
+     * @var bool
+     */
+    protected $collXmlIssuesPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -133,9 +217,63 @@ abstract class Plugins implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildPdf[]
+     * @var ObjectCollection|ChildIssues[]
      */
-    protected $pdfsScheduledForDeletion = null;
+    protected $allIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildIssues[]
+     */
+    protected $narrationIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildIssues[]
+     */
+    protected $rtfIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildIssues[]
+     */
+    protected $singleIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildIssues[]
+     */
+    protected $xmlIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRIssuesAllplugin[]
+     */
+    protected $rIssuesAllpluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRIssuesNarrationplugin[]
+     */
+    protected $rIssuesNarrationpluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRIssuesRtfplugin[]
+     */
+    protected $rIssuesRtfpluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRIssuesSingleplugin[]
+     */
+    protected $rIssuesSinglepluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRIssuesXmlplugin[]
+     */
+    protected $rIssuesXmlpluginsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Plugins object.
@@ -755,8 +893,21 @@ abstract class Plugins implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collPdfs = null;
+            $this->collRIssuesAllplugins = null;
 
+            $this->collRIssuesNarrationplugins = null;
+
+            $this->collRIssuesRtfplugins = null;
+
+            $this->collRIssuesSingleplugins = null;
+
+            $this->collRIssuesXmlplugins = null;
+
+            $this->collAllIssues = null;
+            $this->collNarrationIssues = null;
+            $this->collRtfIssues = null;
+            $this->collSingleIssues = null;
+            $this->collXmlIssues = null;
         } // if (deep)
     }
 
@@ -867,17 +1018,230 @@ abstract class Plugins implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->pdfsScheduledForDeletion !== null) {
-                if (!$this->pdfsScheduledForDeletion->isEmpty()) {
-                    \PdfQuery::create()
-                        ->filterByPrimaryKeys($this->pdfsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->allIssuesScheduledForDeletion !== null) {
+                if (!$this->allIssuesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->allIssuesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RIssuesAllpluginQuery::create()
+                        ->filterByPrimaryKeys($pks)
                         ->delete($con);
-                    $this->pdfsScheduledForDeletion = null;
+
+                    $this->allIssuesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collAllIssues) {
+                foreach ($this->collAllIssues as $allIssue) {
+                    if (!$allIssue->isDeleted() && ($allIssue->isNew() || $allIssue->isModified())) {
+                        $allIssue->save($con);
+                    }
                 }
             }
 
-            if ($this->collPdfs !== null) {
-                foreach ($this->collPdfs as $referrerFK) {
+
+            if ($this->narrationIssuesScheduledForDeletion !== null) {
+                if (!$this->narrationIssuesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->narrationIssuesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RIssuesNarrationpluginQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->narrationIssuesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collNarrationIssues) {
+                foreach ($this->collNarrationIssues as $narrationIssue) {
+                    if (!$narrationIssue->isDeleted() && ($narrationIssue->isNew() || $narrationIssue->isModified())) {
+                        $narrationIssue->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rtfIssuesScheduledForDeletion !== null) {
+                if (!$this->rtfIssuesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rtfIssuesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RIssuesRtfpluginQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rtfIssuesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRtfIssues) {
+                foreach ($this->collRtfIssues as $rtfIssue) {
+                    if (!$rtfIssue->isDeleted() && ($rtfIssue->isNew() || $rtfIssue->isModified())) {
+                        $rtfIssue->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->singleIssuesScheduledForDeletion !== null) {
+                if (!$this->singleIssuesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->singleIssuesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RIssuesSinglepluginQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->singleIssuesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collSingleIssues) {
+                foreach ($this->collSingleIssues as $singleIssue) {
+                    if (!$singleIssue->isDeleted() && ($singleIssue->isNew() || $singleIssue->isModified())) {
+                        $singleIssue->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->xmlIssuesScheduledForDeletion !== null) {
+                if (!$this->xmlIssuesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->xmlIssuesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RIssuesXmlpluginQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->xmlIssuesScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collXmlIssues) {
+                foreach ($this->collXmlIssues as $xmlIssue) {
+                    if (!$xmlIssue->isDeleted() && ($xmlIssue->isNew() || $xmlIssue->isModified())) {
+                        $xmlIssue->save($con);
+                    }
+                }
+            }
+
+
+            if ($this->rIssuesAllpluginsScheduledForDeletion !== null) {
+                if (!$this->rIssuesAllpluginsScheduledForDeletion->isEmpty()) {
+                    \RIssuesAllpluginQuery::create()
+                        ->filterByPrimaryKeys($this->rIssuesAllpluginsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rIssuesAllpluginsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRIssuesAllplugins !== null) {
+                foreach ($this->collRIssuesAllplugins as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rIssuesNarrationpluginsScheduledForDeletion !== null) {
+                if (!$this->rIssuesNarrationpluginsScheduledForDeletion->isEmpty()) {
+                    \RIssuesNarrationpluginQuery::create()
+                        ->filterByPrimaryKeys($this->rIssuesNarrationpluginsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rIssuesNarrationpluginsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRIssuesNarrationplugins !== null) {
+                foreach ($this->collRIssuesNarrationplugins as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rIssuesRtfpluginsScheduledForDeletion !== null) {
+                if (!$this->rIssuesRtfpluginsScheduledForDeletion->isEmpty()) {
+                    \RIssuesRtfpluginQuery::create()
+                        ->filterByPrimaryKeys($this->rIssuesRtfpluginsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rIssuesRtfpluginsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRIssuesRtfplugins !== null) {
+                foreach ($this->collRIssuesRtfplugins as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rIssuesSinglepluginsScheduledForDeletion !== null) {
+                if (!$this->rIssuesSinglepluginsScheduledForDeletion->isEmpty()) {
+                    \RIssuesSinglepluginQuery::create()
+                        ->filterByPrimaryKeys($this->rIssuesSinglepluginsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rIssuesSinglepluginsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRIssuesSingleplugins !== null) {
+                foreach ($this->collRIssuesSingleplugins as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rIssuesXmlpluginsScheduledForDeletion !== null) {
+                if (!$this->rIssuesXmlpluginsScheduledForDeletion->isEmpty()) {
+                    \RIssuesXmlpluginQuery::create()
+                        ->filterByPrimaryKeys($this->rIssuesXmlpluginsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rIssuesXmlpluginsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRIssuesXmlplugins !== null) {
+                foreach ($this->collRIssuesXmlplugins as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1110,20 +1474,80 @@ abstract class Plugins implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collPdfs) {
+            if (null !== $this->collRIssuesAllplugins) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'pdfs';
+                        $key = 'rIssuesAllplugins';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = '_pdfs';
+                        $key = 'R_issues_allplugins';
                         break;
                     default:
-                        $key = 'Pdfs';
+                        $key = 'RIssuesAllplugins';
                 }
 
-                $result[$key] = $this->collPdfs->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collRIssuesAllplugins->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRIssuesNarrationplugins) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rIssuesNarrationplugins';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_issues_narrationplugins';
+                        break;
+                    default:
+                        $key = 'RIssuesNarrationplugins';
+                }
+
+                $result[$key] = $this->collRIssuesNarrationplugins->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRIssuesRtfplugins) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rIssuesRtfplugins';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_issues_rtfplugins';
+                        break;
+                    default:
+                        $key = 'RIssuesRtfplugins';
+                }
+
+                $result[$key] = $this->collRIssuesRtfplugins->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRIssuesSingleplugins) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rIssuesSingleplugins';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_issues_singleplugins';
+                        break;
+                    default:
+                        $key = 'RIssuesSingleplugins';
+                }
+
+                $result[$key] = $this->collRIssuesSingleplugins->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRIssuesXmlplugins) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rIssuesXmlplugins';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_issues_xmlplugins';
+                        break;
+                    default:
+                        $key = 'RIssuesXmlplugins';
+                }
+
+                $result[$key] = $this->collRIssuesXmlplugins->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1407,9 +1831,33 @@ abstract class Plugins implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getPdfs() as $relObj) {
+            foreach ($this->getRIssuesAllplugins() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPdf($relObj->copy($deepCopy));
+                    $copyObj->addRIssuesAllplugin($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRIssuesNarrationplugins() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRIssuesNarrationplugin($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRIssuesRtfplugins() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRIssuesRtfplugin($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRIssuesSingleplugins() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRIssuesSingleplugin($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRIssuesXmlplugins() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRIssuesXmlplugin($relObj->copy($deepCopy));
                 }
             }
 
@@ -1454,37 +1902,49 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('Pdf' == $relationName) {
-            return $this->initPdfs();
+        if ('RIssuesAllplugin' == $relationName) {
+            return $this->initRIssuesAllplugins();
+        }
+        if ('RIssuesNarrationplugin' == $relationName) {
+            return $this->initRIssuesNarrationplugins();
+        }
+        if ('RIssuesRtfplugin' == $relationName) {
+            return $this->initRIssuesRtfplugins();
+        }
+        if ('RIssuesSingleplugin' == $relationName) {
+            return $this->initRIssuesSingleplugins();
+        }
+        if ('RIssuesXmlplugin' == $relationName) {
+            return $this->initRIssuesXmlplugins();
         }
     }
 
     /**
-     * Clears out the collPdfs collection
+     * Clears out the collRIssuesAllplugins collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addPdfs()
+     * @see        addRIssuesAllplugins()
      */
-    public function clearPdfs()
+    public function clearRIssuesAllplugins()
     {
-        $this->collPdfs = null; // important to set this to NULL since that means it is uninitialized
+        $this->collRIssuesAllplugins = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collPdfs collection loaded partially.
+     * Reset is the collRIssuesAllplugins collection loaded partially.
      */
-    public function resetPartialPdfs($v = true)
+    public function resetPartialRIssuesAllplugins($v = true)
     {
-        $this->collPdfsPartial = $v;
+        $this->collRIssuesAllpluginsPartial = $v;
     }
 
     /**
-     * Initializes the collPdfs collection.
+     * Initializes the collRIssuesAllplugins collection.
      *
-     * By default this just sets the collPdfs collection to an empty array (like clearcollPdfs());
+     * By default this just sets the collRIssuesAllplugins collection to an empty array (like clearcollRIssuesAllplugins());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1493,17 +1953,17 @@ abstract class Plugins implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initPdfs($overrideExisting = true)
+    public function initRIssuesAllplugins($overrideExisting = true)
     {
-        if (null !== $this->collPdfs && !$overrideExisting) {
+        if (null !== $this->collRIssuesAllplugins && !$overrideExisting) {
             return;
         }
-        $this->collPdfs = new ObjectCollection();
-        $this->collPdfs->setModel('\Pdf');
+        $this->collRIssuesAllplugins = new ObjectCollection();
+        $this->collRIssuesAllplugins->setModel('\RIssuesAllplugin');
     }
 
     /**
-     * Gets an array of ChildPdf objects which contain a foreign key that references this object.
+     * Gets an array of ChildRIssuesAllplugin objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1513,166 +1973,2388 @@ abstract class Plugins implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildPdf[] List of ChildPdf objects
+     * @return ObjectCollection|ChildRIssuesAllplugin[] List of ChildRIssuesAllplugin objects
      * @throws PropelException
      */
-    public function getPdfs(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getRIssuesAllplugins(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collPdfsPartial && !$this->isNew();
-        if (null === $this->collPdfs || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPdfs) {
+        $partial = $this->collRIssuesAllpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesAllplugins || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesAllplugins) {
                 // return empty collection
-                $this->initPdfs();
+                $this->initRIssuesAllplugins();
             } else {
-                $collPdfs = ChildPdfQuery::create(null, $criteria)
-                    ->filterByPlugins($this)
+                $collRIssuesAllplugins = ChildRIssuesAllpluginQuery::create(null, $criteria)
+                    ->filterByAllPlugin($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collPdfsPartial && count($collPdfs)) {
-                        $this->initPdfs(false);
+                    if (false !== $this->collRIssuesAllpluginsPartial && count($collRIssuesAllplugins)) {
+                        $this->initRIssuesAllplugins(false);
 
-                        foreach ($collPdfs as $obj) {
-                            if (false == $this->collPdfs->contains($obj)) {
-                                $this->collPdfs->append($obj);
+                        foreach ($collRIssuesAllplugins as $obj) {
+                            if (false == $this->collRIssuesAllplugins->contains($obj)) {
+                                $this->collRIssuesAllplugins->append($obj);
                             }
                         }
 
-                        $this->collPdfsPartial = true;
+                        $this->collRIssuesAllpluginsPartial = true;
                     }
 
-                    return $collPdfs;
+                    return $collRIssuesAllplugins;
                 }
 
-                if ($partial && $this->collPdfs) {
-                    foreach ($this->collPdfs as $obj) {
+                if ($partial && $this->collRIssuesAllplugins) {
+                    foreach ($this->collRIssuesAllplugins as $obj) {
                         if ($obj->isNew()) {
-                            $collPdfs[] = $obj;
+                            $collRIssuesAllplugins[] = $obj;
                         }
                     }
                 }
 
-                $this->collPdfs = $collPdfs;
-                $this->collPdfsPartial = false;
+                $this->collRIssuesAllplugins = $collRIssuesAllplugins;
+                $this->collRIssuesAllpluginsPartial = false;
             }
         }
 
-        return $this->collPdfs;
+        return $this->collRIssuesAllplugins;
     }
 
     /**
-     * Sets a collection of ChildPdf objects related by a one-to-many relationship
+     * Sets a collection of ChildRIssuesAllplugin objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $pdfs A Propel collection.
+     * @param      Collection $rIssuesAllplugins A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildPlugins The current object (for fluent API support)
      */
-    public function setPdfs(Collection $pdfs, ConnectionInterface $con = null)
+    public function setRIssuesAllplugins(Collection $rIssuesAllplugins, ConnectionInterface $con = null)
     {
-        /** @var ChildPdf[] $pdfsToDelete */
-        $pdfsToDelete = $this->getPdfs(new Criteria(), $con)->diff($pdfs);
+        /** @var ChildRIssuesAllplugin[] $rIssuesAllpluginsToDelete */
+        $rIssuesAllpluginsToDelete = $this->getRIssuesAllplugins(new Criteria(), $con)->diff($rIssuesAllplugins);
 
 
-        $this->pdfsScheduledForDeletion = $pdfsToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rIssuesAllpluginsScheduledForDeletion = clone $rIssuesAllpluginsToDelete;
 
-        foreach ($pdfsToDelete as $pdfRemoved) {
-            $pdfRemoved->setPlugins(null);
+        foreach ($rIssuesAllpluginsToDelete as $rIssuesAllpluginRemoved) {
+            $rIssuesAllpluginRemoved->setAllPlugin(null);
         }
 
-        $this->collPdfs = null;
-        foreach ($pdfs as $pdf) {
-            $this->addPdf($pdf);
+        $this->collRIssuesAllplugins = null;
+        foreach ($rIssuesAllplugins as $rIssuesAllplugin) {
+            $this->addRIssuesAllplugin($rIssuesAllplugin);
         }
 
-        $this->collPdfs = $pdfs;
-        $this->collPdfsPartial = false;
+        $this->collRIssuesAllplugins = $rIssuesAllplugins;
+        $this->collRIssuesAllpluginsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Pdf objects.
+     * Returns the number of related RIssuesAllplugin objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Pdf objects.
+     * @return int             Count of related RIssuesAllplugin objects.
      * @throws PropelException
      */
-    public function countPdfs(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countRIssuesAllplugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collPdfsPartial && !$this->isNew();
-        if (null === $this->collPdfs || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPdfs) {
+        $partial = $this->collRIssuesAllpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesAllplugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesAllplugins) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getPdfs());
+                return count($this->getRIssuesAllplugins());
             }
 
-            $query = ChildPdfQuery::create(null, $criteria);
+            $query = ChildRIssuesAllpluginQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByPlugins($this)
+                ->filterByAllPlugin($this)
                 ->count($con);
         }
 
-        return count($this->collPdfs);
+        return count($this->collRIssuesAllplugins);
     }
 
     /**
-     * Method called to associate a ChildPdf object to this object
-     * through the ChildPdf foreign key attribute.
+     * Method called to associate a ChildRIssuesAllplugin object to this object
+     * through the ChildRIssuesAllplugin foreign key attribute.
      *
-     * @param  ChildPdf $l ChildPdf
+     * @param  ChildRIssuesAllplugin $l ChildRIssuesAllplugin
      * @return $this|\Plugins The current object (for fluent API support)
      */
-    public function addPdf(ChildPdf $l)
+    public function addRIssuesAllplugin(ChildRIssuesAllplugin $l)
     {
-        if ($this->collPdfs === null) {
-            $this->initPdfs();
-            $this->collPdfsPartial = true;
+        if ($this->collRIssuesAllplugins === null) {
+            $this->initRIssuesAllplugins();
+            $this->collRIssuesAllpluginsPartial = true;
         }
 
-        if (!$this->collPdfs->contains($l)) {
-            $this->doAddPdf($l);
+        if (!$this->collRIssuesAllplugins->contains($l)) {
+            $this->doAddRIssuesAllplugin($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildPdf $pdf The ChildPdf object to add.
+     * @param ChildRIssuesAllplugin $rIssuesAllplugin The ChildRIssuesAllplugin object to add.
      */
-    protected function doAddPdf(ChildPdf $pdf)
+    protected function doAddRIssuesAllplugin(ChildRIssuesAllplugin $rIssuesAllplugin)
     {
-        $this->collPdfs[]= $pdf;
-        $pdf->setPlugins($this);
+        $this->collRIssuesAllplugins[]= $rIssuesAllplugin;
+        $rIssuesAllplugin->setAllPlugin($this);
     }
 
     /**
-     * @param  ChildPdf $pdf The ChildPdf object to remove.
+     * @param  ChildRIssuesAllplugin $rIssuesAllplugin The ChildRIssuesAllplugin object to remove.
      * @return $this|ChildPlugins The current object (for fluent API support)
      */
-    public function removePdf(ChildPdf $pdf)
+    public function removeRIssuesAllplugin(ChildRIssuesAllplugin $rIssuesAllplugin)
     {
-        if ($this->getPdfs()->contains($pdf)) {
-            $pos = $this->collPdfs->search($pdf);
-            $this->collPdfs->remove($pos);
-            if (null === $this->pdfsScheduledForDeletion) {
-                $this->pdfsScheduledForDeletion = clone $this->collPdfs;
-                $this->pdfsScheduledForDeletion->clear();
+        if ($this->getRIssuesAllplugins()->contains($rIssuesAllplugin)) {
+            $pos = $this->collRIssuesAllplugins->search($rIssuesAllplugin);
+            $this->collRIssuesAllplugins->remove($pos);
+            if (null === $this->rIssuesAllpluginsScheduledForDeletion) {
+                $this->rIssuesAllpluginsScheduledForDeletion = clone $this->collRIssuesAllplugins;
+                $this->rIssuesAllpluginsScheduledForDeletion->clear();
             }
-            $this->pdfsScheduledForDeletion[]= $pdf;
-            $pdf->setPlugins(null);
+            $this->rIssuesAllpluginsScheduledForDeletion[]= clone $rIssuesAllplugin;
+            $rIssuesAllplugin->setAllPlugin(null);
         }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Plugins is new, it will return
+     * an empty collection; or if this Plugins has previously
+     * been saved, it will retrieve related RIssuesAllplugins from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Plugins.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRIssuesAllplugin[] List of ChildRIssuesAllplugin objects
+     */
+    public function getRIssuesAllpluginsJoinAllIssue(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRIssuesAllpluginQuery::create(null, $criteria);
+        $query->joinWith('AllIssue', $joinBehavior);
+
+        return $this->getRIssuesAllplugins($query, $con);
+    }
+
+    /**
+     * Clears out the collRIssuesNarrationplugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRIssuesNarrationplugins()
+     */
+    public function clearRIssuesNarrationplugins()
+    {
+        $this->collRIssuesNarrationplugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRIssuesNarrationplugins collection loaded partially.
+     */
+    public function resetPartialRIssuesNarrationplugins($v = true)
+    {
+        $this->collRIssuesNarrationpluginsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRIssuesNarrationplugins collection.
+     *
+     * By default this just sets the collRIssuesNarrationplugins collection to an empty array (like clearcollRIssuesNarrationplugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRIssuesNarrationplugins($overrideExisting = true)
+    {
+        if (null !== $this->collRIssuesNarrationplugins && !$overrideExisting) {
+            return;
+        }
+        $this->collRIssuesNarrationplugins = new ObjectCollection();
+        $this->collRIssuesNarrationplugins->setModel('\RIssuesNarrationplugin');
+    }
+
+    /**
+     * Gets an array of ChildRIssuesNarrationplugin objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRIssuesNarrationplugin[] List of ChildRIssuesNarrationplugin objects
+     * @throws PropelException
+     */
+    public function getRIssuesNarrationplugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesNarrationpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesNarrationplugins || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesNarrationplugins) {
+                // return empty collection
+                $this->initRIssuesNarrationplugins();
+            } else {
+                $collRIssuesNarrationplugins = ChildRIssuesNarrationpluginQuery::create(null, $criteria)
+                    ->filterByNarrationPlugin($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRIssuesNarrationpluginsPartial && count($collRIssuesNarrationplugins)) {
+                        $this->initRIssuesNarrationplugins(false);
+
+                        foreach ($collRIssuesNarrationplugins as $obj) {
+                            if (false == $this->collRIssuesNarrationplugins->contains($obj)) {
+                                $this->collRIssuesNarrationplugins->append($obj);
+                            }
+                        }
+
+                        $this->collRIssuesNarrationpluginsPartial = true;
+                    }
+
+                    return $collRIssuesNarrationplugins;
+                }
+
+                if ($partial && $this->collRIssuesNarrationplugins) {
+                    foreach ($this->collRIssuesNarrationplugins as $obj) {
+                        if ($obj->isNew()) {
+                            $collRIssuesNarrationplugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRIssuesNarrationplugins = $collRIssuesNarrationplugins;
+                $this->collRIssuesNarrationpluginsPartial = false;
+            }
+        }
+
+        return $this->collRIssuesNarrationplugins;
+    }
+
+    /**
+     * Sets a collection of ChildRIssuesNarrationplugin objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rIssuesNarrationplugins A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setRIssuesNarrationplugins(Collection $rIssuesNarrationplugins, ConnectionInterface $con = null)
+    {
+        /** @var ChildRIssuesNarrationplugin[] $rIssuesNarrationpluginsToDelete */
+        $rIssuesNarrationpluginsToDelete = $this->getRIssuesNarrationplugins(new Criteria(), $con)->diff($rIssuesNarrationplugins);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rIssuesNarrationpluginsScheduledForDeletion = clone $rIssuesNarrationpluginsToDelete;
+
+        foreach ($rIssuesNarrationpluginsToDelete as $rIssuesNarrationpluginRemoved) {
+            $rIssuesNarrationpluginRemoved->setNarrationPlugin(null);
+        }
+
+        $this->collRIssuesNarrationplugins = null;
+        foreach ($rIssuesNarrationplugins as $rIssuesNarrationplugin) {
+            $this->addRIssuesNarrationplugin($rIssuesNarrationplugin);
+        }
+
+        $this->collRIssuesNarrationplugins = $rIssuesNarrationplugins;
+        $this->collRIssuesNarrationpluginsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RIssuesNarrationplugin objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RIssuesNarrationplugin objects.
+     * @throws PropelException
+     */
+    public function countRIssuesNarrationplugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesNarrationpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesNarrationplugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesNarrationplugins) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRIssuesNarrationplugins());
+            }
+
+            $query = ChildRIssuesNarrationpluginQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByNarrationPlugin($this)
+                ->count($con);
+        }
+
+        return count($this->collRIssuesNarrationplugins);
+    }
+
+    /**
+     * Method called to associate a ChildRIssuesNarrationplugin object to this object
+     * through the ChildRIssuesNarrationplugin foreign key attribute.
+     *
+     * @param  ChildRIssuesNarrationplugin $l ChildRIssuesNarrationplugin
+     * @return $this|\Plugins The current object (for fluent API support)
+     */
+    public function addRIssuesNarrationplugin(ChildRIssuesNarrationplugin $l)
+    {
+        if ($this->collRIssuesNarrationplugins === null) {
+            $this->initRIssuesNarrationplugins();
+            $this->collRIssuesNarrationpluginsPartial = true;
+        }
+
+        if (!$this->collRIssuesNarrationplugins->contains($l)) {
+            $this->doAddRIssuesNarrationplugin($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRIssuesNarrationplugin $rIssuesNarrationplugin The ChildRIssuesNarrationplugin object to add.
+     */
+    protected function doAddRIssuesNarrationplugin(ChildRIssuesNarrationplugin $rIssuesNarrationplugin)
+    {
+        $this->collRIssuesNarrationplugins[]= $rIssuesNarrationplugin;
+        $rIssuesNarrationplugin->setNarrationPlugin($this);
+    }
+
+    /**
+     * @param  ChildRIssuesNarrationplugin $rIssuesNarrationplugin The ChildRIssuesNarrationplugin object to remove.
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function removeRIssuesNarrationplugin(ChildRIssuesNarrationplugin $rIssuesNarrationplugin)
+    {
+        if ($this->getRIssuesNarrationplugins()->contains($rIssuesNarrationplugin)) {
+            $pos = $this->collRIssuesNarrationplugins->search($rIssuesNarrationplugin);
+            $this->collRIssuesNarrationplugins->remove($pos);
+            if (null === $this->rIssuesNarrationpluginsScheduledForDeletion) {
+                $this->rIssuesNarrationpluginsScheduledForDeletion = clone $this->collRIssuesNarrationplugins;
+                $this->rIssuesNarrationpluginsScheduledForDeletion->clear();
+            }
+            $this->rIssuesNarrationpluginsScheduledForDeletion[]= clone $rIssuesNarrationplugin;
+            $rIssuesNarrationplugin->setNarrationPlugin(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Plugins is new, it will return
+     * an empty collection; or if this Plugins has previously
+     * been saved, it will retrieve related RIssuesNarrationplugins from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Plugins.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRIssuesNarrationplugin[] List of ChildRIssuesNarrationplugin objects
+     */
+    public function getRIssuesNarrationpluginsJoinNarrationIssue(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRIssuesNarrationpluginQuery::create(null, $criteria);
+        $query->joinWith('NarrationIssue', $joinBehavior);
+
+        return $this->getRIssuesNarrationplugins($query, $con);
+    }
+
+    /**
+     * Clears out the collRIssuesRtfplugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRIssuesRtfplugins()
+     */
+    public function clearRIssuesRtfplugins()
+    {
+        $this->collRIssuesRtfplugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRIssuesRtfplugins collection loaded partially.
+     */
+    public function resetPartialRIssuesRtfplugins($v = true)
+    {
+        $this->collRIssuesRtfpluginsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRIssuesRtfplugins collection.
+     *
+     * By default this just sets the collRIssuesRtfplugins collection to an empty array (like clearcollRIssuesRtfplugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRIssuesRtfplugins($overrideExisting = true)
+    {
+        if (null !== $this->collRIssuesRtfplugins && !$overrideExisting) {
+            return;
+        }
+        $this->collRIssuesRtfplugins = new ObjectCollection();
+        $this->collRIssuesRtfplugins->setModel('\RIssuesRtfplugin');
+    }
+
+    /**
+     * Gets an array of ChildRIssuesRtfplugin objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRIssuesRtfplugin[] List of ChildRIssuesRtfplugin objects
+     * @throws PropelException
+     */
+    public function getRIssuesRtfplugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesRtfpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesRtfplugins || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesRtfplugins) {
+                // return empty collection
+                $this->initRIssuesRtfplugins();
+            } else {
+                $collRIssuesRtfplugins = ChildRIssuesRtfpluginQuery::create(null, $criteria)
+                    ->filterByRtfPlugin($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRIssuesRtfpluginsPartial && count($collRIssuesRtfplugins)) {
+                        $this->initRIssuesRtfplugins(false);
+
+                        foreach ($collRIssuesRtfplugins as $obj) {
+                            if (false == $this->collRIssuesRtfplugins->contains($obj)) {
+                                $this->collRIssuesRtfplugins->append($obj);
+                            }
+                        }
+
+                        $this->collRIssuesRtfpluginsPartial = true;
+                    }
+
+                    return $collRIssuesRtfplugins;
+                }
+
+                if ($partial && $this->collRIssuesRtfplugins) {
+                    foreach ($this->collRIssuesRtfplugins as $obj) {
+                        if ($obj->isNew()) {
+                            $collRIssuesRtfplugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRIssuesRtfplugins = $collRIssuesRtfplugins;
+                $this->collRIssuesRtfpluginsPartial = false;
+            }
+        }
+
+        return $this->collRIssuesRtfplugins;
+    }
+
+    /**
+     * Sets a collection of ChildRIssuesRtfplugin objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rIssuesRtfplugins A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setRIssuesRtfplugins(Collection $rIssuesRtfplugins, ConnectionInterface $con = null)
+    {
+        /** @var ChildRIssuesRtfplugin[] $rIssuesRtfpluginsToDelete */
+        $rIssuesRtfpluginsToDelete = $this->getRIssuesRtfplugins(new Criteria(), $con)->diff($rIssuesRtfplugins);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rIssuesRtfpluginsScheduledForDeletion = clone $rIssuesRtfpluginsToDelete;
+
+        foreach ($rIssuesRtfpluginsToDelete as $rIssuesRtfpluginRemoved) {
+            $rIssuesRtfpluginRemoved->setRtfPlugin(null);
+        }
+
+        $this->collRIssuesRtfplugins = null;
+        foreach ($rIssuesRtfplugins as $rIssuesRtfplugin) {
+            $this->addRIssuesRtfplugin($rIssuesRtfplugin);
+        }
+
+        $this->collRIssuesRtfplugins = $rIssuesRtfplugins;
+        $this->collRIssuesRtfpluginsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RIssuesRtfplugin objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RIssuesRtfplugin objects.
+     * @throws PropelException
+     */
+    public function countRIssuesRtfplugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesRtfpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesRtfplugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesRtfplugins) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRIssuesRtfplugins());
+            }
+
+            $query = ChildRIssuesRtfpluginQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRtfPlugin($this)
+                ->count($con);
+        }
+
+        return count($this->collRIssuesRtfplugins);
+    }
+
+    /**
+     * Method called to associate a ChildRIssuesRtfplugin object to this object
+     * through the ChildRIssuesRtfplugin foreign key attribute.
+     *
+     * @param  ChildRIssuesRtfplugin $l ChildRIssuesRtfplugin
+     * @return $this|\Plugins The current object (for fluent API support)
+     */
+    public function addRIssuesRtfplugin(ChildRIssuesRtfplugin $l)
+    {
+        if ($this->collRIssuesRtfplugins === null) {
+            $this->initRIssuesRtfplugins();
+            $this->collRIssuesRtfpluginsPartial = true;
+        }
+
+        if (!$this->collRIssuesRtfplugins->contains($l)) {
+            $this->doAddRIssuesRtfplugin($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRIssuesRtfplugin $rIssuesRtfplugin The ChildRIssuesRtfplugin object to add.
+     */
+    protected function doAddRIssuesRtfplugin(ChildRIssuesRtfplugin $rIssuesRtfplugin)
+    {
+        $this->collRIssuesRtfplugins[]= $rIssuesRtfplugin;
+        $rIssuesRtfplugin->setRtfPlugin($this);
+    }
+
+    /**
+     * @param  ChildRIssuesRtfplugin $rIssuesRtfplugin The ChildRIssuesRtfplugin object to remove.
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function removeRIssuesRtfplugin(ChildRIssuesRtfplugin $rIssuesRtfplugin)
+    {
+        if ($this->getRIssuesRtfplugins()->contains($rIssuesRtfplugin)) {
+            $pos = $this->collRIssuesRtfplugins->search($rIssuesRtfplugin);
+            $this->collRIssuesRtfplugins->remove($pos);
+            if (null === $this->rIssuesRtfpluginsScheduledForDeletion) {
+                $this->rIssuesRtfpluginsScheduledForDeletion = clone $this->collRIssuesRtfplugins;
+                $this->rIssuesRtfpluginsScheduledForDeletion->clear();
+            }
+            $this->rIssuesRtfpluginsScheduledForDeletion[]= clone $rIssuesRtfplugin;
+            $rIssuesRtfplugin->setRtfPlugin(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Plugins is new, it will return
+     * an empty collection; or if this Plugins has previously
+     * been saved, it will retrieve related RIssuesRtfplugins from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Plugins.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRIssuesRtfplugin[] List of ChildRIssuesRtfplugin objects
+     */
+    public function getRIssuesRtfpluginsJoinRtfIssue(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRIssuesRtfpluginQuery::create(null, $criteria);
+        $query->joinWith('RtfIssue', $joinBehavior);
+
+        return $this->getRIssuesRtfplugins($query, $con);
+    }
+
+    /**
+     * Clears out the collRIssuesSingleplugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRIssuesSingleplugins()
+     */
+    public function clearRIssuesSingleplugins()
+    {
+        $this->collRIssuesSingleplugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRIssuesSingleplugins collection loaded partially.
+     */
+    public function resetPartialRIssuesSingleplugins($v = true)
+    {
+        $this->collRIssuesSinglepluginsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRIssuesSingleplugins collection.
+     *
+     * By default this just sets the collRIssuesSingleplugins collection to an empty array (like clearcollRIssuesSingleplugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRIssuesSingleplugins($overrideExisting = true)
+    {
+        if (null !== $this->collRIssuesSingleplugins && !$overrideExisting) {
+            return;
+        }
+        $this->collRIssuesSingleplugins = new ObjectCollection();
+        $this->collRIssuesSingleplugins->setModel('\RIssuesSingleplugin');
+    }
+
+    /**
+     * Gets an array of ChildRIssuesSingleplugin objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRIssuesSingleplugin[] List of ChildRIssuesSingleplugin objects
+     * @throws PropelException
+     */
+    public function getRIssuesSingleplugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesSinglepluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesSingleplugins || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesSingleplugins) {
+                // return empty collection
+                $this->initRIssuesSingleplugins();
+            } else {
+                $collRIssuesSingleplugins = ChildRIssuesSinglepluginQuery::create(null, $criteria)
+                    ->filterBySinglePlugin($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRIssuesSinglepluginsPartial && count($collRIssuesSingleplugins)) {
+                        $this->initRIssuesSingleplugins(false);
+
+                        foreach ($collRIssuesSingleplugins as $obj) {
+                            if (false == $this->collRIssuesSingleplugins->contains($obj)) {
+                                $this->collRIssuesSingleplugins->append($obj);
+                            }
+                        }
+
+                        $this->collRIssuesSinglepluginsPartial = true;
+                    }
+
+                    return $collRIssuesSingleplugins;
+                }
+
+                if ($partial && $this->collRIssuesSingleplugins) {
+                    foreach ($this->collRIssuesSingleplugins as $obj) {
+                        if ($obj->isNew()) {
+                            $collRIssuesSingleplugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRIssuesSingleplugins = $collRIssuesSingleplugins;
+                $this->collRIssuesSinglepluginsPartial = false;
+            }
+        }
+
+        return $this->collRIssuesSingleplugins;
+    }
+
+    /**
+     * Sets a collection of ChildRIssuesSingleplugin objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rIssuesSingleplugins A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setRIssuesSingleplugins(Collection $rIssuesSingleplugins, ConnectionInterface $con = null)
+    {
+        /** @var ChildRIssuesSingleplugin[] $rIssuesSinglepluginsToDelete */
+        $rIssuesSinglepluginsToDelete = $this->getRIssuesSingleplugins(new Criteria(), $con)->diff($rIssuesSingleplugins);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rIssuesSinglepluginsScheduledForDeletion = clone $rIssuesSinglepluginsToDelete;
+
+        foreach ($rIssuesSinglepluginsToDelete as $rIssuesSinglepluginRemoved) {
+            $rIssuesSinglepluginRemoved->setSinglePlugin(null);
+        }
+
+        $this->collRIssuesSingleplugins = null;
+        foreach ($rIssuesSingleplugins as $rIssuesSingleplugin) {
+            $this->addRIssuesSingleplugin($rIssuesSingleplugin);
+        }
+
+        $this->collRIssuesSingleplugins = $rIssuesSingleplugins;
+        $this->collRIssuesSinglepluginsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RIssuesSingleplugin objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RIssuesSingleplugin objects.
+     * @throws PropelException
+     */
+    public function countRIssuesSingleplugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesSinglepluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesSingleplugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesSingleplugins) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRIssuesSingleplugins());
+            }
+
+            $query = ChildRIssuesSinglepluginQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterBySinglePlugin($this)
+                ->count($con);
+        }
+
+        return count($this->collRIssuesSingleplugins);
+    }
+
+    /**
+     * Method called to associate a ChildRIssuesSingleplugin object to this object
+     * through the ChildRIssuesSingleplugin foreign key attribute.
+     *
+     * @param  ChildRIssuesSingleplugin $l ChildRIssuesSingleplugin
+     * @return $this|\Plugins The current object (for fluent API support)
+     */
+    public function addRIssuesSingleplugin(ChildRIssuesSingleplugin $l)
+    {
+        if ($this->collRIssuesSingleplugins === null) {
+            $this->initRIssuesSingleplugins();
+            $this->collRIssuesSinglepluginsPartial = true;
+        }
+
+        if (!$this->collRIssuesSingleplugins->contains($l)) {
+            $this->doAddRIssuesSingleplugin($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRIssuesSingleplugin $rIssuesSingleplugin The ChildRIssuesSingleplugin object to add.
+     */
+    protected function doAddRIssuesSingleplugin(ChildRIssuesSingleplugin $rIssuesSingleplugin)
+    {
+        $this->collRIssuesSingleplugins[]= $rIssuesSingleplugin;
+        $rIssuesSingleplugin->setSinglePlugin($this);
+    }
+
+    /**
+     * @param  ChildRIssuesSingleplugin $rIssuesSingleplugin The ChildRIssuesSingleplugin object to remove.
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function removeRIssuesSingleplugin(ChildRIssuesSingleplugin $rIssuesSingleplugin)
+    {
+        if ($this->getRIssuesSingleplugins()->contains($rIssuesSingleplugin)) {
+            $pos = $this->collRIssuesSingleplugins->search($rIssuesSingleplugin);
+            $this->collRIssuesSingleplugins->remove($pos);
+            if (null === $this->rIssuesSinglepluginsScheduledForDeletion) {
+                $this->rIssuesSinglepluginsScheduledForDeletion = clone $this->collRIssuesSingleplugins;
+                $this->rIssuesSinglepluginsScheduledForDeletion->clear();
+            }
+            $this->rIssuesSinglepluginsScheduledForDeletion[]= clone $rIssuesSingleplugin;
+            $rIssuesSingleplugin->setSinglePlugin(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Plugins is new, it will return
+     * an empty collection; or if this Plugins has previously
+     * been saved, it will retrieve related RIssuesSingleplugins from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Plugins.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRIssuesSingleplugin[] List of ChildRIssuesSingleplugin objects
+     */
+    public function getRIssuesSinglepluginsJoinSingleIssue(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRIssuesSinglepluginQuery::create(null, $criteria);
+        $query->joinWith('SingleIssue', $joinBehavior);
+
+        return $this->getRIssuesSingleplugins($query, $con);
+    }
+
+    /**
+     * Clears out the collRIssuesXmlplugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRIssuesXmlplugins()
+     */
+    public function clearRIssuesXmlplugins()
+    {
+        $this->collRIssuesXmlplugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRIssuesXmlplugins collection loaded partially.
+     */
+    public function resetPartialRIssuesXmlplugins($v = true)
+    {
+        $this->collRIssuesXmlpluginsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRIssuesXmlplugins collection.
+     *
+     * By default this just sets the collRIssuesXmlplugins collection to an empty array (like clearcollRIssuesXmlplugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRIssuesXmlplugins($overrideExisting = true)
+    {
+        if (null !== $this->collRIssuesXmlplugins && !$overrideExisting) {
+            return;
+        }
+        $this->collRIssuesXmlplugins = new ObjectCollection();
+        $this->collRIssuesXmlplugins->setModel('\RIssuesXmlplugin');
+    }
+
+    /**
+     * Gets an array of ChildRIssuesXmlplugin objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRIssuesXmlplugin[] List of ChildRIssuesXmlplugin objects
+     * @throws PropelException
+     */
+    public function getRIssuesXmlplugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesXmlpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesXmlplugins || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesXmlplugins) {
+                // return empty collection
+                $this->initRIssuesXmlplugins();
+            } else {
+                $collRIssuesXmlplugins = ChildRIssuesXmlpluginQuery::create(null, $criteria)
+                    ->filterByXmlPlugin($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRIssuesXmlpluginsPartial && count($collRIssuesXmlplugins)) {
+                        $this->initRIssuesXmlplugins(false);
+
+                        foreach ($collRIssuesXmlplugins as $obj) {
+                            if (false == $this->collRIssuesXmlplugins->contains($obj)) {
+                                $this->collRIssuesXmlplugins->append($obj);
+                            }
+                        }
+
+                        $this->collRIssuesXmlpluginsPartial = true;
+                    }
+
+                    return $collRIssuesXmlplugins;
+                }
+
+                if ($partial && $this->collRIssuesXmlplugins) {
+                    foreach ($this->collRIssuesXmlplugins as $obj) {
+                        if ($obj->isNew()) {
+                            $collRIssuesXmlplugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRIssuesXmlplugins = $collRIssuesXmlplugins;
+                $this->collRIssuesXmlpluginsPartial = false;
+            }
+        }
+
+        return $this->collRIssuesXmlplugins;
+    }
+
+    /**
+     * Sets a collection of ChildRIssuesXmlplugin objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rIssuesXmlplugins A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setRIssuesXmlplugins(Collection $rIssuesXmlplugins, ConnectionInterface $con = null)
+    {
+        /** @var ChildRIssuesXmlplugin[] $rIssuesXmlpluginsToDelete */
+        $rIssuesXmlpluginsToDelete = $this->getRIssuesXmlplugins(new Criteria(), $con)->diff($rIssuesXmlplugins);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rIssuesXmlpluginsScheduledForDeletion = clone $rIssuesXmlpluginsToDelete;
+
+        foreach ($rIssuesXmlpluginsToDelete as $rIssuesXmlpluginRemoved) {
+            $rIssuesXmlpluginRemoved->setXmlPlugin(null);
+        }
+
+        $this->collRIssuesXmlplugins = null;
+        foreach ($rIssuesXmlplugins as $rIssuesXmlplugin) {
+            $this->addRIssuesXmlplugin($rIssuesXmlplugin);
+        }
+
+        $this->collRIssuesXmlplugins = $rIssuesXmlplugins;
+        $this->collRIssuesXmlpluginsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RIssuesXmlplugin objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RIssuesXmlplugin objects.
+     * @throws PropelException
+     */
+    public function countRIssuesXmlplugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRIssuesXmlpluginsPartial && !$this->isNew();
+        if (null === $this->collRIssuesXmlplugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRIssuesXmlplugins) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRIssuesXmlplugins());
+            }
+
+            $query = ChildRIssuesXmlpluginQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByXmlPlugin($this)
+                ->count($con);
+        }
+
+        return count($this->collRIssuesXmlplugins);
+    }
+
+    /**
+     * Method called to associate a ChildRIssuesXmlplugin object to this object
+     * through the ChildRIssuesXmlplugin foreign key attribute.
+     *
+     * @param  ChildRIssuesXmlplugin $l ChildRIssuesXmlplugin
+     * @return $this|\Plugins The current object (for fluent API support)
+     */
+    public function addRIssuesXmlplugin(ChildRIssuesXmlplugin $l)
+    {
+        if ($this->collRIssuesXmlplugins === null) {
+            $this->initRIssuesXmlplugins();
+            $this->collRIssuesXmlpluginsPartial = true;
+        }
+
+        if (!$this->collRIssuesXmlplugins->contains($l)) {
+            $this->doAddRIssuesXmlplugin($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRIssuesXmlplugin $rIssuesXmlplugin The ChildRIssuesXmlplugin object to add.
+     */
+    protected function doAddRIssuesXmlplugin(ChildRIssuesXmlplugin $rIssuesXmlplugin)
+    {
+        $this->collRIssuesXmlplugins[]= $rIssuesXmlplugin;
+        $rIssuesXmlplugin->setXmlPlugin($this);
+    }
+
+    /**
+     * @param  ChildRIssuesXmlplugin $rIssuesXmlplugin The ChildRIssuesXmlplugin object to remove.
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function removeRIssuesXmlplugin(ChildRIssuesXmlplugin $rIssuesXmlplugin)
+    {
+        if ($this->getRIssuesXmlplugins()->contains($rIssuesXmlplugin)) {
+            $pos = $this->collRIssuesXmlplugins->search($rIssuesXmlplugin);
+            $this->collRIssuesXmlplugins->remove($pos);
+            if (null === $this->rIssuesXmlpluginsScheduledForDeletion) {
+                $this->rIssuesXmlpluginsScheduledForDeletion = clone $this->collRIssuesXmlplugins;
+                $this->rIssuesXmlpluginsScheduledForDeletion->clear();
+            }
+            $this->rIssuesXmlpluginsScheduledForDeletion[]= clone $rIssuesXmlplugin;
+            $rIssuesXmlplugin->setXmlPlugin(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Plugins is new, it will return
+     * an empty collection; or if this Plugins has previously
+     * been saved, it will retrieve related RIssuesXmlplugins from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Plugins.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRIssuesXmlplugin[] List of ChildRIssuesXmlplugin objects
+     */
+    public function getRIssuesXmlpluginsJoinXmlIssue(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRIssuesXmlpluginQuery::create(null, $criteria);
+        $query->joinWith('XmlIssue', $joinBehavior);
+
+        return $this->getRIssuesXmlplugins($query, $con);
+    }
+
+    /**
+     * Clears out the collAllIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addAllIssues()
+     */
+    public function clearAllIssues()
+    {
+        $this->collAllIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collAllIssues crossRef collection.
+     *
+     * By default this just sets the collAllIssues collection to an empty collection (like clearAllIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initAllIssues()
+    {
+        $this->collAllIssues = new ObjectCollection();
+        $this->collAllIssuesPartial = true;
+
+        $this->collAllIssues->setModel('\Issues');
+    }
+
+    /**
+     * Checks if the collAllIssues collection is loaded.
+     *
+     * @return bool
+     */
+    public function isAllIssuesLoaded()
+    {
+        return null !== $this->collAllIssues;
+    }
+
+    /**
+     * Gets a collection of ChildIssues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_allplugin cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getAllIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAllIssuesPartial && !$this->isNew();
+        if (null === $this->collAllIssues || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collAllIssues) {
+                    $this->initAllIssues();
+                }
+            } else {
+
+                $query = ChildIssuesQuery::create(null, $criteria)
+                    ->filterByAllPlugin($this);
+                $collAllIssues = $query->find($con);
+                if (null !== $criteria) {
+                    return $collAllIssues;
+                }
+
+                if ($partial && $this->collAllIssues) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collAllIssues as $obj) {
+                        if (!$collAllIssues->contains($obj)) {
+                            $collAllIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collAllIssues = $collAllIssues;
+                $this->collAllIssuesPartial = false;
+            }
+        }
+
+        return $this->collAllIssues;
+    }
+
+    /**
+     * Sets a collection of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_allplugin cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $allIssues A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setAllIssues(Collection $allIssues, ConnectionInterface $con = null)
+    {
+        $this->clearAllIssues();
+        $currentAllIssues = $this->getAllIssues();
+
+        $allIssuesScheduledForDeletion = $currentAllIssues->diff($allIssues);
+
+        foreach ($allIssuesScheduledForDeletion as $toDelete) {
+            $this->removeAllIssue($toDelete);
+        }
+
+        foreach ($allIssues as $allIssue) {
+            if (!$currentAllIssues->contains($allIssue)) {
+                $this->doAddAllIssue($allIssue);
+            }
+        }
+
+        $this->collAllIssuesPartial = false;
+        $this->collAllIssues = $allIssues;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_allplugin cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Issues objects
+     */
+    public function countAllIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAllIssuesPartial && !$this->isNew();
+        if (null === $this->collAllIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collAllIssues) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getAllIssues());
+                }
+
+                $query = ChildIssuesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByAllPlugin($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collAllIssues);
+        }
+    }
+
+    /**
+     * Associate a ChildIssues to this object
+     * through the R_issues_allplugin cross reference table.
+     *
+     * @param ChildIssues $allIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function addAllIssue(ChildIssues $allIssue)
+    {
+        if ($this->collAllIssues === null) {
+            $this->initAllIssues();
+        }
+
+        if (!$this->getAllIssues()->contains($allIssue)) {
+            // only add it if the **same** object is not already associated
+            $this->collAllIssues->push($allIssue);
+            $this->doAddAllIssue($allIssue);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildIssues $allIssue
+     */
+    protected function doAddAllIssue(ChildIssues $allIssue)
+    {
+        $rIssuesAllplugin = new ChildRIssuesAllplugin();
+
+        $rIssuesAllplugin->setAllIssue($allIssue);
+
+        $rIssuesAllplugin->setAllPlugin($this);
+
+        $this->addRIssuesAllplugin($rIssuesAllplugin);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$allIssue->isAllPluginsLoaded()) {
+            $allIssue->initAllPlugins();
+            $allIssue->getAllPlugins()->push($this);
+        } elseif (!$allIssue->getAllPlugins()->contains($this)) {
+            $allIssue->getAllPlugins()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove allIssue of this object
+     * through the R_issues_allplugin cross reference table.
+     *
+     * @param ChildIssues $allIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function removeAllIssue(ChildIssues $allIssue)
+    {
+        if ($this->getAllIssues()->contains($allIssue)) { $rIssuesAllplugin = new ChildRIssuesAllplugin();
+
+            $rIssuesAllplugin->setAllIssue($allIssue);
+            if ($allIssue->isAllPluginsLoaded()) {
+                //remove the back reference if available
+                $allIssue->getAllPlugins()->removeObject($this);
+            }
+
+            $rIssuesAllplugin->setAllPlugin($this);
+            $this->removeRIssuesAllplugin(clone $rIssuesAllplugin);
+            $rIssuesAllplugin->clear();
+
+            $this->collAllIssues->remove($this->collAllIssues->search($allIssue));
+
+            if (null === $this->allIssuesScheduledForDeletion) {
+                $this->allIssuesScheduledForDeletion = clone $this->collAllIssues;
+                $this->allIssuesScheduledForDeletion->clear();
+            }
+
+            $this->allIssuesScheduledForDeletion->push($allIssue);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collNarrationIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addNarrationIssues()
+     */
+    public function clearNarrationIssues()
+    {
+        $this->collNarrationIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collNarrationIssues crossRef collection.
+     *
+     * By default this just sets the collNarrationIssues collection to an empty collection (like clearNarrationIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initNarrationIssues()
+    {
+        $this->collNarrationIssues = new ObjectCollection();
+        $this->collNarrationIssuesPartial = true;
+
+        $this->collNarrationIssues->setModel('\Issues');
+    }
+
+    /**
+     * Checks if the collNarrationIssues collection is loaded.
+     *
+     * @return bool
+     */
+    public function isNarrationIssuesLoaded()
+    {
+        return null !== $this->collNarrationIssues;
+    }
+
+    /**
+     * Gets a collection of ChildIssues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_narrationplugin cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getNarrationIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collNarrationIssuesPartial && !$this->isNew();
+        if (null === $this->collNarrationIssues || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collNarrationIssues) {
+                    $this->initNarrationIssues();
+                }
+            } else {
+
+                $query = ChildIssuesQuery::create(null, $criteria)
+                    ->filterByNarrationPlugin($this);
+                $collNarrationIssues = $query->find($con);
+                if (null !== $criteria) {
+                    return $collNarrationIssues;
+                }
+
+                if ($partial && $this->collNarrationIssues) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collNarrationIssues as $obj) {
+                        if (!$collNarrationIssues->contains($obj)) {
+                            $collNarrationIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collNarrationIssues = $collNarrationIssues;
+                $this->collNarrationIssuesPartial = false;
+            }
+        }
+
+        return $this->collNarrationIssues;
+    }
+
+    /**
+     * Sets a collection of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_narrationplugin cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $narrationIssues A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setNarrationIssues(Collection $narrationIssues, ConnectionInterface $con = null)
+    {
+        $this->clearNarrationIssues();
+        $currentNarrationIssues = $this->getNarrationIssues();
+
+        $narrationIssuesScheduledForDeletion = $currentNarrationIssues->diff($narrationIssues);
+
+        foreach ($narrationIssuesScheduledForDeletion as $toDelete) {
+            $this->removeNarrationIssue($toDelete);
+        }
+
+        foreach ($narrationIssues as $narrationIssue) {
+            if (!$currentNarrationIssues->contains($narrationIssue)) {
+                $this->doAddNarrationIssue($narrationIssue);
+            }
+        }
+
+        $this->collNarrationIssuesPartial = false;
+        $this->collNarrationIssues = $narrationIssues;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_narrationplugin cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Issues objects
+     */
+    public function countNarrationIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collNarrationIssuesPartial && !$this->isNew();
+        if (null === $this->collNarrationIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collNarrationIssues) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getNarrationIssues());
+                }
+
+                $query = ChildIssuesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByNarrationPlugin($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collNarrationIssues);
+        }
+    }
+
+    /**
+     * Associate a ChildIssues to this object
+     * through the R_issues_narrationplugin cross reference table.
+     *
+     * @param ChildIssues $narrationIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function addNarrationIssue(ChildIssues $narrationIssue)
+    {
+        if ($this->collNarrationIssues === null) {
+            $this->initNarrationIssues();
+        }
+
+        if (!$this->getNarrationIssues()->contains($narrationIssue)) {
+            // only add it if the **same** object is not already associated
+            $this->collNarrationIssues->push($narrationIssue);
+            $this->doAddNarrationIssue($narrationIssue);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildIssues $narrationIssue
+     */
+    protected function doAddNarrationIssue(ChildIssues $narrationIssue)
+    {
+        $rIssuesNarrationplugin = new ChildRIssuesNarrationplugin();
+
+        $rIssuesNarrationplugin->setNarrationIssue($narrationIssue);
+
+        $rIssuesNarrationplugin->setNarrationPlugin($this);
+
+        $this->addRIssuesNarrationplugin($rIssuesNarrationplugin);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$narrationIssue->isNarrationPluginsLoaded()) {
+            $narrationIssue->initNarrationPlugins();
+            $narrationIssue->getNarrationPlugins()->push($this);
+        } elseif (!$narrationIssue->getNarrationPlugins()->contains($this)) {
+            $narrationIssue->getNarrationPlugins()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove narrationIssue of this object
+     * through the R_issues_narrationplugin cross reference table.
+     *
+     * @param ChildIssues $narrationIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function removeNarrationIssue(ChildIssues $narrationIssue)
+    {
+        if ($this->getNarrationIssues()->contains($narrationIssue)) { $rIssuesNarrationplugin = new ChildRIssuesNarrationplugin();
+
+            $rIssuesNarrationplugin->setNarrationIssue($narrationIssue);
+            if ($narrationIssue->isNarrationPluginsLoaded()) {
+                //remove the back reference if available
+                $narrationIssue->getNarrationPlugins()->removeObject($this);
+            }
+
+            $rIssuesNarrationplugin->setNarrationPlugin($this);
+            $this->removeRIssuesNarrationplugin(clone $rIssuesNarrationplugin);
+            $rIssuesNarrationplugin->clear();
+
+            $this->collNarrationIssues->remove($this->collNarrationIssues->search($narrationIssue));
+
+            if (null === $this->narrationIssuesScheduledForDeletion) {
+                $this->narrationIssuesScheduledForDeletion = clone $this->collNarrationIssues;
+                $this->narrationIssuesScheduledForDeletion->clear();
+            }
+
+            $this->narrationIssuesScheduledForDeletion->push($narrationIssue);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collRtfIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRtfIssues()
+     */
+    public function clearRtfIssues()
+    {
+        $this->collRtfIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRtfIssues crossRef collection.
+     *
+     * By default this just sets the collRtfIssues collection to an empty collection (like clearRtfIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRtfIssues()
+    {
+        $this->collRtfIssues = new ObjectCollection();
+        $this->collRtfIssuesPartial = true;
+
+        $this->collRtfIssues->setModel('\Issues');
+    }
+
+    /**
+     * Checks if the collRtfIssues collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRtfIssuesLoaded()
+    {
+        return null !== $this->collRtfIssues;
+    }
+
+    /**
+     * Gets a collection of ChildIssues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_rtfplugin cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getRtfIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRtfIssuesPartial && !$this->isNew();
+        if (null === $this->collRtfIssues || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRtfIssues) {
+                    $this->initRtfIssues();
+                }
+            } else {
+
+                $query = ChildIssuesQuery::create(null, $criteria)
+                    ->filterByRtfPlugin($this);
+                $collRtfIssues = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRtfIssues;
+                }
+
+                if ($partial && $this->collRtfIssues) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRtfIssues as $obj) {
+                        if (!$collRtfIssues->contains($obj)) {
+                            $collRtfIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRtfIssues = $collRtfIssues;
+                $this->collRtfIssuesPartial = false;
+            }
+        }
+
+        return $this->collRtfIssues;
+    }
+
+    /**
+     * Sets a collection of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_rtfplugin cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rtfIssues A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setRtfIssues(Collection $rtfIssues, ConnectionInterface $con = null)
+    {
+        $this->clearRtfIssues();
+        $currentRtfIssues = $this->getRtfIssues();
+
+        $rtfIssuesScheduledForDeletion = $currentRtfIssues->diff($rtfIssues);
+
+        foreach ($rtfIssuesScheduledForDeletion as $toDelete) {
+            $this->removeRtfIssue($toDelete);
+        }
+
+        foreach ($rtfIssues as $rtfIssue) {
+            if (!$currentRtfIssues->contains($rtfIssue)) {
+                $this->doAddRtfIssue($rtfIssue);
+            }
+        }
+
+        $this->collRtfIssuesPartial = false;
+        $this->collRtfIssues = $rtfIssues;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_rtfplugin cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Issues objects
+     */
+    public function countRtfIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRtfIssuesPartial && !$this->isNew();
+        if (null === $this->collRtfIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRtfIssues) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRtfIssues());
+                }
+
+                $query = ChildIssuesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRtfPlugin($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRtfIssues);
+        }
+    }
+
+    /**
+     * Associate a ChildIssues to this object
+     * through the R_issues_rtfplugin cross reference table.
+     *
+     * @param ChildIssues $rtfIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function addRtfIssue(ChildIssues $rtfIssue)
+    {
+        if ($this->collRtfIssues === null) {
+            $this->initRtfIssues();
+        }
+
+        if (!$this->getRtfIssues()->contains($rtfIssue)) {
+            // only add it if the **same** object is not already associated
+            $this->collRtfIssues->push($rtfIssue);
+            $this->doAddRtfIssue($rtfIssue);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildIssues $rtfIssue
+     */
+    protected function doAddRtfIssue(ChildIssues $rtfIssue)
+    {
+        $rIssuesRtfplugin = new ChildRIssuesRtfplugin();
+
+        $rIssuesRtfplugin->setRtfIssue($rtfIssue);
+
+        $rIssuesRtfplugin->setRtfPlugin($this);
+
+        $this->addRIssuesRtfplugin($rIssuesRtfplugin);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rtfIssue->isRtfPluginsLoaded()) {
+            $rtfIssue->initRtfPlugins();
+            $rtfIssue->getRtfPlugins()->push($this);
+        } elseif (!$rtfIssue->getRtfPlugins()->contains($this)) {
+            $rtfIssue->getRtfPlugins()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rtfIssue of this object
+     * through the R_issues_rtfplugin cross reference table.
+     *
+     * @param ChildIssues $rtfIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function removeRtfIssue(ChildIssues $rtfIssue)
+    {
+        if ($this->getRtfIssues()->contains($rtfIssue)) { $rIssuesRtfplugin = new ChildRIssuesRtfplugin();
+
+            $rIssuesRtfplugin->setRtfIssue($rtfIssue);
+            if ($rtfIssue->isRtfPluginsLoaded()) {
+                //remove the back reference if available
+                $rtfIssue->getRtfPlugins()->removeObject($this);
+            }
+
+            $rIssuesRtfplugin->setRtfPlugin($this);
+            $this->removeRIssuesRtfplugin(clone $rIssuesRtfplugin);
+            $rIssuesRtfplugin->clear();
+
+            $this->collRtfIssues->remove($this->collRtfIssues->search($rtfIssue));
+
+            if (null === $this->rtfIssuesScheduledForDeletion) {
+                $this->rtfIssuesScheduledForDeletion = clone $this->collRtfIssues;
+                $this->rtfIssuesScheduledForDeletion->clear();
+            }
+
+            $this->rtfIssuesScheduledForDeletion->push($rtfIssue);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collSingleIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addSingleIssues()
+     */
+    public function clearSingleIssues()
+    {
+        $this->collSingleIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collSingleIssues crossRef collection.
+     *
+     * By default this just sets the collSingleIssues collection to an empty collection (like clearSingleIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initSingleIssues()
+    {
+        $this->collSingleIssues = new ObjectCollection();
+        $this->collSingleIssuesPartial = true;
+
+        $this->collSingleIssues->setModel('\Issues');
+    }
+
+    /**
+     * Checks if the collSingleIssues collection is loaded.
+     *
+     * @return bool
+     */
+    public function isSingleIssuesLoaded()
+    {
+        return null !== $this->collSingleIssues;
+    }
+
+    /**
+     * Gets a collection of ChildIssues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_singleplugin cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getSingleIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collSingleIssuesPartial && !$this->isNew();
+        if (null === $this->collSingleIssues || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collSingleIssues) {
+                    $this->initSingleIssues();
+                }
+            } else {
+
+                $query = ChildIssuesQuery::create(null, $criteria)
+                    ->filterBySinglePlugin($this);
+                $collSingleIssues = $query->find($con);
+                if (null !== $criteria) {
+                    return $collSingleIssues;
+                }
+
+                if ($partial && $this->collSingleIssues) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collSingleIssues as $obj) {
+                        if (!$collSingleIssues->contains($obj)) {
+                            $collSingleIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collSingleIssues = $collSingleIssues;
+                $this->collSingleIssuesPartial = false;
+            }
+        }
+
+        return $this->collSingleIssues;
+    }
+
+    /**
+     * Sets a collection of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_singleplugin cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $singleIssues A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setSingleIssues(Collection $singleIssues, ConnectionInterface $con = null)
+    {
+        $this->clearSingleIssues();
+        $currentSingleIssues = $this->getSingleIssues();
+
+        $singleIssuesScheduledForDeletion = $currentSingleIssues->diff($singleIssues);
+
+        foreach ($singleIssuesScheduledForDeletion as $toDelete) {
+            $this->removeSingleIssue($toDelete);
+        }
+
+        foreach ($singleIssues as $singleIssue) {
+            if (!$currentSingleIssues->contains($singleIssue)) {
+                $this->doAddSingleIssue($singleIssue);
+            }
+        }
+
+        $this->collSingleIssuesPartial = false;
+        $this->collSingleIssues = $singleIssues;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_singleplugin cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Issues objects
+     */
+    public function countSingleIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collSingleIssuesPartial && !$this->isNew();
+        if (null === $this->collSingleIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collSingleIssues) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getSingleIssues());
+                }
+
+                $query = ChildIssuesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterBySinglePlugin($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collSingleIssues);
+        }
+    }
+
+    /**
+     * Associate a ChildIssues to this object
+     * through the R_issues_singleplugin cross reference table.
+     *
+     * @param ChildIssues $singleIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function addSingleIssue(ChildIssues $singleIssue)
+    {
+        if ($this->collSingleIssues === null) {
+            $this->initSingleIssues();
+        }
+
+        if (!$this->getSingleIssues()->contains($singleIssue)) {
+            // only add it if the **same** object is not already associated
+            $this->collSingleIssues->push($singleIssue);
+            $this->doAddSingleIssue($singleIssue);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildIssues $singleIssue
+     */
+    protected function doAddSingleIssue(ChildIssues $singleIssue)
+    {
+        $rIssuesSingleplugin = new ChildRIssuesSingleplugin();
+
+        $rIssuesSingleplugin->setSingleIssue($singleIssue);
+
+        $rIssuesSingleplugin->setSinglePlugin($this);
+
+        $this->addRIssuesSingleplugin($rIssuesSingleplugin);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$singleIssue->isSinglePluginsLoaded()) {
+            $singleIssue->initSinglePlugins();
+            $singleIssue->getSinglePlugins()->push($this);
+        } elseif (!$singleIssue->getSinglePlugins()->contains($this)) {
+            $singleIssue->getSinglePlugins()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove singleIssue of this object
+     * through the R_issues_singleplugin cross reference table.
+     *
+     * @param ChildIssues $singleIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function removeSingleIssue(ChildIssues $singleIssue)
+    {
+        if ($this->getSingleIssues()->contains($singleIssue)) { $rIssuesSingleplugin = new ChildRIssuesSingleplugin();
+
+            $rIssuesSingleplugin->setSingleIssue($singleIssue);
+            if ($singleIssue->isSinglePluginsLoaded()) {
+                //remove the back reference if available
+                $singleIssue->getSinglePlugins()->removeObject($this);
+            }
+
+            $rIssuesSingleplugin->setSinglePlugin($this);
+            $this->removeRIssuesSingleplugin(clone $rIssuesSingleplugin);
+            $rIssuesSingleplugin->clear();
+
+            $this->collSingleIssues->remove($this->collSingleIssues->search($singleIssue));
+
+            if (null === $this->singleIssuesScheduledForDeletion) {
+                $this->singleIssuesScheduledForDeletion = clone $this->collSingleIssues;
+                $this->singleIssuesScheduledForDeletion->clear();
+            }
+
+            $this->singleIssuesScheduledForDeletion->push($singleIssue);
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collXmlIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addXmlIssues()
+     */
+    public function clearXmlIssues()
+    {
+        $this->collXmlIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collXmlIssues crossRef collection.
+     *
+     * By default this just sets the collXmlIssues collection to an empty collection (like clearXmlIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initXmlIssues()
+    {
+        $this->collXmlIssues = new ObjectCollection();
+        $this->collXmlIssuesPartial = true;
+
+        $this->collXmlIssues->setModel('\Issues');
+    }
+
+    /**
+     * Checks if the collXmlIssues collection is loaded.
+     *
+     * @return bool
+     */
+    public function isXmlIssuesLoaded()
+    {
+        return null !== $this->collXmlIssues;
+    }
+
+    /**
+     * Gets a collection of ChildIssues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_xmlplugin cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildPlugins is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildIssues[] List of ChildIssues objects
+     */
+    public function getXmlIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collXmlIssuesPartial && !$this->isNew();
+        if (null === $this->collXmlIssues || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collXmlIssues) {
+                    $this->initXmlIssues();
+                }
+            } else {
+
+                $query = ChildIssuesQuery::create(null, $criteria)
+                    ->filterByXmlPlugin($this);
+                $collXmlIssues = $query->find($con);
+                if (null !== $criteria) {
+                    return $collXmlIssues;
+                }
+
+                if ($partial && $this->collXmlIssues) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collXmlIssues as $obj) {
+                        if (!$collXmlIssues->contains($obj)) {
+                            $collXmlIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collXmlIssues = $collXmlIssues;
+                $this->collXmlIssuesPartial = false;
+            }
+        }
+
+        return $this->collXmlIssues;
+    }
+
+    /**
+     * Sets a collection of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_xmlplugin cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $xmlIssues A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildPlugins The current object (for fluent API support)
+     */
+    public function setXmlIssues(Collection $xmlIssues, ConnectionInterface $con = null)
+    {
+        $this->clearXmlIssues();
+        $currentXmlIssues = $this->getXmlIssues();
+
+        $xmlIssuesScheduledForDeletion = $currentXmlIssues->diff($xmlIssues);
+
+        foreach ($xmlIssuesScheduledForDeletion as $toDelete) {
+            $this->removeXmlIssue($toDelete);
+        }
+
+        foreach ($xmlIssues as $xmlIssue) {
+            if (!$currentXmlIssues->contains($xmlIssue)) {
+                $this->doAddXmlIssue($xmlIssue);
+            }
+        }
+
+        $this->collXmlIssuesPartial = false;
+        $this->collXmlIssues = $xmlIssues;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Issues objects related by a many-to-many relationship
+     * to the current object by way of the R_issues_xmlplugin cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Issues objects
+     */
+    public function countXmlIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collXmlIssuesPartial && !$this->isNew();
+        if (null === $this->collXmlIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collXmlIssues) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getXmlIssues());
+                }
+
+                $query = ChildIssuesQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByXmlPlugin($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collXmlIssues);
+        }
+    }
+
+    /**
+     * Associate a ChildIssues to this object
+     * through the R_issues_xmlplugin cross reference table.
+     *
+     * @param ChildIssues $xmlIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function addXmlIssue(ChildIssues $xmlIssue)
+    {
+        if ($this->collXmlIssues === null) {
+            $this->initXmlIssues();
+        }
+
+        if (!$this->getXmlIssues()->contains($xmlIssue)) {
+            // only add it if the **same** object is not already associated
+            $this->collXmlIssues->push($xmlIssue);
+            $this->doAddXmlIssue($xmlIssue);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildIssues $xmlIssue
+     */
+    protected function doAddXmlIssue(ChildIssues $xmlIssue)
+    {
+        $rIssuesXmlplugin = new ChildRIssuesXmlplugin();
+
+        $rIssuesXmlplugin->setXmlIssue($xmlIssue);
+
+        $rIssuesXmlplugin->setXmlPlugin($this);
+
+        $this->addRIssuesXmlplugin($rIssuesXmlplugin);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$xmlIssue->isXmlPluginsLoaded()) {
+            $xmlIssue->initXmlPlugins();
+            $xmlIssue->getXmlPlugins()->push($this);
+        } elseif (!$xmlIssue->getXmlPlugins()->contains($this)) {
+            $xmlIssue->getXmlPlugins()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove xmlIssue of this object
+     * through the R_issues_xmlplugin cross reference table.
+     *
+     * @param ChildIssues $xmlIssue
+     * @return ChildPlugins The current object (for fluent API support)
+     */
+    public function removeXmlIssue(ChildIssues $xmlIssue)
+    {
+        if ($this->getXmlIssues()->contains($xmlIssue)) { $rIssuesXmlplugin = new ChildRIssuesXmlplugin();
+
+            $rIssuesXmlplugin->setXmlIssue($xmlIssue);
+            if ($xmlIssue->isXmlPluginsLoaded()) {
+                //remove the back reference if available
+                $xmlIssue->getXmlPlugins()->removeObject($this);
+            }
+
+            $rIssuesXmlplugin->setXmlPlugin($this);
+            $this->removeRIssuesXmlplugin(clone $rIssuesXmlplugin);
+            $rIssuesXmlplugin->clear();
+
+            $this->collXmlIssues->remove($this->collXmlIssues->search($xmlIssue));
+
+            if (null === $this->xmlIssuesScheduledForDeletion) {
+                $this->xmlIssuesScheduledForDeletion = clone $this->collXmlIssues;
+                $this->xmlIssuesScheduledForDeletion->clear();
+            }
+
+            $this->xmlIssuesScheduledForDeletion->push($xmlIssue);
+        }
+
 
         return $this;
     }
@@ -1711,14 +4393,68 @@ abstract class Plugins implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collPdfs) {
-                foreach ($this->collPdfs as $o) {
+            if ($this->collRIssuesAllplugins) {
+                foreach ($this->collRIssuesAllplugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRIssuesNarrationplugins) {
+                foreach ($this->collRIssuesNarrationplugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRIssuesRtfplugins) {
+                foreach ($this->collRIssuesRtfplugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRIssuesSingleplugins) {
+                foreach ($this->collRIssuesSingleplugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRIssuesXmlplugins) {
+                foreach ($this->collRIssuesXmlplugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collAllIssues) {
+                foreach ($this->collAllIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collNarrationIssues) {
+                foreach ($this->collNarrationIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collRtfIssues) {
+                foreach ($this->collRtfIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collSingleIssues) {
+                foreach ($this->collSingleIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collXmlIssues) {
+                foreach ($this->collXmlIssues as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collPdfs = null;
+        $this->collRIssuesAllplugins = null;
+        $this->collRIssuesNarrationplugins = null;
+        $this->collRIssuesRtfplugins = null;
+        $this->collRIssuesSingleplugins = null;
+        $this->collRIssuesXmlplugins = null;
+        $this->collAllIssues = null;
+        $this->collNarrationIssues = null;
+        $this->collRtfIssues = null;
+        $this->collSingleIssues = null;
+        $this->collXmlIssues = null;
     }
 
     /**

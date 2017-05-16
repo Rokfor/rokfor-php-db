@@ -58,6 +58,26 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
+ * @method     ChildIssuesQuery leftJoinRIssuesAllplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesAllplugin relation
+ * @method     ChildIssuesQuery rightJoinRIssuesAllplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesAllplugin relation
+ * @method     ChildIssuesQuery innerJoinRIssuesAllplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesAllplugin relation
+ *
+ * @method     ChildIssuesQuery leftJoinRIssuesNarrationplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesNarrationplugin relation
+ * @method     ChildIssuesQuery rightJoinRIssuesNarrationplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesNarrationplugin relation
+ * @method     ChildIssuesQuery innerJoinRIssuesNarrationplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesNarrationplugin relation
+ *
+ * @method     ChildIssuesQuery leftJoinRIssuesRtfplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesRtfplugin relation
+ * @method     ChildIssuesQuery rightJoinRIssuesRtfplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesRtfplugin relation
+ * @method     ChildIssuesQuery innerJoinRIssuesRtfplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesRtfplugin relation
+ *
+ * @method     ChildIssuesQuery leftJoinRIssuesSingleplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesSingleplugin relation
+ * @method     ChildIssuesQuery rightJoinRIssuesSingleplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesSingleplugin relation
+ * @method     ChildIssuesQuery innerJoinRIssuesSingleplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesSingleplugin relation
+ *
+ * @method     ChildIssuesQuery leftJoinRIssuesXmlplugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssuesXmlplugin relation
+ * @method     ChildIssuesQuery rightJoinRIssuesXmlplugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssuesXmlplugin relation
+ * @method     ChildIssuesQuery innerJoinRIssuesXmlplugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssuesXmlplugin relation
+ *
  * @method     ChildIssuesQuery leftJoinRRightsForissue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildIssuesQuery rightJoinRRightsForissue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildIssuesQuery innerJoinRRightsForissue($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForissue relation
@@ -70,7 +90,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoinRDataIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataIssue relation
  * @method     ChildIssuesQuery innerJoinRDataIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataIssue relation
  *
- * @method     \UsersQuery|\BooksQuery|\RRightsForissueQuery|\ContributionsQuery|\RDataIssueQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\BooksQuery|\RIssuesAllpluginQuery|\RIssuesNarrationpluginQuery|\RIssuesRtfpluginQuery|\RIssuesSinglepluginQuery|\RIssuesXmlpluginQuery|\RRightsForissueQuery|\ContributionsQuery|\RDataIssueQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildIssues findOne(ConnectionInterface $con = null) Return the first ChildIssues matching the query
  * @method     ChildIssues findOneOrCreate(ConnectionInterface $con = null) Return the first ChildIssues matching the query, or a new ChildIssues object populated from the query conditions when no match is found
@@ -890,6 +910,371 @@ abstract class IssuesQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RIssuesAllplugin object
+     *
+     * @param \RIssuesAllplugin|ObjectCollection $rIssuesAllplugin the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRIssuesAllplugin($rIssuesAllplugin, $comparison = null)
+    {
+        if ($rIssuesAllplugin instanceof \RIssuesAllplugin) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL_ID, $rIssuesAllplugin->getIssueid(), $comparison);
+        } elseif ($rIssuesAllplugin instanceof ObjectCollection) {
+            return $this
+                ->useRIssuesAllpluginQuery()
+                ->filterByPrimaryKeys($rIssuesAllplugin->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRIssuesAllplugin() only accepts arguments of type \RIssuesAllplugin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RIssuesAllplugin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinRIssuesAllplugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RIssuesAllplugin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RIssuesAllplugin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RIssuesAllplugin relation RIssuesAllplugin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RIssuesAllpluginQuery A secondary query class using the current class as primary query
+     */
+    public function useRIssuesAllpluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRIssuesAllplugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RIssuesAllplugin', '\RIssuesAllpluginQuery');
+    }
+
+    /**
+     * Filter the query by a related \RIssuesNarrationplugin object
+     *
+     * @param \RIssuesNarrationplugin|ObjectCollection $rIssuesNarrationplugin the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRIssuesNarrationplugin($rIssuesNarrationplugin, $comparison = null)
+    {
+        if ($rIssuesNarrationplugin instanceof \RIssuesNarrationplugin) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL_ID, $rIssuesNarrationplugin->getIssueid(), $comparison);
+        } elseif ($rIssuesNarrationplugin instanceof ObjectCollection) {
+            return $this
+                ->useRIssuesNarrationpluginQuery()
+                ->filterByPrimaryKeys($rIssuesNarrationplugin->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRIssuesNarrationplugin() only accepts arguments of type \RIssuesNarrationplugin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RIssuesNarrationplugin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinRIssuesNarrationplugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RIssuesNarrationplugin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RIssuesNarrationplugin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RIssuesNarrationplugin relation RIssuesNarrationplugin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RIssuesNarrationpluginQuery A secondary query class using the current class as primary query
+     */
+    public function useRIssuesNarrationpluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRIssuesNarrationplugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RIssuesNarrationplugin', '\RIssuesNarrationpluginQuery');
+    }
+
+    /**
+     * Filter the query by a related \RIssuesRtfplugin object
+     *
+     * @param \RIssuesRtfplugin|ObjectCollection $rIssuesRtfplugin the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRIssuesRtfplugin($rIssuesRtfplugin, $comparison = null)
+    {
+        if ($rIssuesRtfplugin instanceof \RIssuesRtfplugin) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL_ID, $rIssuesRtfplugin->getIssueid(), $comparison);
+        } elseif ($rIssuesRtfplugin instanceof ObjectCollection) {
+            return $this
+                ->useRIssuesRtfpluginQuery()
+                ->filterByPrimaryKeys($rIssuesRtfplugin->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRIssuesRtfplugin() only accepts arguments of type \RIssuesRtfplugin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RIssuesRtfplugin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinRIssuesRtfplugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RIssuesRtfplugin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RIssuesRtfplugin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RIssuesRtfplugin relation RIssuesRtfplugin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RIssuesRtfpluginQuery A secondary query class using the current class as primary query
+     */
+    public function useRIssuesRtfpluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRIssuesRtfplugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RIssuesRtfplugin', '\RIssuesRtfpluginQuery');
+    }
+
+    /**
+     * Filter the query by a related \RIssuesSingleplugin object
+     *
+     * @param \RIssuesSingleplugin|ObjectCollection $rIssuesSingleplugin the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRIssuesSingleplugin($rIssuesSingleplugin, $comparison = null)
+    {
+        if ($rIssuesSingleplugin instanceof \RIssuesSingleplugin) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL_ID, $rIssuesSingleplugin->getIssueid(), $comparison);
+        } elseif ($rIssuesSingleplugin instanceof ObjectCollection) {
+            return $this
+                ->useRIssuesSinglepluginQuery()
+                ->filterByPrimaryKeys($rIssuesSingleplugin->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRIssuesSingleplugin() only accepts arguments of type \RIssuesSingleplugin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RIssuesSingleplugin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinRIssuesSingleplugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RIssuesSingleplugin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RIssuesSingleplugin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RIssuesSingleplugin relation RIssuesSingleplugin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RIssuesSinglepluginQuery A secondary query class using the current class as primary query
+     */
+    public function useRIssuesSinglepluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRIssuesSingleplugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RIssuesSingleplugin', '\RIssuesSinglepluginQuery');
+    }
+
+    /**
+     * Filter the query by a related \RIssuesXmlplugin object
+     *
+     * @param \RIssuesXmlplugin|ObjectCollection $rIssuesXmlplugin the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRIssuesXmlplugin($rIssuesXmlplugin, $comparison = null)
+    {
+        if ($rIssuesXmlplugin instanceof \RIssuesXmlplugin) {
+            return $this
+                ->addUsingAlias(IssuesTableMap::COL_ID, $rIssuesXmlplugin->getIssueid(), $comparison);
+        } elseif ($rIssuesXmlplugin instanceof ObjectCollection) {
+            return $this
+                ->useRIssuesXmlpluginQuery()
+                ->filterByPrimaryKeys($rIssuesXmlplugin->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRIssuesXmlplugin() only accepts arguments of type \RIssuesXmlplugin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RIssuesXmlplugin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildIssuesQuery The current query, for fluid interface
+     */
+    public function joinRIssuesXmlplugin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RIssuesXmlplugin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RIssuesXmlplugin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RIssuesXmlplugin relation RIssuesXmlplugin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RIssuesXmlpluginQuery A secondary query class using the current class as primary query
+     */
+    public function useRIssuesXmlpluginQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRIssuesXmlplugin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RIssuesXmlplugin', '\RIssuesXmlpluginQuery');
+    }
+
+    /**
      * Filter the query by a related \RRightsForissue object
      *
      * @param \RRightsForissue|ObjectCollection $rRightsForissue the related object to use as filter
@@ -1106,6 +1491,91 @@ abstract class IssuesQuery extends ModelCriteria
         return $this
             ->joinRDataIssue($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'RDataIssue', '\RDataIssueQuery');
+    }
+
+    /**
+     * Filter the query by a related Plugins object
+     * using the R_issues_allplugin table as cross reference
+     *
+     * @param Plugins $plugins the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByAllPlugin($plugins, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRIssuesAllpluginQuery()
+            ->filterByAllPlugin($plugins, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Plugins object
+     * using the R_issues_narrationplugin table as cross reference
+     *
+     * @param Plugins $plugins the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByNarrationPlugin($plugins, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRIssuesNarrationpluginQuery()
+            ->filterByNarrationPlugin($plugins, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Plugins object
+     * using the R_issues_rtfplugin table as cross reference
+     *
+     * @param Plugins $plugins the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByRtfPlugin($plugins, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRIssuesRtfpluginQuery()
+            ->filterByRtfPlugin($plugins, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Plugins object
+     * using the R_issues_singleplugin table as cross reference
+     *
+     * @param Plugins $plugins the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterBySinglePlugin($plugins, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRIssuesSinglepluginQuery()
+            ->filterBySinglePlugin($plugins, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Plugins object
+     * using the R_issues_xmlplugin table as cross reference
+     *
+     * @param Plugins $plugins the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildIssuesQuery The current query, for fluid interface
+     */
+    public function filterByXmlPlugin($plugins, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRIssuesXmlpluginQuery()
+            ->filterByXmlPlugin($plugins, $comparison)
+            ->endUse();
     }
 
     /**

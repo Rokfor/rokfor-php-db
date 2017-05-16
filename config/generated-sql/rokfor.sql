@@ -52,6 +52,126 @@ CREATE TABLE `R_fieldpostprocessor_forfield`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- R_issues_allplugin
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_issues_allplugin`;
+
+CREATE TABLE `R_issues_allplugin`
+(
+    `_issueid` INTEGER NOT NULL,
+    `_pluginid` INTEGER NOT NULL,
+    PRIMARY KEY (`_issueid`,`_pluginid`),
+    INDEX `r_plugins2_b` (`_pluginid`),
+    CONSTRAINT `r_plugins2_a`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugins2_b`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_issues_narrationplugin
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_issues_narrationplugin`;
+
+CREATE TABLE `R_issues_narrationplugin`
+(
+    `_issueid` INTEGER NOT NULL,
+    `_pluginid` INTEGER NOT NULL,
+    PRIMARY KEY (`_issueid`,`_pluginid`),
+    INDEX `r_plugins5_b` (`_pluginid`),
+    CONSTRAINT `r_plugins5_a`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugins5_b`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_issues_rtfplugin
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_issues_rtfplugin`;
+
+CREATE TABLE `R_issues_rtfplugin`
+(
+    `_issueid` INTEGER NOT NULL,
+    `_pluginid` INTEGER NOT NULL,
+    PRIMARY KEY (`_issueid`,`_pluginid`),
+    INDEX `r_plugins3_b` (`_pluginid`),
+    CONSTRAINT `r_plugins3_a`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugins3_b`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_issues_singleplugin
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_issues_singleplugin`;
+
+CREATE TABLE `R_issues_singleplugin`
+(
+    `_issueid` INTEGER NOT NULL,
+    `_pluginid` INTEGER NOT NULL,
+    PRIMARY KEY (`_issueid`,`_pluginid`),
+    INDEX `r_plugins1_b` (`_pluginid`),
+    CONSTRAINT `r_plugins1_a`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugins1_b`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_issues_xmlplugin
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_issues_xmlplugin`;
+
+CREATE TABLE `R_issues_xmlplugin`
+(
+    `_issueid` INTEGER NOT NULL,
+    `_pluginid` INTEGER NOT NULL,
+    PRIMARY KEY (`_issueid`,`_pluginid`),
+    INDEX `r_plugins4_b` (`_pluginid`),
+    CONSTRAINT `r_plugins4_a`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugins4_b`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- R_rights_forbook
 -- ---------------------------------------------------------------------
 
@@ -337,8 +457,6 @@ CREATE TABLE `_contributions_cache`
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-
-
 -- ---------------------------------------------------------------------
 -- R_data_data
 -- ---------------------------------------------------------------------
@@ -612,13 +730,7 @@ CREATE TABLE `_pdf`
     `__split__` TEXT,
     `__parentnode__` INTEGER(32),
     `__sort__` INTEGER(32),
-    PRIMARY KEY (`id`),
-    INDEX `i_pdf_fk` (`_plugin`),
-    CONSTRAINT `i_pdf_fk`
-        FOREIGN KEY (`_plugin`)
-        REFERENCES `_plugins` (`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -635,9 +747,9 @@ CREATE TABLE `_plugins`
     `__split__` TEXT,
     `__parentnode__` INTEGER(32),
     `__sort__` INTEGER(32),
-    `_page` TEXT,
-    `_config` TEXT,
-    `_callback` TEXT,
+    `_page` LONGTEXT,
+    `_config` LONGTEXT,
+    `_callback` LONGTEXT,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
