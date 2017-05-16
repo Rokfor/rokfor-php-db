@@ -3,6 +3,8 @@
 namespace Base;
 
 use \PdfQuery as ChildPdfQuery;
+use \Plugins as ChildPlugins;
+use \PluginsQuery as ChildPluginsQuery;
 use \Exception;
 use \PDO;
 use Map\PdfTableMap;
@@ -118,6 +120,11 @@ abstract class Pdf implements ActiveRecordInterface
      * @var        int
      */
     protected $__sort__;
+
+    /**
+     * @var        ChildPlugins
+     */
+    protected $aPlugins;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -541,6 +548,10 @@ abstract class Pdf implements ActiveRecordInterface
             $this->modifiedColumns[PdfTableMap::COL__PLUGIN] = true;
         }
 
+        if ($this->aPlugins !== null && $this->aPlugins->getId() !== $v) {
+            $this->aPlugins = null;
+        }
+
         return $this;
     } // setPlugin()
 
@@ -739,6 +750,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aPlugins !== null && $this->_plugin !== $this->aPlugins->getId()) {
+            $this->aPlugins = null;
+        }
     } // ensureConsistency
 
     /**
@@ -778,6 +792,7 @@ abstract class Pdf implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aPlugins = null;
         } // if (deep)
     }
 
@@ -876,6 +891,18 @@ abstract class Pdf implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aPlugins !== null) {
+                if ($this->aPlugins->isModified() || $this->aPlugins->isNew()) {
+                    $affectedRows += $this->aPlugins->save($con);
+                }
+                $this->setPlugins($this->aPlugins);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -1094,10 +1121,11 @@ abstract class Pdf implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['Pdf'][$this->hashCode()])) {
@@ -1122,6 +1150,23 @@ abstract class Pdf implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aPlugins) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'plugins';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = '_plugins';
+                        break;
+                    default:
+                        $key = 'Plugins';
+                }
+
+                $result[$key] = $this->aPlugins->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -1436,12 +1481,66 @@ abstract class Pdf implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildPlugins object.
+     *
+     * @param  ChildPlugins $v
+     * @return $this|\Pdf The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setPlugins(ChildPlugins $v = null)
+    {
+        if ($v === null) {
+            $this->setPlugin(NULL);
+        } else {
+            $this->setPlugin($v->getId());
+        }
+
+        $this->aPlugins = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildPlugins object, it will not be re-added.
+        if ($v !== null) {
+            $v->addPdf($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildPlugins object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildPlugins The associated ChildPlugins object.
+     * @throws PropelException
+     */
+    public function getPlugins(ConnectionInterface $con = null)
+    {
+        if ($this->aPlugins === null && ($this->_plugin !== null)) {
+            $this->aPlugins = ChildPluginsQuery::create()->findPk($this->_plugin, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aPlugins->addPdfs($this);
+             */
+        }
+
+        return $this->aPlugins;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aPlugins) {
+            $this->aPlugins->removePdf($this);
+        }
         $this->id = null;
         $this->_file = null;
         $this->_date = null;
@@ -1472,6 +1571,7 @@ abstract class Pdf implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aPlugins = null;
     }
 
     /**
