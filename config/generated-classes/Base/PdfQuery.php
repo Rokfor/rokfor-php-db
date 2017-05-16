@@ -10,6 +10,7 @@ use Map\PdfTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -44,6 +45,12 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPdfQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPdfQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method     ChildPdfQuery leftJoinPlugins($relationAlias = null) Adds a LEFT JOIN clause to the query using the Plugins relation
+ * @method     ChildPdfQuery rightJoinPlugins($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Plugins relation
+ * @method     ChildPdfQuery innerJoinPlugins($relationAlias = null) Adds a INNER JOIN clause to the query using the Plugins relation
+ *
+ * @method     \PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPdf findOne(ConnectionInterface $con = null) Return the first ChildPdf matching the query
  * @method     ChildPdf findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPdf matching the query, or a new ChildPdf object populated from the query conditions when no match is found
@@ -428,6 +435,8 @@ abstract class PdfQuery extends ModelCriteria
      * $query->filterByPlugin(array('min' => 12)); // WHERE _plugin > 12
      * </code>
      *
+     * @see       filterByPlugins()
+     *
      * @param     mixed $plugin The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -638,6 +647,83 @@ abstract class PdfQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PdfTableMap::COL___SORT__, $sort, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Plugins object
+     *
+     * @param \Plugins|ObjectCollection $plugins The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildPdfQuery The current query, for fluid interface
+     */
+    public function filterByPlugins($plugins, $comparison = null)
+    {
+        if ($plugins instanceof \Plugins) {
+            return $this
+                ->addUsingAlias(PdfTableMap::COL__PLUGIN, $plugins->getId(), $comparison);
+        } elseif ($plugins instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(PdfTableMap::COL__PLUGIN, $plugins->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByPlugins() only accepts arguments of type \Plugins or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Plugins relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPdfQuery The current query, for fluid interface
+     */
+    public function joinPlugins($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Plugins');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Plugins');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Plugins relation Plugins object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PluginsQuery A secondary query class using the current class as primary query
+     */
+    public function usePluginsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinPlugins($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Plugins', '\PluginsQuery');
     }
 
     /**
