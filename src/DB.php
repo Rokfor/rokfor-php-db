@@ -3181,7 +3181,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
     $new = $this->TemplatesQuery()
                 ->findPk($id)
-                ->copy(true); // Deep Copy: We need it in the already stored documents
+                ->copy(); // Deep Copy: We need it in the already stored documents
     $new
       ->setFieldname($new->getFieldname() . "[".$suffix."]")
       ->save();
