@@ -3181,10 +3181,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
     $new = $this->TemplatesQuery()
                 ->findPk($id)
-                ->copy(); // Deep Copy: We need it in the already stored documents
+                ->copy(true); // Deep Copy: We need it in the already stored documents
     $new
       ->setFieldname($new->getFieldname() . "[".$suffix."]")
       ->save();
+    
+    
+    foreach ($new->getDatas() as $relData) {
+      $relData->setContent("")->save();
+    }
 
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
