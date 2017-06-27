@@ -1341,6 +1341,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
       $settings = json_decode($field->getTemplates()->getConfigSys(), true);
       $oldVal   = json_decode($field->getContent(), true);
+      $origsize = false;
       if (!$oldVal) {
         $oldVal = [];
       }
@@ -1383,6 +1384,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       if (in_array($this->_getMimeType($file), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
 
         $file->moveTo($path.$this->paths['web'].$escapedFileName);
+        $origsize = getimagesize($file->getClientFilename());
 
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
@@ -1476,13 +1478,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       // Update References
       if (static::$s3 === false) {
         // Attach to Data
-        $newindex = array_push($oldVal, [$caption, $escapedFileName, $versions]);
+        $newindex = array_push($oldVal, [$caption, $escapedFileName, $versions, $origsize]);
         $original_url = $escapedFileName;
         $relative_url = $escapedFileName;
       }
       else {
         // Attach to Data
-        $newindex = array_push($oldVal, [$caption, $original_url, $versions]);
+        $newindex = array_push($oldVal, [$caption, $original_url, $versions, $origsize]);
         $relative_url = $original_url;
       }
       // Store
