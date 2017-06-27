@@ -1538,15 +1538,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
 
       // Copy scaled versions from old data
-      // if ($private === true || static::$s3 !== false) {
-        foreach ($tabledata as $key => $i) {
-          $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1], $private);
-          $this->defaultLogger->info($tabledata[$key][1]);
-        }
-      //}
+      foreach ($tabledata as $key => $i) {
+        $tabledata[$key][1] = $this->_remove_proxy_single_file($i[1], $private);
+        $this->defaultLogger->info($tabledata[$key][1]);
+      }
       foreach ($tabledata as $key => $i) {
         if ($oldimages[$i[1]][1] === $i[1]) {
           $tabledata[$key][2] = $oldimages[$i[1]][2];
+          $tabledata[$key][3] = $oldimages[$i[1]][3];
           unset($oldimages[$i[1]]);
         }
       }
