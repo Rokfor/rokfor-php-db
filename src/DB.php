@@ -1384,7 +1384,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       if (in_array($this->_getMimeType($file), $this->paths['process']) && ($settings['imagesize'][0]['width'] || $settings['imagesize'][0]['height'])) {
 
         $file->moveTo($path.$this->paths['web'].$escapedFileName);
-        $origsize = getimagesize($file->getClientFilename());
+        $origsize = getimagesize($path.$this->paths['web'].$escapedFileName);
 
         // Class
         $driver = (in_array('Imagick', get_declared_classes()) ? 'imagick' : 'gd');
