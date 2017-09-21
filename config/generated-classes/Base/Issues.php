@@ -10,8 +10,12 @@ use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
 use \Issues as ChildIssues;
 use \IssuesQuery as ChildIssuesQuery;
+use \Plugins as ChildPlugins;
+use \PluginsQuery as ChildPluginsQuery;
 use \RDataIssue as ChildRDataIssue;
 use \RDataIssueQuery as ChildRDataIssueQuery;
+use \RPluginIssue as ChildRPluginIssue;
+use \RPluginIssueQuery as ChildRPluginIssueQuery;
 use \RRightsForissue as ChildRRightsForissue;
 use \RRightsForissueQuery as ChildRRightsForissueQuery;
 use \Rights as ChildRights;
@@ -176,6 +180,12 @@ abstract class Issues implements ActiveRecordInterface
     protected $collRDataIssuesPartial;
 
     /**
+     * @var        ObjectCollection|ChildRPluginIssue[] Collection to store aggregation of ChildRPluginIssue objects.
+     */
+    protected $collRPluginIssues;
+    protected $collRPluginIssuesPartial;
+
+    /**
      * @var        ObjectCollection|ChildRights[] Cross Collection to store aggregation of ChildRights objects.
      */
     protected $collRightss;
@@ -194,6 +204,16 @@ abstract class Issues implements ActiveRecordInterface
      * @var bool
      */
     protected $collRDatasPartial;
+
+    /**
+     * @var        ObjectCollection|ChildPlugins[] Cross Collection to store aggregation of ChildPlugins objects.
+     */
+    protected $collRPlugins;
+
+    /**
+     * @var bool
+     */
+    protected $collRPluginsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -217,6 +237,12 @@ abstract class Issues implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPlugins[]
+     */
+    protected $rPluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRRightsForissue[]
      */
     protected $rRightsForissuesScheduledForDeletion = null;
@@ -232,6 +258,12 @@ abstract class Issues implements ActiveRecordInterface
      * @var ObjectCollection|ChildRDataIssue[]
      */
     protected $rDataIssuesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRPluginIssue[]
+     */
+    protected $rPluginIssuesScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Issues object.
@@ -972,8 +1004,11 @@ abstract class Issues implements ActiveRecordInterface
 
             $this->collRDataIssues = null;
 
+            $this->collRPluginIssues = null;
+
             $this->collRightss = null;
             $this->collRDatas = null;
+            $this->collRPlugins = null;
         } // if (deep)
     }
 
@@ -1161,6 +1196,35 @@ abstract class Issues implements ActiveRecordInterface
             }
 
 
+            if ($this->rPluginsScheduledForDeletion !== null) {
+                if (!$this->rPluginsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rPluginsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RPluginIssueQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rPluginsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRPlugins) {
+                foreach ($this->collRPlugins as $rPlugin) {
+                    if (!$rPlugin->isDeleted() && ($rPlugin->isNew() || $rPlugin->isModified())) {
+                        $rPlugin->save($con);
+                    }
+                }
+            }
+
+
             if ($this->rRightsForissuesScheduledForDeletion !== null) {
                 if (!$this->rRightsForissuesScheduledForDeletion->isEmpty()) {
                     \RRightsForissueQuery::create()
@@ -1206,6 +1270,23 @@ abstract class Issues implements ActiveRecordInterface
 
             if ($this->collRDataIssues !== null) {
                 foreach ($this->collRDataIssues as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rPluginIssuesScheduledForDeletion !== null) {
+                if (!$this->rPluginIssuesScheduledForDeletion->isEmpty()) {
+                    \RPluginIssueQuery::create()
+                        ->filterByPrimaryKeys($this->rPluginIssuesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rPluginIssuesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRPluginIssues !== null) {
+                foreach ($this->collRPluginIssues as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1543,6 +1624,21 @@ abstract class Issues implements ActiveRecordInterface
 
                 $result[$key] = $this->collRDataIssues->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collRPluginIssues) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rPluginIssues';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_plugin_issues';
+                        break;
+                    default:
+                        $key = 'RPluginIssues';
+                }
+
+                $result[$key] = $this->collRPluginIssues->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -1873,6 +1969,12 @@ abstract class Issues implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRPluginIssues() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRPluginIssue($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -2024,6 +2126,9 @@ abstract class Issues implements ActiveRecordInterface
         }
         if ('RDataIssue' == $relationName) {
             return $this->initRDataIssues();
+        }
+        if ('RPluginIssue' == $relationName) {
+            return $this->initRPluginIssues();
         }
     }
 
@@ -2813,6 +2918,252 @@ abstract class Issues implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRPluginIssues collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRPluginIssues()
+     */
+    public function clearRPluginIssues()
+    {
+        $this->collRPluginIssues = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRPluginIssues collection loaded partially.
+     */
+    public function resetPartialRPluginIssues($v = true)
+    {
+        $this->collRPluginIssuesPartial = $v;
+    }
+
+    /**
+     * Initializes the collRPluginIssues collection.
+     *
+     * By default this just sets the collRPluginIssues collection to an empty array (like clearcollRPluginIssues());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRPluginIssues($overrideExisting = true)
+    {
+        if (null !== $this->collRPluginIssues && !$overrideExisting) {
+            return;
+        }
+        $this->collRPluginIssues = new ObjectCollection();
+        $this->collRPluginIssues->setModel('\RPluginIssue');
+    }
+
+    /**
+     * Gets an array of ChildRPluginIssue objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildIssues is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRPluginIssue[] List of ChildRPluginIssue objects
+     * @throws PropelException
+     */
+    public function getRPluginIssues(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginIssuesPartial && !$this->isNew();
+        if (null === $this->collRPluginIssues || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRPluginIssues) {
+                // return empty collection
+                $this->initRPluginIssues();
+            } else {
+                $collRPluginIssues = ChildRPluginIssueQuery::create(null, $criteria)
+                    ->filterByRIssue($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRPluginIssuesPartial && count($collRPluginIssues)) {
+                        $this->initRPluginIssues(false);
+
+                        foreach ($collRPluginIssues as $obj) {
+                            if (false == $this->collRPluginIssues->contains($obj)) {
+                                $this->collRPluginIssues->append($obj);
+                            }
+                        }
+
+                        $this->collRPluginIssuesPartial = true;
+                    }
+
+                    return $collRPluginIssues;
+                }
+
+                if ($partial && $this->collRPluginIssues) {
+                    foreach ($this->collRPluginIssues as $obj) {
+                        if ($obj->isNew()) {
+                            $collRPluginIssues[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRPluginIssues = $collRPluginIssues;
+                $this->collRPluginIssuesPartial = false;
+            }
+        }
+
+        return $this->collRPluginIssues;
+    }
+
+    /**
+     * Sets a collection of ChildRPluginIssue objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rPluginIssues A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildIssues The current object (for fluent API support)
+     */
+    public function setRPluginIssues(Collection $rPluginIssues, ConnectionInterface $con = null)
+    {
+        /** @var ChildRPluginIssue[] $rPluginIssuesToDelete */
+        $rPluginIssuesToDelete = $this->getRPluginIssues(new Criteria(), $con)->diff($rPluginIssues);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rPluginIssuesScheduledForDeletion = clone $rPluginIssuesToDelete;
+
+        foreach ($rPluginIssuesToDelete as $rPluginIssueRemoved) {
+            $rPluginIssueRemoved->setRIssue(null);
+        }
+
+        $this->collRPluginIssues = null;
+        foreach ($rPluginIssues as $rPluginIssue) {
+            $this->addRPluginIssue($rPluginIssue);
+        }
+
+        $this->collRPluginIssues = $rPluginIssues;
+        $this->collRPluginIssuesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RPluginIssue objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RPluginIssue objects.
+     * @throws PropelException
+     */
+    public function countRPluginIssues(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginIssuesPartial && !$this->isNew();
+        if (null === $this->collRPluginIssues || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRPluginIssues) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRPluginIssues());
+            }
+
+            $query = ChildRPluginIssueQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRIssue($this)
+                ->count($con);
+        }
+
+        return count($this->collRPluginIssues);
+    }
+
+    /**
+     * Method called to associate a ChildRPluginIssue object to this object
+     * through the ChildRPluginIssue foreign key attribute.
+     *
+     * @param  ChildRPluginIssue $l ChildRPluginIssue
+     * @return $this|\Issues The current object (for fluent API support)
+     */
+    public function addRPluginIssue(ChildRPluginIssue $l)
+    {
+        if ($this->collRPluginIssues === null) {
+            $this->initRPluginIssues();
+            $this->collRPluginIssuesPartial = true;
+        }
+
+        if (!$this->collRPluginIssues->contains($l)) {
+            $this->doAddRPluginIssue($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRPluginIssue $rPluginIssue The ChildRPluginIssue object to add.
+     */
+    protected function doAddRPluginIssue(ChildRPluginIssue $rPluginIssue)
+    {
+        $this->collRPluginIssues[]= $rPluginIssue;
+        $rPluginIssue->setRIssue($this);
+    }
+
+    /**
+     * @param  ChildRPluginIssue $rPluginIssue The ChildRPluginIssue object to remove.
+     * @return $this|ChildIssues The current object (for fluent API support)
+     */
+    public function removeRPluginIssue(ChildRPluginIssue $rPluginIssue)
+    {
+        if ($this->getRPluginIssues()->contains($rPluginIssue)) {
+            $pos = $this->collRPluginIssues->search($rPluginIssue);
+            $this->collRPluginIssues->remove($pos);
+            if (null === $this->rPluginIssuesScheduledForDeletion) {
+                $this->rPluginIssuesScheduledForDeletion = clone $this->collRPluginIssues;
+                $this->rPluginIssuesScheduledForDeletion->clear();
+            }
+            $this->rPluginIssuesScheduledForDeletion[]= clone $rPluginIssue;
+            $rPluginIssue->setRIssue(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Issues is new, it will return
+     * an empty collection; or if this Issues has previously
+     * been saved, it will retrieve related RPluginIssues from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Issues.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRPluginIssue[] List of ChildRPluginIssue objects
+     */
+    public function getRPluginIssuesJoinRPlugin(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRPluginIssueQuery::create(null, $criteria);
+        $query->joinWith('RPlugin', $joinBehavior);
+
+        return $this->getRPluginIssues($query, $con);
+    }
+
+    /**
      * Clears out the collRightss collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -3297,6 +3648,248 @@ abstract class Issues implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRPlugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRPlugins()
+     */
+    public function clearRPlugins()
+    {
+        $this->collRPlugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRPlugins crossRef collection.
+     *
+     * By default this just sets the collRPlugins collection to an empty collection (like clearRPlugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRPlugins()
+    {
+        $this->collRPlugins = new ObjectCollection();
+        $this->collRPluginsPartial = true;
+
+        $this->collRPlugins->setModel('\Plugins');
+    }
+
+    /**
+     * Checks if the collRPlugins collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRPluginsLoaded()
+    {
+        return null !== $this->collRPlugins;
+    }
+
+    /**
+     * Gets a collection of ChildPlugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_issue cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildIssues is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildPlugins[] List of ChildPlugins objects
+     */
+    public function getRPlugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginsPartial && !$this->isNew();
+        if (null === $this->collRPlugins || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRPlugins) {
+                    $this->initRPlugins();
+                }
+            } else {
+
+                $query = ChildPluginsQuery::create(null, $criteria)
+                    ->filterByRIssue($this);
+                $collRPlugins = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRPlugins;
+                }
+
+                if ($partial && $this->collRPlugins) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRPlugins as $obj) {
+                        if (!$collRPlugins->contains($obj)) {
+                            $collRPlugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRPlugins = $collRPlugins;
+                $this->collRPluginsPartial = false;
+            }
+        }
+
+        return $this->collRPlugins;
+    }
+
+    /**
+     * Sets a collection of Plugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_issue cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rPlugins A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildIssues The current object (for fluent API support)
+     */
+    public function setRPlugins(Collection $rPlugins, ConnectionInterface $con = null)
+    {
+        $this->clearRPlugins();
+        $currentRPlugins = $this->getRPlugins();
+
+        $rPluginsScheduledForDeletion = $currentRPlugins->diff($rPlugins);
+
+        foreach ($rPluginsScheduledForDeletion as $toDelete) {
+            $this->removeRPlugin($toDelete);
+        }
+
+        foreach ($rPlugins as $rPlugin) {
+            if (!$currentRPlugins->contains($rPlugin)) {
+                $this->doAddRPlugin($rPlugin);
+            }
+        }
+
+        $this->collRPluginsPartial = false;
+        $this->collRPlugins = $rPlugins;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Plugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_issue cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Plugins objects
+     */
+    public function countRPlugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginsPartial && !$this->isNew();
+        if (null === $this->collRPlugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRPlugins) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRPlugins());
+                }
+
+                $query = ChildPluginsQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRIssue($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRPlugins);
+        }
+    }
+
+    /**
+     * Associate a ChildPlugins to this object
+     * through the R_plugin_issue cross reference table.
+     *
+     * @param ChildPlugins $rPlugin
+     * @return ChildIssues The current object (for fluent API support)
+     */
+    public function addRPlugin(ChildPlugins $rPlugin)
+    {
+        if ($this->collRPlugins === null) {
+            $this->initRPlugins();
+        }
+
+        if (!$this->getRPlugins()->contains($rPlugin)) {
+            // only add it if the **same** object is not already associated
+            $this->collRPlugins->push($rPlugin);
+            $this->doAddRPlugin($rPlugin);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildPlugins $rPlugin
+     */
+    protected function doAddRPlugin(ChildPlugins $rPlugin)
+    {
+        $rPluginIssue = new ChildRPluginIssue();
+
+        $rPluginIssue->setRPlugin($rPlugin);
+
+        $rPluginIssue->setRIssue($this);
+
+        $this->addRPluginIssue($rPluginIssue);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rPlugin->isRIssuesLoaded()) {
+            $rPlugin->initRIssues();
+            $rPlugin->getRIssues()->push($this);
+        } elseif (!$rPlugin->getRIssues()->contains($this)) {
+            $rPlugin->getRIssues()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rPlugin of this object
+     * through the R_plugin_issue cross reference table.
+     *
+     * @param ChildPlugins $rPlugin
+     * @return ChildIssues The current object (for fluent API support)
+     */
+    public function removeRPlugin(ChildPlugins $rPlugin)
+    {
+        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginIssue = new ChildRPluginIssue();
+
+            $rPluginIssue->setRPlugin($rPlugin);
+            if ($rPlugin->isRIssuesLoaded()) {
+                //remove the back reference if available
+                $rPlugin->getRIssues()->removeObject($this);
+            }
+
+            $rPluginIssue->setRIssue($this);
+            $this->removeRPluginIssue(clone $rPluginIssue);
+            $rPluginIssue->clear();
+
+            $this->collRPlugins->remove($this->collRPlugins->search($rPlugin));
+
+            if (null === $this->rPluginsScheduledForDeletion) {
+                $this->rPluginsScheduledForDeletion = clone $this->collRPlugins;
+                $this->rPluginsScheduledForDeletion->clear();
+            }
+
+            $this->rPluginsScheduledForDeletion->push($rPlugin);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3354,6 +3947,11 @@ abstract class Issues implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRPluginIssues) {
+                foreach ($this->collRPluginIssues as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRightss) {
                 foreach ($this->collRightss as $o) {
                     $o->clearAllReferences($deep);
@@ -3364,13 +3962,20 @@ abstract class Issues implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRPlugins) {
+                foreach ($this->collRPlugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collRRightsForissues = null;
         $this->collContributionss = null;
         $this->collRDataIssues = null;
+        $this->collRPluginIssues = null;
         $this->collRightss = null;
         $this->collRDatas = null;
+        $this->collRPlugins = null;
         $this->auserSysRef = null;
         $this->aBooks = null;
     }

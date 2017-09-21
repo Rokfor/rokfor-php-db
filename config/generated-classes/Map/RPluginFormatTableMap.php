@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Plugins;
-use \PluginsQuery;
+use \RPluginFormat;
+use \RPluginFormatQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the '_plugins' table.
+ * This class defines the structure of the 'R_plugin_format' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class PluginsTableMap extends TableMap
+class RPluginFormatTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class PluginsTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.PluginsTableMap';
+    const CLASS_NAME = '.Map.RPluginFormatTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class PluginsTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = '_plugins';
+    const TABLE_NAME = 'R_plugin_format';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Plugins';
+    const OM_CLASS = '\\RPluginFormat';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Plugins';
+    const CLASS_DEFAULT = 'RPluginFormat';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 2;
 
     /**
      * The number of lazy-loaded columns
@@ -69,22 +69,17 @@ class PluginsTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the id field
+     * the column name for the _pluginid field
      */
-    const COL_ID = '_plugins.id';
+    const COL__PLUGINID = 'R_plugin_format._pluginid';
 
     /**
-     * the column name for the _name field
+     * the column name for the _formatid field
      */
-    const COL__NAME = '_plugins._name';
-
-    /**
-     * the column name for the _api field
-     */
-    const COL__API = '_plugins._api';
+    const COL__FORMATID = 'R_plugin_format._formatid';
 
     /**
      * The default string format for model objects of the related table
@@ -98,11 +93,11 @@ class PluginsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Api', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'api', ),
-        self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID, PluginsTableMap::COL__NAME, PluginsTableMap::COL__API, ),
-        self::TYPE_FIELDNAME     => array('id', '_name', '_api', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Pluginid', 'Formatid', ),
+        self::TYPE_CAMELNAME     => array('pluginid', 'formatid', ),
+        self::TYPE_COLNAME       => array(RPluginFormatTableMap::COL__PLUGINID, RPluginFormatTableMap::COL__FORMATID, ),
+        self::TYPE_FIELDNAME     => array('_pluginid', '_formatid', ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -112,11 +107,11 @@ class PluginsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Api' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'api' => 2, ),
-        self::TYPE_COLNAME       => array(PluginsTableMap::COL_ID => 0, PluginsTableMap::COL__NAME => 1, PluginsTableMap::COL__API => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_name' => 1, '_api' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Pluginid' => 0, 'Formatid' => 1, ),
+        self::TYPE_CAMELNAME     => array('pluginid' => 0, 'formatid' => 1, ),
+        self::TYPE_COLNAME       => array(RPluginFormatTableMap::COL__PLUGINID => 0, RPluginFormatTableMap::COL__FORMATID => 1, ),
+        self::TYPE_FIELDNAME     => array('_pluginid' => 0, '_formatid' => 1, ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -129,16 +124,16 @@ class PluginsTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('_plugins');
-        $this->setPhpName('Plugins');
+        $this->setName('R_plugin_format');
+        $this->setPhpName('RPluginFormat');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Plugins');
+        $this->setClassName('\\RPluginFormat');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 4, null);
-        $this->addColumn('_name', 'Name', 'LONGVARCHAR', false, null, null);
-        $this->addColumn('_api', 'Api', 'LONGVARCHAR', false, null, null);
+        $this->addForeignPrimaryKey('_pluginid', 'Pluginid', 'INTEGER' , '_plugins', 'id', true, 4, null);
+        $this->addForeignPrimaryKey('_formatid', 'Formatid', 'INTEGER' , '_formats', 'id', true, 4, null);
     } // initialize()
 
     /**
@@ -146,58 +141,73 @@ class PluginsTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('RPluginBook', '\\RPluginBook', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('RPlugin', '\\Plugins', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_pluginid',
     1 => ':id',
   ),
-), 'CASCADE', 'CASCADE', 'RPluginBooks', false);
-        $this->addRelation('RPluginFormat', '\\RPluginFormat', RelationMap::ONE_TO_MANY, array (
+), 'CASCADE', 'CASCADE', null, false);
+        $this->addRelation('RFormat', '\\Formats', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':_pluginid',
+    0 => ':_formatid',
     1 => ':id',
   ),
-), 'CASCADE', 'CASCADE', 'RPluginFormats', false);
-        $this->addRelation('RPluginIssue', '\\RPluginIssue', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':_pluginid',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'RPluginIssues', false);
-        $this->addRelation('RPluginTemplate', '\\RPluginTemplate', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':_pluginid',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'RPluginTemplates', false);
-        $this->addRelation('Pdf', '\\Pdf', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':_plugin',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'Pdfs', false);
-        $this->addRelation('RBook', '\\Books', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RBooks');
-        $this->addRelation('RFormat', '\\Formats', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RFormats');
-        $this->addRelation('RIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RIssues');
-        $this->addRelation('RTemplate', '\\Templates', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RTemplates');
+), 'CASCADE', 'CASCADE', null, false);
     } // buildRelations()
+
     /**
-     * Method to invalidate the instance pool of all tables related to _plugins     * by a foreign key with ON DELETE CASCADE
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \RPluginFormat $obj A \RPluginFormat object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
-    public static function clearRelatedInstancePool()
+    public static function addInstanceToPool($obj, $key = null)
     {
-        // Invalidate objects in related instance pools,
-        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        RPluginBookTableMap::clearInstancePool();
-        RPluginFormatTableMap::clearInstancePool();
-        RPluginIssueTableMap::clearInstancePool();
-        RPluginTemplateTableMap::clearInstancePool();
-        PdfTableMap::clearInstancePool();
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize(array((string) $obj->getPluginid(), (string) $obj->getFormatid()));
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \RPluginFormat object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \RPluginFormat) {
+                $key = serialize(array((string) $value->getPluginid(), (string) $value->getFormatid()));
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize(array((string) $value[0], (string) $value[1]));
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \RPluginFormat object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
     }
 
     /**
@@ -216,11 +226,11 @@ class PluginsTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Pluginid', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Pluginid', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**
@@ -237,11 +247,20 @@ class PluginsTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('Pluginid', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -257,7 +276,7 @@ class PluginsTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? PluginsTableMap::CLASS_DEFAULT : PluginsTableMap::OM_CLASS;
+        return $withPrefix ? RPluginFormatTableMap::CLASS_DEFAULT : RPluginFormatTableMap::OM_CLASS;
     }
 
     /**
@@ -271,22 +290,22 @@ class PluginsTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Plugins object, last column rank)
+     * @return array           (RPluginFormat object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = PluginsTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = PluginsTableMap::getInstanceFromPool($key))) {
+        $key = RPluginFormatTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = RPluginFormatTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + PluginsTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + RPluginFormatTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = PluginsTableMap::OM_CLASS;
-            /** @var Plugins $obj */
+            $cls = RPluginFormatTableMap::OM_CLASS;
+            /** @var RPluginFormat $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            PluginsTableMap::addInstanceToPool($obj, $key);
+            RPluginFormatTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -309,18 +328,18 @@ class PluginsTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = PluginsTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = PluginsTableMap::getInstanceFromPool($key))) {
+            $key = RPluginFormatTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = RPluginFormatTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Plugins $obj */
+                /** @var RPluginFormat $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                PluginsTableMap::addInstanceToPool($obj, $key);
+                RPluginFormatTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -341,13 +360,11 @@ class PluginsTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(PluginsTableMap::COL_ID);
-            $criteria->addSelectColumn(PluginsTableMap::COL__NAME);
-            $criteria->addSelectColumn(PluginsTableMap::COL__API);
+            $criteria->addSelectColumn(RPluginFormatTableMap::COL__PLUGINID);
+            $criteria->addSelectColumn(RPluginFormatTableMap::COL__FORMATID);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '._name');
-            $criteria->addSelectColumn($alias . '._api');
+            $criteria->addSelectColumn($alias . '._pluginid');
+            $criteria->addSelectColumn($alias . '._formatid');
         }
     }
 
@@ -360,7 +377,7 @@ class PluginsTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(PluginsTableMap::DATABASE_NAME)->getTable(PluginsTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(RPluginFormatTableMap::DATABASE_NAME)->getTable(RPluginFormatTableMap::TABLE_NAME);
     }
 
     /**
@@ -368,16 +385,16 @@ class PluginsTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PluginsTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(PluginsTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new PluginsTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(RPluginFormatTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(RPluginFormatTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new RPluginFormatTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Plugins or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a RPluginFormat or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Plugins object or primary key or array of primary keys
+     * @param mixed               $values Criteria or RPluginFormat object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -388,27 +405,37 @@ class PluginsTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PluginsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RPluginFormatTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Plugins) { // it's a model object
+        } elseif ($values instanceof \RPluginFormat) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(PluginsTableMap::DATABASE_NAME);
-            $criteria->add(PluginsTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(RPluginFormatTableMap::DATABASE_NAME);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(RPluginFormatTableMap::COL__PLUGINID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(RPluginFormatTableMap::COL__FORMATID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
-        $query = PluginsQuery::create()->mergeWith($criteria);
+        $query = RPluginFormatQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            PluginsTableMap::clearInstancePool();
+            RPluginFormatTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                PluginsTableMap::removeInstanceFromPool($singleval);
+                RPluginFormatTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -416,20 +443,20 @@ class PluginsTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the _plugins table.
+     * Deletes all rows from the R_plugin_format table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return PluginsQuery::create()->doDeleteAll($con);
+        return RPluginFormatQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Plugins or Criteria object.
+     * Performs an INSERT on the database, given a RPluginFormat or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Plugins object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or RPluginFormat object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -438,22 +465,18 @@ class PluginsTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PluginsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RPluginFormatTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Plugins object
-        }
-
-        if ($criteria->containsKey(PluginsTableMap::COL_ID) && $criteria->keyContainsValue(PluginsTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PluginsTableMap::COL_ID.')');
+            $criteria = $criteria->buildCriteria(); // build Criteria from RPluginFormat object
         }
 
 
         // Set the correct dbName
-        $query = PluginsQuery::create()->mergeWith($criteria);
+        $query = RPluginFormatQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -462,7 +485,7 @@ class PluginsTableMap extends TableMap
         });
     }
 
-} // PluginsTableMap
+} // RPluginFormatTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-PluginsTableMap::buildTableMap();
+RPluginFormatTableMap::buildTableMap();

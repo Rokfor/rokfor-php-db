@@ -12,10 +12,14 @@ use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
 use \Issues as ChildIssues;
 use \IssuesQuery as ChildIssuesQuery;
+use \Plugins as ChildPlugins;
+use \PluginsQuery as ChildPluginsQuery;
 use \RBatchForbook as ChildRBatchForbook;
 use \RBatchForbookQuery as ChildRBatchForbookQuery;
 use \RDataBook as ChildRDataBook;
 use \RDataBookQuery as ChildRDataBookQuery;
+use \RPluginBook as ChildRPluginBook;
+use \RPluginBookQuery as ChildRPluginBookQuery;
 use \RRightsForbook as ChildRRightsForbook;
 use \RRightsForbookQuery as ChildRRightsForbookQuery;
 use \RTemplatenamesForbook as ChildRTemplatenamesForbook;
@@ -155,6 +159,12 @@ abstract class Books implements ActiveRecordInterface
     protected $collRDataBooksPartial;
 
     /**
+     * @var        ObjectCollection|ChildRPluginBook[] Collection to store aggregation of ChildRPluginBook objects.
+     */
+    protected $collRPluginBooks;
+    protected $collRPluginBooksPartial;
+
+    /**
      * @var        ObjectCollection|ChildFormats[] Collection to store aggregation of ChildFormats objects.
      */
     protected $collFormatss;
@@ -207,6 +217,16 @@ abstract class Books implements ActiveRecordInterface
     protected $collRDatasPartial;
 
     /**
+     * @var        ObjectCollection|ChildPlugins[] Cross Collection to store aggregation of ChildPlugins objects.
+     */
+    protected $collRPlugins;
+
+    /**
+     * @var bool
+     */
+    protected $collRPluginsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -240,6 +260,12 @@ abstract class Books implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPlugins[]
+     */
+    protected $rPluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRBatchForbook[]
      */
     protected $rBatchForbooksScheduledForDeletion = null;
@@ -261,6 +287,12 @@ abstract class Books implements ActiveRecordInterface
      * @var ObjectCollection|ChildRDataBook[]
      */
     protected $rDataBooksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRPluginBook[]
+     */
+    protected $rPluginBooksScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -842,6 +874,8 @@ abstract class Books implements ActiveRecordInterface
 
             $this->collRDataBooks = null;
 
+            $this->collRPluginBooks = null;
+
             $this->collFormatss = null;
 
             $this->collIssuess = null;
@@ -850,6 +884,7 @@ abstract class Books implements ActiveRecordInterface
             $this->collRightss = null;
             $this->collTemplatenamess = null;
             $this->collRDatas = null;
+            $this->collRPlugins = null;
         } // if (deep)
     }
 
@@ -1088,6 +1123,35 @@ abstract class Books implements ActiveRecordInterface
             }
 
 
+            if ($this->rPluginsScheduledForDeletion !== null) {
+                if (!$this->rPluginsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rPluginsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RPluginBookQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rPluginsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRPlugins) {
+                foreach ($this->collRPlugins as $rPlugin) {
+                    if (!$rPlugin->isDeleted() && ($rPlugin->isNew() || $rPlugin->isModified())) {
+                        $rPlugin->save($con);
+                    }
+                }
+            }
+
+
             if ($this->rBatchForbooksScheduledForDeletion !== null) {
                 if (!$this->rBatchForbooksScheduledForDeletion->isEmpty()) {
                     \RBatchForbookQuery::create()
@@ -1150,6 +1214,23 @@ abstract class Books implements ActiveRecordInterface
 
             if ($this->collRDataBooks !== null) {
                 foreach ($this->collRDataBooks as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rPluginBooksScheduledForDeletion !== null) {
+                if (!$this->rPluginBooksScheduledForDeletion->isEmpty()) {
+                    \RPluginBookQuery::create()
+                        ->filterByPrimaryKeys($this->rPluginBooksScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rPluginBooksScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRPluginBooks !== null) {
+                foreach ($this->collRPluginBooks as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1471,6 +1552,21 @@ abstract class Books implements ActiveRecordInterface
 
                 $result[$key] = $this->collRDataBooks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collRPluginBooks) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rPluginBooks';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_plugin_books';
+                        break;
+                    default:
+                        $key = 'RPluginBooks';
+                }
+
+                $result[$key] = $this->collRPluginBooks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collFormatss) {
 
                 switch ($keyType) {
@@ -1787,6 +1883,12 @@ abstract class Books implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRPluginBooks() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRPluginBook($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getFormatss() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addFormats($relObj->copy($deepCopy));
@@ -1902,6 +2004,9 @@ abstract class Books implements ActiveRecordInterface
         }
         if ('RDataBook' == $relationName) {
             return $this->initRDataBooks();
+        }
+        if ('RPluginBook' == $relationName) {
+            return $this->initRPluginBooks();
         }
         if ('Formats' == $relationName) {
             return $this->initFormatss();
@@ -2893,6 +2998,252 @@ abstract class Books implements ActiveRecordInterface
         $query->joinWith('RData', $joinBehavior);
 
         return $this->getRDataBooks($query, $con);
+    }
+
+    /**
+     * Clears out the collRPluginBooks collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRPluginBooks()
+     */
+    public function clearRPluginBooks()
+    {
+        $this->collRPluginBooks = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRPluginBooks collection loaded partially.
+     */
+    public function resetPartialRPluginBooks($v = true)
+    {
+        $this->collRPluginBooksPartial = $v;
+    }
+
+    /**
+     * Initializes the collRPluginBooks collection.
+     *
+     * By default this just sets the collRPluginBooks collection to an empty array (like clearcollRPluginBooks());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRPluginBooks($overrideExisting = true)
+    {
+        if (null !== $this->collRPluginBooks && !$overrideExisting) {
+            return;
+        }
+        $this->collRPluginBooks = new ObjectCollection();
+        $this->collRPluginBooks->setModel('\RPluginBook');
+    }
+
+    /**
+     * Gets an array of ChildRPluginBook objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildBooks is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRPluginBook[] List of ChildRPluginBook objects
+     * @throws PropelException
+     */
+    public function getRPluginBooks(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginBooksPartial && !$this->isNew();
+        if (null === $this->collRPluginBooks || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRPluginBooks) {
+                // return empty collection
+                $this->initRPluginBooks();
+            } else {
+                $collRPluginBooks = ChildRPluginBookQuery::create(null, $criteria)
+                    ->filterByRBook($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRPluginBooksPartial && count($collRPluginBooks)) {
+                        $this->initRPluginBooks(false);
+
+                        foreach ($collRPluginBooks as $obj) {
+                            if (false == $this->collRPluginBooks->contains($obj)) {
+                                $this->collRPluginBooks->append($obj);
+                            }
+                        }
+
+                        $this->collRPluginBooksPartial = true;
+                    }
+
+                    return $collRPluginBooks;
+                }
+
+                if ($partial && $this->collRPluginBooks) {
+                    foreach ($this->collRPluginBooks as $obj) {
+                        if ($obj->isNew()) {
+                            $collRPluginBooks[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRPluginBooks = $collRPluginBooks;
+                $this->collRPluginBooksPartial = false;
+            }
+        }
+
+        return $this->collRPluginBooks;
+    }
+
+    /**
+     * Sets a collection of ChildRPluginBook objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rPluginBooks A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildBooks The current object (for fluent API support)
+     */
+    public function setRPluginBooks(Collection $rPluginBooks, ConnectionInterface $con = null)
+    {
+        /** @var ChildRPluginBook[] $rPluginBooksToDelete */
+        $rPluginBooksToDelete = $this->getRPluginBooks(new Criteria(), $con)->diff($rPluginBooks);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rPluginBooksScheduledForDeletion = clone $rPluginBooksToDelete;
+
+        foreach ($rPluginBooksToDelete as $rPluginBookRemoved) {
+            $rPluginBookRemoved->setRBook(null);
+        }
+
+        $this->collRPluginBooks = null;
+        foreach ($rPluginBooks as $rPluginBook) {
+            $this->addRPluginBook($rPluginBook);
+        }
+
+        $this->collRPluginBooks = $rPluginBooks;
+        $this->collRPluginBooksPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RPluginBook objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RPluginBook objects.
+     * @throws PropelException
+     */
+    public function countRPluginBooks(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginBooksPartial && !$this->isNew();
+        if (null === $this->collRPluginBooks || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRPluginBooks) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRPluginBooks());
+            }
+
+            $query = ChildRPluginBookQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRBook($this)
+                ->count($con);
+        }
+
+        return count($this->collRPluginBooks);
+    }
+
+    /**
+     * Method called to associate a ChildRPluginBook object to this object
+     * through the ChildRPluginBook foreign key attribute.
+     *
+     * @param  ChildRPluginBook $l ChildRPluginBook
+     * @return $this|\Books The current object (for fluent API support)
+     */
+    public function addRPluginBook(ChildRPluginBook $l)
+    {
+        if ($this->collRPluginBooks === null) {
+            $this->initRPluginBooks();
+            $this->collRPluginBooksPartial = true;
+        }
+
+        if (!$this->collRPluginBooks->contains($l)) {
+            $this->doAddRPluginBook($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRPluginBook $rPluginBook The ChildRPluginBook object to add.
+     */
+    protected function doAddRPluginBook(ChildRPluginBook $rPluginBook)
+    {
+        $this->collRPluginBooks[]= $rPluginBook;
+        $rPluginBook->setRBook($this);
+    }
+
+    /**
+     * @param  ChildRPluginBook $rPluginBook The ChildRPluginBook object to remove.
+     * @return $this|ChildBooks The current object (for fluent API support)
+     */
+    public function removeRPluginBook(ChildRPluginBook $rPluginBook)
+    {
+        if ($this->getRPluginBooks()->contains($rPluginBook)) {
+            $pos = $this->collRPluginBooks->search($rPluginBook);
+            $this->collRPluginBooks->remove($pos);
+            if (null === $this->rPluginBooksScheduledForDeletion) {
+                $this->rPluginBooksScheduledForDeletion = clone $this->collRPluginBooks;
+                $this->rPluginBooksScheduledForDeletion->clear();
+            }
+            $this->rPluginBooksScheduledForDeletion[]= clone $rPluginBook;
+            $rPluginBook->setRBook(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Books is new, it will return
+     * an empty collection; or if this Books has previously
+     * been saved, it will retrieve related RPluginBooks from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Books.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRPluginBook[] List of ChildRPluginBook objects
+     */
+    public function getRPluginBooksJoinRPlugin(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRPluginBookQuery::create(null, $criteria);
+        $query->joinWith('RPlugin', $joinBehavior);
+
+        return $this->getRPluginBooks($query, $con);
     }
 
     /**
@@ -4350,6 +4701,248 @@ abstract class Books implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRPlugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRPlugins()
+     */
+    public function clearRPlugins()
+    {
+        $this->collRPlugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRPlugins crossRef collection.
+     *
+     * By default this just sets the collRPlugins collection to an empty collection (like clearRPlugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRPlugins()
+    {
+        $this->collRPlugins = new ObjectCollection();
+        $this->collRPluginsPartial = true;
+
+        $this->collRPlugins->setModel('\Plugins');
+    }
+
+    /**
+     * Checks if the collRPlugins collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRPluginsLoaded()
+    {
+        return null !== $this->collRPlugins;
+    }
+
+    /**
+     * Gets a collection of ChildPlugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_book cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildBooks is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildPlugins[] List of ChildPlugins objects
+     */
+    public function getRPlugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginsPartial && !$this->isNew();
+        if (null === $this->collRPlugins || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRPlugins) {
+                    $this->initRPlugins();
+                }
+            } else {
+
+                $query = ChildPluginsQuery::create(null, $criteria)
+                    ->filterByRBook($this);
+                $collRPlugins = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRPlugins;
+                }
+
+                if ($partial && $this->collRPlugins) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRPlugins as $obj) {
+                        if (!$collRPlugins->contains($obj)) {
+                            $collRPlugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRPlugins = $collRPlugins;
+                $this->collRPluginsPartial = false;
+            }
+        }
+
+        return $this->collRPlugins;
+    }
+
+    /**
+     * Sets a collection of Plugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_book cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rPlugins A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildBooks The current object (for fluent API support)
+     */
+    public function setRPlugins(Collection $rPlugins, ConnectionInterface $con = null)
+    {
+        $this->clearRPlugins();
+        $currentRPlugins = $this->getRPlugins();
+
+        $rPluginsScheduledForDeletion = $currentRPlugins->diff($rPlugins);
+
+        foreach ($rPluginsScheduledForDeletion as $toDelete) {
+            $this->removeRPlugin($toDelete);
+        }
+
+        foreach ($rPlugins as $rPlugin) {
+            if (!$currentRPlugins->contains($rPlugin)) {
+                $this->doAddRPlugin($rPlugin);
+            }
+        }
+
+        $this->collRPluginsPartial = false;
+        $this->collRPlugins = $rPlugins;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Plugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_book cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Plugins objects
+     */
+    public function countRPlugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginsPartial && !$this->isNew();
+        if (null === $this->collRPlugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRPlugins) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRPlugins());
+                }
+
+                $query = ChildPluginsQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRBook($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRPlugins);
+        }
+    }
+
+    /**
+     * Associate a ChildPlugins to this object
+     * through the R_plugin_book cross reference table.
+     *
+     * @param ChildPlugins $rPlugin
+     * @return ChildBooks The current object (for fluent API support)
+     */
+    public function addRPlugin(ChildPlugins $rPlugin)
+    {
+        if ($this->collRPlugins === null) {
+            $this->initRPlugins();
+        }
+
+        if (!$this->getRPlugins()->contains($rPlugin)) {
+            // only add it if the **same** object is not already associated
+            $this->collRPlugins->push($rPlugin);
+            $this->doAddRPlugin($rPlugin);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildPlugins $rPlugin
+     */
+    protected function doAddRPlugin(ChildPlugins $rPlugin)
+    {
+        $rPluginBook = new ChildRPluginBook();
+
+        $rPluginBook->setRPlugin($rPlugin);
+
+        $rPluginBook->setRBook($this);
+
+        $this->addRPluginBook($rPluginBook);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rPlugin->isRBooksLoaded()) {
+            $rPlugin->initRBooks();
+            $rPlugin->getRBooks()->push($this);
+        } elseif (!$rPlugin->getRBooks()->contains($this)) {
+            $rPlugin->getRBooks()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rPlugin of this object
+     * through the R_plugin_book cross reference table.
+     *
+     * @param ChildPlugins $rPlugin
+     * @return ChildBooks The current object (for fluent API support)
+     */
+    public function removeRPlugin(ChildPlugins $rPlugin)
+    {
+        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginBook = new ChildRPluginBook();
+
+            $rPluginBook->setRPlugin($rPlugin);
+            if ($rPlugin->isRBooksLoaded()) {
+                //remove the back reference if available
+                $rPlugin->getRBooks()->removeObject($this);
+            }
+
+            $rPluginBook->setRBook($this);
+            $this->removeRPluginBook(clone $rPluginBook);
+            $rPluginBook->clear();
+
+            $this->collRPlugins->remove($this->collRPlugins->search($rPlugin));
+
+            if (null === $this->rPluginsScheduledForDeletion) {
+                $this->rPluginsScheduledForDeletion = clone $this->collRPlugins;
+                $this->rPluginsScheduledForDeletion->clear();
+            }
+
+            $this->rPluginsScheduledForDeletion->push($rPlugin);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -4404,6 +4997,11 @@ abstract class Books implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRPluginBooks) {
+                foreach ($this->collRPluginBooks as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collFormatss) {
                 foreach ($this->collFormatss as $o) {
                     $o->clearAllReferences($deep);
@@ -4434,18 +5032,25 @@ abstract class Books implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRPlugins) {
+                foreach ($this->collRPlugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collRBatchForbooks = null;
         $this->collRRightsForbooks = null;
         $this->collRTemplatenamesForbooks = null;
         $this->collRDataBooks = null;
+        $this->collRPluginBooks = null;
         $this->collFormatss = null;
         $this->collIssuess = null;
         $this->collBatches = null;
         $this->collRightss = null;
         $this->collTemplatenamess = null;
         $this->collRDatas = null;
+        $this->collRPlugins = null;
         $this->auserSysRef = null;
     }
 

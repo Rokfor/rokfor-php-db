@@ -490,6 +490,106 @@ CREATE TABLE `R_data_template`
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- R_plugin_book
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_plugin_book`;
+
+CREATE TABLE `R_plugin_book`
+(
+    `_pluginid` INTEGER(4) NOT NULL,
+    `_bookid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_pluginid`,`_bookid`),
+    INDEX `r_plugin1_a` (`_pluginid`),
+    INDEX `r_plugin1_b` (`_bookid`),
+    CONSTRAINT `r_plugin1_a`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugin1_b`
+        FOREIGN KEY (`_bookid`)
+        REFERENCES `_books` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_plugin_format
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_plugin_format`;
+
+CREATE TABLE `R_plugin_format`
+(
+    `_pluginid` INTEGER(4) NOT NULL,
+    `_formatid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_pluginid`,`_formatid`),
+    INDEX `r_plugin2_a` (`_pluginid`),
+    INDEX `r_plugin2_b` (`_formatid`),
+    CONSTRAINT `r_plugin2_a`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugin2_b`
+        FOREIGN KEY (`_formatid`)
+        REFERENCES `_formats` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_plugin_issue
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_plugin_issue`;
+
+CREATE TABLE `R_plugin_issue`
+(
+    `_pluginid` INTEGER(4) NOT NULL,
+    `_issueid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_pluginid`,`_issueid`),
+    INDEX `r_plugin3_a` (`_pluginid`),
+    INDEX `r_plugin3_b` (`_issueid`),
+    CONSTRAINT `r_plugin3_a`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugin3_b`
+        FOREIGN KEY (`_issueid`)
+        REFERENCES `_issues` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- R_plugin_template
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `R_plugin_template`;
+
+CREATE TABLE `R_plugin_template`
+(
+    `_pluginid` INTEGER(4) NOT NULL,
+    `_templateid` INTEGER(4) NOT NULL,
+    PRIMARY KEY (`_pluginid`,`_templateid`),
+    INDEX `r_plugin4_a` (`_pluginid`),
+    INDEX `r_plugin4_b` (`_templateid`),
+    CONSTRAINT `r_plugin4_a`
+        FOREIGN KEY (`_pluginid`)
+        REFERENCES `_plugins` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `r_plugin4_b`
+        FOREIGN KEY (`_templateid`)
+        REFERENCES `_templates` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- _fieldpostprocessor
 -- ---------------------------------------------------------------------
 
@@ -631,13 +731,7 @@ CREATE TABLE `_plugins`
 (
     `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
     `_name` TEXT,
-    `__config__` TEXT,
-    `__split__` TEXT,
-    `__parentnode__` INTEGER(32),
-    `__sort__` INTEGER(32),
-    `_page` TEXT,
-    `_config` TEXT,
-    `_callback` TEXT,
+    `_api` TEXT,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -850,7 +944,25 @@ CREATE TABLE `_data`
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `propel_migration`;
+CREATE TABLE `propel_migration` (
+  `version` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
 INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
+INSERT INTO `propel_migration` (`version`) VALUES (456855059);
+INSERT INTO `propel_migration` (`version`) VALUES (1452074796);
+INSERT INTO `propel_migration` (`version`) VALUES (1452076668);
+INSERT INTO `propel_migration` (`version`) VALUES (1452077180);
+INSERT INTO `propel_migration` (`version`) VALUES (1452358516);
+INSERT INTO `propel_migration` (`version`) VALUES (1452364153);
+INSERT INTO `propel_migration` (`version`) VALUES (1453121154);
+INSERT INTO `propel_migration` (`version`) VALUES (1453122685);
+INSERT INTO `propel_migration` (`version`) VALUES (1454919452);
+INSERT INTO `propel_migration` (`version`) VALUES (1477824860);
+INSERT INTO `propel_migration` (`version`) VALUES (1477824861);
+INSERT INTO `propel_migration` (`version`) VALUES (1494834687);
+INSERT INTO `propel_migration` (`version`) VALUES (1494930480);
+INSERT INTO `propel_migration` (`version`) VALUES (1505983179);
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

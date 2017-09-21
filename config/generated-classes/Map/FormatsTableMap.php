@@ -218,9 +218,17 @@ class FormatsTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RDataFormats', false);
+        $this->addRelation('RPluginFormat', '\\RPluginFormat', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_formatid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RPluginFormats', false);
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
         $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatenamess');
         $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
+        $this->addRelation('RPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RPlugins');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _formats     * by a foreign key with ON DELETE CASCADE
@@ -233,6 +241,7 @@ class FormatsTableMap extends TableMap
         RTemplatenamesInchapterTableMap::clearInstancePool();
         ContributionsTableMap::clearInstancePool();
         RDataFormatTableMap::clearInstancePool();
+        RPluginFormatTableMap::clearInstancePool();
     }
 
     /**

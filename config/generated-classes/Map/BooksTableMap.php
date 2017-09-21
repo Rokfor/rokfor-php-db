@@ -205,6 +205,13 @@ class BooksTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RDataBooks', false);
+        $this->addRelation('RPluginBook', '\\RPluginBook', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_bookid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RPluginBooks', false);
         $this->addRelation('Formats', '\\Formats', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -223,6 +230,7 @@ class BooksTableMap extends TableMap
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
         $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatenamess');
         $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
+        $this->addRelation('RPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RPlugins');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _books     * by a foreign key with ON DELETE CASCADE
@@ -235,6 +243,7 @@ class BooksTableMap extends TableMap
         RRightsForbookTableMap::clearInstancePool();
         RTemplatenamesForbookTableMap::clearInstancePool();
         RDataBookTableMap::clearInstancePool();
+        RPluginBookTableMap::clearInstancePool();
         FormatsTableMap::clearInstancePool();
         IssuesTableMap::clearInstancePool();
     }

@@ -416,6 +416,96 @@
     </vendor>
   </table>
 
+
+
+<!-- BEGIN OF NEW CODE -->
+
+
+
+ <table name="R_plugin_book" idMethod="native" phpName="RPluginBook" isCrossRef="true">
+    <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_bookid" phpName="Bookid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_plugins" name="r_plugin1_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RPlugin">
+      <reference local="_pluginid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_books" name="r_plugin1_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RBook">
+      <reference local="_bookid" foreign="id"/>
+    </foreign-key>
+    <index name="r_plugin1_a">
+      <index-column name="_pluginid"/>
+    </index>
+    <index name="r_plugin1_b">
+      <index-column name="_bookid"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
+  <table name="R_plugin_format" idMethod="native" phpName="RPluginFormat" isCrossRef="true">
+    <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_formatid" phpName="Formatid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_plugins" name="r_plugin2_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RPlugin">
+      <reference local="_pluginid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_formats" name="r_plugin2_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RFormat">
+      <reference local="_formatid" foreign="id"/>
+    </foreign-key>
+    <index name="r_plugin2_a">
+      <index-column name="_pluginid"/>
+    </index>
+    <index name="r_plugin2_b">
+      <index-column name="_formatid"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
+  <table name="R_plugin_issue" idMethod="native" phpName="RPluginIssue" isCrossRef="true">
+    <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_issueid" phpName="Issueid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_plugins" name="r_plugin3_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RPlugin">
+      <reference local="_pluginid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_issues" name="r_plugin3_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RIssue">
+      <reference local="_issueid" foreign="id"/>
+    </foreign-key>
+    <index name="r_plugin3_a">
+      <index-column name="_pluginid"/>
+    </index>
+    <index name="r_plugin3_b">
+      <index-column name="_issueid"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
+  <table name="R_plugin_template" idMethod="native" phpName="RPluginTemplate" isCrossRef="true">
+    <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <column name="_templateid" phpName="Templateid" type="INTEGER" size="4" primaryKey="true" required="true"/>
+    <foreign-key foreignTable="_plugins" name="r_plugin4_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RPlugin">
+      <reference local="_pluginid" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="_templates" name="r_plugin4_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RTemplate">
+      <reference local="_templateid" foreign="id"/>
+    </foreign-key>
+    <index name="r_plugin4_a">
+      <index-column name="_pluginid"/>
+    </index>
+    <index name="r_plugin4_b">
+      <index-column name="_templateid"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+
+
+  <!-- END OF NEW CODE -->
+
+
   <table name="_fieldpostprocessor" idMethod="native" phpName="Fieldpostprocessor">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_name" phpName="Name" type="LONGVARCHAR"/>
@@ -523,13 +613,7 @@
   <table name="_plugins" idMethod="native" phpName="Plugins">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_name" phpName="Name" type="LONGVARCHAR"/>
-    <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
-    <column name="__split__" phpName="Split" type="LONGVARCHAR"/>
-    <column name="__parentnode__" phpName="Parentnode" type="INTEGER" size="32"/>
-    <column name="__sort__" phpName="Sort" type="INTEGER" size="32"/>
-    <column name="_page" phpName="Page" type="LONGVARCHAR"/>
-    <column name="_config" phpName="Config" type="LONGVARCHAR"/>
-    <column name="_callback" phpName="Callback" type="LONGVARCHAR"/>
+    <column name="_api"  phpName="Api" type="LONGVARCHAR"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

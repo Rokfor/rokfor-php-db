@@ -10,8 +10,12 @@ use \Data as ChildData;
 use \DataQuery as ChildDataQuery;
 use \Formats as ChildFormats;
 use \FormatsQuery as ChildFormatsQuery;
+use \Plugins as ChildPlugins;
+use \PluginsQuery as ChildPluginsQuery;
 use \RDataFormat as ChildRDataFormat;
 use \RDataFormatQuery as ChildRDataFormatQuery;
+use \RPluginFormat as ChildRPluginFormat;
+use \RPluginFormatQuery as ChildRPluginFormatQuery;
 use \RRightsForformat as ChildRRightsForformat;
 use \RRightsForformatQuery as ChildRRightsForformatQuery;
 use \RTemplatenamesInchapter as ChildRTemplatenamesInchapter;
@@ -162,6 +166,12 @@ abstract class Formats implements ActiveRecordInterface
     protected $collRDataFormatsPartial;
 
     /**
+     * @var        ObjectCollection|ChildRPluginFormat[] Collection to store aggregation of ChildRPluginFormat objects.
+     */
+    protected $collRPluginFormats;
+    protected $collRPluginFormatsPartial;
+
+    /**
      * @var        ObjectCollection|ChildRights[] Cross Collection to store aggregation of ChildRights objects.
      */
     protected $collRightss;
@@ -192,6 +202,16 @@ abstract class Formats implements ActiveRecordInterface
     protected $collRDatasPartial;
 
     /**
+     * @var        ObjectCollection|ChildPlugins[] Cross Collection to store aggregation of ChildPlugins objects.
+     */
+    protected $collRPlugins;
+
+    /**
+     * @var bool
+     */
+    protected $collRPluginsPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -219,6 +239,12 @@ abstract class Formats implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPlugins[]
+     */
+    protected $rPluginsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRRightsForformat[]
      */
     protected $rRightsForformatsScheduledForDeletion = null;
@@ -240,6 +266,12 @@ abstract class Formats implements ActiveRecordInterface
      * @var ObjectCollection|ChildRDataFormat[]
      */
     protected $rDataFormatsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRPluginFormat[]
+     */
+    protected $rPluginFormatsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Formats object.
@@ -850,9 +882,12 @@ abstract class Formats implements ActiveRecordInterface
 
             $this->collRDataFormats = null;
 
+            $this->collRPluginFormats = null;
+
             $this->collRightss = null;
             $this->collTemplatenamess = null;
             $this->collRDatas = null;
+            $this->collRPlugins = null;
         } // if (deep)
     }
 
@@ -1069,6 +1104,35 @@ abstract class Formats implements ActiveRecordInterface
             }
 
 
+            if ($this->rPluginsScheduledForDeletion !== null) {
+                if (!$this->rPluginsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->rPluginsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \RPluginFormatQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->rPluginsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collRPlugins) {
+                foreach ($this->collRPlugins as $rPlugin) {
+                    if (!$rPlugin->isDeleted() && ($rPlugin->isNew() || $rPlugin->isModified())) {
+                        $rPlugin->save($con);
+                    }
+                }
+            }
+
+
             if ($this->rRightsForformatsScheduledForDeletion !== null) {
                 if (!$this->rRightsForformatsScheduledForDeletion->isEmpty()) {
                     \RRightsForformatQuery::create()
@@ -1131,6 +1195,23 @@ abstract class Formats implements ActiveRecordInterface
 
             if ($this->collRDataFormats !== null) {
                 foreach ($this->collRDataFormats as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->rPluginFormatsScheduledForDeletion !== null) {
+                if (!$this->rPluginFormatsScheduledForDeletion->isEmpty()) {
+                    \RPluginFormatQuery::create()
+                        ->filterByPrimaryKeys($this->rPluginFormatsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->rPluginFormatsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRPluginFormats !== null) {
+                foreach ($this->collRPluginFormats as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1443,6 +1524,21 @@ abstract class Formats implements ActiveRecordInterface
 
                 $result[$key] = $this->collRDataFormats->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collRPluginFormats) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'rPluginFormats';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'R_plugin_formats';
+                        break;
+                    default:
+                        $key = 'RPluginFormats';
+                }
+
+                $result[$key] = $this->collRPluginFormats->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
         }
 
         return $result;
@@ -1739,6 +1835,12 @@ abstract class Formats implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getRPluginFormats() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRPluginFormat($relObj->copy($deepCopy));
+                }
+            }
+
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1893,6 +1995,9 @@ abstract class Formats implements ActiveRecordInterface
         }
         if ('RDataFormat' == $relationName) {
             return $this->initRDataFormats();
+        }
+        if ('RPluginFormat' == $relationName) {
+            return $this->initRPluginFormats();
         }
     }
 
@@ -2928,6 +3033,252 @@ abstract class Formats implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRPluginFormats collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRPluginFormats()
+     */
+    public function clearRPluginFormats()
+    {
+        $this->collRPluginFormats = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRPluginFormats collection loaded partially.
+     */
+    public function resetPartialRPluginFormats($v = true)
+    {
+        $this->collRPluginFormatsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRPluginFormats collection.
+     *
+     * By default this just sets the collRPluginFormats collection to an empty array (like clearcollRPluginFormats());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRPluginFormats($overrideExisting = true)
+    {
+        if (null !== $this->collRPluginFormats && !$overrideExisting) {
+            return;
+        }
+        $this->collRPluginFormats = new ObjectCollection();
+        $this->collRPluginFormats->setModel('\RPluginFormat');
+    }
+
+    /**
+     * Gets an array of ChildRPluginFormat objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFormats is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRPluginFormat[] List of ChildRPluginFormat objects
+     * @throws PropelException
+     */
+    public function getRPluginFormats(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginFormatsPartial && !$this->isNew();
+        if (null === $this->collRPluginFormats || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRPluginFormats) {
+                // return empty collection
+                $this->initRPluginFormats();
+            } else {
+                $collRPluginFormats = ChildRPluginFormatQuery::create(null, $criteria)
+                    ->filterByRFormat($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRPluginFormatsPartial && count($collRPluginFormats)) {
+                        $this->initRPluginFormats(false);
+
+                        foreach ($collRPluginFormats as $obj) {
+                            if (false == $this->collRPluginFormats->contains($obj)) {
+                                $this->collRPluginFormats->append($obj);
+                            }
+                        }
+
+                        $this->collRPluginFormatsPartial = true;
+                    }
+
+                    return $collRPluginFormats;
+                }
+
+                if ($partial && $this->collRPluginFormats) {
+                    foreach ($this->collRPluginFormats as $obj) {
+                        if ($obj->isNew()) {
+                            $collRPluginFormats[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRPluginFormats = $collRPluginFormats;
+                $this->collRPluginFormatsPartial = false;
+            }
+        }
+
+        return $this->collRPluginFormats;
+    }
+
+    /**
+     * Sets a collection of ChildRPluginFormat objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $rPluginFormats A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function setRPluginFormats(Collection $rPluginFormats, ConnectionInterface $con = null)
+    {
+        /** @var ChildRPluginFormat[] $rPluginFormatsToDelete */
+        $rPluginFormatsToDelete = $this->getRPluginFormats(new Criteria(), $con)->diff($rPluginFormats);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->rPluginFormatsScheduledForDeletion = clone $rPluginFormatsToDelete;
+
+        foreach ($rPluginFormatsToDelete as $rPluginFormatRemoved) {
+            $rPluginFormatRemoved->setRFormat(null);
+        }
+
+        $this->collRPluginFormats = null;
+        foreach ($rPluginFormats as $rPluginFormat) {
+            $this->addRPluginFormat($rPluginFormat);
+        }
+
+        $this->collRPluginFormats = $rPluginFormats;
+        $this->collRPluginFormatsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related RPluginFormat objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related RPluginFormat objects.
+     * @throws PropelException
+     */
+    public function countRPluginFormats(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginFormatsPartial && !$this->isNew();
+        if (null === $this->collRPluginFormats || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRPluginFormats) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRPluginFormats());
+            }
+
+            $query = ChildRPluginFormatQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRFormat($this)
+                ->count($con);
+        }
+
+        return count($this->collRPluginFormats);
+    }
+
+    /**
+     * Method called to associate a ChildRPluginFormat object to this object
+     * through the ChildRPluginFormat foreign key attribute.
+     *
+     * @param  ChildRPluginFormat $l ChildRPluginFormat
+     * @return $this|\Formats The current object (for fluent API support)
+     */
+    public function addRPluginFormat(ChildRPluginFormat $l)
+    {
+        if ($this->collRPluginFormats === null) {
+            $this->initRPluginFormats();
+            $this->collRPluginFormatsPartial = true;
+        }
+
+        if (!$this->collRPluginFormats->contains($l)) {
+            $this->doAddRPluginFormat($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRPluginFormat $rPluginFormat The ChildRPluginFormat object to add.
+     */
+    protected function doAddRPluginFormat(ChildRPluginFormat $rPluginFormat)
+    {
+        $this->collRPluginFormats[]= $rPluginFormat;
+        $rPluginFormat->setRFormat($this);
+    }
+
+    /**
+     * @param  ChildRPluginFormat $rPluginFormat The ChildRPluginFormat object to remove.
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function removeRPluginFormat(ChildRPluginFormat $rPluginFormat)
+    {
+        if ($this->getRPluginFormats()->contains($rPluginFormat)) {
+            $pos = $this->collRPluginFormats->search($rPluginFormat);
+            $this->collRPluginFormats->remove($pos);
+            if (null === $this->rPluginFormatsScheduledForDeletion) {
+                $this->rPluginFormatsScheduledForDeletion = clone $this->collRPluginFormats;
+                $this->rPluginFormatsScheduledForDeletion->clear();
+            }
+            $this->rPluginFormatsScheduledForDeletion[]= clone $rPluginFormat;
+            $rPluginFormat->setRFormat(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Formats is new, it will return
+     * an empty collection; or if this Formats has previously
+     * been saved, it will retrieve related RPluginFormats from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Formats.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildRPluginFormat[] List of ChildRPluginFormat objects
+     */
+    public function getRPluginFormatsJoinRPlugin(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildRPluginFormatQuery::create(null, $criteria);
+        $query->joinWith('RPlugin', $joinBehavior);
+
+        return $this->getRPluginFormats($query, $con);
+    }
+
+    /**
      * Clears out the collRightss collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -3654,6 +4005,248 @@ abstract class Formats implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRPlugins collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRPlugins()
+     */
+    public function clearRPlugins()
+    {
+        $this->collRPlugins = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Initializes the collRPlugins crossRef collection.
+     *
+     * By default this just sets the collRPlugins collection to an empty collection (like clearRPlugins());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @return void
+     */
+    public function initRPlugins()
+    {
+        $this->collRPlugins = new ObjectCollection();
+        $this->collRPluginsPartial = true;
+
+        $this->collRPlugins->setModel('\Plugins');
+    }
+
+    /**
+     * Checks if the collRPlugins collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRPluginsLoaded()
+    {
+        return null !== $this->collRPlugins;
+    }
+
+    /**
+     * Gets a collection of ChildPlugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_format cross-reference table.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildFormats is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildPlugins[] List of ChildPlugins objects
+     */
+    public function getRPlugins(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginsPartial && !$this->isNew();
+        if (null === $this->collRPlugins || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRPlugins) {
+                    $this->initRPlugins();
+                }
+            } else {
+
+                $query = ChildPluginsQuery::create(null, $criteria)
+                    ->filterByRFormat($this);
+                $collRPlugins = $query->find($con);
+                if (null !== $criteria) {
+                    return $collRPlugins;
+                }
+
+                if ($partial && $this->collRPlugins) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRPlugins as $obj) {
+                        if (!$collRPlugins->contains($obj)) {
+                            $collRPlugins[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRPlugins = $collRPlugins;
+                $this->collRPluginsPartial = false;
+            }
+        }
+
+        return $this->collRPlugins;
+    }
+
+    /**
+     * Sets a collection of Plugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_format cross-reference table.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param  Collection $rPlugins A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
+     * @return $this|ChildFormats The current object (for fluent API support)
+     */
+    public function setRPlugins(Collection $rPlugins, ConnectionInterface $con = null)
+    {
+        $this->clearRPlugins();
+        $currentRPlugins = $this->getRPlugins();
+
+        $rPluginsScheduledForDeletion = $currentRPlugins->diff($rPlugins);
+
+        foreach ($rPluginsScheduledForDeletion as $toDelete) {
+            $this->removeRPlugin($toDelete);
+        }
+
+        foreach ($rPlugins as $rPlugin) {
+            if (!$currentRPlugins->contains($rPlugin)) {
+                $this->doAddRPlugin($rPlugin);
+            }
+        }
+
+        $this->collRPluginsPartial = false;
+        $this->collRPlugins = $rPlugins;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of Plugins objects related by a many-to-many relationship
+     * to the current object by way of the R_plugin_format cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Plugins objects
+     */
+    public function countRPlugins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRPluginsPartial && !$this->isNew();
+        if (null === $this->collRPlugins || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRPlugins) {
+                return 0;
+            } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRPlugins());
+                }
+
+                $query = ChildPluginsQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByRFormat($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRPlugins);
+        }
+    }
+
+    /**
+     * Associate a ChildPlugins to this object
+     * through the R_plugin_format cross reference table.
+     *
+     * @param ChildPlugins $rPlugin
+     * @return ChildFormats The current object (for fluent API support)
+     */
+    public function addRPlugin(ChildPlugins $rPlugin)
+    {
+        if ($this->collRPlugins === null) {
+            $this->initRPlugins();
+        }
+
+        if (!$this->getRPlugins()->contains($rPlugin)) {
+            // only add it if the **same** object is not already associated
+            $this->collRPlugins->push($rPlugin);
+            $this->doAddRPlugin($rPlugin);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param ChildPlugins $rPlugin
+     */
+    protected function doAddRPlugin(ChildPlugins $rPlugin)
+    {
+        $rPluginFormat = new ChildRPluginFormat();
+
+        $rPluginFormat->setRPlugin($rPlugin);
+
+        $rPluginFormat->setRFormat($this);
+
+        $this->addRPluginFormat($rPluginFormat);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$rPlugin->isRFormatsLoaded()) {
+            $rPlugin->initRFormats();
+            $rPlugin->getRFormats()->push($this);
+        } elseif (!$rPlugin->getRFormats()->contains($this)) {
+            $rPlugin->getRFormats()->push($this);
+        }
+
+    }
+
+    /**
+     * Remove rPlugin of this object
+     * through the R_plugin_format cross reference table.
+     *
+     * @param ChildPlugins $rPlugin
+     * @return ChildFormats The current object (for fluent API support)
+     */
+    public function removeRPlugin(ChildPlugins $rPlugin)
+    {
+        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginFormat = new ChildRPluginFormat();
+
+            $rPluginFormat->setRPlugin($rPlugin);
+            if ($rPlugin->isRFormatsLoaded()) {
+                //remove the back reference if available
+                $rPlugin->getRFormats()->removeObject($this);
+            }
+
+            $rPluginFormat->setRFormat($this);
+            $this->removeRPluginFormat(clone $rPluginFormat);
+            $rPluginFormat->clear();
+
+            $this->collRPlugins->remove($this->collRPlugins->search($rPlugin));
+
+            if (null === $this->rPluginsScheduledForDeletion) {
+                $this->rPluginsScheduledForDeletion = clone $this->collRPlugins;
+                $this->rPluginsScheduledForDeletion->clear();
+            }
+
+            $this->rPluginsScheduledForDeletion->push($rPlugin);
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -3712,6 +4305,11 @@ abstract class Formats implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRPluginFormats) {
+                foreach ($this->collRPluginFormats as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRightss) {
                 foreach ($this->collRightss as $o) {
                     $o->clearAllReferences($deep);
@@ -3727,15 +4325,22 @@ abstract class Formats implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRPlugins) {
+                foreach ($this->collRPlugins as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
         $this->collRRightsForformats = null;
         $this->collRTemplatenamesInchapters = null;
         $this->collContributionss = null;
         $this->collRDataFormats = null;
+        $this->collRPluginFormats = null;
         $this->collRightss = null;
         $this->collTemplatenamess = null;
         $this->collRDatas = null;
+        $this->collRPlugins = null;
         $this->auserSysRef = null;
         $this->aBooks = null;
     }

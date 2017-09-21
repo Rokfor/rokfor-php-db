@@ -235,8 +235,16 @@ class IssuesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'RDataIssues', false);
+        $this->addRelation('RPluginIssue', '\\RPluginIssue', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_issueid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RPluginIssues', false);
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
         $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
+        $this->addRelation('RPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RPlugins');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _issues     * by a foreign key with ON DELETE CASCADE
@@ -248,6 +256,7 @@ class IssuesTableMap extends TableMap
         RRightsForissueTableMap::clearInstancePool();
         ContributionsTableMap::clearInstancePool();
         RDataIssueTableMap::clearInstancePool();
+        RPluginIssueTableMap::clearInstancePool();
     }
 
     /**

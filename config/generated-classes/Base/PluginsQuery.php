@@ -22,70 +22,56 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildPluginsQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildPluginsQuery orderByName($order = Criteria::ASC) Order by the _name column
- * @method     ChildPluginsQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
- * @method     ChildPluginsQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
- * @method     ChildPluginsQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
- * @method     ChildPluginsQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
- * @method     ChildPluginsQuery orderByPage($order = Criteria::ASC) Order by the _page column
- * @method     ChildPluginsQuery orderByConfig($order = Criteria::ASC) Order by the _config column
- * @method     ChildPluginsQuery orderByCallback($order = Criteria::ASC) Order by the _callback column
+ * @method     ChildPluginsQuery orderByApi($order = Criteria::ASC) Order by the _api column
  *
  * @method     ChildPluginsQuery groupById() Group by the id column
  * @method     ChildPluginsQuery groupByName() Group by the _name column
- * @method     ChildPluginsQuery groupByConfigSys() Group by the __config__ column
- * @method     ChildPluginsQuery groupBySplit() Group by the __split__ column
- * @method     ChildPluginsQuery groupByParentnode() Group by the __parentnode__ column
- * @method     ChildPluginsQuery groupBySort() Group by the __sort__ column
- * @method     ChildPluginsQuery groupByPage() Group by the _page column
- * @method     ChildPluginsQuery groupByConfig() Group by the _config column
- * @method     ChildPluginsQuery groupByCallback() Group by the _callback column
+ * @method     ChildPluginsQuery groupByApi() Group by the _api column
  *
  * @method     ChildPluginsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPluginsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPluginsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildPluginsQuery leftJoinRPluginBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginBook relation
+ * @method     ChildPluginsQuery rightJoinRPluginBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginBook relation
+ * @method     ChildPluginsQuery innerJoinRPluginBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginBook relation
+ *
+ * @method     ChildPluginsQuery leftJoinRPluginFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginFormat relation
+ * @method     ChildPluginsQuery rightJoinRPluginFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginFormat relation
+ * @method     ChildPluginsQuery innerJoinRPluginFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginFormat relation
+ *
+ * @method     ChildPluginsQuery leftJoinRPluginIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginIssue relation
+ * @method     ChildPluginsQuery rightJoinRPluginIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginIssue relation
+ * @method     ChildPluginsQuery innerJoinRPluginIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginIssue relation
+ *
+ * @method     ChildPluginsQuery leftJoinRPluginTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginTemplate relation
+ * @method     ChildPluginsQuery rightJoinRPluginTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginTemplate relation
+ * @method     ChildPluginsQuery innerJoinRPluginTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginTemplate relation
+ *
  * @method     ChildPluginsQuery leftJoinPdf($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pdf relation
  * @method     ChildPluginsQuery rightJoinPdf($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pdf relation
  * @method     ChildPluginsQuery innerJoinPdf($relationAlias = null) Adds a INNER JOIN clause to the query using the Pdf relation
  *
- * @method     \PdfQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \RPluginBookQuery|\RPluginFormatQuery|\RPluginIssueQuery|\RPluginTemplateQuery|\PdfQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildPlugins findOne(ConnectionInterface $con = null) Return the first ChildPlugins matching the query
  * @method     ChildPlugins findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPlugins matching the query, or a new ChildPlugins object populated from the query conditions when no match is found
  *
  * @method     ChildPlugins findOneById(int $id) Return the first ChildPlugins filtered by the id column
  * @method     ChildPlugins findOneByName(string $_name) Return the first ChildPlugins filtered by the _name column
- * @method     ChildPlugins findOneByConfigSys(string $__config__) Return the first ChildPlugins filtered by the __config__ column
- * @method     ChildPlugins findOneBySplit(string $__split__) Return the first ChildPlugins filtered by the __split__ column
- * @method     ChildPlugins findOneByParentnode(int $__parentnode__) Return the first ChildPlugins filtered by the __parentnode__ column
- * @method     ChildPlugins findOneBySort(int $__sort__) Return the first ChildPlugins filtered by the __sort__ column
- * @method     ChildPlugins findOneByPage(string $_page) Return the first ChildPlugins filtered by the _page column
- * @method     ChildPlugins findOneByConfig(string $_config) Return the first ChildPlugins filtered by the _config column
- * @method     ChildPlugins findOneByCallback(string $_callback) Return the first ChildPlugins filtered by the _callback column *
+ * @method     ChildPlugins findOneByApi(string $_api) Return the first ChildPlugins filtered by the _api column *
 
  * @method     ChildPlugins requirePk($key, ConnectionInterface $con = null) Return the ChildPlugins by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPlugins requireOne(ConnectionInterface $con = null) Return the first ChildPlugins matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPlugins requireOneById(int $id) Return the first ChildPlugins filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPlugins requireOneByName(string $_name) Return the first ChildPlugins filtered by the _name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneByConfigSys(string $__config__) Return the first ChildPlugins filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneBySplit(string $__split__) Return the first ChildPlugins filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneByParentnode(int $__parentnode__) Return the first ChildPlugins filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneBySort(int $__sort__) Return the first ChildPlugins filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneByPage(string $_page) Return the first ChildPlugins filtered by the _page column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneByConfig(string $_config) Return the first ChildPlugins filtered by the _config column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPlugins requireOneByCallback(string $_callback) Return the first ChildPlugins filtered by the _callback column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPlugins requireOneByApi(string $_api) Return the first ChildPlugins filtered by the _api column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPlugins[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPlugins objects based on current ModelCriteria
  * @method     ChildPlugins[]|ObjectCollection findById(int $id) Return ChildPlugins objects filtered by the id column
  * @method     ChildPlugins[]|ObjectCollection findByName(string $_name) Return ChildPlugins objects filtered by the _name column
- * @method     ChildPlugins[]|ObjectCollection findByConfigSys(string $__config__) Return ChildPlugins objects filtered by the __config__ column
- * @method     ChildPlugins[]|ObjectCollection findBySplit(string $__split__) Return ChildPlugins objects filtered by the __split__ column
- * @method     ChildPlugins[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildPlugins objects filtered by the __parentnode__ column
- * @method     ChildPlugins[]|ObjectCollection findBySort(int $__sort__) Return ChildPlugins objects filtered by the __sort__ column
- * @method     ChildPlugins[]|ObjectCollection findByPage(string $_page) Return ChildPlugins objects filtered by the _page column
- * @method     ChildPlugins[]|ObjectCollection findByConfig(string $_config) Return ChildPlugins objects filtered by the _config column
- * @method     ChildPlugins[]|ObjectCollection findByCallback(string $_callback) Return ChildPlugins objects filtered by the _callback column
+ * @method     ChildPlugins[]|ObjectCollection findByApi(string $_api) Return ChildPlugins objects filtered by the _api column
  * @method     ChildPlugins[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -178,7 +164,7 @@ abstract class PluginsQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _name, __config__, __split__, __parentnode__, __sort__, _page, _config, _callback FROM _plugins WHERE id = :p0';
+        $sql = 'SELECT id, _name, _api FROM _plugins WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -339,230 +325,324 @@ abstract class PluginsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the __config__ column
+     * Filter the query on the _api column
      *
      * Example usage:
      * <code>
-     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByApi('fooValue');   // WHERE _api = 'fooValue'
+     * $query->filterByApi('%fooValue%'); // WHERE _api LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $configSys The value to use as filter.
+     * @param     string $api The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterByConfigSys($configSys = null, $comparison = null)
+    public function filterByApi($api = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($configSys)) {
+            if (is_array($api)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
+            } elseif (preg_match('/[\%\*]/', $api)) {
+                $api = str_replace('*', '%', $api);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(PluginsTableMap::COL___CONFIG__, $configSys, $comparison);
+        return $this->addUsingAlias(PluginsTableMap::COL__API, $api, $comparison);
     }
 
     /**
-     * Filter the query on the __split__ column
+     * Filter the query by a related \RPluginBook object
      *
-     * Example usage:
-     * <code>
-     * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
-     * </code>
+     * @param \RPluginBook|ObjectCollection $rPluginBook the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPluginsQuery The current query, for fluid interface
+     * @return ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterBySplit($split = null, $comparison = null)
+    public function filterByRPluginBook($rPluginBook, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($split)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
-            }
+        if ($rPluginBook instanceof \RPluginBook) {
+            return $this
+                ->addUsingAlias(PluginsTableMap::COL_ID, $rPluginBook->getPluginid(), $comparison);
+        } elseif ($rPluginBook instanceof ObjectCollection) {
+            return $this
+                ->useRPluginBookQuery()
+                ->filterByPrimaryKeys($rPluginBook->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRPluginBook() only accepts arguments of type \RPluginBook or Collection');
         }
-
-        return $this->addUsingAlias(PluginsTableMap::COL___SPLIT__, $split, $comparison);
     }
 
     /**
-     * Filter the query on the __parentnode__ column
+     * Adds a JOIN clause to the query using the RPluginBook relation
      *
-     * Example usage:
-     * <code>
-     * $query->filterByParentnode(1234); // WHERE __parentnode__ = 1234
-     * $query->filterByParentnode(array(12, 34)); // WHERE __parentnode__ IN (12, 34)
-     * $query->filterByParentnode(array('min' => 12)); // WHERE __parentnode__ > 12
-     * </code>
-     *
-     * @param     mixed $parentnode The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterByParentnode($parentnode = null, $comparison = null)
+    public function joinRPluginBook($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        if (is_array($parentnode)) {
-            $useMinMax = false;
-            if (isset($parentnode['min'])) {
-                $this->addUsingAlias(PluginsTableMap::COL___PARENTNODE__, $parentnode['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($parentnode['max'])) {
-                $this->addUsingAlias(PluginsTableMap::COL___PARENTNODE__, $parentnode['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RPluginBook');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
         }
 
-        return $this->addUsingAlias(PluginsTableMap::COL___PARENTNODE__, $parentnode, $comparison);
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RPluginBook');
+        }
+
+        return $this;
     }
 
     /**
-     * Filter the query on the __sort__ column
+     * Use the RPluginBook relation RPluginBook object
      *
-     * Example usage:
-     * <code>
-     * $query->filterBySort(1234); // WHERE __sort__ = 1234
-     * $query->filterBySort(array(12, 34)); // WHERE __sort__ IN (12, 34)
-     * $query->filterBySort(array('min' => 12)); // WHERE __sort__ > 12
-     * </code>
+     * @see useQuery()
      *
-     * @param     mixed $sort The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildPluginsQuery The current query, for fluid interface
+     * @return \RPluginBookQuery A secondary query class using the current class as primary query
      */
-    public function filterBySort($sort = null, $comparison = null)
+    public function useRPluginBookQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        if (is_array($sort)) {
-            $useMinMax = false;
-            if (isset($sort['min'])) {
-                $this->addUsingAlias(PluginsTableMap::COL___SORT__, $sort['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($sort['max'])) {
-                $this->addUsingAlias(PluginsTableMap::COL___SORT__, $sort['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(PluginsTableMap::COL___SORT__, $sort, $comparison);
+        return $this
+            ->joinRPluginBook($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RPluginBook', '\RPluginBookQuery');
     }
 
     /**
-     * Filter the query on the _page column
+     * Filter the query by a related \RPluginFormat object
      *
-     * Example usage:
-     * <code>
-     * $query->filterByPage('fooValue');   // WHERE _page = 'fooValue'
-     * $query->filterByPage('%fooValue%'); // WHERE _page LIKE '%fooValue%'
-     * </code>
+     * @param \RPluginFormat|ObjectCollection $rPluginFormat the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @param     string $page The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPluginsQuery The current query, for fluid interface
+     * @return ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterByPage($page = null, $comparison = null)
+    public function filterByRPluginFormat($rPluginFormat, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($page)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $page)) {
-                $page = str_replace('*', '%', $page);
-                $comparison = Criteria::LIKE;
-            }
+        if ($rPluginFormat instanceof \RPluginFormat) {
+            return $this
+                ->addUsingAlias(PluginsTableMap::COL_ID, $rPluginFormat->getPluginid(), $comparison);
+        } elseif ($rPluginFormat instanceof ObjectCollection) {
+            return $this
+                ->useRPluginFormatQuery()
+                ->filterByPrimaryKeys($rPluginFormat->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRPluginFormat() only accepts arguments of type \RPluginFormat or Collection');
         }
-
-        return $this->addUsingAlias(PluginsTableMap::COL__PAGE, $page, $comparison);
     }
 
     /**
-     * Filter the query on the _config column
+     * Adds a JOIN clause to the query using the RPluginFormat relation
      *
-     * Example usage:
-     * <code>
-     * $query->filterByConfig('fooValue');   // WHERE _config = 'fooValue'
-     * $query->filterByConfig('%fooValue%'); // WHERE _config LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $config The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterByConfig($config = null, $comparison = null)
+    public function joinRPluginFormat($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        if (null === $comparison) {
-            if (is_array($config)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $config)) {
-                $config = str_replace('*', '%', $config);
-                $comparison = Criteria::LIKE;
-            }
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RPluginFormat');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
         }
 
-        return $this->addUsingAlias(PluginsTableMap::COL__CONFIG, $config, $comparison);
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RPluginFormat');
+        }
+
+        return $this;
     }
 
     /**
-     * Filter the query on the _callback column
+     * Use the RPluginFormat relation RPluginFormat object
      *
-     * Example usage:
-     * <code>
-     * $query->filterByCallback('fooValue');   // WHERE _callback = 'fooValue'
-     * $query->filterByCallback('%fooValue%'); // WHERE _callback LIKE '%fooValue%'
-     * </code>
+     * @see useQuery()
      *
-     * @param     string $callback The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RPluginFormatQuery A secondary query class using the current class as primary query
+     */
+    public function useRPluginFormatQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRPluginFormat($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RPluginFormat', '\RPluginFormatQuery');
+    }
+
+    /**
+     * Filter the query by a related \RPluginIssue object
+     *
+     * @param \RPluginIssue|ObjectCollection $rPluginIssue the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPluginsQuery The current query, for fluid interface
+     */
+    public function filterByRPluginIssue($rPluginIssue, $comparison = null)
+    {
+        if ($rPluginIssue instanceof \RPluginIssue) {
+            return $this
+                ->addUsingAlias(PluginsTableMap::COL_ID, $rPluginIssue->getPluginid(), $comparison);
+        } elseif ($rPluginIssue instanceof ObjectCollection) {
+            return $this
+                ->useRPluginIssueQuery()
+                ->filterByPrimaryKeys($rPluginIssue->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRPluginIssue() only accepts arguments of type \RPluginIssue or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RPluginIssue relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterByCallback($callback = null, $comparison = null)
+    public function joinRPluginIssue($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        if (null === $comparison) {
-            if (is_array($callback)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $callback)) {
-                $callback = str_replace('*', '%', $callback);
-                $comparison = Criteria::LIKE;
-            }
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RPluginIssue');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
         }
 
-        return $this->addUsingAlias(PluginsTableMap::COL__CALLBACK, $callback, $comparison);
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RPluginIssue');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RPluginIssue relation RPluginIssue object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RPluginIssueQuery A secondary query class using the current class as primary query
+     */
+    public function useRPluginIssueQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRPluginIssue($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RPluginIssue', '\RPluginIssueQuery');
+    }
+
+    /**
+     * Filter the query by a related \RPluginTemplate object
+     *
+     * @param \RPluginTemplate|ObjectCollection $rPluginTemplate the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPluginsQuery The current query, for fluid interface
+     */
+    public function filterByRPluginTemplate($rPluginTemplate, $comparison = null)
+    {
+        if ($rPluginTemplate instanceof \RPluginTemplate) {
+            return $this
+                ->addUsingAlias(PluginsTableMap::COL_ID, $rPluginTemplate->getPluginid(), $comparison);
+        } elseif ($rPluginTemplate instanceof ObjectCollection) {
+            return $this
+                ->useRPluginTemplateQuery()
+                ->filterByPrimaryKeys($rPluginTemplate->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRPluginTemplate() only accepts arguments of type \RPluginTemplate or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RPluginTemplate relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildPluginsQuery The current query, for fluid interface
+     */
+    public function joinRPluginTemplate($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RPluginTemplate');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RPluginTemplate');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RPluginTemplate relation RPluginTemplate object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RPluginTemplateQuery A secondary query class using the current class as primary query
+     */
+    public function useRPluginTemplateQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRPluginTemplate($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RPluginTemplate', '\RPluginTemplateQuery');
     }
 
     /**
@@ -636,6 +716,74 @@ abstract class PluginsQuery extends ModelCriteria
         return $this
             ->joinPdf($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Pdf', '\PdfQuery');
+    }
+
+    /**
+     * Filter the query by a related Books object
+     * using the R_plugin_book table as cross reference
+     *
+     * @param Books $books the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPluginsQuery The current query, for fluid interface
+     */
+    public function filterByRBook($books, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRPluginBookQuery()
+            ->filterByRBook($books, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Formats object
+     * using the R_plugin_format table as cross reference
+     *
+     * @param Formats $formats the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPluginsQuery The current query, for fluid interface
+     */
+    public function filterByRFormat($formats, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRPluginFormatQuery()
+            ->filterByRFormat($formats, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Issues object
+     * using the R_plugin_issue table as cross reference
+     *
+     * @param Issues $issues the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPluginsQuery The current query, for fluid interface
+     */
+    public function filterByRIssue($issues, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRPluginIssueQuery()
+            ->filterByRIssue($issues, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Templates object
+     * using the R_plugin_template table as cross reference
+     *
+     * @param Templates $templates the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildPluginsQuery The current query, for fluid interface
+     */
+    public function filterByRTemplate($templates, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRPluginTemplateQuery()
+            ->filterByRTemplate($templates, $comparison)
+            ->endUse();
     }
 
     /**

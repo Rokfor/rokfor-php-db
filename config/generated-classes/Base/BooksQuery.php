@@ -60,6 +60,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBooksQuery rightJoinRDataBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataBook relation
  * @method     ChildBooksQuery innerJoinRDataBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataBook relation
  *
+ * @method     ChildBooksQuery leftJoinRPluginBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginBook relation
+ * @method     ChildBooksQuery rightJoinRPluginBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginBook relation
+ * @method     ChildBooksQuery innerJoinRPluginBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginBook relation
+ *
  * @method     ChildBooksQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildBooksQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildBooksQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
@@ -68,7 +72,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBooksQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildBooksQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
  *
- * @method     \UsersQuery|\RBatchForbookQuery|\RRightsForbookQuery|\RTemplatenamesForbookQuery|\RDataBookQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UsersQuery|\RBatchForbookQuery|\RRightsForbookQuery|\RTemplatenamesForbookQuery|\RDataBookQuery|\RPluginBookQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBooks findOne(ConnectionInterface $con = null) Return the first ChildBooks matching the query
  * @method     ChildBooks findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBooks matching the query, or a new ChildBooks object populated from the query conditions when no match is found
@@ -905,6 +909,79 @@ abstract class BooksQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \RPluginBook object
+     *
+     * @param \RPluginBook|ObjectCollection $rPluginBook the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBooksQuery The current query, for fluid interface
+     */
+    public function filterByRPluginBook($rPluginBook, $comparison = null)
+    {
+        if ($rPluginBook instanceof \RPluginBook) {
+            return $this
+                ->addUsingAlias(BooksTableMap::COL_ID, $rPluginBook->getBookid(), $comparison);
+        } elseif ($rPluginBook instanceof ObjectCollection) {
+            return $this
+                ->useRPluginBookQuery()
+                ->filterByPrimaryKeys($rPluginBook->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRPluginBook() only accepts arguments of type \RPluginBook or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the RPluginBook relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildBooksQuery The current query, for fluid interface
+     */
+    public function joinRPluginBook($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('RPluginBook');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'RPluginBook');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the RPluginBook relation RPluginBook object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RPluginBookQuery A secondary query class using the current class as primary query
+     */
+    public function useRPluginBookQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRPluginBook($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RPluginBook', '\RPluginBookQuery');
+    }
+
+    /**
      * Filter the query by a related \Formats object
      *
      * @param \Formats|ObjectCollection $formats the related object to use as filter
@@ -1115,6 +1192,23 @@ abstract class BooksQuery extends ModelCriteria
         return $this
             ->useRDataBookQuery()
             ->filterByRData($data, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related Plugins object
+     * using the R_plugin_book table as cross reference
+     *
+     * @param Plugins $plugins the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBooksQuery The current query, for fluid interface
+     */
+    public function filterByRPlugin($plugins, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRPluginBookQuery()
+            ->filterByRPlugin($plugins, $comparison)
             ->endUse();
     }
 
