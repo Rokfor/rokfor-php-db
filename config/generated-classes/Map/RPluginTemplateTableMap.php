@@ -133,7 +133,7 @@ class RPluginTemplateTableMap extends TableMap
         $this->setIsCrossRef(true);
         // columns
         $this->addForeignPrimaryKey('_pluginid', 'Pluginid', 'INTEGER' , '_plugins', 'id', true, 4, null);
-        $this->addForeignPrimaryKey('_templateid', 'Templateid', 'INTEGER' , '_templates', 'id', true, 4, null);
+        $this->addForeignPrimaryKey('_templateid', 'Templateid', 'INTEGER' , '_templatenames', 'id', true, 4, null);
     } // initialize()
 
     /**
@@ -148,7 +148,7 @@ class RPluginTemplateTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', null, false);
-        $this->addRelation('RTemplate', '\\Templates', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':_templateid',

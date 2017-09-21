@@ -488,7 +488,7 @@
     <foreign-key foreignTable="_plugins" name="r_plugin4_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RPlugin">
       <reference local="_pluginid" foreign="id"/>
     </foreign-key>
-    <foreign-key foreignTable="_templates" name="r_plugin4_b" onDelete="CASCADE" onUpdate="CASCADE" phpName="RTemplate">
+    <foreign-key foreignTable="_templatenames" name="r_plugin4_b" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="_templateid" foreign="id"/>
     </foreign-key>
     <index name="r_plugin4_a">

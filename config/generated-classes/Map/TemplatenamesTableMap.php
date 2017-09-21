@@ -216,6 +216,13 @@ class TemplatenamesTableMap extends TableMap
     1 => ':id',
   ),
 ), 'CASCADE', 'CASCADE', 'Contributionss', false);
+        $this->addRelation('RPluginTemplate', '\\RPluginTemplate', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':_templateid',
+    1 => ':id',
+  ),
+), 'CASCADE', 'CASCADE', 'RPluginTemplates', false);
         $this->addRelation('Templates', '\\Templates', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -226,6 +233,7 @@ class TemplatenamesTableMap extends TableMap
         $this->addRelation('Rights', '\\Rights', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Rightss');
         $this->addRelation('Books', '\\Books', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Bookss');
         $this->addRelation('Formats', '\\Formats', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Formatss');
+        $this->addRelation('RPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RPlugins');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _templatenames     * by a foreign key with ON DELETE CASCADE
@@ -238,6 +246,7 @@ class TemplatenamesTableMap extends TableMap
         RTemplatenamesForbookTableMap::clearInstancePool();
         RTemplatenamesInchapterTableMap::clearInstancePool();
         ContributionsTableMap::clearInstancePool();
+        RPluginTemplateTableMap::clearInstancePool();
         TemplatesTableMap::clearInstancePool();
     }
 

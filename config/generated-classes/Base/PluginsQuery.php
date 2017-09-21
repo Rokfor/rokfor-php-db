@@ -770,19 +770,19 @@ abstract class PluginsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related Templates object
+     * Filter the query by a related Templatenames object
      * using the R_plugin_template table as cross reference
      *
-     * @param Templates $templates the related object to use as filter
+     * @param Templatenames $templatenames the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildPluginsQuery The current query, for fluid interface
      */
-    public function filterByRTemplate($templates, $comparison = Criteria::EQUAL)
+    public function filterByTemplatenames($templatenames, $comparison = Criteria::EQUAL)
     {
         return $this
             ->useRPluginTemplateQuery()
-            ->filterByRTemplate($templates, $comparison)
+            ->filterByTemplatenames($templatenames, $comparison)
             ->endUse();
     }
 

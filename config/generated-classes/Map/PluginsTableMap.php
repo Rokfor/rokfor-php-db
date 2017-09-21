@@ -184,7 +184,7 @@ class PluginsTableMap extends TableMap
         $this->addRelation('RBook', '\\Books', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RBooks');
         $this->addRelation('RFormat', '\\Formats', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RFormats');
         $this->addRelation('RIssue', '\\Issues', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RIssues');
-        $this->addRelation('RTemplate', '\\Templates', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RTemplates');
+        $this->addRelation('Templatenames', '\\Templatenames', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Templatenamess');
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to _plugins     * by a foreign key with ON DELETE CASCADE

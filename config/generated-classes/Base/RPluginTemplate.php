@@ -5,8 +5,8 @@ namespace Base;
 use \Plugins as ChildPlugins;
 use \PluginsQuery as ChildPluginsQuery;
 use \RPluginTemplateQuery as ChildRPluginTemplateQuery;
-use \Templates as ChildTemplates;
-use \TemplatesQuery as ChildTemplatesQuery;
+use \Templatenames as ChildTemplatenames;
+use \TemplatenamesQuery as ChildTemplatenamesQuery;
 use \Exception;
 use \PDO;
 use Map\RPluginTemplateTableMap;
@@ -81,9 +81,9 @@ abstract class RPluginTemplate implements ActiveRecordInterface
     protected $aRPlugin;
 
     /**
-     * @var        ChildTemplates
+     * @var        ChildTemplatenames
      */
-    protected $aRTemplate;
+    protected $aTemplatenames;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -371,8 +371,8 @@ abstract class RPluginTemplate implements ActiveRecordInterface
             $this->modifiedColumns[RPluginTemplateTableMap::COL__TEMPLATEID] = true;
         }
 
-        if ($this->aRTemplate !== null && $this->aRTemplate->getId() !== $v) {
-            $this->aRTemplate = null;
+        if ($this->aTemplatenames !== null && $this->aTemplatenames->getId() !== $v) {
+            $this->aTemplatenames = null;
         }
 
         return $this;
@@ -452,8 +452,8 @@ abstract class RPluginTemplate implements ActiveRecordInterface
         if ($this->aRPlugin !== null && $this->_pluginid !== $this->aRPlugin->getId()) {
             $this->aRPlugin = null;
         }
-        if ($this->aRTemplate !== null && $this->_templateid !== $this->aRTemplate->getId()) {
-            $this->aRTemplate = null;
+        if ($this->aTemplatenames !== null && $this->_templateid !== $this->aTemplatenames->getId()) {
+            $this->aTemplatenames = null;
         }
     } // ensureConsistency
 
@@ -495,7 +495,7 @@ abstract class RPluginTemplate implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aRPlugin = null;
-            $this->aRTemplate = null;
+            $this->aTemplatenames = null;
         } // if (deep)
     }
 
@@ -607,11 +607,11 @@ abstract class RPluginTemplate implements ActiveRecordInterface
                 $this->setRPlugin($this->aRPlugin);
             }
 
-            if ($this->aRTemplate !== null) {
-                if ($this->aRTemplate->isModified() || $this->aRTemplate->isNew()) {
-                    $affectedRows += $this->aRTemplate->save($con);
+            if ($this->aTemplatenames !== null) {
+                if ($this->aTemplatenames->isModified() || $this->aTemplatenames->isNew()) {
+                    $affectedRows += $this->aTemplatenames->save($con);
                 }
-                $this->setRTemplate($this->aRTemplate);
+                $this->setTemplatenames($this->aTemplatenames);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -785,20 +785,20 @@ abstract class RPluginTemplate implements ActiveRecordInterface
 
                 $result[$key] = $this->aRPlugin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->aRTemplate) {
+            if (null !== $this->aTemplatenames) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'templates';
+                        $key = 'templatenames';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = '_templates';
+                        $key = '_templatenames';
                         break;
                     default:
-                        $key = 'Templates';
+                        $key = 'Templatenames';
                 }
 
-                $result[$key] = $this->aRTemplate->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aTemplatenames->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -963,8 +963,8 @@ abstract class RPluginTemplate implements ActiveRecordInterface
             $validPrimaryKeyFKs = false;
         }
 
-        //relation r_plugin4_b to table _templates
-        if ($this->aRTemplate && $hash = spl_object_hash($this->aRTemplate)) {
+        //relation r_plugin4_b to table _templatenames
+        if ($this->aTemplatenames && $hash = spl_object_hash($this->aTemplatenames)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1108,13 +1108,13 @@ abstract class RPluginTemplate implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildTemplates object.
+     * Declares an association between this object and a ChildTemplatenames object.
      *
-     * @param  ChildTemplates $v
+     * @param  ChildTemplatenames $v
      * @return $this|\RPluginTemplate The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setRTemplate(ChildTemplates $v = null)
+    public function setTemplatenames(ChildTemplatenames $v = null)
     {
         if ($v === null) {
             $this->setTemplateid(NULL);
@@ -1122,10 +1122,10 @@ abstract class RPluginTemplate implements ActiveRecordInterface
             $this->setTemplateid($v->getId());
         }
 
-        $this->aRTemplate = $v;
+        $this->aTemplatenames = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildTemplates object, it will not be re-added.
+        // If this object has already been added to the ChildTemplatenames object, it will not be re-added.
         if ($v !== null) {
             $v->addRPluginTemplate($this);
         }
@@ -1136,26 +1136,26 @@ abstract class RPluginTemplate implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildTemplates object
+     * Get the associated ChildTemplatenames object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildTemplates The associated ChildTemplates object.
+     * @return ChildTemplatenames The associated ChildTemplatenames object.
      * @throws PropelException
      */
-    public function getRTemplate(ConnectionInterface $con = null)
+    public function getTemplatenames(ConnectionInterface $con = null)
     {
-        if ($this->aRTemplate === null && ($this->_templateid !== null)) {
-            $this->aRTemplate = ChildTemplatesQuery::create()->findPk($this->_templateid, $con);
+        if ($this->aTemplatenames === null && ($this->_templateid !== null)) {
+            $this->aTemplatenames = ChildTemplatenamesQuery::create()->findPk($this->_templateid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aRTemplate->addRPluginTemplates($this);
+                $this->aTemplatenames->addRPluginTemplates($this);
              */
         }
 
-        return $this->aRTemplate;
+        return $this->aTemplatenames;
     }
 
     /**
@@ -1168,8 +1168,8 @@ abstract class RPluginTemplate implements ActiveRecordInterface
         if (null !== $this->aRPlugin) {
             $this->aRPlugin->removeRPluginTemplate($this);
         }
-        if (null !== $this->aRTemplate) {
-            $this->aRTemplate->removeRPluginTemplate($this);
+        if (null !== $this->aTemplatenames) {
+            $this->aTemplatenames->removeRPluginTemplate($this);
         }
         $this->_pluginid = null;
         $this->_templateid = null;
@@ -1194,7 +1194,7 @@ abstract class RPluginTemplate implements ActiveRecordInterface
         } // if ($deep)
 
         $this->aRPlugin = null;
-        $this->aRTemplate = null;
+        $this->aTemplatenames = null;
     }
 
     /**

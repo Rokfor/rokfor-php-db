@@ -20,8 +20,8 @@ use \RPluginIssue as ChildRPluginIssue;
 use \RPluginIssueQuery as ChildRPluginIssueQuery;
 use \RPluginTemplate as ChildRPluginTemplate;
 use \RPluginTemplateQuery as ChildRPluginTemplateQuery;
-use \Templates as ChildTemplates;
-use \TemplatesQuery as ChildTemplatesQuery;
+use \Templatenames as ChildTemplatenames;
+use \TemplatenamesQuery as ChildTemplatenamesQuery;
 use \Exception;
 use \PDO;
 use Map\PluginsTableMap;
@@ -158,14 +158,14 @@ abstract class Plugins implements ActiveRecordInterface
     protected $collRIssuesPartial;
 
     /**
-     * @var        ObjectCollection|ChildTemplates[] Cross Collection to store aggregation of ChildTemplates objects.
+     * @var        ObjectCollection|ChildTemplatenames[] Cross Collection to store aggregation of ChildTemplatenames objects.
      */
-    protected $collRTemplates;
+    protected $collTemplatenamess;
 
     /**
      * @var bool
      */
-    protected $collRTemplatesPartial;
+    protected $collTemplatenamessPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -195,9 +195,9 @@ abstract class Plugins implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTemplates[]
+     * @var ObjectCollection|ChildTemplatenames[]
      */
-    protected $rTemplatesScheduledForDeletion = null;
+    protected $templatenamessScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -662,7 +662,7 @@ abstract class Plugins implements ActiveRecordInterface
             $this->collRBooks = null;
             $this->collRFormats = null;
             $this->collRIssues = null;
-            $this->collRTemplates = null;
+            $this->collTemplatenamess = null;
         } // if (deep)
     }
 
@@ -860,10 +860,10 @@ abstract class Plugins implements ActiveRecordInterface
             }
 
 
-            if ($this->rTemplatesScheduledForDeletion !== null) {
-                if (!$this->rTemplatesScheduledForDeletion->isEmpty()) {
+            if ($this->templatenamessScheduledForDeletion !== null) {
+                if (!$this->templatenamessScheduledForDeletion->isEmpty()) {
                     $pks = array();
-                    foreach ($this->rTemplatesScheduledForDeletion as $entry) {
+                    foreach ($this->templatenamessScheduledForDeletion as $entry) {
                         $entryPk = [];
 
                         $entryPk[0] = $this->getId();
@@ -875,15 +875,15 @@ abstract class Plugins implements ActiveRecordInterface
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
-                    $this->rTemplatesScheduledForDeletion = null;
+                    $this->templatenamessScheduledForDeletion = null;
                 }
 
             }
 
-            if ($this->collRTemplates) {
-                foreach ($this->collRTemplates as $rTemplate) {
-                    if (!$rTemplate->isDeleted() && ($rTemplate->isNew() || $rTemplate->isModified())) {
-                        $rTemplate->save($con);
+            if ($this->collTemplatenamess) {
+                foreach ($this->collTemplatenamess as $templatenames) {
+                    if (!$templatenames->isDeleted() && ($templatenames->isNew() || $templatenames->isModified())) {
+                        $templatenames->save($con);
                     }
                 }
             }
@@ -2501,10 +2501,10 @@ abstract class Plugins implements ActiveRecordInterface
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildRPluginTemplate[] List of ChildRPluginTemplate objects
      */
-    public function getRPluginTemplatesJoinRTemplate(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getRPluginTemplatesJoinTemplatenames(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildRPluginTemplateQuery::create(null, $criteria);
-        $query->joinWith('RTemplate', $joinBehavior);
+        $query->joinWith('Templatenames', $joinBehavior);
 
         return $this->getRPluginTemplates($query, $con);
     }
@@ -3454,48 +3454,48 @@ abstract class Plugins implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collRTemplates collection
+     * Clears out the collTemplatenamess collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addRTemplates()
+     * @see        addTemplatenamess()
      */
-    public function clearRTemplates()
+    public function clearTemplatenamess()
     {
-        $this->collRTemplates = null; // important to set this to NULL since that means it is uninitialized
+        $this->collTemplatenamess = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Initializes the collRTemplates crossRef collection.
+     * Initializes the collTemplatenamess crossRef collection.
      *
-     * By default this just sets the collRTemplates collection to an empty collection (like clearRTemplates());
+     * By default this just sets the collTemplatenamess collection to an empty collection (like clearTemplatenamess());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
      * @return void
      */
-    public function initRTemplates()
+    public function initTemplatenamess()
     {
-        $this->collRTemplates = new ObjectCollection();
-        $this->collRTemplatesPartial = true;
+        $this->collTemplatenamess = new ObjectCollection();
+        $this->collTemplatenamessPartial = true;
 
-        $this->collRTemplates->setModel('\Templates');
+        $this->collTemplatenamess->setModel('\Templatenames');
     }
 
     /**
-     * Checks if the collRTemplates collection is loaded.
+     * Checks if the collTemplatenamess collection is loaded.
      *
      * @return bool
      */
-    public function isRTemplatesLoaded()
+    public function isTemplatenamessLoaded()
     {
-        return null !== $this->collRTemplates;
+        return null !== $this->collTemplatenamess;
     }
 
     /**
-     * Gets a collection of ChildTemplates objects related by a many-to-many relationship
+     * Gets a collection of ChildTemplatenames objects related by a many-to-many relationship
      * to the current object by way of the R_plugin_template cross-reference table.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
@@ -3507,99 +3507,99 @@ abstract class Plugins implements ActiveRecordInterface
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return ObjectCollection|ChildTemplates[] List of ChildTemplates objects
+     * @return ObjectCollection|ChildTemplatenames[] List of ChildTemplatenames objects
      */
-    public function getRTemplates(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getTemplatenamess(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collRTemplatesPartial && !$this->isNew();
-        if (null === $this->collRTemplates || null !== $criteria || $partial) {
+        $partial = $this->collTemplatenamessPartial && !$this->isNew();
+        if (null === $this->collTemplatenamess || null !== $criteria || $partial) {
             if ($this->isNew()) {
                 // return empty collection
-                if (null === $this->collRTemplates) {
-                    $this->initRTemplates();
+                if (null === $this->collTemplatenamess) {
+                    $this->initTemplatenamess();
                 }
             } else {
 
-                $query = ChildTemplatesQuery::create(null, $criteria)
+                $query = ChildTemplatenamesQuery::create(null, $criteria)
                     ->filterByRPlugin($this);
-                $collRTemplates = $query->find($con);
+                $collTemplatenamess = $query->find($con);
                 if (null !== $criteria) {
-                    return $collRTemplates;
+                    return $collTemplatenamess;
                 }
 
-                if ($partial && $this->collRTemplates) {
+                if ($partial && $this->collTemplatenamess) {
                     //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->collRTemplates as $obj) {
-                        if (!$collRTemplates->contains($obj)) {
-                            $collRTemplates[] = $obj;
+                    foreach ($this->collTemplatenamess as $obj) {
+                        if (!$collTemplatenamess->contains($obj)) {
+                            $collTemplatenamess[] = $obj;
                         }
                     }
                 }
 
-                $this->collRTemplates = $collRTemplates;
-                $this->collRTemplatesPartial = false;
+                $this->collTemplatenamess = $collTemplatenamess;
+                $this->collTemplatenamessPartial = false;
             }
         }
 
-        return $this->collRTemplates;
+        return $this->collTemplatenamess;
     }
 
     /**
-     * Sets a collection of Templates objects related by a many-to-many relationship
+     * Sets a collection of Templatenames objects related by a many-to-many relationship
      * to the current object by way of the R_plugin_template cross-reference table.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection $rTemplates A Propel collection.
+     * @param  Collection $templatenamess A Propel collection.
      * @param  ConnectionInterface $con Optional connection object
      * @return $this|ChildPlugins The current object (for fluent API support)
      */
-    public function setRTemplates(Collection $rTemplates, ConnectionInterface $con = null)
+    public function setTemplatenamess(Collection $templatenamess, ConnectionInterface $con = null)
     {
-        $this->clearRTemplates();
-        $currentRTemplates = $this->getRTemplates();
+        $this->clearTemplatenamess();
+        $currentTemplatenamess = $this->getTemplatenamess();
 
-        $rTemplatesScheduledForDeletion = $currentRTemplates->diff($rTemplates);
+        $templatenamessScheduledForDeletion = $currentTemplatenamess->diff($templatenamess);
 
-        foreach ($rTemplatesScheduledForDeletion as $toDelete) {
-            $this->removeRTemplate($toDelete);
+        foreach ($templatenamessScheduledForDeletion as $toDelete) {
+            $this->removeTemplatenames($toDelete);
         }
 
-        foreach ($rTemplates as $rTemplate) {
-            if (!$currentRTemplates->contains($rTemplate)) {
-                $this->doAddRTemplate($rTemplate);
+        foreach ($templatenamess as $templatenames) {
+            if (!$currentTemplatenamess->contains($templatenames)) {
+                $this->doAddTemplatenames($templatenames);
             }
         }
 
-        $this->collRTemplatesPartial = false;
-        $this->collRTemplates = $rTemplates;
+        $this->collTemplatenamessPartial = false;
+        $this->collTemplatenamess = $templatenamess;
 
         return $this;
     }
 
     /**
-     * Gets the number of Templates objects related by a many-to-many relationship
+     * Gets the number of Templatenames objects related by a many-to-many relationship
      * to the current object by way of the R_plugin_template cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related Templates objects
+     * @return int the number of related Templatenames objects
      */
-    public function countRTemplates(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countTemplatenamess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collRTemplatesPartial && !$this->isNew();
-        if (null === $this->collRTemplates || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collRTemplates) {
+        $partial = $this->collTemplatenamessPartial && !$this->isNew();
+        if (null === $this->collTemplatenamess || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTemplatenamess) {
                 return 0;
             } else {
 
                 if ($partial && !$criteria) {
-                    return count($this->getRTemplates());
+                    return count($this->getTemplatenamess());
                 }
 
-                $query = ChildTemplatesQuery::create(null, $criteria);
+                $query = ChildTemplatenamesQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
@@ -3609,27 +3609,27 @@ abstract class Plugins implements ActiveRecordInterface
                     ->count($con);
             }
         } else {
-            return count($this->collRTemplates);
+            return count($this->collTemplatenamess);
         }
     }
 
     /**
-     * Associate a ChildTemplates to this object
+     * Associate a ChildTemplatenames to this object
      * through the R_plugin_template cross reference table.
      *
-     * @param ChildTemplates $rTemplate
+     * @param ChildTemplatenames $templatenames
      * @return ChildPlugins The current object (for fluent API support)
      */
-    public function addRTemplate(ChildTemplates $rTemplate)
+    public function addTemplatenames(ChildTemplatenames $templatenames)
     {
-        if ($this->collRTemplates === null) {
-            $this->initRTemplates();
+        if ($this->collTemplatenamess === null) {
+            $this->initTemplatenamess();
         }
 
-        if (!$this->getRTemplates()->contains($rTemplate)) {
+        if (!$this->getTemplatenamess()->contains($templatenames)) {
             // only add it if the **same** object is not already associated
-            $this->collRTemplates->push($rTemplate);
-            $this->doAddRTemplate($rTemplate);
+            $this->collTemplatenamess->push($templatenames);
+            $this->doAddTemplatenames($templatenames);
         }
 
         return $this;
@@ -3637,13 +3637,13 @@ abstract class Plugins implements ActiveRecordInterface
 
     /**
      *
-     * @param ChildTemplates $rTemplate
+     * @param ChildTemplatenames $templatenames
      */
-    protected function doAddRTemplate(ChildTemplates $rTemplate)
+    protected function doAddTemplatenames(ChildTemplatenames $templatenames)
     {
         $rPluginTemplate = new ChildRPluginTemplate();
 
-        $rPluginTemplate->setRTemplate($rTemplate);
+        $rPluginTemplate->setTemplatenames($templatenames);
 
         $rPluginTemplate->setRPlugin($this);
 
@@ -3651,44 +3651,44 @@ abstract class Plugins implements ActiveRecordInterface
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
-        if (!$rTemplate->isRPluginsLoaded()) {
-            $rTemplate->initRPlugins();
-            $rTemplate->getRPlugins()->push($this);
-        } elseif (!$rTemplate->getRPlugins()->contains($this)) {
-            $rTemplate->getRPlugins()->push($this);
+        if (!$templatenames->isRPluginsLoaded()) {
+            $templatenames->initRPlugins();
+            $templatenames->getRPlugins()->push($this);
+        } elseif (!$templatenames->getRPlugins()->contains($this)) {
+            $templatenames->getRPlugins()->push($this);
         }
 
     }
 
     /**
-     * Remove rTemplate of this object
+     * Remove templatenames of this object
      * through the R_plugin_template cross reference table.
      *
-     * @param ChildTemplates $rTemplate
+     * @param ChildTemplatenames $templatenames
      * @return ChildPlugins The current object (for fluent API support)
      */
-    public function removeRTemplate(ChildTemplates $rTemplate)
+    public function removeTemplatenames(ChildTemplatenames $templatenames)
     {
-        if ($this->getRTemplates()->contains($rTemplate)) { $rPluginTemplate = new ChildRPluginTemplate();
+        if ($this->getTemplatenamess()->contains($templatenames)) { $rPluginTemplate = new ChildRPluginTemplate();
 
-            $rPluginTemplate->setRTemplate($rTemplate);
-            if ($rTemplate->isRPluginsLoaded()) {
+            $rPluginTemplate->setTemplatenames($templatenames);
+            if ($templatenames->isRPluginsLoaded()) {
                 //remove the back reference if available
-                $rTemplate->getRPlugins()->removeObject($this);
+                $templatenames->getRPlugins()->removeObject($this);
             }
 
             $rPluginTemplate->setRPlugin($this);
             $this->removeRPluginTemplate(clone $rPluginTemplate);
             $rPluginTemplate->clear();
 
-            $this->collRTemplates->remove($this->collRTemplates->search($rTemplate));
+            $this->collTemplatenamess->remove($this->collTemplatenamess->search($templatenames));
 
-            if (null === $this->rTemplatesScheduledForDeletion) {
-                $this->rTemplatesScheduledForDeletion = clone $this->collRTemplates;
-                $this->rTemplatesScheduledForDeletion->clear();
+            if (null === $this->templatenamessScheduledForDeletion) {
+                $this->templatenamessScheduledForDeletion = clone $this->collTemplatenamess;
+                $this->templatenamessScheduledForDeletion->clear();
             }
 
-            $this->rTemplatesScheduledForDeletion->push($rTemplate);
+            $this->templatenamessScheduledForDeletion->push($templatenames);
         }
 
 
@@ -3763,8 +3763,8 @@ abstract class Plugins implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collRTemplates) {
-                foreach ($this->collRTemplates as $o) {
+            if ($this->collTemplatenamess) {
+                foreach ($this->collTemplatenamess as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -3778,7 +3778,7 @@ abstract class Plugins implements ActiveRecordInterface
         $this->collRBooks = null;
         $this->collRFormats = null;
         $this->collRIssues = null;
-        $this->collRTemplates = null;
+        $this->collTemplatenamess = null;
     }
 
     /**

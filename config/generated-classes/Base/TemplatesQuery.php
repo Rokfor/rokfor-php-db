@@ -62,11 +62,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery rightJoinRDataTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataTemplate relation
  * @method     ChildTemplatesQuery innerJoinRDataTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataTemplate relation
  *
- * @method     ChildTemplatesQuery leftJoinRPluginTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginTemplate relation
- * @method     ChildTemplatesQuery rightJoinRPluginTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginTemplate relation
- * @method     ChildTemplatesQuery innerJoinRPluginTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginTemplate relation
- *
- * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery|\RDataTemplateQuery|\RPluginTemplateQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery|\RDataTemplateQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildTemplates findOne(ConnectionInterface $con = null) Return the first ChildTemplates matching the query
  * @method     ChildTemplates findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTemplates matching the query, or a new ChildTemplates object populated from the query conditions when no match is found
@@ -926,79 +922,6 @@ abstract class TemplatesQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \RPluginTemplate object
-     *
-     * @param \RPluginTemplate|ObjectCollection $rPluginTemplate the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByRPluginTemplate($rPluginTemplate, $comparison = null)
-    {
-        if ($rPluginTemplate instanceof \RPluginTemplate) {
-            return $this
-                ->addUsingAlias(TemplatesTableMap::COL_ID, $rPluginTemplate->getTemplateid(), $comparison);
-        } elseif ($rPluginTemplate instanceof ObjectCollection) {
-            return $this
-                ->useRPluginTemplateQuery()
-                ->filterByPrimaryKeys($rPluginTemplate->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByRPluginTemplate() only accepts arguments of type \RPluginTemplate or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the RPluginTemplate relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function joinRPluginTemplate($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('RPluginTemplate');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'RPluginTemplate');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the RPluginTemplate relation RPluginTemplate object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \RPluginTemplateQuery A secondary query class using the current class as primary query
-     */
-    public function useRPluginTemplateQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinRPluginTemplate($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'RPluginTemplate', '\RPluginTemplateQuery');
-    }
-
-    /**
      * Filter the query by a related Fieldpostprocessor object
      * using the R_fieldpostprocessor_forfield table as cross reference
      *
@@ -1029,23 +952,6 @@ abstract class TemplatesQuery extends ModelCriteria
         return $this
             ->useRDataTemplateQuery()
             ->filterByRData($data, $comparison)
-            ->endUse();
-    }
-
-    /**
-     * Filter the query by a related Plugins object
-     * using the R_plugin_template table as cross reference
-     *
-     * @param Plugins $plugins the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildTemplatesQuery The current query, for fluid interface
-     */
-    public function filterByRPlugin($plugins, $comparison = Criteria::EQUAL)
-    {
-        return $this
-            ->useRPluginTemplateQuery()
-            ->filterByRPlugin($plugins, $comparison)
             ->endUse();
     }
 

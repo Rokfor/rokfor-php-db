@@ -584,7 +584,7 @@ CREATE TABLE `R_plugin_template`
         ON DELETE CASCADE,
     CONSTRAINT `r_plugin4_b`
         FOREIGN KEY (`_templateid`)
-        REFERENCES `_templates` (`id`)
+        REFERENCES `_templatenames` (`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
