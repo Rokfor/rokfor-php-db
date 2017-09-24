@@ -947,7 +947,8 @@ CREATE TABLE `_data`
 DROP TABLE IF EXISTS `propel_migration`;
 CREATE TABLE `propel_migration` (
   `version` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
 INSERT INTO `propel_migration` (`version`) VALUES (456855059);
 INSERT INTO `propel_migration` (`version`) VALUES (1452074796);
