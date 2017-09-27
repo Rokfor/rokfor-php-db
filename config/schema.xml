@@ -595,10 +595,10 @@
     <column name="_date" phpName="Date" type="INTEGER" size="40"/>
     <column name="_issue" phpName="Issue" type="INTEGER" size="32"/>
     <column name="_plugin" phpName="Plugin" type="INTEGER" size="32"/>
-    <column name="_pages" phpName="Pages" type="INTEGER" size="32"/>
-    <column name="__config__" phpName="ConfigSys" type="LONGVARCHAR"/>
-    <column name="__split__" phpName="Split" type="LONGVARCHAR"/>
-    <column name="__parentnode__" phpName="Parentnode" type="INTEGER" size="32"/>
+    <column name="_fileinfo" phpName="Pages" type="LONGVARCHAR"/>
+    <column name="_otc" phpName="Otc" type="LONGVARCHAR"/>
+    <column name="_config" phpName="ConfigSys" type="LONGVARCHAR"/>
+    <column name="_configvalue" phpName="ConfigValue" type="INTEGER" size="32"/>
     <column name="__sort__" phpName="Sort" type="INTEGER" size="32"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>

@@ -25,10 +25,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery orderByDate($order = Criteria::ASC) Order by the _date column
  * @method     ChildPdfQuery orderByIssue($order = Criteria::ASC) Order by the _issue column
  * @method     ChildPdfQuery orderByPlugin($order = Criteria::ASC) Order by the _plugin column
- * @method     ChildPdfQuery orderByPages($order = Criteria::ASC) Order by the _pages column
- * @method     ChildPdfQuery orderByConfigSys($order = Criteria::ASC) Order by the __config__ column
- * @method     ChildPdfQuery orderBySplit($order = Criteria::ASC) Order by the __split__ column
- * @method     ChildPdfQuery orderByParentnode($order = Criteria::ASC) Order by the __parentnode__ column
+ * @method     ChildPdfQuery orderByPages($order = Criteria::ASC) Order by the _fileinfo column
+ * @method     ChildPdfQuery orderByOtc($order = Criteria::ASC) Order by the _otc column
+ * @method     ChildPdfQuery orderByConfigSys($order = Criteria::ASC) Order by the _config column
+ * @method     ChildPdfQuery orderByConfigValue($order = Criteria::ASC) Order by the _configvalue column
  * @method     ChildPdfQuery orderBySort($order = Criteria::ASC) Order by the __sort__ column
  *
  * @method     ChildPdfQuery groupById() Group by the id column
@@ -36,10 +36,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery groupByDate() Group by the _date column
  * @method     ChildPdfQuery groupByIssue() Group by the _issue column
  * @method     ChildPdfQuery groupByPlugin() Group by the _plugin column
- * @method     ChildPdfQuery groupByPages() Group by the _pages column
- * @method     ChildPdfQuery groupByConfigSys() Group by the __config__ column
- * @method     ChildPdfQuery groupBySplit() Group by the __split__ column
- * @method     ChildPdfQuery groupByParentnode() Group by the __parentnode__ column
+ * @method     ChildPdfQuery groupByPages() Group by the _fileinfo column
+ * @method     ChildPdfQuery groupByOtc() Group by the _otc column
+ * @method     ChildPdfQuery groupByConfigSys() Group by the _config column
+ * @method     ChildPdfQuery groupByConfigValue() Group by the _configvalue column
  * @method     ChildPdfQuery groupBySort() Group by the __sort__ column
  *
  * @method     ChildPdfQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -60,10 +60,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdf findOneByDate(int $_date) Return the first ChildPdf filtered by the _date column
  * @method     ChildPdf findOneByIssue(int $_issue) Return the first ChildPdf filtered by the _issue column
  * @method     ChildPdf findOneByPlugin(int $_plugin) Return the first ChildPdf filtered by the _plugin column
- * @method     ChildPdf findOneByPages(int $_pages) Return the first ChildPdf filtered by the _pages column
- * @method     ChildPdf findOneByConfigSys(string $__config__) Return the first ChildPdf filtered by the __config__ column
- * @method     ChildPdf findOneBySplit(string $__split__) Return the first ChildPdf filtered by the __split__ column
- * @method     ChildPdf findOneByParentnode(int $__parentnode__) Return the first ChildPdf filtered by the __parentnode__ column
+ * @method     ChildPdf findOneByPages(string $_fileinfo) Return the first ChildPdf filtered by the _fileinfo column
+ * @method     ChildPdf findOneByOtc(string $_otc) Return the first ChildPdf filtered by the _otc column
+ * @method     ChildPdf findOneByConfigSys(string $_config) Return the first ChildPdf filtered by the _config column
+ * @method     ChildPdf findOneByConfigValue(int $_configvalue) Return the first ChildPdf filtered by the _configvalue column
  * @method     ChildPdf findOneBySort(int $__sort__) Return the first ChildPdf filtered by the __sort__ column *
 
  * @method     ChildPdf requirePk($key, ConnectionInterface $con = null) Return the ChildPdf by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -74,10 +74,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdf requireOneByDate(int $_date) Return the first ChildPdf filtered by the _date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneByIssue(int $_issue) Return the first ChildPdf filtered by the _issue column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneByPlugin(int $_plugin) Return the first ChildPdf filtered by the _plugin column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPdf requireOneByPages(int $_pages) Return the first ChildPdf filtered by the _pages column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPdf requireOneByConfigSys(string $__config__) Return the first ChildPdf filtered by the __config__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPdf requireOneBySplit(string $__split__) Return the first ChildPdf filtered by the __split__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPdf requireOneByParentnode(int $__parentnode__) Return the first ChildPdf filtered by the __parentnode__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPdf requireOneByPages(string $_fileinfo) Return the first ChildPdf filtered by the _fileinfo column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPdf requireOneByOtc(string $_otc) Return the first ChildPdf filtered by the _otc column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPdf requireOneByConfigSys(string $_config) Return the first ChildPdf filtered by the _config column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPdf requireOneByConfigValue(int $_configvalue) Return the first ChildPdf filtered by the _configvalue column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildPdf requireOneBySort(int $__sort__) Return the first ChildPdf filtered by the __sort__ column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPdf[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPdf objects based on current ModelCriteria
@@ -86,10 +86,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdf[]|ObjectCollection findByDate(int $_date) Return ChildPdf objects filtered by the _date column
  * @method     ChildPdf[]|ObjectCollection findByIssue(int $_issue) Return ChildPdf objects filtered by the _issue column
  * @method     ChildPdf[]|ObjectCollection findByPlugin(int $_plugin) Return ChildPdf objects filtered by the _plugin column
- * @method     ChildPdf[]|ObjectCollection findByPages(int $_pages) Return ChildPdf objects filtered by the _pages column
- * @method     ChildPdf[]|ObjectCollection findByConfigSys(string $__config__) Return ChildPdf objects filtered by the __config__ column
- * @method     ChildPdf[]|ObjectCollection findBySplit(string $__split__) Return ChildPdf objects filtered by the __split__ column
- * @method     ChildPdf[]|ObjectCollection findByParentnode(int $__parentnode__) Return ChildPdf objects filtered by the __parentnode__ column
+ * @method     ChildPdf[]|ObjectCollection findByPages(string $_fileinfo) Return ChildPdf objects filtered by the _fileinfo column
+ * @method     ChildPdf[]|ObjectCollection findByOtc(string $_otc) Return ChildPdf objects filtered by the _otc column
+ * @method     ChildPdf[]|ObjectCollection findByConfigSys(string $_config) Return ChildPdf objects filtered by the _config column
+ * @method     ChildPdf[]|ObjectCollection findByConfigValue(int $_configvalue) Return ChildPdf objects filtered by the _configvalue column
  * @method     ChildPdf[]|ObjectCollection findBySort(int $__sort__) Return ChildPdf objects filtered by the __sort__ column
  * @method     ChildPdf[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -183,7 +183,7 @@ abstract class PdfQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _file, _date, _issue, _plugin, _pages, __config__, __split__, __parentnode__, __sort__ FROM _pdf WHERE id = :p0';
+        $sql = 'SELECT id, _file, _date, _issue, _plugin, _fileinfo, _otc, _config, _configvalue, __sort__ FROM _pdf WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -469,53 +469,70 @@ abstract class PdfQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the _pages column
+     * Filter the query on the _fileinfo column
      *
      * Example usage:
      * <code>
-     * $query->filterByPages(1234); // WHERE _pages = 1234
-     * $query->filterByPages(array(12, 34)); // WHERE _pages IN (12, 34)
-     * $query->filterByPages(array('min' => 12)); // WHERE _pages > 12
+     * $query->filterByPages('fooValue');   // WHERE _fileinfo = 'fooValue'
+     * $query->filterByPages('%fooValue%'); // WHERE _fileinfo LIKE '%fooValue%'
      * </code>
      *
-     * @param     mixed $pages The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $pages The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
      */
     public function filterByPages($pages = null, $comparison = null)
     {
-        if (is_array($pages)) {
-            $useMinMax = false;
-            if (isset($pages['min'])) {
-                $this->addUsingAlias(PdfTableMap::COL__PAGES, $pages['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($pages['max'])) {
-                $this->addUsingAlias(PdfTableMap::COL__PAGES, $pages['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
+        if (null === $comparison) {
+            if (is_array($pages)) {
                 $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $pages)) {
+                $pages = str_replace('*', '%', $pages);
+                $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(PdfTableMap::COL__PAGES, $pages, $comparison);
+        return $this->addUsingAlias(PdfTableMap::COL__FILEINFO, $pages, $comparison);
     }
 
     /**
-     * Filter the query on the __config__ column
+     * Filter the query on the _otc column
      *
      * Example usage:
      * <code>
-     * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByOtc('fooValue');   // WHERE _otc = 'fooValue'
+     * $query->filterByOtc('%fooValue%'); // WHERE _otc LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $otc The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildPdfQuery The current query, for fluid interface
+     */
+    public function filterByOtc($otc = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($otc)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $otc)) {
+                $otc = str_replace('*', '%', $otc);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(PdfTableMap::COL__OTC, $otc, $comparison);
+    }
+
+    /**
+     * Filter the query on the _config column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByConfigSys('fooValue');   // WHERE _config = 'fooValue'
+     * $query->filterByConfigSys('%fooValue%'); // WHERE _config LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
@@ -535,49 +552,20 @@ abstract class PdfQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PdfTableMap::COL___CONFIG__, $configSys, $comparison);
+        return $this->addUsingAlias(PdfTableMap::COL__CONFIG, $configSys, $comparison);
     }
 
     /**
-     * Filter the query on the __split__ column
+     * Filter the query on the _configvalue column
      *
      * Example usage:
      * <code>
-     * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterByConfigValue(1234); // WHERE _configvalue = 1234
+     * $query->filterByConfigValue(array(12, 34)); // WHERE _configvalue IN (12, 34)
+     * $query->filterByConfigValue(array('min' => 12)); // WHERE _configvalue > 12
      * </code>
      *
-     * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildPdfQuery The current query, for fluid interface
-     */
-    public function filterBySplit($split = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($split)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(PdfTableMap::COL___SPLIT__, $split, $comparison);
-    }
-
-    /**
-     * Filter the query on the __parentnode__ column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByParentnode(1234); // WHERE __parentnode__ = 1234
-     * $query->filterByParentnode(array(12, 34)); // WHERE __parentnode__ IN (12, 34)
-     * $query->filterByParentnode(array('min' => 12)); // WHERE __parentnode__ > 12
-     * </code>
-     *
-     * @param     mixed $parentnode The value to use as filter.
+     * @param     mixed $configValue The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -585,16 +573,16 @@ abstract class PdfQuery extends ModelCriteria
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
      */
-    public function filterByParentnode($parentnode = null, $comparison = null)
+    public function filterByConfigValue($configValue = null, $comparison = null)
     {
-        if (is_array($parentnode)) {
+        if (is_array($configValue)) {
             $useMinMax = false;
-            if (isset($parentnode['min'])) {
-                $this->addUsingAlias(PdfTableMap::COL___PARENTNODE__, $parentnode['min'], Criteria::GREATER_EQUAL);
+            if (isset($configValue['min'])) {
+                $this->addUsingAlias(PdfTableMap::COL__CONFIGVALUE, $configValue['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($parentnode['max'])) {
-                $this->addUsingAlias(PdfTableMap::COL___PARENTNODE__, $parentnode['max'], Criteria::LESS_EQUAL);
+            if (isset($configValue['max'])) {
+                $this->addUsingAlias(PdfTableMap::COL__CONFIGVALUE, $configValue['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -605,7 +593,7 @@ abstract class PdfQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PdfTableMap::COL___PARENTNODE__, $parentnode, $comparison);
+        return $this->addUsingAlias(PdfTableMap::COL__CONFIGVALUE, $configValue, $comparison);
     }
 
     /**

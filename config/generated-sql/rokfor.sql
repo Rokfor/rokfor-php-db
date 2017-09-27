@@ -337,8 +337,6 @@ CREATE TABLE `_contributions_cache`
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-
-
 -- ---------------------------------------------------------------------
 -- R_data_data
 -- ---------------------------------------------------------------------
@@ -707,10 +705,10 @@ CREATE TABLE `_pdf`
     `_date` INTEGER(40),
     `_issue` INTEGER(32),
     `_plugin` INTEGER(32),
-    `_pages` INTEGER(32),
-    `__config__` TEXT,
-    `__split__` TEXT,
-    `__parentnode__` INTEGER(32),
+    `_fileinfo` TEXT,
+    `_otc` TEXT,
+    `_config` TEXT,
+    `_configvalue` INTEGER(32),
     `__sort__` INTEGER(32),
     PRIMARY KEY (`id`),
     INDEX `i_pdf_fk` (`_plugin`),
@@ -964,6 +962,8 @@ INSERT INTO `propel_migration` (`version`) VALUES (1477824861);
 INSERT INTO `propel_migration` (`version`) VALUES (1494834687);
 INSERT INTO `propel_migration` (`version`) VALUES (1494930480);
 INSERT INTO `propel_migration` (`version`) VALUES (1505983179);
+INSERT INTO `propel_migration` (`version`) VALUES (1505986206);
+INSERT INTO `propel_migration` (`version`) VALUES (1506505250);
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
