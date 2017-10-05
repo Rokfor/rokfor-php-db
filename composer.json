@@ -14,7 +14,8 @@
   "require": {
     "propel/propel": "2.0.0-alpha5",
     "intervention/image": "^2.3",
-    "aws/aws-sdk-php": "^2.8"
+    "aws/aws-sdk-php": "^2.8",
+    "thefuriouscoder/propel2-data-cache-behavior": "dev-master"
   },
   "autoload": {
     "psr-4": {"Rokfor\\": "src/"},

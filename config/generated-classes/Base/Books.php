@@ -914,6 +914,8 @@ abstract class Books implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \BooksQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -958,6 +960,8 @@ abstract class Books implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \BooksQuery::purgeCache();
                 BooksTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

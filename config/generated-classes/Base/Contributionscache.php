@@ -588,6 +588,8 @@ abstract class Contributionscache implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \ContributionscacheQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -632,6 +634,8 @@ abstract class Contributionscache implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \ContributionscacheQuery::purgeCache();
                 ContributionscacheTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

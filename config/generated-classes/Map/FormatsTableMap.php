@@ -230,6 +230,19 @@ class FormatsTableMap extends TableMap
         $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
         $this->addRelation('RPlugin', '\\Plugins', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RPlugins');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'data_cache' => array('backend' => 'redis', 'lifetime' => '0', 'auto_cache' => 'true', ),
+        );
+    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to _formats     * by a foreign key with ON DELETE CASCADE
      */

@@ -308,6 +308,7 @@ class DataTableMap extends TableMap
     {
         return array(
             'versionable' => array('version_column' => 'version', 'version_table' => '', 'log_created_at' => 'true', 'log_created_by' => 'true', 'log_comment' => 'true', 'version_created_at_column' => 'version_created_at', 'version_created_by_column' => 'version_created_by', 'version_comment_column' => 'version_comment', 'indices' => 'false', ),
+            'data_cache' => array('backend' => 'redis', 'lifetime' => '0', 'auto_cache' => 'true', ),
         );
     } // getBehaviors()
     /**

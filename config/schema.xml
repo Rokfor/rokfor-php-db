@@ -96,7 +96,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_rights_foruser" idMethod="native" phpName="RRightsForuser" isCrossRef="true">
     <column name="_rightid" phpName="Rightid" type="INTEGER" primaryKey="true" required="true"/>
     <column name="_userid" phpName="Userid" type="INTEGER" primaryKey="true" required="true"/>
@@ -158,6 +157,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_books" idMethod="native" phpName="Books">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -176,6 +180,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_contributions" idMethod="native" phpName="Contributions">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -225,8 +234,12 @@
       <parameter name="log_created_by" value="true" />
       <parameter name="log_comment" value="true" />
     </behavior>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
-
   <table name="_contributions_cache" idMethod="native" phpName="Contributionscache">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_signature" phpName="Signature" type="VARCHAR" required="true"/>
@@ -244,8 +257,12 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
-
   <table name="_data" idMethod="native" phpName="Data">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_forcontribution" phpName="Forcontribution" type="INTEGER" size="4"/>
@@ -289,13 +306,12 @@
       <parameter name="log_created_by" value="true" />
       <parameter name="log_comment" value="true" />
     </behavior>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
-
-  <!--
-   //
-   //  Data - Data Crossref Tables
-   //
-   -->
   <table name="R_data_data" idMethod="native" phpName="RDataData" isCrossRef="true">
     <column name="_src" phpName="Source" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_ref" phpName="Target" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -315,7 +331,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_data_contribution" idMethod="native" phpName="RDataContribution" isCrossRef="true">
     <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_contributionid" phpName="Contributionid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -335,7 +350,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_data_book" idMethod="native" phpName="RDataBook" isCrossRef="true">
     <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_bookid" phpName="Bookid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -355,7 +369,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_data_format" idMethod="native" phpName="RDataFormat" isCrossRef="true">
     <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_formatid" phpName="Formatid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -375,7 +388,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_data_issue" idMethod="native" phpName="RDataIssue" isCrossRef="true">
     <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_issueid" phpName="Issueid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -395,7 +407,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_data_template" idMethod="native" phpName="RDataTemplate" isCrossRef="true">
     <column name="_dataid" phpName="Dataid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_templateid" phpName="Templateid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -415,14 +426,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
-
-
-<!-- BEGIN OF NEW CODE -->
-
-
-
- <table name="R_plugin_book" idMethod="native" phpName="RPluginBook" isCrossRef="true">
+  <table name="R_plugin_book" idMethod="native" phpName="RPluginBook" isCrossRef="true">
     <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_bookid" phpName="Bookid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <foreign-key foreignTable="_plugins" name="r_plugin1_a" onDelete="CASCADE" onUpdate="CASCADE" phpName="RPlugin">
@@ -441,7 +445,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_plugin_format" idMethod="native" phpName="RPluginFormat" isCrossRef="true">
     <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_formatid" phpName="Formatid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -461,7 +464,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_plugin_issue" idMethod="native" phpName="RPluginIssue" isCrossRef="true">
     <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_issueid" phpName="Issueid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -481,7 +483,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
   <table name="R_plugin_template" idMethod="native" phpName="RPluginTemplate" isCrossRef="true">
     <column name="_pluginid" phpName="Pluginid" type="INTEGER" size="4" primaryKey="true" required="true"/>
     <column name="_templateid" phpName="Templateid" type="INTEGER" size="4" primaryKey="true" required="true"/>
@@ -501,11 +502,6 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-
-
-  <!-- END OF NEW CODE -->
-
-
   <table name="_fieldpostprocessor" idMethod="native" phpName="Fieldpostprocessor">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="_name" phpName="Name" type="LONGVARCHAR"/>
@@ -517,6 +513,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_formats" idMethod="native" phpName="Formats">
     <column name="id" phpName="Id" type="INTEGER" size="4" autoIncrement="true" primaryKey="true" required="true"/>
@@ -545,6 +546,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_issues" idMethod="native" phpName="Issues">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -574,6 +580,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_log" idMethod="native" phpName="Log">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -588,6 +599,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_pdf" idMethod="native" phpName="Pdf">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -609,6 +625,11 @@
     <index name="i_pdf_fk">
       <index-column name="_plugin"/>
     </index>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_plugins" idMethod="native" phpName="Plugins">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -617,6 +638,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_rights" idMethod="native" phpName="Rights">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -628,6 +654,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_templatenames" idMethod="native" phpName="Templatenames">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -643,6 +674,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="_templates" idMethod="native" phpName="Templates">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -664,6 +700,11 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
+    <behavior name="data_cache">
+      <parameter name="backend" value="redis" /> 
+      <parameter name="lifetime" value="0" />
+      <parameter name="auto_cache" value="true" />
+    </behavior>
   </table>
   <table name="session" idMethod="native" phpName="Session">
     <column name="id" phpName="Id" type="BIGINT" size="40" primaryKey="true" autoIncrement="true" required="true"/>

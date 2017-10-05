@@ -828,6 +828,8 @@ abstract class Rights implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \RightsQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -872,6 +874,8 @@ abstract class Rights implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \RightsQuery::purgeCache();
                 RightsTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

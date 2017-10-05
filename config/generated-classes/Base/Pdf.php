@@ -822,6 +822,8 @@ abstract class Pdf implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \PdfQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -866,6 +868,8 @@ abstract class Pdf implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \PdfQuery::purgeCache();
                 PdfTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

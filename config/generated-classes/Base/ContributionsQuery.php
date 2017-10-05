@@ -161,7 +161,14 @@ abstract class ContributionsQuery extends ModelCriteria
      * Whether the versioning is enabled
      */
     static $isVersioningEnabled = true;
-protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
+
+    // data_cache behavior
+
+    protected $cacheKey      = '';
+    protected $cacheLocale   = '';
+    protected $cacheEnable   = true;
+    protected $cacheLifeTime = 0;
+            protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Base\ContributionsQuery object.
@@ -231,7 +238,7 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
          || $this->map || $this->having || $this->joins) {
             return $this->findPkComplex($key, $con);
         } else {
-            return $this->findPkSimple($key, $con);
+            return $this->filterByPrimaryKey($key)->findOne($con);
         }
     }
 
@@ -1578,6 +1585,34 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
     }
 
     /**
+     * Code to execute after every DELETE statement
+     *
+     * @param     int $affectedRows the number of deleted rows
+     * @param     ConnectionInterface $con The connection object used by the query
+     */
+    protected function basePostDelete($affectedRows, ConnectionInterface $con)
+    {
+        // data_cache behavior
+        \ContributionsQuery::purgeCache();
+
+        return $this->postDelete($affectedRows, $con);
+    }
+
+    /**
+     * Code to execute after every UPDATE statement
+     *
+     * @param     int $affectedRows the number of updated rows
+     * @param     ConnectionInterface $con The connection object used by the query
+     */
+    protected function basePostUpdate($affectedRows, ConnectionInterface $con)
+    {
+        // data_cache behavior
+        \ContributionsQuery::purgeCache();
+
+        return $this->postUpdate($affectedRows, $con);
+    }
+
+    /**
      * Deletes all rows from the _contributions table.
      *
      * @param ConnectionInterface $con the connection to use
@@ -1664,6 +1699,191 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
     static public function disableVersioning()
     {
         self::$isVersioningEnabled = false;
+    }
+
+    // data_cache behavior
+
+    public static function purgeCache()
+    {
+
+        $driver = \TFC\Cache\DoctrineCacheFactory::factory('redis');
+        $driver->setNamespace(ContributionsTableMap::TABLE_NAME);
+
+        return $driver->deleteAll();
+
+    }
+
+    public static function cacheFetch($key)
+    {
+
+        $driver = \TFC\Cache\DoctrineCacheFactory::factory('redis');
+        $driver->setNamespace(ContributionsTableMap::TABLE_NAME);
+
+        $result = $driver->fetch($key);
+
+        if ($result !== null) {
+            if ($result instanceof \ArrayAccess) {
+                foreach ($result as $element) {
+                    if ($element instanceof \Contributions) {
+                        ContributionsTableMap::addInstanceToPool($element);
+                    }
+                }
+            } else if ($result instanceof \Contributions) {
+                ContributionsTableMap::addInstanceToPool($result);
+            }
+        }
+
+        return $result;
+
+
+    }
+
+    public static function cacheStore($key, $data, $lifetime)
+    {
+        $driver = \TFC\Cache\DoctrineCacheFactory::factory('redis');
+        $driver->setNamespace(ContributionsTableMap::TABLE_NAME);
+
+        return $driver->save($key,$data,$lifetime);
+    }
+
+    public static function cacheDelete($key)
+    {
+        $driver = \TFC\Cache\DoctrineCacheFactory::factory('redis');
+        $driver->setNamespace(ContributionsTableMap::TABLE_NAME);
+
+        return $driver->delete($key);
+    }
+
+    public function setCacheEnable()
+    {
+        $this->cacheEnable = true;
+
+        return $this;
+    }
+
+    public function setCacheDisable()
+    {
+        $this->cacheEnable = false;
+
+        return $this;
+    }
+
+    public function isCacheEnable()
+    {
+        return (bool)$this->cacheEnable;
+    }
+
+    public function getCacheKey()
+    {
+        if ($this->cacheKey) {
+            return $this->cacheKey;
+        }
+        $params      = array();
+        $sql_hash    = hash('md4', $this->createSelectSql($params));
+        $params_hash = hash('md4', json_encode($params));
+        $locale      = $this->cacheLocale ? '_' . $this->cacheLocale : '';
+        $this->cacheKey = $sql_hash . '_' . $params_hash . $locale;
+
+        return $this->cacheKey;
+    }
+
+    public function setCacheKey($cacheKey)
+    {
+        $this->cacheKey = $cacheKey;
+
+        return $this;
+    }
+
+    public function setCacheLocale($locale)
+    {
+        $this->cacheLocale = $locale;
+
+        return $this;
+    }
+
+    public function setLifeTime($lifetime)
+    {
+        $this->cacheLifeTime = $lifetime;
+
+        return $this;
+    }
+
+    public function getLifeTime()
+    {
+        return $this->cacheLifeTime;
+    }
+
+    /**
+     * Issue a SELECT query based on the current ModelCriteria
+     * and format the list of results with the current formatter
+     * By default, returns an array of model objects
+     *
+     * @param ConnectionInterface $con an optional connection object
+     *
+     * @return \Propel\Runtime\Collection\ObjectCollection|array|mixed the list of results, formatted by the current formatter
+     */
+    public function find(ConnectionInterface $con = null)
+    {
+        if ($this->isCacheEnable() && $cache = \ContributionsQuery::cacheFetch($this->getCacheKey())) {
+            if ($cache instanceof \Propel\Runtime\Collection\ObjectCollection) {
+                $formatter = $this->getFormatter()->init($this);
+                $cache->setFormatter($formatter);
+            }
+            return $cache;
+        }
+
+        if (null === $con) {
+            $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
+        }
+
+        $this->basePreSelect($con);
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
+        $dataFetcher = $criteria->doSelect($con);
+
+        $data = $criteria->getFormatter()->init($criteria)->format($dataFetcher);
+
+        if ($this->isCacheEnable()) {
+            \ContributionsQuery::cacheStore($this->getCacheKey(), $data, $this->getLifeTime());
+        }
+
+        return $data;
+
+
+    }
+
+    /**
+     * Issue a SELECT ... LIMIT 1 query based on the current ModelCriteria
+     * and format the result with the current formatter
+     * By default, returns a model object
+     *
+     * @param ConnectionInterface $con an optional connection object
+     *
+     * @return mixed the result, formatted by the current formatter
+     */
+    public function findOne(ConnectionInterface $con  = null)
+    {
+        if ($this->isCacheEnable() && $cache = \ContributionsQuery::cacheFetch($this->getCacheKey())) {
+            if ($cache instanceof \Contributions) {
+                return $cache;
+            }
+        }
+
+        if (null === $con) {
+            $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
+        }
+
+        $this->basePreSelect($con);
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
+        $criteria->limit(1);
+        $dataFetcher = $criteria->doSelect($con);
+
+        $data = $criteria->getFormatter()->init($criteria)->formatOne($dataFetcher);
+
+        if ($this->isCacheEnable()) {
+            \ContributionsQuery::cacheStore($this->getCacheKey(), $data, $this->getLifeTime());
+        }
+
+        return $data;
     }
 
 } // ContributionsQuery

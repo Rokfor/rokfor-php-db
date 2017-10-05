@@ -908,6 +908,8 @@ abstract class Templates implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \TemplatesQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -952,6 +954,8 @@ abstract class Templates implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \TemplatesQuery::purgeCache();
                 TemplatesTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

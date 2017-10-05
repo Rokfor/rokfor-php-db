@@ -768,6 +768,8 @@ abstract class Log implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \LogQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -812,6 +814,8 @@ abstract class Log implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \LogQuery::purgeCache();
                 LogTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

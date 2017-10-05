@@ -981,6 +981,8 @@ abstract class Templatenames implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
+                // data_cache behavior
+                \TemplatenamesQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -1025,6 +1027,8 @@ abstract class Templatenames implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
+                // data_cache behavior
+                \TemplatenamesQuery::purgeCache();
                 TemplatenamesTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
