@@ -805,8 +805,6 @@ abstract class Batch implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \BatchQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -851,8 +849,6 @@ abstract class Batch implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                // data_cache behavior
-                \BatchQuery::purgeCache();
                 BatchTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

@@ -219,19 +219,6 @@ class TemplatesTableMap extends TableMap
         $this->addRelation('Fieldpostprocessor', '\\Fieldpostprocessor', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'Fieldpostprocessors');
         $this->addRelation('RData', '\\Data', RelationMap::MANY_TO_MANY, array(), 'CASCADE', 'CASCADE', 'RDatas');
     } // buildRelations()
-
-    /**
-     *
-     * Gets the list of behaviors registered for this table
-     *
-     * @return array Associative array (name => parameters) of behaviors
-     */
-    public function getBehaviors()
-    {
-        return array(
-            'data_cache' => array('backend' => 'redis', 'lifetime' => '0', 'auto_cache' => 'true', ),
-        );
-    } // getBehaviors()
     /**
      * Method to invalidate the instance pool of all tables related to _templates     * by a foreign key with ON DELETE CASCADE
      */

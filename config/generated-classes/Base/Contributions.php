@@ -1228,8 +1228,6 @@ abstract class Contributions implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \ContributionsQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -1286,8 +1284,6 @@ abstract class Contributions implements ActiveRecordInterface
                 if (isset($createVersion)) {
                     $this->addVersion($con);
                 }
-                // data_cache behavior
-                \ContributionsQuery::purgeCache();
                 ContributionsTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

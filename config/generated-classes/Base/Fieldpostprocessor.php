@@ -727,8 +727,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \FieldpostprocessorQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -773,8 +771,6 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                // data_cache behavior
-                \FieldpostprocessorQuery::purgeCache();
                 FieldpostprocessorTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

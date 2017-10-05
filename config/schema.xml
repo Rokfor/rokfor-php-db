@@ -157,11 +157,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_books" idMethod="native" phpName="Books">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -180,11 +176,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_contributions" idMethod="native" phpName="Contributions">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -233,11 +225,6 @@
       <parameter name="log_created_at" value="true" />
       <parameter name="log_created_by" value="true" />
       <parameter name="log_comment" value="true" />
-    </behavior>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
     </behavior>
   </table>
   <table name="_contributions_cache" idMethod="native" phpName="Contributionscache">
@@ -305,11 +292,6 @@
       <parameter name="log_created_at" value="true" />
       <parameter name="log_created_by" value="true" />
       <parameter name="log_comment" value="true" />
-    </behavior>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
     </behavior>
   </table>
   <table name="R_data_data" idMethod="native" phpName="RDataData" isCrossRef="true">
@@ -513,11 +495,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_formats" idMethod="native" phpName="Formats">
     <column name="id" phpName="Id" type="INTEGER" size="4" autoIncrement="true" primaryKey="true" required="true"/>
@@ -546,11 +524,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_issues" idMethod="native" phpName="Issues">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -580,11 +554,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_log" idMethod="native" phpName="Log">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -599,11 +569,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_pdf" idMethod="native" phpName="Pdf">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -625,11 +591,7 @@
     <index name="i_pdf_fk">
       <index-column name="_plugin"/>
     </index>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_plugins" idMethod="native" phpName="Plugins">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -638,11 +600,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_rights" idMethod="native" phpName="Rights">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -654,11 +612,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_templatenames" idMethod="native" phpName="Templatenames">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -674,11 +628,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="_templates" idMethod="native" phpName="Templates">
     <column name="id" phpName="Id" type="INTEGER" size="4" primaryKey="true" autoIncrement="true" required="true"/>
@@ -700,11 +650,7 @@
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
-    <behavior name="data_cache">
-      <parameter name="backend" value="redis" /> 
-      <parameter name="lifetime" value="0" />
-      <parameter name="auto_cache" value="true" />
-    </behavior>
+
   </table>
   <table name="session" idMethod="native" phpName="Session">
     <column name="id" phpName="Id" type="BIGINT" size="40" primaryKey="true" autoIncrement="true" required="true"/>

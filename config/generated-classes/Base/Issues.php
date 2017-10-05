@@ -1038,8 +1038,6 @@ abstract class Issues implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \IssuesQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -1084,8 +1082,6 @@ abstract class Issues implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                // data_cache behavior
-                \IssuesQuery::purgeCache();
                 IssuesTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

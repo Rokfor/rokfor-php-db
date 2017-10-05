@@ -1322,8 +1322,6 @@ abstract class Data implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \DataQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -1380,8 +1378,6 @@ abstract class Data implements ActiveRecordInterface
                 if (isset($createVersion)) {
                     $this->addVersion($con);
                 }
-                // data_cache behavior
-                \DataQuery::purgeCache();
                 DataTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

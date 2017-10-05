@@ -917,8 +917,6 @@ abstract class Formats implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \FormatsQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -963,8 +961,6 @@ abstract class Formats implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                // data_cache behavior
-                \FormatsQuery::purgeCache();
                 FormatsTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;

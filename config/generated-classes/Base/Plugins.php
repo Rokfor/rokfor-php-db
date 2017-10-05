@@ -692,8 +692,6 @@ abstract class Plugins implements ActiveRecordInterface
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                // data_cache behavior
-                \PluginsQuery::purgeCache();
                 $this->setDeleted(true);
             }
         });
@@ -738,8 +736,6 @@ abstract class Plugins implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                // data_cache behavior
-                \PluginsQuery::purgeCache();
                 PluginsTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
