@@ -2240,6 +2240,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function getContribution($id, $public = false, $overrule_user_rights = false) {
     if ($_c = $this
       ->ContributionsQuery()
+      ->joinFormats()
+      ->joinTemplatenames()
+      ->joinIssues()
+      ->joinData()
+      ->joinContributionscache()
 /*      ->joinWith('Contributions.Formats')
       ->joinWith('Contributions.Issues')
       ->joinWith('Contributions.Templatenames')
