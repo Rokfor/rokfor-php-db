@@ -1401,6 +1401,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         // Thumbnail
         $image = $manager->make($path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
+        // Strip Profile Data
+        if ($driver === 'gd') {
+          try {$image->getCore()->stripImage();}
+          catch (Exception $e) {}
+        }
         $image->save($path.$this->paths['webthumbs'].$escapedFileName.$this->paths['thmbsuffix'], $this->paths['quality']);
 
         // S3 Storage
@@ -1435,6 +1440,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           $image->resize($width,$height, function ($constraint) {
             $constraint->aspectRatio();
           });
+    
+          if ($driver === 'gd') {
+            try {$image->getCore()->stripImage();}
+            catch (Exception $e) {}
+          }
+
           $image->save($path.$this->paths['web'].$_processfile, $this->paths['quality']);
 
           // S3 Storage
