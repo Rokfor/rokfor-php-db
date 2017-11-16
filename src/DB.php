@@ -1402,7 +1402,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $image = $manager->make($path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
         // Strip Profile Data
-        if ($driver === 'gd') {
+        if ($driver === 'imagick') {
           try {$image->getCore()->stripImage();}
           catch (Exception $e) {}
         }
@@ -1441,7 +1441,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             $constraint->aspectRatio();
           });
     
-          if ($driver === 'gd') {
+          if ($driver === 'imagick') {
             try {$image->getCore()->stripImage();}
             catch (Exception $e) {}
           }
