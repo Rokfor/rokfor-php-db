@@ -3017,7 +3017,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $c->setName($name)
       ->setSort($_newsort)
       ->save();
-    return ($c ? $c->getId() ? false);      
+    return ($c ? $c->getId() : false);      
   }
 
   /**
@@ -3165,7 +3165,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ->save();
     }
     
-    return ($t ? $t->getId() ? false);
+    return ($t ? $t->getId() : false);
   }
 
   /**
