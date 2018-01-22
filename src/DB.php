@@ -2511,7 +2511,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * adds a book
    *
    * @param string $name
-   * @return void
+   * @return int or false
    * @author Urs Hofer
    */
   function addBook($name) {
@@ -2528,6 +2528,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
       ->save();
+    return ($c ? $c->getId() ? false);
   }
 
   /**
@@ -2536,7 +2537,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @param string $name
    * @param int $forbook
    * @param string $status
-   * @return void
+   * @return int or false
    * @author Urs Hofer
    */
   function addIssue($name, $forbook, $status = 'open') {
@@ -2555,6 +2556,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
       ->save();
+
+    return ($c ? $c->getId() ? false);
   }
 
   /**
@@ -2588,7 +2591,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    *
    * @param string $name
    * @param int $forbook
-   * @return void
+   * @return int or false
    * @author Urs Hofer
    */
   function addChapter($name, $forbook) {
@@ -2606,6 +2609,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
       ->save();
+
+    return ($c ? $c->getId() ? false);
   }
 
   /**
@@ -2996,7 +3001,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * adds a template (without any fields)
    *
    * @param string $name
-   * @return void
+   * @return int or false
    * @author Urs Hofer
    */
   function addTemplates($name) {
@@ -3012,6 +3017,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $c->setName($name)
       ->setSort($_newsort)
       ->save();
+    return ($c ? $c->getId() ? false);      
   }
 
   /**
@@ -3130,7 +3136,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    *
    * @param int $fortemplate
    * @param string $name
-   * @return void
+   * @return int or false
    * @author Urs Hofer
    */
   function addTemplatefield($fortemplate, $name, $type = "Text") {
@@ -3158,7 +3164,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         ->setSort($_newsort)
         ->save();
     }
-
+    
+    return ($t ? $t->getId() ? false);
   }
 
   /**
