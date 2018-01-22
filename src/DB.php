@@ -2528,7 +2528,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       ->setUserSysRef($this->currentUser)
       ->setSort($_newsort)
       ->save();
-    return ($c ? $c->getId() ? false);
+    return ($c ? $c->getId() : false);
   }
 
   /**
@@ -2557,7 +2557,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       ->setSort($_newsort)
       ->save();
 
-    return ($c ? $c->getId() ? false);
+    return ($c ? $c->getId() : false);
   }
 
   /**
@@ -2610,7 +2610,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       ->setSort($_newsort)
       ->save();
 
-    return ($c ? $c->getId() ? false);
+    return ($c ? $c->getId() : false);
   }
 
   /**
