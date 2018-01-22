@@ -2861,7 +2861,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $this->_clearReferencedObjects($contribution);
       }
       $_issue->delete();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -2891,7 +2893,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
       // Delete Chapter
       $_chapter->delete();
+      return true;
     }
+    return false;
   }
 
   /**
