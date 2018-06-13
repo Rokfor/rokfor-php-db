@@ -1442,7 +1442,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                                'image/gif'  => 'gif'];
 
         // PDFs only first Page
-        $_pdf_page = ($driver == 'imagick' && $this->_getMimeType($file) == 'application/pdf') ? '[0]' : '';
+        $_pdf_page = $this->_getMimeType($file) == 'application/pdf' ? '[0]' : '';
 
 
         // Thumbnail
