@@ -1124,9 +1124,9 @@ class DB
     $_p = $this->PDO();
     $sql = 'UPDATE _contributions SET __sort__ = (@new_ordering := @new_ordering + @ordering_inc)
     WHERE _forissue = '.$issue->getId().' AND _forchapter = '.$format->getId().'
-    ORDER BY __sort__ ASC;';
-    $_p->query('SET @ordering_inc = 2;');
-    $_p->query('SET @new_ordering = 0;');
+    ORDER BY __sort__ ASC';
+    $_p->query('SET @ordering_inc = 2');
+    $_p->query('SET @new_ordering = 0');
     $_p->query($sql);
     return true;
 //mysql> SET @ordering_inc = 10;
