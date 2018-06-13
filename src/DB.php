@@ -1133,8 +1133,7 @@ class DB
 
     $_p->query('DELETE FROM _contributions_cache
     WHERE _contributions_cache._forcontribution IN
-    (SELECT id FROM _contributions
-    WHERE _contributions._forissue = '.$issue->getId().' && _contributions._forchapter = '.$format->getId());
+    (SELECT id FROM _contributions WHERE _contributions._forissue = '.$issue->getId().' && _contributions._forchapter = '.$format->getId().')');
 
     return true;
 //mysql> SET @ordering_inc = 10;
