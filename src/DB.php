@@ -1046,7 +1046,8 @@ class DB
    * @return bool
    * @author Urs Hofer
    */
-  function ReorderContributions($ids) {
+  
+  /*function ReorderContributions($ids) {
     if (!is_array($ids))
       return false;
     $_s = 0;
@@ -1058,7 +1059,7 @@ class DB
         ->save();
     }
     return true;
-  }
+  }*/
 
   /**
    * delete a bunch of contributions defined by their ids or id
@@ -1119,7 +1120,6 @@ class DB
   function ResortContributions($issue, $format) {
     if (!$this->currentUser)
       return false;
-    $this->getContributions($issue->getId(), $format->getId());
 
     $_p = $this->PDO();
     $sql = 'UPDATE _contributions SET __sort__ = (@new_ordering := @new_ordering + @ordering_inc)
@@ -1162,7 +1162,7 @@ class DB
     $template = $this->TemplatenamesQuery()->findPk($templateid);
     $last = $this->getContributions($issue->getId(), $format->getId(), 'desc')->findOne();
     if ($last)
-      $_newsort = $last->getSort()+1;
+      $_newsort = $last->getSort()+2;
     else
       $_newsort = 0;
     if (!$template)
@@ -1215,11 +1215,19 @@ class DB
     else {
       $restoreVersioning = false;
     }
+
+    $_reorder = [];
+
     foreach ($ids as $id) {
       $c = $this->ContributionsQuery()->findPk($id);
       $new = $c->copy(true);
       $new
         ->setName($c->getName() . "[".$suffix."]");
+
+      $_reorder[] = [
+        issue => $c->getIssues(),
+        format => $c->getFormats()
+      ];
 
       /* Clear References in New Contribution */
       if ($_nodes = json_decode($new->getConfigSys(), true)) {
@@ -1233,11 +1241,18 @@ class DB
       $new->save();
       /* Set Sort to new Id */
       $new
-        ->setSort($new->getId())
+        ->setSort($new->getSort() + 1)
         ->save();
 
       $this->duplicateData($new);
     }
+
+    foreach ($_reorder as $_r) {
+      if ($_r[issue] && $_r[format]) {
+        $this->ResortContributions($_r[issue], $_r[format]);        
+      }
+    }
+
     if ($restoreVersioning) {
       \ContributionsQuery::enableVersioning();
       \DataQuery::enableVersioning();
