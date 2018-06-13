@@ -1127,7 +1127,7 @@ class DB
     UPDATE _contributions SET __sort__ = (@new_ordering := @new_ordering + @ordering_inc)
     WHERE _forissue = '.$issue->getId().' AND _forchapter = '.$format->getId().'
     ORDER BY __sort__ ASC;';
-    $sth->->query($sql);
+    $_p->query($sql);
     return true;
 //mysql> SET @ordering_inc = 10;
 //mysql> SET @new_ordering = 0;
