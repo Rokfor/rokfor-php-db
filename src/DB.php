@@ -1128,6 +1128,14 @@ class DB
     $_p->query('SET @ordering_inc = 2');
     $_p->query('SET @new_ordering = 0');
     $_p->query($sql);
+
+    // Delete Caches
+
+    $_p->query('DELETE FROM _contributions_cache
+    WHERE _contributions_cache._forcontribution IN
+    (SELECT id FROM _contributions
+    WHERE _contributions._forissue = '.$issue->getId().' && _contributions._forchapter = '.$format->getId());
+
     return true;
 //mysql> SET @ordering_inc = 10;
 //mysql> SET @new_ordering = 0;
