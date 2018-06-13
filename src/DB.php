@@ -1122,7 +1122,7 @@ class DB
     $this->getContributions($issue->getId(), $format->getId());
 
     $_p = $this->PDO();
-    $sql = 'SET @ordering_inc = 1; 
+    $sql = 'SET @ordering_inc = 2; 
     SET @new_ordering = 0;
     UPDATE _contributions SET __sort__ = (@new_ordering := @new_ordering + @ordering_inc)
     WHERE _forissue = '.$issue->getId().' AND _forchapter = '.$format->getId().'
