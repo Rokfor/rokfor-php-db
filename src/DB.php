@@ -1125,10 +1125,9 @@ class DB
     $sql = 'SET @ordering_inc = 1; 
     SET @new_ordering = 0;
     UPDATE _contributions SET __sort__ = (@new_ordering := @new_ordering + @ordering_inc)
-    WHERE _forissue = :issue AND _forchapter = :format
+    WHERE _forissue = '.$issue->getId().' AND _forchapter = '.$format->getId().'
     ORDER BY __sort__ ASC;';
-    $sth = $_p->prepare($sql);
-    $sth->execute(array(':issue' => $issue->getId(), ':format' => $format->getId()));
+    $sth->->query($sql) 
     return true;
 //mysql> SET @ordering_inc = 10;
 //mysql> SET @new_ordering = 0;
