@@ -11,9 +11,19 @@
       "homepage": "http://cloud.rokfor.ch"    
     }
   ],
+  "repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/urshofer/image"
+    },
+    {
+        "type": "vcs",
+        "url": "https://github.com/Rokfor/propel2-data-cache-behavior"
+    }
+  ],
   "require": {
     "propel/propel": "2.0.0-alpha5",
-    "intervention/image": "^2.3",
+    "intervention/image": "dev-master",
     "aws/aws-sdk-php": "^2.8",
     "thefuriouscoder/propel2-data-cache-behavior": "dev-master"
   },
