@@ -1115,6 +1115,28 @@ class DB
       ->save();
   }
 
+
+  function ResortContributions($issue, $format) {
+    if (!$this->currentUser)
+      return false;
+    $this->getContributions($issue->getId(), $format->getId());
+
+    $_p = $this->PDO();
+    $sql = 'SET @ordering_inc = 1; 
+    SET @new_ordering = 0;
+    UPDATE _contributions SET __sort__ = (@new_ordering := @new_ordering + @ordering_inc)
+    WHERE _forissue = :issue AND _forchapter = :format
+    ORDER BY __sort__ ASC;';
+    $sth = $_p->prepare($sql);
+    $sth->execute(array(':issue' => $issue->getId(), ':format' => $format->getId()));
+    return true;
+//mysql> SET @ordering_inc = 10;
+//mysql> SET @new_ordering = 0;
+//mysql> UPDATE tasks SET ordering = (@new_ordering := @new_ordering + @ordering_inc) ORDER BY ordering ASC;
+
+
+  }
+
   /**
    * NewContribution
    *
