@@ -1441,12 +1441,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                                'image/jpg'  => 'jpg',
                                'image/gif'  => 'gif'];
 
-        // PDFs only first Page
-        $_pdf_page = $this->_getMimeType($file) == 'application/pdf' ? '[0]' : '';
-
-
         // Thumbnail
-        $image = $manager->make($path.$this->paths['web'].$escapedFileName.$_pdf_page);
+        $image = $manager->make($path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
         // Strip Profile Data
         if ($driver === 'imagick') {
@@ -1467,7 +1463,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
         $_copy = 0;
         foreach ($settings['imagesize'] as $size_per_image) {
-          $image = $manager->make($path.$this->paths['web'].$escapedFileName.$_pdf_page);
+          $image = $manager->make($path.$this->paths['web'].$escapedFileName);
           $width = $size_per_image['width'];
           $height = $size_per_image['height'];
           // Resize and Copy to width and height
