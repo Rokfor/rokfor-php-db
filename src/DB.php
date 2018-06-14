@@ -1441,8 +1441,18 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                                'image/jpg'  => 'jpg',
                                'image/gif'  => 'gif'];
 
+        // PDF Exception
+        $_pdf_blob = false;
+        if ($driver == 'imagick' && $this->_getMimeType($file) == 'application/pdf') {
+          $Imagick = new \Imagick();
+          $Imagick->readImage($path.$this->paths['web'].$escapedFileName.'[0]'); 
+          $Imagick->setImageFormat("jpeg")
+          $_pdf_blob = $Imagick->getImageBlob();
+        }
+
+
         // Thumbnail
-        $image = $manager->make($path.$this->paths['web'].$escapedFileName);
+        $image = $manager->make($_pdf_blob ? $_pdf_blob : $path.$this->paths['web'].$escapedFileName);
         $image->fit(100,100);
         // Strip Profile Data
         if ($driver === 'imagick') {
@@ -1463,7 +1473,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
         $_copy = 0;
         foreach ($settings['imagesize'] as $size_per_image) {
-          $image = $manager->make($path.$this->paths['web'].$escapedFileName);
+          $image = $manager->make($_pdf_blob ? $_pdf_blob : $path.$this->paths['web'].$escapedFileName);
           $width = $size_per_image['width'];
           $height = $size_per_image['height'];
           // Resize and Copy to width and height
