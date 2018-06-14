@@ -1446,7 +1446,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         if ($driver == 'imagick' && $this->_getMimeType($file) == 'application/pdf') {
           $Imagick = new \Imagick();
           $Imagick->readImage($path.$this->paths['web'].$escapedFileName.'[0]'); 
-          $Imagick->setImageFormat("jpeg")
+          $Imagick->setImageFormat("jpeg");
           $_pdf_blob = $Imagick->getImageBlob();
         }
 
