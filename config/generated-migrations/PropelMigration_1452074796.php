@@ -144,7 +144,7 @@ class PropelMigration_1452074796
       date_default_timezone_set('UTC');
               
       // populate relative fields: _issues
-      
+      /*
       foreach (array('_singleplugin','_allplugin','_rtfplugin', '_xmlplugin', '_narrationplugin') as $_field) {
         $datasets = IssuesQuery::create()->find();
         $count = 0;
@@ -178,7 +178,7 @@ class PropelMigration_1452074796
           }
           $issue->save($pdo);
         }
-      }
+      }*/
        
       $datasets = RightsQuery::create()->find();
       $count = 0;
@@ -283,7 +283,8 @@ class PropelMigration_1452074796
           }
           $template->save($pdo);
         }  
-                              
+                    
+        DataQuery::disableVersioning();
         // migrate data into new content field, set json to true if it is jsonized.
         $datasets = DataQuery::create()->find();
         $count = 0;
@@ -315,7 +316,7 @@ class PropelMigration_1452074796
                 # code...: $__value[0] == caption $__value[1] == original $__value[2] = scales/thumbs
 
                 $_versions = [];
-                for ($i=0; $i < count(split(';', $result2['_imagewidth'])) ; $i++) { 
+                for ($i=0; $i < count(explode(';', $result2['_imagewidth'])) ; $i++) { 
                   if ($i==0) {
                     $_versions[] = $__value[1].'-preview.jpg';
                   }
