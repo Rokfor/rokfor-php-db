@@ -156,19 +156,24 @@ class PropelMigration_1452358516
                 }
                 
                 if ($newconfig['frombook']) {
-                  $newconfig['frombook'] = BooksQuery::create()->filterByName($newconfig['frombook'])->findOne()->getId();
+                  if (BooksQuery::create()->filterByName($newconfig['frombook'])->findOne())
+                    $newconfig['frombook'] = BooksQuery::create()->filterByName($newconfig['frombook'])->findOne()->getId();
                 }
                 if ($newconfig['fromchapter']) {
-                  $newconfig['fromchapter'] = FormatsQuery::create()->filterByName($newconfig['fromchapter'])->findOne()->getId();
+                  if (FormatsQuery::create()->filterByName($newconfig['fromchapter'])->findOne())
+                    $newconfig['fromchapter'] = FormatsQuery::create()->filterByName($newconfig['fromchapter'])->findOne()->getId();
                 }
                 if ($newconfig['fromissue']) {
-                  $newconfig['fromissue'] = IssuesQuery::create()->filterByName($newconfig['fromissue'])->findOne()->getId();       
+                  if (IssuesQuery::create()->filterByName($newconfig['fromissue'])->findOne())
+                    $newconfig['fromissue'] = IssuesQuery::create()->filterByName($newconfig['fromissue'])->findOne()->getId();       
                 }
                 if ($newconfig['fromtemplate']) {
-                  $newconfig['fromtemplate'] = TemplatenamesQuery::create()->filterByName($newconfig['fromtemplate'])->findOne()->getId();
+                  if (TemplatenamesQuery::create()->filterByName($newconfig['fromtemplate'])->findOne())
+                    $newconfig['fromtemplate'] = TemplatenamesQuery::create()->filterByName($newconfig['fromtemplate'])->findOne()->getId();
                 }
                 if ($newconfig['fromfield']) {
-                  $newconfig['fromfield']= TemplatesQuery::create()->filterByFieldname($newconfig['fromfield'])->findOne()->getId();
+                  if (TemplatesQuery::create()->filterByFieldname($newconfig['fromfield'])->findOne())
+                    $newconfig['fromfield']= TemplatesQuery::create()->filterByFieldname($newconfig['fromfield'])->findOne()->getId();
                 }
                   
 /*                echo "Parsed String\n";
