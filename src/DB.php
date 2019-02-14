@@ -2294,6 +2294,32 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   }
 
   /**
+   * returns true or false depending on the access for a contribution
+   *
+   * @param contribution $_c
+   * @return bool
+   * @author Urs Hofer
+   */
+
+  function checkContributionAccess($_c) {
+    if (
+      (
+        ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($_c->getForissue(), $this->rights["issues"]->getPrimaryKeys()))) 
+        &&
+        ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && in_array($_c->getForchapter(), $this->rights["formats"]->getPrimaryKeys()))) 
+        &&
+        ($public === false || $_c->getStatus() != "Open")
+      )
+    )
+    {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
    * returns Contribution object by id. If public == true, return the contribution only if the status is not open
    *
    * @param int $id
