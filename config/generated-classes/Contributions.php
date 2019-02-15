@@ -60,18 +60,21 @@ class Contributions extends BaseContributions
   }
   
 
-  function updateCacheLegacy() {
+  function updateCacheLegacy(&$s) {
     // This might be a little bit strict but
     // ensures, that caches of related contributions
     // are deleted as well
 
     // Clearing Contributions with Data referring to this contribution
 
+
+
+
     foreach ($this->getRDatas() as $r) {
       try {
-        $r->getContributions()
-          ->getContributionscaches()
-          ->delete();
+        if (in_array($r->getContributions()->getId(), $stack) === false) {
+          $s[] = $r->getContributions()->getId();
+        }
       } catch (Exception $e) {}
     }
 
@@ -85,9 +88,9 @@ class Contributions extends BaseContributions
 
       foreach ($f->getRDataContributions() as $c) {
         try {
-          $c->getRContribution()
-            ->getContributionscaches()
-            ->delete();
+          if (in_array($c->getRContribution()->getId(), $stack) === false) {
+            $s[] = $c->getRContribution()->getId();
+          }          
         } catch (Exception $e) {}
 
       }
@@ -98,9 +101,9 @@ class Contributions extends BaseContributions
 
       foreach ($f->getRDataRefs() as $c) {
         try {
-          $c->getContributions()
-            ->getContributionscaches()
-            ->delete();
+          if (in_array($c->getContributions()->getId(), $stack) === false) {
+            $s[] = $c->getContributions()->getId();
+          }  
         } catch (Exception $e) {}
       }
 
@@ -108,12 +111,12 @@ class Contributions extends BaseContributions
 
       foreach ($f->getRContributions() as $c) {
         try {
-          $c->getContributionscaches()
-            ->delete();
+          if (in_array($c->getId(), $stack) === false) {
+            $s[] = $c->getId();
+          }            
         } catch (Exception $e) {}
       }
     }
-    $this->getContributionscaches()->delete();
     return $this;
   }
 
@@ -121,6 +124,8 @@ class Contributions extends BaseContributions
 
   function updateCache() {
     $w = $this->recursiveDelete($this);
+    $this->updateCacheLegacy($w);
+
     sort($w);
     
     //$this->debuglog("WALKED: ".print_r($w, true));
@@ -134,7 +139,6 @@ class Contributions extends BaseContributions
       } catch (\Throwable $th) { }
     }
     
-    $this->updateCacheLegacy();
 
     return $this;
   }
