@@ -5,60 +5,61 @@ use Base\Contributions as BaseContributions;
 class Contributions extends BaseContributions
 {
 
+  //private function debuglog($msg) {
+  //  file_put_contents('test.log', "$msg\n", FILE_APPEND);
+  //}
+
+
+  private function my_validate($value, &$stack){
+    foreach ($value->Data as $k=>$v) {
+      if ($v->Reference && $v->ReferenceType == 'Contributional') {
+
+        // Related Contributions
+        foreach ($v->Content as $_v) {
+          if (in_array($_v, $stack) === false) {
+            $stack[] = $_v;
+          }
+        }
+        
+        // Recursion
+        foreach ((array)$v->Reference as $_k=>$_v) {
+            $this->my_validate($_v, $stack);
+        }
+      }
+    }
+    foreach ($value->Contribution->ReferencedFrom as $k=>$v) {
+      if (in_array($v->Contribution->Id, $stack) === false) {
+        $stack[] = $v->Contribution->Id;
+      }
+      $this->my_validate($v, $stack);
+    }
+  }
+
+  private function recursiveDelete($contribution) {
+    $s = [];
+    $s[] = $contribution->getId();
+    foreach ($contribution->getContributionscaches() as $_cache) {
+      $_data = json_decode($_cache->getCache());
+      $this->my_validate($_data, $s);
+    }
+    return $s;
+  }
+
   function updateCache() {
-    // This might be a little bit strict but
-    // ensures, that caches of related contributions
-    // are deleted as well
+    $w = $this->recursiveDelete($this);
+    sort($w);
 
-    // Clearing Contributions with Data referring to this contribution
+    //$this->debuglog("WALKED: ".print_r($w, true));
+    //$this->debuglog("COUNT: ".print_r(count($w), true));
 
-    foreach ($this->getRDatas() as $r) {
+    if (count($w) > 0) {
       try {
-        $r->getContributions()
-          ->getContributionscaches()
+        $_caches = \ContributionscacheQuery::create()
+          ->filterByForcontribution($w)
           ->delete();
-      } catch (Exception $e) {}
+      } catch (\Throwable $th) { }
     }
 
-    // Cycle thru fields
-
-    foreach ($this->getDatas() as $f) {
-
-      // Field to Contribution
-      //  Gets an array of ChildRDataContribution objects which
-      //  contain a foreign key that references this object.
-
-      foreach ($f->getRDataContributions() as $c) {
-        try {
-          $c->getRContribution()
-            ->getContributionscaches()
-            ->delete();
-        } catch (Exception $e) {}
-
-      }
-
-      // Field to Field
-      //  Gets a collection of ChildData objects
-      //  related by a many-to-many relationship
-
-      foreach ($f->getRDataRefs() as $c) {
-        try {
-          $c->getContributions()
-            ->getContributionscaches()
-            ->delete();
-        } catch (Exception $e) {}
-      }
-
-      // Many to Many Relations...
-
-      foreach ($f->getRContributions() as $c) {
-        try {
-          $c->getContributionscaches()
-            ->delete();
-        } catch (Exception $e) {}
-      }
-    }
-    $this->getContributionscaches()->delete();
     return $this;
   }
 
