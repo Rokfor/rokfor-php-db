@@ -133,8 +133,8 @@ class Contributions extends BaseContributions
 
     sort($w);
     
-    $this->debuglog("WALKED: ".print_r($w, true));
-    $this->debuglog("COUNT: ".print_r(count($w), true));
+    //$this->debuglog("WALKED: ".print_r($w, true));
+    //$this->debuglog("COUNT: ".print_r(count($w), true));
     
     if (count($w) > 0) {
       try {
