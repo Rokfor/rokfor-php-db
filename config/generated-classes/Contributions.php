@@ -134,6 +134,8 @@ class Contributions extends BaseContributions
       } catch (\Throwable $th) { }
     }
     
+    $this->updateCacheLegacy();
+
     return $this;
   }
   
