@@ -52,6 +52,7 @@ class Contributions extends BaseContributions
       ->filterByCache('%"'.$contribution->getId().'":%') 
         as $_cache) {
       //$this->debuglog("ADDING: ".print_r($_cache->getId(), true));
+      $s[] = $_cache->getForcontribution();
       $_data = json_decode($_cache->getCache());
       $this->my_validate($_data, $s);
     }
