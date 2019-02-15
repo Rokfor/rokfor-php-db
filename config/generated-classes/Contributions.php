@@ -35,28 +35,32 @@ class Contributions extends BaseContributions
     }
   }
   
-  private function recursiveDelete($contribution) {
-    $s = [];
-    $s[] = $contribution->getId();
+  private function recursiveDelete(&$s) {
 
+    if (in_array($this->getId(), $s) === false) {
+      $s[] = $this->getId();
+    }
     
 
-    foreach ($contribution->getContributionscaches() as $_cache) {
+    foreach ($this->getContributionscaches() as $_cache) {
       $_data = json_decode($_cache->getCache());
       $this->my_validate($_data, $s);
     }
 
     foreach (\ContributionscacheQuery::create()
-      ->filterByCache('%Contribution":{"Id":'.$contribution->getId().'%') 
+      ->filterByCache('%Contribution":{"Id":'.$this->getId().'%') 
       ->_or()
-      ->filterByCache('%"'.$contribution->getId().'":%') 
+      ->filterByCache('%"'.$this->getId().'":%') 
         as $_cache) {
       //$this->debuglog("ADDING: ".print_r($_cache->getId(), true));
-      $s[] = $_cache->getForcontribution();
+
+      if (in_array($_cache->getForcontribution(), $s) === false) {
+        $s[] = $_cache->getForcontribution();
+      }
+  
       $_data = json_decode($_cache->getCache());
       $this->my_validate($_data, $s);
     }
-    return $s;
   }
   
 
@@ -72,7 +76,7 @@ class Contributions extends BaseContributions
 
     foreach ($this->getRDatas() as $r) {
       try {
-        if (in_array($r->getContributions()->getId(), $stack) === false) {
+        if (in_array($r->getContributions()->getId(), $s) === false) {
           $s[] = $r->getContributions()->getId();
         }
       } catch (Exception $e) {}
@@ -88,7 +92,7 @@ class Contributions extends BaseContributions
 
       foreach ($f->getRDataContributions() as $c) {
         try {
-          if (in_array($c->getRContribution()->getId(), $stack) === false) {
+          if (in_array($c->getRContribution()->getId(), $s) === false) {
             $s[] = $c->getRContribution()->getId();
           }          
         } catch (Exception $e) {}
@@ -101,7 +105,7 @@ class Contributions extends BaseContributions
 
       foreach ($f->getRDataRefs() as $c) {
         try {
-          if (in_array($c->getContributions()->getId(), $stack) === false) {
+          if (in_array($c->getContributions()->getId(), $s) === false) {
             $s[] = $c->getContributions()->getId();
           }  
         } catch (Exception $e) {}
@@ -111,7 +115,7 @@ class Contributions extends BaseContributions
 
       foreach ($f->getRContributions() as $c) {
         try {
-          if (in_array($c->getId(), $stack) === false) {
+          if (in_array($c->getId(), $s) === false) {
             $s[] = $c->getId();
           }            
         } catch (Exception $e) {}
@@ -123,13 +127,14 @@ class Contributions extends BaseContributions
 
 
   function updateCache() {
-    $w = $this->recursiveDelete($this);
+    $w = [];
+    $this->recursiveDelete($w);
     $this->updateCacheLegacy($w);
 
     sort($w);
     
-    //$this->debuglog("WALKED: ".print_r($w, true));
-    //$this->debuglog("COUNT: ".print_r(count($w), true));
+    $this->debuglog("WALKED: ".print_r($w, true));
+    $this->debuglog("COUNT: ".print_r(count($w), true));
     
     if (count($w) > 0) {
       try {
