@@ -1071,15 +1071,57 @@ class DB
    * @author Urs Hofer
    */
   function DeleteContributions($ids) {
-    foreach ($ids as $id) {
-      $c = $this->ContributionsQuery()->findPk($id);
-      $this->deleteData($c);
-      // Update Contribution References
-      $this->_clearReferencedObjects($c);
-    }
-    $this->ContributionsQuery()
-      ->filterById($ids)
-      ->delete();
+    if (count($ids)> 10) {
+      /* GET Contributions with image content */
+      foreach ($this->getData()
+                ->filterByForcontribution($ids)
+                ->useTemplatesQuery()
+                  ->filterByFieldname('Bild')
+                ->endUse() as $_img_del) 
+      {
+        if ($_img_del->getContent()) {
+          $this->FileModify($_img_del->getId(), []);
+        }
+      }
+
+      /* DELETE CACHES */
+      \ContributionscacheQuery::create()
+        ->filterByForcontribution($ids)
+        ->delete();
+
+      foreach ($ids as $id) {
+        \ContributionscacheQuery::create()
+          ->filterByCache('%Contribution":{"Id":'.$id.'%') 
+          ->_or()
+          ->filterByCache('%"'.$id.'":%') 
+          ->delete();
+      }
+
+      /* DELETE DATA */
+      $this->getData()
+            ->filterByForcontribution($ids)
+            ->delete();
+
+      /* DELETE CONTRIBUTIONS */
+      $this->ContributionsQuery()
+        ->filterById($ids)
+        ->delete();
+
+    } else {
+      foreach ($ids as $id) {
+        // Update Caches
+        $contribution = $this->getContribution($id);
+        $contribution->updateCache();
+
+        $c = $this->ContributionsQuery()->findPk($id);
+        $this->deleteData($c);
+        // Update Contribution References
+        $this->_clearReferencedObjects($c);
+      }
+      $this->ContributionsQuery()
+        ->filterById($ids)
+        ->delete();
+      }    
   }
 
   /**
