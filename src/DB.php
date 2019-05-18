@@ -1978,6 +1978,17 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         if ($count === true) return $q->count();
 
         foreach ($sort as $_key=>$_sort) {
+
+          $numeric = false;
+          if ($directions[$_key] == "nasc") {
+            $directions[$_key] == "asc";
+            $numeric = true;
+          }
+          if ($directions[$_key] == "ndesc") {
+            $directions[$_key] == "desc";
+            $numeric = true;
+          }
+
           $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
                         ? $directions[$_key]
                         : "asc";
@@ -2006,7 +2017,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                     ->useDataQuery('SortColumn_'.$_sort)
                       ->filterByFortemplatefield($_sort)
                     ->endUse()
-                    ->orderBy('sortcolumn_'.$_sort, $direction);
+                    ->orderBy($numeric === true ? 'cast(sortcolumn_'.$_sort.' as unsigned)': 'sortcolumn_'.$_sort, $direction);
               break;
           }
         }
@@ -2294,6 +2305,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     // Return Sorted Results
 
     foreach ($sort as $_key=>$_sort) {
+      $numeric = false;
+      if ($directions[$_key] == "nasc") {
+        $directions[$_key] == "asc";
+        $numeric = true;
+      }
+      if ($directions[$_key] == "ndesc") {
+        $directions[$_key] == "desc";
+        $numeric = true;
+      }
       $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
                     ? $directions[$_key]
                     : "asc";
@@ -2321,7 +2341,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->useDataQuery('SortColumn_'.$_sort)
                   ->filterByFortemplatefield($_sort)
                 ->endUse()
-                ->orderBy('sortcolumn_'.$_sort, $direction);
+                ->orderBy($numeric === true ? 'cast(sortcolumn_'.$_sort.' as unsigned)': 'sortcolumn_'.$_sort, $direction);
           break;
       }
     }
