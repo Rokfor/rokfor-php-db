@@ -1981,11 +1981,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
           $numeric = false;
           if ($directions[$_key] == "nasc") {
-            $directions[$_key] == "asc";
+            $directions[$_key] = "asc";
             $numeric = true;
           }
           if ($directions[$_key] == "ndesc") {
-            $directions[$_key] == "desc";
+            $directions[$_key] = "desc";
             $numeric = true;
           }
 
@@ -2013,11 +2013,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                     ->orderBy('issuesort', $direction);
               break;
             default:
-              $q = $q->withColumn('SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
+              $q = $q->withColumn($numeric === true ? 'CAST(SortColumn_'.$_sort.'._content as unsigned)': 'SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
                     ->useDataQuery('SortColumn_'.$_sort)
                       ->filterByFortemplatefield($_sort)
                     ->endUse()
-                    ->orderBy($numeric === true ? 'cast(sortcolumn_'.$_sort.' as unsigned)': 'sortcolumn_'.$_sort, $direction);
+                    ->orderBy('sortcolumn_'.$_sort, $direction);
               break;
           }
         }
@@ -2307,11 +2307,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     foreach ($sort as $_key=>$_sort) {
       $numeric = false;
       if ($directions[$_key] == "nasc") {
-        $directions[$_key] == "asc";
+        $directions[$_key] = "asc";
         $numeric = true;
       }
       if ($directions[$_key] == "ndesc") {
-        $directions[$_key] == "desc";
+        $directions[$_key] = "desc";
         $numeric = true;
       }
       $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
@@ -2337,11 +2337,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->orderBy('issuesort', $direction);
           break;
         default:
-          $q = $q->withColumn('SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
+          $q = $q->withColumn($numeric === true ? 'CAST(SortColumn_'.$_sort.'._content as unsigned)': 'SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
                 ->useDataQuery('SortColumn_'.$_sort)
                   ->filterByFortemplatefield($_sort)
                 ->endUse()
-                ->orderBy($numeric === true ? 'cast(sortcolumn_'.$_sort.' as unsigned)': 'sortcolumn_'.$_sort, $direction);
+                ->orderBy('sortcolumn_'.$_sort, $direction);
           break;
       }
     }
