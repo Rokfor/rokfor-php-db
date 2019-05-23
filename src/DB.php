@@ -1557,7 +1557,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
               $_core = $image->getCore();
               $_core->stripImage();
               foreach ($_metadata as $_mkey => $_mvalue) {
-                $_core->setImageProperty($_mkey, $_mvalue);
+                $_core->setImageAttribute($_mkey, $_mvalue);
               }
               
             }
