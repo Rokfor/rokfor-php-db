@@ -140,6 +140,57 @@ class DB
     $this->asset_prefix = '/asset/';
   }
 
+  private function iptc_make_tag($rec,$dat,$val) {
+    $len = strlen($val);
+    if ($len < 0x8000) {
+           return chr(0x1c).chr($rec).chr($dat).
+           chr($len >> 8).
+           chr($len & 0xff).
+           $val;
+    } else {
+           return chr(0x1c).chr($rec).chr($dat).
+           chr(0x80).chr(0x04).
+           chr(($len >> 24) & 0xff).
+           chr(($len >> 16) & 0xff).
+           chr(($len >> 8 ) & 0xff).
+           chr(($len ) & 0xff).
+           $val;
+           
+    }
+  }
+
+  
+  private function read_iptcdata($_file) {
+    $__m = [];
+    $_metadata = [];
+    @getimagesize($_file, $__m);
+    if (array_key_exists('APP13', $__m)) {
+      $iptc = iptcparse($__m['APP13']);
+      if (is_array($iptc)) {
+        foreach ($iptc as $__key => $__value) {
+          $_metadata[$__key] = $__value[0];
+        }
+      }
+    }
+    return $_metadata;
+  }
+
+
+  private function insert_iptc($_file, $_metadata) {
+    if (!is_array($_metadata)) return false;
+    $_metadata_combined = '';
+    $__utf8seq = chr(0x1b) . chr(0x25) . chr(0x47);
+    $__length = strlen($__utf8seq);
+    $_metadata_combined = chr(0x1C) . chr(1) . chr('090') . chr($__length >> 8) . chr($__length & 0xFF) . $__utf8seq;
+    foreach($_metadata as $__tag => $__string)
+    {
+        $__tag = substr($__tag, 2);
+        $_metadata_combined .= $this->iptc_make_tag(2, $__tag, $__string);
+    }
+    $__data = iptcembed($_metadata_combined, $_file);
+    file_put_contents($_file,$__data);
+  }
+
   private function s3_upload($source, $dest, $private) {
     if (substr($dest, 0, 1) != '/') {
       $dest = '/'. $dest;
@@ -1498,9 +1549,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
         // Exif & IPCT
 
-        $_metadata = NULL;
+        $_metadata = false;
+
         if ($_pdf_blob === false) {
-          $_metadata = @getImageSize($path.$this->paths['web'].$escapedFileName, $_metadata); 
+          $_metadata = $this->read_iptcdata($path.$this->paths['web'].$escapedFileName);
         }
         
 
@@ -1557,11 +1609,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
           // Write Back Metadata if jpg & metadata
 
-          if ($_suffix === 'jpg' && is_array($_metadata) && array_key_exists('APP13', $_metadata)) {
-            $__data = iptcembed($_metadata['APP13'], $path.$this->paths['web'].$_processfile); 
-            $__fp = fopen($path.$this->paths['web'].$_processfile, "wb");
-            fwrite($__fp, $__data);
-            fclose($__fp);
+          if ($_suffix === 'jpg' && $_metadata !== false) {
+            $this->insert_iptc($path.$this->paths['web'].$_processfile, $_metadata);
           }
 
           // S3 Storage
