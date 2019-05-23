@@ -1495,6 +1495,22 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
         // Thumbnail
         $image = $manager->make($_pdf_blob ? $_pdf_blob : $path.$this->paths['web'].$escapedFileName);
+
+        // Exif & IPCT
+
+        $_metadata = [];
+
+        foreach ($image->exif() as $_mkey => $_mvalue) {
+          if (!$_metadata[$_mkey]) {
+            $_metadata[$_mkey] = $_mvalue;
+          }
+        }
+        foreach ($image->iptc() as $_mkey => $_mvalue) {
+          if (!$_metadata[$_mkey]) {
+            $_metadata[$_mkey] = $_mvalue;
+          }
+        }
+
         $image->fit(100,100);
         // Strip Profile Data
         if ($driver === 'imagick') {
@@ -1537,7 +1553,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           });
     
           if ($driver === 'imagick') {
-            try {$image->getCore()->stripImage();}
+            try {
+              $_core = $image->getCore();
+              $_core->stripImage();
+              foreach ($_metadata as $_mkey => $_mvalue) {
+                $_core->setImageProperty($_mkey, $_mvalue);
+              }
+              
+            }
             catch (Exception $e) {}
           }
 
