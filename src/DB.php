@@ -1496,6 +1496,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         // Thumbnail
         $image = $manager->make($_pdf_blob ? $_pdf_blob : $path.$this->paths['web'].$escapedFileName);
 
+        // Exif & IPCT
+
+        $_metadata = NULL;
+        if ($_pdf_blob === false) {
+          $_metadata = @getImageSize($path.$this->paths['web'].$escapedFileName, $_metadata); 
+        }
+        
+
         $image->fit(100,100);
         // Strip Profile Data
         if ($driver === 'imagick') {
@@ -1546,6 +1554,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           }
 
           $image->save($path.$this->paths['web'].$_processfile, $this->paths['quality']);
+
+          // Write Back Metadata if jpg & metadata
+
+          if ($_suffix === 'jpg' && is_array($_metadata) && array_key_exists('APP13', $_metadata)) {
+            $__data = iptcembed($_metadata['APP13'], $path.$this->paths['web'].$_processfile); 
+            $__fp = fopen($path.$this->paths['web'].$_processfile, "wb");
+            fwrite($__fp, $__data);
+            fclose($__fp);
+          }
 
           // S3 Storage
           if (static::$s3 !== false) {
