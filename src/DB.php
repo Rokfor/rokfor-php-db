@@ -1540,8 +1540,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           if ($driver === 'imagick') {
             try {
               $_core = $image->getCore();
-              //$_core->stripImage();
-              $_core->profileImage('*', NULL);
+              $_core->stripImage();
             }
             catch (Exception $e) {}
           }
