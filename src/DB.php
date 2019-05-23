@@ -1501,13 +1501,13 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $_metadata = [];
 
         foreach ($image->exif() as $_mkey => $_mvalue) {
-          if (!$_metadata[$_mkey]) {
-            $_metadata[$_mkey] = $_mvalue;
+          if (!$_metadata['Exif:'.$_mkey]) {
+            $_metadata['Exif:'.$_mkey] = $_mvalue;
           }
         }
         foreach ($image->iptc() as $_mkey => $_mvalue) {
-          if (!$_metadata[$_mkey]) {
-            $_metadata[$_mkey] = $_mvalue;
+          if (!$_metadata['IPTC:'.$_mkey]) {
+            $_metadata['IPTC:'.$_mkey] = $_mvalue;
           }
         }
 
