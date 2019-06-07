@@ -2111,6 +2111,43 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function searchContributions($string = "", $issueid = false, $chapterid = false, $status = false, $limit = false, $offset = false, $filterfield = false, $filtermode = "like", $sortmode = 'asc', $count = false, $templateid = false) {
+    if ($issueid) {
+      if ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && (
+        is_array($issueid)
+          ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) > 0
+          : in_array($issueid, $this->rights["issues"]->getPrimaryKeys())
+        ))) {
+          // OK
+      }
+      else {
+        return false;
+      }
+    }
+    elseif ($this->rights["issues"] !== true) {
+      $issueid = $this->rights["issues"]->getPrimaryKeys();
+    }
+
+    if ($chapterid) {
+      if ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && (
+        is_array($chapterid)
+          ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) > 0
+          : in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())
+
+        ))) {
+          // OK
+      } 
+      else {
+        return false;
+      }
+    }
+    elseif ($this->rights["formats"] !== true) {
+      $chapterid = $this->rights["formats"]->getPrimaryKeys();
+    }
+    
+    
+    
+    
+    /*
     // Checks: if issue id is set, only check for the rights for this issue
     if ($issueid) {
       if (!($this->rights["issues"] === true || (is_object($this->rights["issues"]) && in_array($issueid, $this->rights["issues"]->getPrimaryKeys()))))
@@ -2130,6 +2167,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     elseif ($this->rights["formats"] !== true) {
       $chapterid = $this->rights["formats"]->getPrimaryKeys();
     }
+    */
 
     /**
      * Sort Mode
