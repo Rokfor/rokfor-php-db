@@ -2023,12 +2023,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     if (
       ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && (
         is_array($issueid)
-          ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) > 0
+          ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) === count($issueid)
           : in_array($issueid, $this->rights["issues"]->getPrimaryKeys())
         ))) &&
       ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && (
         is_array($chapterid)
-          ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) > 0
+          ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) === count($chapterid)
           : in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())
 
         )))
@@ -2114,7 +2114,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     if ($issueid) {
       if ($this->rights["issues"] === true || (is_object($this->rights["issues"]) && (
         is_array($issueid)
-          ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) > 0
+          ? count(array_intersect($issueid, $this->rights["issues"]->getPrimaryKeys())) === count($issueid)
           : in_array($issueid, $this->rights["issues"]->getPrimaryKeys())
         ))) {
           // OK
@@ -2130,7 +2130,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     if ($chapterid) {
       if ($this->rights["formats"] === true || (is_object($this->rights["formats"]) && (
         is_array($chapterid)
-          ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) > 0
+          ? count(array_intersect($chapterid, $this->rights["formats"]->getPrimaryKeys())) === count($chapterid)
           : in_array($chapterid, $this->rights["formats"]->getPrimaryKeys())
 
         ))) {
