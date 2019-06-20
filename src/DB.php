@@ -2373,7 +2373,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                    ->_or();
         }
         // Query Data as well
-        $q = $q->useDataQuery('_data'.$_key)
+        /*$q = $q->useDataQuery('_data'.$_key)
                  ->_if($_filter['column'])
                    ->condition('_field', '_data'.$_key.'._fortemplatefield = ?', (int)$_filter['column'])
                  ->_endif()
@@ -2400,14 +2400,57 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                  ->_else()
                    ->where(array('_data'.$_key))
                  ->_endif()
-             ->endUse();
+             ->endUse();*/
+        if ($_filter['column']) {
+          switch ($_filter['mode']) {
+            case 'like':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND d._content LIKE ?))', [(int)$_filter['column'], '%'.$_s.'%']);             
+              break;
+            case 'lt':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) < ?))', [(int)$_filter['column'], (int)$_s]);             
+              break;
+            case 'gt':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) > ?))', [(int)$_filter['column'], (int)$_s]);             
+              break;
+            case 'lte':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) <= ?))', [(int)$_filter['column'], (int)$_s]);             
+              break;
+            case 'gte':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) >= ?))', [(int)$_filter['column'], (int)$_s]);             
+              break;
+            case 'eq':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND d._content = ?))', [(int)$_filter['column'], $_s]);             
+              break;
+          }
+        }
+        else {
+          switch ($_filter['mode']) {
+            case 'like':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE d._content LIKE ?)', '%'.$_s.'%');             
+              break;
+            case 'lt':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) < ?)', (int)$_s);             
+              break;
+            case 'gt':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) > ?)', (int)$_s);             
+              break;
+            case 'lte':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) <= ?)', (int)$_s);             
+              break;
+            case 'gte':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) >= ?)', (int)$_s);             
+              break;
+            case 'eq':
+              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE d._content = ?)', $_s);             
+              break;
+          }          
+        }
       }
 
       $_key++;
 
     }
     // Return Counts Here
-
     if ($count === true) return $q->count();
 
     // Return Sorted Results
