@@ -191,6 +191,13 @@ class DB
     file_put_contents($_file,$__data);
   }
 
+  private function clean_regexp($s) {
+    if ($_s = base64_decode($s)) {
+      return preg_replace('/[^0-9äöüÄÖÜçôéàè| ]/','', $_s);
+    }
+    return ("");
+  }
+
   private function s3_upload($source, $dest, $private) {
     if (substr($dest, 0, 1) != '/') {
       $dest = '/'. $dest;
@@ -2256,7 +2263,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
     if ($filterfield) {
       foreach (explode('|', $filterfield) as $_key=>$f) {
-        $_filter = in_array($filtermodes[$_key], ["lte","gte","lt","gt","eq", "like"]) ? $filtermodes[$_key] : "like";
+        $_filter = in_array($filtermodes[$_key], ["lte","gte","lt","gt","eq", "like", "regexp"]) ? $filtermodes[$_key] : "like";
         switch ($f) {
           case 'sort':
             $filterby[] = [
@@ -2312,11 +2319,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       // Delimiter
 
       if ($_s == "|") {
-        $q = $q->_or();
+        $q->_or();
         continue;
       }
       if ($_s == "+") {
-        $q = $q->_and();
+        $q->_and();
         continue;
       }
 
@@ -2330,8 +2337,10 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                     'mode'   => 'like'
                   ];
 
+      // Standard Filter Methods: by date, by id, by sort
+
       if ($_filter['method']) {
-        $q = $q->_if($_filter['mode'] == "like")
+        $q->_if($_filter['mode'] == "like")
                  ->{$_filter['method']}('%'.$_s.'%')
                ->_endif()
                ->_if($_filter['mode'] == "lt")
@@ -2348,11 +2357,14 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                ->_endif()
                ->_if($_filter['mode'] == "eq")
                  ->{$_filter['method']}((int)$_s)
+               ->_endif()
+               ->_if($_filter['mode'] == "regexp")
+                 ->where($_filter['column'].' REGEXP ?', $this->clean_regexp($_s))
                ->_endif();
       }
       else {
         if (!$_filter['column']) {
-          $q = $q->_if($_filter['mode'] == "like")
+          $q->_if($_filter['mode'] == "like")
                      ->where('_contributions._name LIKE ?', '%'.$_s.'%')
                    ->_endif()
                    ->_if($_filter['mode'] == "lt")
@@ -2369,6 +2381,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                    ->_endif()
                    ->_if($_filter['mode'] == "eq")
                      ->where('_contributions._name = ?', $_s)
+                   ->_endif()
+                   ->_if($_filter['mode'] == "regexp")
+                     ->where($_filter['column'].' REGEXP ?', $this->clean_regexp($_s))
                    ->_endif()
                    ->_or();
         }
@@ -2404,44 +2419,50 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         if ($_filter['column']) {
           switch ($_filter['mode']) {
             case 'like':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND d._content LIKE ?))', [(int)$_filter['column'], '%'.$_s.'%']);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content LIKE ?))', [(int)$_filter['column'], '%'.$_s.'%']);             
               break;
             case 'lt':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) < ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) < ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'gt':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) > ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) > ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'lte':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) <= ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) <= ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'gte':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) >= ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) >= ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'eq':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE (d._fortemplatefield = ? AND d._content = ?))', [(int)$_filter['column'], $_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content = ?))', [(int)$_filter['column'], $_s]);             
+              break;
+            case 'regexp':
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content REGEXP ?))', [(int)$_filter['column'], $this->clean_regexp($_s)]);             
               break;
           }
         }
         else {
           switch ($_filter['mode']) {
             case 'like':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE d._content LIKE ?)', '%'.$_s.'%');             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content LIKE ?))', '%'.$_s.'%');             
               break;
             case 'lt':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) < ?)', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) < ?))', (int)$_s);             
               break;
             case 'gt':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) > ?)', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) > ?))', (int)$_s);             
               break;
             case 'lte':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) <= ?)', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) <= ?))', (int)$_s);             
               break;
             case 'gte':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE CAST(d._content AS UNSIGNED) >= ?)', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) >= ?))', (int)$_s);             
               break;
             case 'eq':
-              $q->where('_contributions.id IN (SELECT d._forcontribution FROM _data as d WHERE d._content = ?)', $_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content = ?))', $_s);             
+              break;
+            case 'regexp':
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content REGEXP ?))', $this->clean_regexp($_s));             
               break;
           }          
         }
@@ -2449,8 +2470,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
       $_key++;
 
+      // This is an emergency break, it will stop after 20 queries
+      if ($_key > 20) break;
+
     }
     // Return Counts Here
+
     if ($count === true) return $q->count();
 
     // Return Sorted Results
