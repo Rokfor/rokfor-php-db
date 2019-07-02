@@ -2263,7 +2263,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
     if ($filterfield) {
       foreach (explode('|', $filterfield) as $_key=>$f) {
-        $_filter = in_array($filtermodes[$_key], ["lte","gte","lt","gt","eq", "like", "regexp"]) ? $filtermodes[$_key] : "like";
+        $_filter = in_array($filtermodes[$_key], ["lte","gte","lt","gt","eq", "like", "regexp", "hash"]) ? $filtermodes[$_key] : "like";
         switch ($f) {
           case 'sort':
             $filterby[] = [
@@ -2358,6 +2358,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                ->_if($_filter['mode'] == "eq")
                  ->{$_filter['method']}((int)$_s)
                ->_endif()
+               ->_if($_filter['mode'] == "hash")
+                  ->where($_filter['column'].' = ?', password_hash($_s, PASSWORD_DEFAULT))
+               ->_endif()
                ->_if($_filter['mode'] == "regexp")
                  ->where($_filter['column'].' REGEXP ?', $this->clean_regexp($_s))
                ->_endif();
@@ -2382,6 +2385,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                    ->_if($_filter['mode'] == "eq")
                      ->where('_contributions._name = ?', $_s)
                    ->_endif()
+                   ->_if($_filter['mode'] == "hash")
+                     ->where('_contributions._name = ?', password_hash($_s, PASSWORD_DEFAULT))
+                   ->_endif()                   
                    ->_if($_filter['mode'] == "regexp")
                      ->where($_filter['column'].' REGEXP ?', $this->clean_regexp($_s))
                    ->_endif()
@@ -2436,6 +2442,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             case 'eq':
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content = ?))', [(int)$_filter['column'], $_s]);             
               break;
+            case 'hash':
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content = ?))', [(int)$_filter['column'], password_hash($_s, PASSWORD_DEFAULT)]);             
+              break;
             case 'regexp':
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content REGEXP ?))', [(int)$_filter['column'], $this->clean_regexp($_s)]);             
               break;
@@ -2461,6 +2470,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             case 'eq':
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content = ?))', $_s);             
               break;
+            case 'hash':
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content = ?))', password_hash($_s, PASSWORD_DEFAULT));             
+              break;              
             case 'regexp':
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content REGEXP ?))', $this->clean_regexp($_s));             
               break;
