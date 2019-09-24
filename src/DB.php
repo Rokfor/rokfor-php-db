@@ -673,8 +673,8 @@ class DB
       $mode = 'md5';
       return true;
     }
-    if (hash('sha512', $pw) == $this->currentUser->getPassword()) {
-      $mode = 'sha512';
+    if (password_hash($pw, PASSWORD_DEFAULT) == $this->currentUser->getPassword()) {
+      $mode = 'bcrypt';
       return true;
     }
     return false;
@@ -742,11 +742,11 @@ class DB
       $error[] = 'profile_error_oldpwwrong';
       return false;
     }
-    if ($new1 == $pw && $hashmode == 'sha512') {
+    if ($new1 == $pw && $hashmode == 'bcrypt') {
       $error[] = 'profile_error_pwsameasold';
       return false;
     }
-    $this->currentUser->setPassword(hash('sha512', $new1))->save();
+    $this->currentUser->setPassword(password_hash($new1, PASSWORD_DEFAULT))->save();
     return true;
   }
 
@@ -764,7 +764,7 @@ class DB
       $error[] = 'profile_error_pwsameasold';
       return false;
     }
-    $u->setPassword(hash('sha512', $new1))->save();
+    $u->setPassword(password_hash($new1, PASSWORD_DEFAULT))->save();
     return true;
   }
 
