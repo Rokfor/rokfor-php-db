@@ -673,7 +673,7 @@ class DB
       $mode = 'md5';
       return true;
     }
-    if (password_hash($pw, PASSWORD_DEFAULT) == $this->currentUser->getPassword()) {
+    if (password_verify ( $pw , $this->currentUser->getPassword() ) === true ) {
       $mode = 'bcrypt';
       return true;
     }
