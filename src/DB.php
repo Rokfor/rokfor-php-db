@@ -668,11 +668,15 @@ class DB
    * @return void
    * @author Urs Hofer
    */
-  function checkPassword($pw) {
-    if (md5($pw) == $this->currentUser->getPassword()) 
+  function checkPassword($pw, &$mode = false) {
+    if (md5($pw) == $this->currentUser->getPassword()) {
+      $mode = 'md5';
       return true;
-    if (hash('sha512', $pw) == $this->currentUser->getPassword()) 
+    }
+    if (hash('sha512', $pw) == $this->currentUser->getPassword()) {
+      $mode = 'sha512';
       return true;
+    }
     return false;
   }
 
@@ -726,6 +730,7 @@ class DB
    * @author Urs Hofer
    */
   function updatePassword($pw, $new1, $new2, &$error) {
+    $hashmode = "";
     if ($new1 <> $new2) {
       $error[] = 'profile_error_pwnotmatch';
       return false;
@@ -733,12 +738,12 @@ class DB
     if (!$this->checkPasswordStrength($new1, $error)) {
       return false;
     }
-    if ($new1 == $pw) {
-      $error[] = 'profile_error_pwsameasold';
+    if (!$this->checkPassword($pw, $hashmode)) {
+      $error[] = 'profile_error_oldpwwrong';
       return false;
     }
-    if (!$this->checkPassword($pw)) {
-      $error[] = 'profile_error_oldpwwrong';
+    if ($new1 == $pw && $hashmode == 'sha512') {
+      $error[] = 'profile_error_pwsameasold';
       return false;
     }
     $this->currentUser->setPassword(hash('sha512', $new1))->save();
