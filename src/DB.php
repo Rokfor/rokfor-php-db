@@ -1811,15 +1811,12 @@ $this->defaultLogger->info("PRIVATE: " . $private);
 
   private function _clearCache($id, $name, $type = false) {
       $name = json_encode($name);
-      if ($type) {
-        $type = json_encode($type);
-      }
-
+      $name = str_replace('\u','\\\\u',$name);
       \ContributionscacheQuery::create()
       ->filterByCache('%"'.$id.'":{"Id":'.$id.',"Name":'.$name.'%')
       ->_if($type)
         ->_or()
-        ->filterByCache('%'.$type.':'.$name.'%')
+        ->filterByCache('%"'.$type.'":'.$name.'%')
       ->delete();
   }
 
