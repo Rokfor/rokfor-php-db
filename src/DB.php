@@ -1809,6 +1809,15 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   }
 
 
+  private function _clearCache($id, $name, $type = false) {
+      \ContributionscacheQuery::create()
+      ->filterByCache('%"'.$id.'":{"Id":'.$id.',"Name":"'.$name.'"%')
+      ->_if($type)
+        ->_or()
+        ->filterByCache('%"'.$type.'":"'.$name.'"%')
+      ->delete();
+  }
+
   /**
    * updates the contribution backreferences stored in the _config_ field of a contribution
    *
@@ -3014,9 +3023,11 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameBook($id, $name) {
+    $this->_clearCache($id, $this->getBook($id)->getName(), 'ForbookName');
     $this->getBook($id)
          ->setName($name)
          ->save();
+
   }
 
   /**
@@ -3064,6 +3075,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameIssue($id, $name) {
+    $this->_clearCache($id, $this->getIssue($id)->getName(), 'ForissueName');    
     $this->getIssue($id)
          ->setName($name)
          ->save();
@@ -3113,6 +3125,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameChapter($id, $name) {
+    $this->_clearCache($id, $this->getFormat($id)->getName(), 'ForchapterName');    
     $this->getFormat($id)
          ->setName($name)
          ->save();
@@ -3163,6 +3176,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function deleteBook($id) {
     $_book =  $this->getBook($id);
     if ($_book) {
+      // Delete Caches
+      $this->_clearCache($id, $_book->getName());
       // Update Contribution References
       $this->_clearReferencedObjects($_book);
       // Delete Binaries & References
@@ -3191,6 +3206,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function deleteIssue($id) {
     $_issue = $this->getIssue($id);
     if ($_issue) {
+      // Delete Caches
+      $this->_clearCache($id, $_issue->getName());
       // Delete Contribution References
       $this->_clearReferencedObjects($_issue);
       // Delete Binaries & References
@@ -3214,6 +3231,8 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   function deleteChapter($id) {
     $_chapter = $this->getFormat($id);
     if ($_chapter) {
+      // Delete Caches
+      $this->_clearCache($id, $_chapter->getName());
       // Update Contribution References
       $this->_clearReferencedObjects($_chapter);
       // Delete Binaries & References
