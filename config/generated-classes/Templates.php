@@ -54,6 +54,7 @@ class Templates extends BaseTemplates
       'resolve_foreign'    => [                   ],
       'legends'            => [      3,4,         ],
       'multiple'           => [  1,               ],
+      'ajax'               => [  1,               ],
       'history_command'    => [0,1,2,             ],
       'fixedvalues'        => [  1,2,             ],
       'restrict_to_open'   => [0,1,2,             ],

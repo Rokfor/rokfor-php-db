@@ -67,7 +67,7 @@ class DB
    */
   private static $s3;
 
-  function __construct($host, $user, $pass, $dbname, $log, $level, $patharray = [], $socket = false, $port = false, $versioning = false)
+  function __construct($host, $user, $pass, $dbname, $log, $level, $patharray = [], $socket = false, $port = false, $versioning = false, $ATTR_EMULATE_PREPARES = false)
   {
     $socket = $socket
               ? "unix_socket=".$socket.";"
@@ -88,7 +88,7 @@ class DB
       'password' => $pass,
       'attributes' =>
       array (
-        'ATTR_EMULATE_PREPARES' => false,
+        'ATTR_EMULATE_PREPARES' => $ATTR_EMULATE_PREPARES,
       ),
     ));
     $this->manager->setName('rokfor');
