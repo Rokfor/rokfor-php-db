@@ -2110,7 +2110,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                     ->orderBy('issuesort', $direction);
               break;
             default:
-              $q = $q->withColumn($numeric === true ? 'CAST(SortColumn_'.$_sort.'._content as unsigned)': 'SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
+              $q = $q->withColumn($numeric === true ? 'CAST(SortColumn_'.$_sort.'._content as signed)': 'SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
                     ->useDataQuery('SortColumn_'.$_sort)
                       ->filterByFortemplatefield($_sort)
                     ->endUse()
@@ -2391,16 +2391,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                      ->where('_contributions._name LIKE ?', '%'.$_s.'%')
                    ->_endif()
                    ->_if($_filter['mode'] == "lt")
-                     ->where('CAST(_contributions._name AS UNSIGNED) < ?', (int)$_s)
+                     ->where('CAST(_contributions._name AS SIGNED) < ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "gt")
-                     ->where('CAST(_contributions._name AS UNSIGNED) > ?', (int)$_s)
+                     ->where('CAST(_contributions._name AS SIGNED) > ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "lte")
-                     ->where('CAST(_contributions._name AS UNSIGNED) <= ?', (int)$_s)
+                     ->where('CAST(_contributions._name AS SIGNED) <= ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "gte")
-                     ->where('CAST(_contributions._name AS UNSIGNED) >= ?', (int)$_s)
+                     ->where('CAST(_contributions._name AS SIGNED) >= ?', (int)$_s)
                    ->_endif()
                    ->_if($_filter['mode'] == "eq")
                      ->where('_contributions._name = ?', $_s)
@@ -2422,16 +2422,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                    ->condition('_data'.$_key, '_data'.$_key.'._content LIKE ?', '%'.$_s.'%')
                  ->_endif()
                  ->_if($_filter['mode'] == "lt")
-                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS UNSIGNED) < ?', (int)$_s)
+                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS SIGNED) < ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "gt")
-                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS UNSIGNED) > ?', (int)$_s)
+                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS SIGNED) > ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "lte")
-                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS UNSIGNED) <= ?', (int)$_s)
+                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS SIGNED) <= ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "gte")
-                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS UNSIGNED) >= ?', (int)$_s)
+                   ->condition('_data'.$_key, 'CAST(_data'.$_key.'._content AS SIGNED) >= ?', (int)$_s)
                  ->_endif()
                  ->_if($_filter['mode'] == "eq")
                    ->condition('_data'.$_key, '_data'.$_key.'._content = ?', $_s)
@@ -2448,16 +2448,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content LIKE ?))', [(int)$_filter['column'], '%'.$_s.'%']);             
               break;
             case 'lt':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) < ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS SIGNED) < ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'gt':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) > ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS SIGNED) > ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'lte':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) <= ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS SIGNED) <= ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'gte':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS UNSIGNED) >= ?))', [(int)$_filter['column'], (int)$_s]);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND CAST(d._content AS SIGNED) >= ?))', [(int)$_filter['column'], (int)$_s]);             
               break;
             case 'eq':
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._fortemplatefield = ? AND d._content = ?))', [(int)$_filter['column'], $_s]);             
@@ -2476,16 +2476,16 @@ $this->defaultLogger->info("PRIVATE: " . $private);
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content LIKE ?))', '%'.$_s.'%');             
               break;
             case 'lt':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) < ?))', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS SIGNED) < ?))', (int)$_s);             
               break;
             case 'gt':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) > ?))', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS SIGNED) > ?))', (int)$_s);             
               break;
             case 'lte':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) <= ?))', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS SIGNED) <= ?))', (int)$_s);             
               break;
             case 'gte':
-              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS UNSIGNED) >= ?))', (int)$_s);             
+              $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND CAST(d._content AS SIGNED) >= ?))', (int)$_s);             
               break;
             case 'eq':
               $q->where('EXISTS (SELECT d._forcontribution FROM _data as d WHERE (_contributions.id = d._forcontribution AND d._content = ?))', $_s);             
@@ -2545,7 +2545,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
                 ->orderBy('issuesort', $direction);
           break;
         default:
-          $q = $q->withColumn($numeric === true ? 'CAST(SortColumn_'.$_sort.'._content as unsigned)': 'SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
+          $q = $q->withColumn($numeric === true ? 'CAST(SortColumn_'.$_sort.'._content as signed)': 'SortColumn_'.$_sort.'._content', 'sortcolumn_'.$_sort)
                 ->useDataQuery('SortColumn_'.$_sort)
                   ->filterByFortemplatefield($_sort)
                 ->endUse()
