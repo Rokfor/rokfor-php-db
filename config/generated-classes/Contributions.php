@@ -50,6 +50,10 @@ class Contributions extends BaseContributions
     foreach (\ContributionscacheQuery::create()
       ->filterByCache('%Contribution":{"Id":'.$this->getId().'%') 
       ->_or()
+      ->filterByCache('%"_id":'.$this->getId().',%') 
+      ->_or()      
+      ->filterByCache('%"_id":'.$this->getId().'}%') 
+      ->_or()                  
       ->filterByCache('%"'.$this->getId().'":%') 
         as $_cache) {
       //$this->debuglog("ADDING: ".print_r($_cache->getId(), true));
