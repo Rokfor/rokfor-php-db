@@ -2086,7 +2086,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
             $numeric = true;
           }
 
-          $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
+          $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc"  || $directions[$_key] == "rand()")
                         ? $directions[$_key]
                         : "asc";
 
@@ -2522,7 +2522,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
         $directions[$_key] = "desc";
         $numeric = true;
       }
-      $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc")
+      $direction = ($directions[$_key] == "asc" || $directions[$_key] == "desc" || $directions[$_key] == "rand()")
                     ? $directions[$_key]
                     : "asc";
       switch ($_sort) {
