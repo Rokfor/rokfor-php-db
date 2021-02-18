@@ -220,6 +220,12 @@ class DB
     if (static::$s3 !== false) {
       $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
       return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
+      $cmd = static::$s3->client->getCommand('GetObject', [
+        'Bucket' => static::$s3->bucket,
+        'Key' => $key
+      ]);
+      $request = static::$s3->client->createPresignedRequest($cmd, '+10 minutes');
+      return (string)$request->getUri();
     }
     else {
       $path = $public === false
