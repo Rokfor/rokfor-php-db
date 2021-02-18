@@ -118,15 +118,17 @@ class DB
 
     if ($patharray['s3'] === true) {
       static::$s3 = new \stdClass();
-      static::$s3->client = \Aws\S3\S3Client::factory(array(
-          'credentials' => array(
-              'key'     => $patharray['s3_aws_key'],
-              'secret'  => $patharray['s3_aws_secret'],
-          ),
-          'region'      => $patharray['s3_aws_region'],
-          'endpoint'    => $patharray['s3_aws_endpoint'],
-          'version'     => "2006-03-01"
-      ));
+
+      static::$s3->client = new \Aws\S3\S3Client([
+        'credentials' => array(
+          'key'     => $patharray['s3_aws_key'],
+          'secret'  => $patharray['s3_aws_secret'],
+        ),
+        'region'      => $patharray['s3_aws_region'],
+        'endpoint'    => $patharray['s3_aws_endpoint'],
+        'version'     => "2006-03-01"
+      ]);
+
       static::$s3->bucket = $patharray['s3_aws_bucket'];
       static::$s3->public = $patharray['s3_aws_public_pages'];
       static::$s3->endpoint = $patharray['s3_aws_endpoint'];
@@ -331,11 +333,13 @@ class DB
   private function s3_unlink($filename) {
     $deleteFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
     try {
-      $result = static::$s3->client->deleteObjectAsync(array(
-          'Bucket' => static::$s3->bucket,
-          'Key'    => $deleteFile,
-      ));
-    } catch (Exception $e) {
+      $del = [
+        'Bucket' => static::$s3->bucket,
+        'Key' => $deleteFile,
+      ];
+      $result = static::$s3->client->deleteObject($del);
+    } catch (\Aws\S3Exception $e) {
+      $this->defaultLogger->info($e->getMessage());
       return false;
     }
     $this->defaultLogger->info("s3 unlink $deleteFile");
@@ -355,7 +359,7 @@ class DB
   private function s3_copy($source, $dest, $private) {
     $sourceFile = static::$s3->folder . '/' . pathinfo($source, PATHINFO_BASENAME);
     $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);
-    $promise = static::$s3->client->copyObjectAsync(array(
+    $promise = static::$s3->client->copyObject(array(
       'ACL'        =>  $private ? 'private' : 'public-read',
       'Bucket'      => static::$s3->bucket,
       'Key'         => $destFile,
@@ -363,7 +367,7 @@ class DB
     ));
     //$destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
     //return pathinfo($destUrl, PATHINFO_BASENAME);
-    return $dest;
+    return pathinfo($dest, PATHINFO_BASENAME);
   }
 
 
