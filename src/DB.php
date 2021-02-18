@@ -326,7 +326,7 @@ class DB
   private function s3_unlink($filename) {
     $deleteFile = static::$s3->folder . '/' . pathinfo($filename, PATHINFO_BASENAME);
     try {
-      $result = static::$s3->client->deleteObject(array(
+      $result = static::$s3->client->deleteObjectAsync(array(
           'Bucket' => static::$s3->bucket,
           'Key'    => $deleteFile,
       ));
@@ -334,7 +334,7 @@ class DB
       return false;
     }
     $this->defaultLogger->info("s3 unlink $deleteFile");
-    return $result['DeleteMarker'];
+    return true;
   }
 
   private function s3_file_exists($filename) {
@@ -350,16 +350,15 @@ class DB
   private function s3_copy($source, $dest, $private) {
     $sourceFile = static::$s3->folder . '/' . pathinfo($source, PATHINFO_BASENAME);
     $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);
-  //  $this->defaultLogger->info("s3 copy: " . $sourceFile . " TO: ". $destFile);
-    $result = static::$s3->client->copyObject(array(
+    $promise = static::$s3->client->copyObjectAsync(array(
       'ACL'        =>  $private ? 'private' : 'public-read',
       'Bucket'      => static::$s3->bucket,
       'Key'         => $destFile,
       'CopySource'  => static::$s3->bucket. "/" . $sourceFile,
     ));
-  //  $this->defaultLogger->info("s3 copy done.");
-    $destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
-    return pathinfo($destUrl, PATHINFO_BASENAME);
+    //$destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
+    //return pathinfo($destUrl, PATHINFO_BASENAME);
+    return $dest;
   }
 
 
