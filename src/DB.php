@@ -219,7 +219,6 @@ class DB
   function presign_file($file, $public = false, $absolute = true) {
     if (static::$s3 !== false) {
       $key = static::$s3->folder . '/' . pathinfo($file, PATHINFO_BASENAME);
-      return static::$s3->client->getObjectUrl(static::$s3->bucket, $key, '+10 minutes');
       $cmd = static::$s3->client->getCommand('GetObject', [
         'Bucket' => static::$s3->bucket,
         'Key' => $key
