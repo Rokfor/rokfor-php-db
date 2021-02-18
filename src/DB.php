@@ -142,6 +142,14 @@ class DB
     $this->asset_prefix = '/asset/';
   }
 
+  private static function schedulePromise($callable, ...$args)
+  {
+      register_shutdown_function(function ($callable, ...$args) {
+          call_user_func($callable, ...$args);
+      }, $callable, ...$args);
+  }
+
+
   private function iptc_make_tag($rec,$dat,$val) {
     $len = strlen($val);
     if ($len < 0x8000) {
@@ -337,7 +345,8 @@ class DB
         'Bucket' => static::$s3->bucket,
         'Key' => $deleteFile,
       ];
-      $result = static::$s3->client->deleteObject($del);
+      $promise = static::$s3->client->deleteObjectAsync($del);
+      $this->schedulePromise([$promise, 'wait'],false);
     } catch (\Aws\S3Exception $e) {
       $this->defaultLogger->info($e->getMessage());
       return false;
@@ -359,12 +368,13 @@ class DB
   private function s3_copy($source, $dest, $private) {
     $sourceFile = static::$s3->folder . '/' . pathinfo($source, PATHINFO_BASENAME);
     $destFile = static::$s3->folder . '/' . pathinfo($dest, PATHINFO_BASENAME);
-    $promise = static::$s3->client->copyObject(array(
+    $promise = static::$s3->client->copyObjectAsync(array(
       'ACL'        =>  $private ? 'private' : 'public-read',
       'Bucket'      => static::$s3->bucket,
       'Key'         => $destFile,
       'CopySource'  => static::$s3->bucket. "/" . $sourceFile,
     ));
+    $this->schedulePromise([$promise, 'wait'],false);
     //$destUrl = static::$s3->client->getObjectUrl(static::$s3->bucket, $destFile);
     //return pathinfo($destUrl, PATHINFO_BASENAME);
     return pathinfo($dest, PATHINFO_BASENAME);
