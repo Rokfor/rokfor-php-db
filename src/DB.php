@@ -1841,7 +1841,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   /**
    * updates the contribution backreferences stored in the _config_ field of a contribution
    *
-   * @param object $field
+   * @param string $field
    * @param string $data
    * @return void
    * @author Urs Hofer
@@ -1883,17 +1883,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
           break;
       }
       if ($getAction && $queryAction) {
-        $_resolved = $this->$queryAction()->filterById($decoded)->find();
-        if ($_resolved) {
-          $field->$getAction($_resolved);
-          return true;
-        }
-        else {
-          return false;
-        }
+        $field->$getAction($this->$queryAction()->filterById($decoded)->find());
       }
     }
-    return true;
   }
 
 
@@ -1920,9 +1912,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       $access = ($this->rights["templates"]=== true || is_object($this->rights["templates"]) && in_array($tname->getId(), $this->rights["templates"]->getPrimaryKeys()));
       if ($access) {
         // Update Contributional References for Relative Fields
-        if ($this->_updateReferencedObjects($field, $data) === false) {
-          return false;
-        }
+        $this->_updateReferencedObjects($field, $data);
         // Json is always true unless it is a number or a plain text field
         $field->setIsjson($this->_determineJsonForField($field));
 
