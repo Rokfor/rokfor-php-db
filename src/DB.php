@@ -1538,7 +1538,9 @@ $this->defaultLogger->info("PRIVATE: " . $private);
       }
 
       if ($settings["growing"]==false) {
-        $caption = $oldVal[0][0] ? $oldVal[0][0] : $default_caption;
+        $caption = $default_caption != 'Caption'  // Assume it's other than default
+                    ? $default_caption            // Use the passed caption
+                    : ($oldVal[0][0] ? $oldVal[0][0] : $default_caption); // Fallback old caption, if none, use default
         $oldVal = [];
         $this->FileModify($fieldid, $oldVal);
       }
