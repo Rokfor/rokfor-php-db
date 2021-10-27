@@ -203,7 +203,7 @@ class DB
 
   private function clean_regexp($s) {
     if ($_s = base64_decode($s)) {
-      return preg_replace('/[^0-9äöüÄÖÜçôéàè|\?\^\$\." ]/','', $_s);
+      return preg_replace('/[^0-9A-Za-zäöüÄÖÜçôéàè|\\\[\]\?\^\$\." ]/','', $_s);
     }
     return ("");
   }
