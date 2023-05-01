@@ -22,7 +22,7 @@
     }
   ],
   "require": {
-    "propel/propel": "2.0.0-alpha8",
+    "propel/propel": "2.0.0-alpha12",
     "intervention/image": "dev-master",
     "aws/aws-sdk-php": "^3.0",
     "thefuriouscoder/propel2-data-cache-behavior": "dev-master"
