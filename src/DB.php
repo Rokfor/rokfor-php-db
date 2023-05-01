@@ -1,7 +1,8 @@
 <?php
+namespace Rokfor;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-namespace Rokfor;
+
 
 /**
  * Rokfor DB
