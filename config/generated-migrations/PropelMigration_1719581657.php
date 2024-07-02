@@ -42,17 +42,17 @@ class PropelMigration_1719581657
         return array (
   'rokfor' => '
 ALTER TABLE `_contributions_cache`
-  ADD `_book` VARCHAR(255) AFTER `_cache`,
-  ADD `_issue` VARCHAR(255) AFTER `_book`,
-  ADD `_chapter` VARCHAR(255) AFTER `_issue`,
-  ADD `_template` VARCHAR(255) AFTER `_chapter`,
-  ADD `_contribution` VARCHAR(255) AFTER `_template`,
+  ADD `_book` TEXT(65535) AFTER `_cache`,
+  ADD `_issue` TEXT(65535) AFTER `_book`,
+  ADD `_chapter` TEXT(65535) AFTER `_issue`,
+  ADD `_template` TEXT(65535) AFTER `_chapter`,
+  ADD `_contribution` TEXT(65535) AFTER `_template`,
   ADD `_touched` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
-  CREATE INDEX `_book_index` ON `_contributions_cache` (`_book`);
-  CREATE INDEX `_issue_index` ON `_contributions_cache` (`_issue`);
-  CREATE INDEX `_chapter_index` ON `_contributions_cache` (`_chapter`);
-  CREATE INDEX `_template_index` ON `_contributions_cache` (`_template`);
-  CREATE INDEX `_contribution_index` ON `_contributions_cache` (`_contribution`);
+  CREATE INDEX `_book_index` ON `_contributions_cache` (`_book`(768));
+  CREATE INDEX `_issue_index` ON `_contributions_cache` (`_issue`(768));
+  CREATE INDEX `_chapter_index` ON `_contributions_cache` (`_chapter`(768));
+  CREATE INDEX `_template_index` ON `_contributions_cache` (`_template`(768));
+  CREATE INDEX `_contribution_index` ON `_contributions_cache` (`_contribution`(768));
 ',
 );
     }
