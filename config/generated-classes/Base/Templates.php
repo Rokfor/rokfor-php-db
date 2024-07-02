@@ -16,6 +16,9 @@ use \Templates as ChildTemplates;
 use \TemplatesQuery as ChildTemplatesQuery;
 use \Exception;
 use \PDO;
+use Map\DataTableMap;
+use Map\RDataTemplateTableMap;
+use Map\RFieldpostprocessorForfieldTableMap;
 use Map\TemplatesTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -35,8 +38,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Templates implements ActiveRecordInterface
 {
     /**
@@ -73,60 +76,70 @@ abstract class Templates implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _fortemplate field.
+     *
      * @var        int
      */
     protected $_fortemplate;
 
     /**
      * The value for the _fieldname field.
+     *
      * @var        string
      */
     protected $_fieldname;
 
     /**
      * The value for the _helpdescription field.
+     *
      * @var        string
      */
     protected $_helpdescription;
 
     /**
      * The value for the _helpimage field.
+     *
      * @var        string
      */
     protected $_helpimage;
 
     /**
      * The value for the _fieldtype field.
+     *
      * @var        string
      */
     protected $_fieldtype;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -426,7 +439,15 @@ abstract class Templates implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -932,13 +953,17 @@ abstract class Templates implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(TemplatesTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1783,7 +1808,7 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function getTemplatenames(ConnectionInterface $con = null)
     {
-        if ($this->aTemplatenames === null && ($this->_fortemplate !== null)) {
+        if ($this->aTemplatenames === null && ($this->_fortemplate != 0)) {
             $this->aTemplatenames = ChildTemplatenamesQuery::create()->findPk($this->_fortemplate, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1809,13 +1834,16 @@ abstract class Templates implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RFieldpostprocessorForfield' == $relationName) {
-            return $this->initRFieldpostprocessorForfields();
+            $this->initRFieldpostprocessorForfields();
+            return;
         }
         if ('Data' == $relationName) {
-            return $this->initDatas();
+            $this->initDatas();
+            return;
         }
         if ('RDataTemplate' == $relationName) {
-            return $this->initRDataTemplates();
+            $this->initRDataTemplates();
+            return;
         }
     }
 
@@ -1858,7 +1886,10 @@ abstract class Templates implements ActiveRecordInterface
         if (null !== $this->collRFieldpostprocessorForfields && !$overrideExisting) {
             return;
         }
-        $this->collRFieldpostprocessorForfields = new ObjectCollection();
+
+        $collectionClassName = RFieldpostprocessorForfieldTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRFieldpostprocessorForfields = new $collectionClassName;
         $this->collRFieldpostprocessorForfields->setModel('\RFieldpostprocessorForfield');
     }
 
@@ -2006,6 +2037,10 @@ abstract class Templates implements ActiveRecordInterface
 
         if (!$this->collRFieldpostprocessorForfields->contains($l)) {
             $this->doAddRFieldpostprocessorForfield($l);
+
+            if ($this->rFieldpostprocessorForfieldsScheduledForDeletion and $this->rFieldpostprocessorForfieldsScheduledForDeletion->contains($l)) {
+                $this->rFieldpostprocessorForfieldsScheduledForDeletion->remove($this->rFieldpostprocessorForfieldsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2104,7 +2139,10 @@ abstract class Templates implements ActiveRecordInterface
         if (null !== $this->collDatas && !$overrideExisting) {
             return;
         }
-        $this->collDatas = new ObjectCollection();
+
+        $collectionClassName = DataTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDatas = new $collectionClassName;
         $this->collDatas->setModel('\Data');
     }
 
@@ -2249,6 +2287,10 @@ abstract class Templates implements ActiveRecordInterface
 
         if (!$this->collDatas->contains($l)) {
             $this->doAddData($l);
+
+            if ($this->datasScheduledForDeletion and $this->datasScheduledForDeletion->contains($l)) {
+                $this->datasScheduledForDeletion->remove($this->datasScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2372,7 +2414,10 @@ abstract class Templates implements ActiveRecordInterface
         if (null !== $this->collRDataTemplates && !$overrideExisting) {
             return;
         }
-        $this->collRDataTemplates = new ObjectCollection();
+
+        $collectionClassName = RDataTemplateTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataTemplates = new $collectionClassName;
         $this->collRDataTemplates->setModel('\RDataTemplate');
     }
 
@@ -2520,6 +2565,10 @@ abstract class Templates implements ActiveRecordInterface
 
         if (!$this->collRDataTemplates->contains($l)) {
             $this->doAddRDataTemplate($l);
+
+            if ($this->rDataTemplatesScheduledForDeletion and $this->rDataTemplatesScheduledForDeletion->contains($l)) {
+                $this->rDataTemplatesScheduledForDeletion->remove($this->rDataTemplatesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2604,9 +2653,10 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function initFieldpostprocessors()
     {
-        $this->collFieldpostprocessors = new ObjectCollection();
-        $this->collFieldpostprocessorsPartial = true;
+        $collectionClassName = RFieldpostprocessorForfieldTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collFieldpostprocessors = new $collectionClassName;
+        $this->collFieldpostprocessorsPartial = true;
         $this->collFieldpostprocessors->setModel('\Fieldpostprocessor');
     }
 
@@ -2795,8 +2845,8 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function removeFieldpostprocessor(ChildFieldpostprocessor $fieldpostprocessor)
     {
-        if ($this->getFieldpostprocessors()->contains($fieldpostprocessor)) { $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
-
+        if ($this->getFieldpostprocessors()->contains($fieldpostprocessor)) {
+            $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
             $rFieldpostprocessorForfield->setFieldpostprocessor($fieldpostprocessor);
             if ($fieldpostprocessor->isTemplatessLoaded()) {
                 //remove the back reference if available
@@ -2846,9 +2896,10 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function initRDatas()
     {
-        $this->collRDatas = new ObjectCollection();
-        $this->collRDatasPartial = true;
+        $collectionClassName = RDataTemplateTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRDatas = new $collectionClassName;
+        $this->collRDatasPartial = true;
         $this->collRDatas->setModel('\Data');
     }
 
@@ -3037,8 +3088,8 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function removeRData(ChildData $rData)
     {
-        if ($this->getRDatas()->contains($rData)) { $rDataTemplate = new ChildRDataTemplate();
-
+        if ($this->getRDatas()->contains($rData)) {
+            $rDataTemplate = new ChildRDataTemplate();
             $rDataTemplate->setRData($rData);
             if ($rData->isRTemplatesLoaded()) {
                 //remove the back reference if available
@@ -3153,6 +3204,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -3162,7 +3216,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -3172,6 +3228,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -3181,7 +3240,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -3191,6 +3252,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -3200,7 +3264,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -3210,6 +3276,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -3219,7 +3288,9 @@ abstract class Templates implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

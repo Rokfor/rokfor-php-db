@@ -20,6 +20,12 @@ use \Users as ChildUsers;
 use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
+use Map\BooksTableMap;
+use Map\ContributionsTableMap;
+use Map\DataTableMap;
+use Map\FormatsTableMap;
+use Map\IssuesTableMap;
+use Map\RRightsForuserTableMap;
 use Map\UsersTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -39,8 +45,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Users implements ActiveRecordInterface
 {
     /**
@@ -77,54 +83,63 @@ abstract class Users implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the username field.
+     *
      * @var        string
      */
     protected $username;
 
     /**
      * The value for the password field.
+     *
      * @var        string
      */
     protected $password;
 
     /**
      * The value for the usergroup field.
+     *
      * @var        string
      */
     protected $usergroup;
 
     /**
      * The value for the email field.
+     *
      * @var        string
      */
     protected $email;
 
     /**
      * The value for the roapikey field.
+     *
      * @var        string
      */
     protected $roapikey;
 
     /**
      * The value for the rwapikey field.
+     *
      * @var        string
      */
     protected $rwapikey;
 
     /**
      * The value for the __ip__ field.
+     *
      * @var        string
      */
     protected $__ip__;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
@@ -439,7 +454,15 @@ abstract class Users implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -909,13 +932,17 @@ abstract class Users implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(UsersTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1778,22 +1805,28 @@ abstract class Users implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RRightsForuser' == $relationName) {
-            return $this->initRRightsForusers();
+            $this->initRRightsForusers();
+            return;
         }
         if ('Books' == $relationName) {
-            return $this->initBookss();
+            $this->initBookss();
+            return;
         }
         if ('Contributions' == $relationName) {
-            return $this->initContributionss();
+            $this->initContributionss();
+            return;
         }
         if ('Data' == $relationName) {
-            return $this->initDatas();
+            $this->initDatas();
+            return;
         }
         if ('Formats' == $relationName) {
-            return $this->initFormatss();
+            $this->initFormatss();
+            return;
         }
         if ('Issues' == $relationName) {
-            return $this->initIssuess();
+            $this->initIssuess();
+            return;
         }
     }
 
@@ -1836,7 +1869,10 @@ abstract class Users implements ActiveRecordInterface
         if (null !== $this->collRRightsForusers && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForusers = new ObjectCollection();
+
+        $collectionClassName = RRightsForuserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForusers = new $collectionClassName;
         $this->collRRightsForusers->setModel('\RRightsForuser');
     }
 
@@ -1984,6 +2020,10 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collRRightsForusers->contains($l)) {
             $this->doAddRRightsForuser($l);
+
+            if ($this->rRightsForusersScheduledForDeletion and $this->rRightsForusersScheduledForDeletion->contains($l)) {
+                $this->rRightsForusersScheduledForDeletion->remove($this->rRightsForusersScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2082,7 +2122,10 @@ abstract class Users implements ActiveRecordInterface
         if (null !== $this->collBookss && !$overrideExisting) {
             return;
         }
-        $this->collBookss = new ObjectCollection();
+
+        $collectionClassName = BooksTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collBookss = new $collectionClassName;
         $this->collBookss->setModel('\Books');
     }
 
@@ -2227,6 +2270,10 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collBookss->contains($l)) {
             $this->doAddBooks($l);
+
+            if ($this->bookssScheduledForDeletion and $this->bookssScheduledForDeletion->contains($l)) {
+                $this->bookssScheduledForDeletion->remove($this->bookssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2300,7 +2347,10 @@ abstract class Users implements ActiveRecordInterface
         if (null !== $this->collContributionss && !$overrideExisting) {
             return;
         }
-        $this->collContributionss = new ObjectCollection();
+
+        $collectionClassName = ContributionsTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collContributionss = new $collectionClassName;
         $this->collContributionss->setModel('\Contributions');
     }
 
@@ -2445,6 +2495,10 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
+
+            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
+                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2593,7 +2647,10 @@ abstract class Users implements ActiveRecordInterface
         if (null !== $this->collDatas && !$overrideExisting) {
             return;
         }
-        $this->collDatas = new ObjectCollection();
+
+        $collectionClassName = DataTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDatas = new $collectionClassName;
         $this->collDatas->setModel('\Data');
     }
 
@@ -2738,6 +2795,10 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collDatas->contains($l)) {
             $this->doAddData($l);
+
+            if ($this->datasScheduledForDeletion and $this->datasScheduledForDeletion->contains($l)) {
+                $this->datasScheduledForDeletion->remove($this->datasScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2861,7 +2922,10 @@ abstract class Users implements ActiveRecordInterface
         if (null !== $this->collFormatss && !$overrideExisting) {
             return;
         }
-        $this->collFormatss = new ObjectCollection();
+
+        $collectionClassName = FormatsTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collFormatss = new $collectionClassName;
         $this->collFormatss->setModel('\Formats');
     }
 
@@ -3006,6 +3070,10 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collFormatss->contains($l)) {
             $this->doAddFormats($l);
+
+            if ($this->formatssScheduledForDeletion and $this->formatssScheduledForDeletion->contains($l)) {
+                $this->formatssScheduledForDeletion->remove($this->formatssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3104,7 +3172,10 @@ abstract class Users implements ActiveRecordInterface
         if (null !== $this->collIssuess && !$overrideExisting) {
             return;
         }
-        $this->collIssuess = new ObjectCollection();
+
+        $collectionClassName = IssuesTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collIssuess = new $collectionClassName;
         $this->collIssuess->setModel('\Issues');
     }
 
@@ -3249,6 +3320,10 @@ abstract class Users implements ActiveRecordInterface
 
         if (!$this->collIssuess->contains($l)) {
             $this->doAddIssues($l);
+
+            if ($this->issuessScheduledForDeletion and $this->issuessScheduledForDeletion->contains($l)) {
+                $this->issuessScheduledForDeletion->remove($this->issuessScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3333,9 +3408,10 @@ abstract class Users implements ActiveRecordInterface
      */
     public function initRightss()
     {
-        $this->collRightss = new ObjectCollection();
-        $this->collRightssPartial = true;
+        $collectionClassName = RRightsForuserTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRightss = new $collectionClassName;
+        $this->collRightssPartial = true;
         $this->collRightss->setModel('\Rights');
     }
 
@@ -3524,8 +3600,8 @@ abstract class Users implements ActiveRecordInterface
      */
     public function removeRights(ChildRights $rights)
     {
-        if ($this->getRightss()->contains($rights)) { $rRightsForuser = new ChildRRightsForuser();
-
+        if ($this->getRightss()->contains($rights)) {
+            $rRightsForuser = new ChildRRightsForuser();
             $rRightsForuser->setRights($rights);
             if ($rights->isUserssLoaded()) {
                 //remove the back reference if available
@@ -3647,6 +3723,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -3656,7 +3735,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -3666,6 +3747,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -3675,7 +3759,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -3685,6 +3771,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -3694,7 +3783,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -3704,6 +3795,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -3713,7 +3807,9 @@ abstract class Users implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

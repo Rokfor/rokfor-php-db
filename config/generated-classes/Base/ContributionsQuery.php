@@ -58,37 +58,89 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildContributionsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildContributionsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildContributionsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildContributionsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildContributionsQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildContributionsQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildContributionsQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildContributionsQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildContributionsQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildContributionsQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildContributionsQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildContributionsQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildContributionsQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
  *
+ * @method     ChildContributionsQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
+ * @method     ChildContributionsQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
+ * @method     ChildContributionsQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
+ *
  * @method     ChildContributionsQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
  * @method     ChildContributionsQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildContributionsQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ *
+ * @method     ChildContributionsQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
+ * @method     ChildContributionsQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
+ * @method     ChildContributionsQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
  *
  * @method     ChildContributionsQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
  * @method     ChildContributionsQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildContributionsQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
  *
+ * @method     ChildContributionsQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildContributionsQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildContributionsQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
+ *
  * @method     ChildContributionsQuery leftJoinContributionscache($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributionscache relation
  * @method     ChildContributionsQuery rightJoinContributionscache($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributionscache relation
  * @method     ChildContributionsQuery innerJoinContributionscache($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributionscache relation
+ *
+ * @method     ChildContributionsQuery joinWithContributionscache($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributionscache relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithContributionscache() Adds a LEFT JOIN clause and with to the query using the Contributionscache relation
+ * @method     ChildContributionsQuery rightJoinWithContributionscache() Adds a RIGHT JOIN clause and with to the query using the Contributionscache relation
+ * @method     ChildContributionsQuery innerJoinWithContributionscache() Adds a INNER JOIN clause and with to the query using the Contributionscache relation
  *
  * @method     ChildContributionsQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildContributionsQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildContributionsQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
  *
+ * @method     ChildContributionsQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
+ * @method     ChildContributionsQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
+ * @method     ChildContributionsQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
+ *
  * @method     ChildContributionsQuery leftJoinRDataContribution($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataContribution relation
  * @method     ChildContributionsQuery rightJoinRDataContribution($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataContribution relation
  * @method     ChildContributionsQuery innerJoinRDataContribution($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataContribution relation
  *
+ * @method     ChildContributionsQuery joinWithRDataContribution($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataContribution relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithRDataContribution() Adds a LEFT JOIN clause and with to the query using the RDataContribution relation
+ * @method     ChildContributionsQuery rightJoinWithRDataContribution() Adds a RIGHT JOIN clause and with to the query using the RDataContribution relation
+ * @method     ChildContributionsQuery innerJoinWithRDataContribution() Adds a INNER JOIN clause and with to the query using the RDataContribution relation
+ *
  * @method     ChildContributionsQuery leftJoinContributionsVersion($relationAlias = null) Adds a LEFT JOIN clause to the query using the ContributionsVersion relation
  * @method     ChildContributionsQuery rightJoinContributionsVersion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ContributionsVersion relation
  * @method     ChildContributionsQuery innerJoinContributionsVersion($relationAlias = null) Adds a INNER JOIN clause to the query using the ContributionsVersion relation
+ *
+ * @method     ChildContributionsQuery joinWithContributionsVersion($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ContributionsVersion relation
+ *
+ * @method     ChildContributionsQuery leftJoinWithContributionsVersion() Adds a LEFT JOIN clause and with to the query using the ContributionsVersion relation
+ * @method     ChildContributionsQuery rightJoinWithContributionsVersion() Adds a RIGHT JOIN clause and with to the query using the ContributionsVersion relation
+ * @method     ChildContributionsQuery innerJoinWithContributionsVersion() Adds a INNER JOIN clause and with to the query using the ContributionsVersion relation
  *
  * @method     \UsersQuery|\FormatsQuery|\IssuesQuery|\TemplatenamesQuery|\ContributionscacheQuery|\DataQuery|\RDataContributionQuery|\ContributionsVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -218,21 +270,27 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = ContributionsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(ContributionsTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = ContributionsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -262,7 +320,7 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
             /** @var ChildContributions $obj */
             $obj = new ChildContributions();
             $obj->hydrate($row);
-            ContributionsTableMap::addInstanceToPool($obj, (string) $key);
+            ContributionsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -471,11 +529,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
@@ -485,9 +542,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -500,11 +554,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByStatus('fooValue');   // WHERE _status = 'fooValue'
-     * $query->filterByStatus('%fooValue%'); // WHERE _status LIKE '%fooValue%'
+     * $query->filterByStatus('%fooValue%', Criteria::LIKE); // WHERE _status LIKE '%fooValue%'
      * </code>
      *
      * @param     string $status The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
@@ -514,9 +567,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($status)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $status)) {
-                $status = str_replace('*', '%', $status);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -654,11 +704,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
@@ -668,9 +717,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -892,11 +938,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
-     * $query->filterByVersionCreatedBy('%fooValue%'); // WHERE version_created_by LIKE '%fooValue%'
+     * $query->filterByVersionCreatedBy('%fooValue%', Criteria::LIKE); // WHERE version_created_by LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionCreatedBy The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
@@ -906,9 +951,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($versionCreatedBy)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionCreatedBy)) {
-                $versionCreatedBy = str_replace('*', '%', $versionCreatedBy);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -921,11 +963,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByVersionComment('fooValue');   // WHERE version_comment = 'fooValue'
-     * $query->filterByVersionComment('%fooValue%'); // WHERE version_comment LIKE '%fooValue%'
+     * $query->filterByVersionComment('%fooValue%', Criteria::LIKE); // WHERE version_comment LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionComment The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsQuery The current query, for fluid interface
@@ -935,9 +976,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($versionComment)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionComment)) {
-                $versionComment = str_replace('*', '%', $versionComment);
-                $comparison = Criteria::LIKE;
             }
         }
 

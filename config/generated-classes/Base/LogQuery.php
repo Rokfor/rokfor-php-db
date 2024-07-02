@@ -43,6 +43,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLogQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildLogQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildLogQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildLogQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildLogQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildLog findOne(ConnectionInterface $con = null) Return the first ChildLog matching the query
  * @method     ChildLog findOneOrCreate(ConnectionInterface $con = null) Return the first ChildLog matching the query, or a new ChildLog object populated from the query conditions when no match is found
  *
@@ -141,21 +145,27 @@ abstract class LogQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = LogTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(LogTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = LogTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -185,7 +195,7 @@ abstract class LogQuery extends ModelCriteria
             /** @var ChildLog $obj */
             $obj = new ChildLog();
             $obj->hydrate($row);
-            LogTableMap::addInstanceToPool($obj, (string) $key);
+            LogTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -308,11 +318,10 @@ abstract class LogQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByIp('fooValue');   // WHERE _ip = 'fooValue'
-     * $query->filterByIp('%fooValue%'); // WHERE _ip LIKE '%fooValue%'
+     * $query->filterByIp('%fooValue%', Criteria::LIKE); // WHERE _ip LIKE '%fooValue%'
      * </code>
      *
      * @param     string $ip The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLogQuery The current query, for fluid interface
@@ -322,9 +331,6 @@ abstract class LogQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($ip)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $ip)) {
-                $ip = str_replace('*', '%', $ip);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -337,11 +343,10 @@ abstract class LogQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByAgent('fooValue');   // WHERE _agent = 'fooValue'
-     * $query->filterByAgent('%fooValue%'); // WHERE _agent LIKE '%fooValue%'
+     * $query->filterByAgent('%fooValue%', Criteria::LIKE); // WHERE _agent LIKE '%fooValue%'
      * </code>
      *
      * @param     string $agent The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLogQuery The current query, for fluid interface
@@ -351,9 +356,6 @@ abstract class LogQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($agent)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $agent)) {
-                $agent = str_replace('*', '%', $agent);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -366,11 +368,10 @@ abstract class LogQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByUser('fooValue');   // WHERE _user = 'fooValue'
-     * $query->filterByUser('%fooValue%'); // WHERE _user LIKE '%fooValue%'
+     * $query->filterByUser('%fooValue%', Criteria::LIKE); // WHERE _user LIKE '%fooValue%'
      * </code>
      *
      * @param     string $user The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLogQuery The current query, for fluid interface
@@ -380,9 +381,6 @@ abstract class LogQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($user)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $user)) {
-                $user = str_replace('*', '%', $user);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -436,11 +434,10 @@ abstract class LogQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLogQuery The current query, for fluid interface
@@ -450,9 +447,6 @@ abstract class LogQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -465,11 +459,10 @@ abstract class LogQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLogQuery The current query, for fluid interface
@@ -479,9 +472,6 @@ abstract class LogQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

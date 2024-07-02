@@ -42,33 +42,79 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFormatsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildFormatsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildFormatsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildFormatsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildFormatsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildFormatsQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildFormatsQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildFormatsQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildFormatsQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildFormatsQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildFormatsQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildFormatsQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildFormatsQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildFormatsQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
+ * @method     ChildFormatsQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
+ * @method     ChildFormatsQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
+ * @method     ChildFormatsQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
+ *
  * @method     ChildFormatsQuery leftJoinRRightsForformat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildFormatsQuery rightJoinRRightsForformat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildFormatsQuery innerJoinRRightsForformat($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForformat relation
+ *
+ * @method     ChildFormatsQuery joinWithRRightsForformat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForformat relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithRRightsForformat() Adds a LEFT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildFormatsQuery rightJoinWithRRightsForformat() Adds a RIGHT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildFormatsQuery innerJoinWithRRightsForformat() Adds a INNER JOIN clause and with to the query using the RRightsForformat relation
  *
  * @method     ChildFormatsQuery leftJoinRTemplatenamesInchapter($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildFormatsQuery rightJoinRTemplatenamesInchapter($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesInchapter relation
  * @method     ChildFormatsQuery innerJoinRTemplatenamesInchapter($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesInchapter relation
  *
+ * @method     ChildFormatsQuery joinWithRTemplatenamesInchapter($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RTemplatenamesInchapter relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithRTemplatenamesInchapter() Adds a LEFT JOIN clause and with to the query using the RTemplatenamesInchapter relation
+ * @method     ChildFormatsQuery rightJoinWithRTemplatenamesInchapter() Adds a RIGHT JOIN clause and with to the query using the RTemplatenamesInchapter relation
+ * @method     ChildFormatsQuery innerJoinWithRTemplatenamesInchapter() Adds a INNER JOIN clause and with to the query using the RTemplatenamesInchapter relation
+ *
  * @method     ChildFormatsQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildFormatsQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildFormatsQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
+ *
+ * @method     ChildFormatsQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildFormatsQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildFormatsQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     ChildFormatsQuery leftJoinRDataFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataFormat relation
  * @method     ChildFormatsQuery rightJoinRDataFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataFormat relation
  * @method     ChildFormatsQuery innerJoinRDataFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataFormat relation
  *
+ * @method     ChildFormatsQuery joinWithRDataFormat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataFormat relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithRDataFormat() Adds a LEFT JOIN clause and with to the query using the RDataFormat relation
+ * @method     ChildFormatsQuery rightJoinWithRDataFormat() Adds a RIGHT JOIN clause and with to the query using the RDataFormat relation
+ * @method     ChildFormatsQuery innerJoinWithRDataFormat() Adds a INNER JOIN clause and with to the query using the RDataFormat relation
+ *
  * @method     ChildFormatsQuery leftJoinRPluginFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginFormat relation
  * @method     ChildFormatsQuery rightJoinRPluginFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginFormat relation
  * @method     ChildFormatsQuery innerJoinRPluginFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginFormat relation
+ *
+ * @method     ChildFormatsQuery joinWithRPluginFormat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginFormat relation
+ *
+ * @method     ChildFormatsQuery leftJoinWithRPluginFormat() Adds a LEFT JOIN clause and with to the query using the RPluginFormat relation
+ * @method     ChildFormatsQuery rightJoinWithRPluginFormat() Adds a RIGHT JOIN clause and with to the query using the RPluginFormat relation
+ * @method     ChildFormatsQuery innerJoinWithRPluginFormat() Adds a INNER JOIN clause and with to the query using the RPluginFormat relation
  *
  * @method     \UsersQuery|\BooksQuery|\RRightsForformatQuery|\RTemplatenamesInchapterQuery|\ContributionsQuery|\RDataFormatQuery|\RPluginFormatQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -167,21 +213,27 @@ abstract class FormatsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = FormatsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(FormatsTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = FormatsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -211,7 +263,7 @@ abstract class FormatsQuery extends ModelCriteria
             /** @var ChildFormats $obj */
             $obj = new ChildFormats();
             $obj->hydrate($row);
-            FormatsTableMap::addInstanceToPool($obj, (string) $key);
+            FormatsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -334,11 +386,10 @@ abstract class FormatsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormatsQuery The current query, for fluid interface
@@ -348,9 +399,6 @@ abstract class FormatsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -449,11 +497,10 @@ abstract class FormatsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormatsQuery The current query, for fluid interface
@@ -463,9 +510,6 @@ abstract class FormatsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -478,11 +522,10 @@ abstract class FormatsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFormatsQuery The current query, for fluid interface
@@ -492,9 +535,6 @@ abstract class FormatsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

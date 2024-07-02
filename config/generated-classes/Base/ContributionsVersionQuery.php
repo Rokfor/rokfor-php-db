@@ -62,9 +62,19 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionsVersionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildContributionsVersionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildContributionsVersionQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildContributionsVersionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildContributionsVersionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildContributionsVersionQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildContributionsVersionQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildContributionsVersionQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
+ *
+ * @method     ChildContributionsVersionQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildContributionsVersionQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildContributionsVersionQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildContributionsVersionQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     \ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -193,21 +203,27 @@ abstract class ContributionsVersionQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = ContributionsVersionTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(ContributionsVersionTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = ContributionsVersionTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -238,7 +254,7 @@ abstract class ContributionsVersionQuery extends ModelCriteria
             /** @var ChildContributionsVersion $obj */
             $obj = new ChildContributionsVersion();
             $obj->hydrate($row);
-            ContributionsVersionTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            ContributionsVersionTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -456,11 +472,10 @@ abstract class ContributionsVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsVersionQuery The current query, for fluid interface
@@ -470,9 +485,6 @@ abstract class ContributionsVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -485,11 +497,10 @@ abstract class ContributionsVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByStatus('fooValue');   // WHERE _status = 'fooValue'
-     * $query->filterByStatus('%fooValue%'); // WHERE _status LIKE '%fooValue%'
+     * $query->filterByStatus('%fooValue%', Criteria::LIKE); // WHERE _status LIKE '%fooValue%'
      * </code>
      *
      * @param     string $status The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsVersionQuery The current query, for fluid interface
@@ -499,9 +510,6 @@ abstract class ContributionsVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($status)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $status)) {
-                $status = str_replace('*', '%', $status);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -637,11 +645,10 @@ abstract class ContributionsVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsVersionQuery The current query, for fluid interface
@@ -651,9 +658,6 @@ abstract class ContributionsVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -873,11 +877,10 @@ abstract class ContributionsVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
-     * $query->filterByVersionCreatedBy('%fooValue%'); // WHERE version_created_by LIKE '%fooValue%'
+     * $query->filterByVersionCreatedBy('%fooValue%', Criteria::LIKE); // WHERE version_created_by LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionCreatedBy The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsVersionQuery The current query, for fluid interface
@@ -887,9 +890,6 @@ abstract class ContributionsVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($versionCreatedBy)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionCreatedBy)) {
-                $versionCreatedBy = str_replace('*', '%', $versionCreatedBy);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -902,11 +902,10 @@ abstract class ContributionsVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByVersionComment('fooValue');   // WHERE version_comment = 'fooValue'
-     * $query->filterByVersionComment('%fooValue%'); // WHERE version_comment LIKE '%fooValue%'
+     * $query->filterByVersionComment('%fooValue%', Criteria::LIKE); // WHERE version_comment LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionComment The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionsVersionQuery The current query, for fluid interface
@@ -916,9 +915,6 @@ abstract class ContributionsVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($versionComment)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionComment)) {
-                $versionComment = str_replace('*', '%', $versionComment);
-                $comparison = Criteria::LIKE;
             }
         }
 

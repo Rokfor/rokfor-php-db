@@ -232,6 +232,12 @@
     <column name="_signature" phpName="Signature" type="VARCHAR" required="true"/>
     <column name="_forcontribution" phpName="Forcontribution" type="INTEGER" size="4"/>
     <column name="_cache" phpName="Cache" type="CLOB"/>
+    <column name="_book" phpName="Book" type="VARCHAR"/>
+    <column name="_issue" phpName="Issue" type="VARCHAR"/>
+    <column name="_chapter" phpName="Chapter" type="VARCHAR"/>
+    <column name="_template" phpName="Template" type="VARCHAR"/>
+    <column name="_contribution" phpName="Contribution" type="VARCHAR"/>
+    <column name="_touched" phpName="Touched" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP"/>
     <foreign-key foreignTable="_contributions" name="c_contribution_fk" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="_forcontribution" foreign="id"/>
     </foreign-key>
@@ -240,6 +246,21 @@
     </index>
     <index name="_signature_index">
       <index-column name="_signature"/>
+    </index>
+    <index name="_book_index">
+      <index-column name="_book"/>
+    </index>
+    <index name="_issue_index">
+      <index-column name="_issue"/>
+    </index>
+    <index name="_chapter_index">
+      <index-column name="_chapter"/>
+    </index>
+    <index name="_template_index">
+      <index-column name="_template"/>
+    </index>
+    <index name="_contribution_index">
+      <index-column name="_contribution"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>

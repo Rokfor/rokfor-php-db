@@ -5,6 +5,7 @@ namespace Base;
 use \Contributions as ChildContributions;
 use \ContributionsQuery as ChildContributionsQuery;
 use \ContributionscacheQuery as ChildContributionscacheQuery;
+use \DateTime;
 use \Exception;
 use \PDO;
 use Map\ContributionscacheTableMap;
@@ -19,14 +20,15 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the '_contributions_cache' table.
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Contributionscache implements ActiveRecordInterface
 {
     /**
@@ -63,27 +65,74 @@ abstract class Contributionscache implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _signature field.
+     *
      * @var        string
      */
     protected $_signature;
 
     /**
      * The value for the _forcontribution field.
+     *
      * @var        int
      */
     protected $_forcontribution;
 
     /**
      * The value for the _cache field.
+     *
      * @var        string
      */
     protected $_cache;
+
+    /**
+     * The value for the _book field.
+     *
+     * @var        string
+     */
+    protected $_book;
+
+    /**
+     * The value for the _issue field.
+     *
+     * @var        string
+     */
+    protected $_issue;
+
+    /**
+     * The value for the _chapter field.
+     *
+     * @var        string
+     */
+    protected $_chapter;
+
+    /**
+     * The value for the _template field.
+     *
+     * @var        string
+     */
+    protected $_template;
+
+    /**
+     * The value for the _contribution field.
+     *
+     * @var        string
+     */
+    protected $_contribution;
+
+    /**
+     * The value for the _touched field.
+     *
+     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * @var        DateTime
+     */
+    protected $_touched;
 
     /**
      * @var        ChildContributions
@@ -99,10 +148,22 @@ abstract class Contributionscache implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+    }
+
+    /**
      * Initializes internal state of Base\Contributionscache object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -312,7 +373,15 @@ abstract class Contributionscache implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -353,6 +422,76 @@ abstract class Contributionscache implements ActiveRecordInterface
     public function getCache()
     {
         return $this->_cache;
+    }
+
+    /**
+     * Get the [_book] column value.
+     *
+     * @return string
+     */
+    public function getBook()
+    {
+        return $this->_book;
+    }
+
+    /**
+     * Get the [_issue] column value.
+     *
+     * @return string
+     */
+    public function getIssue()
+    {
+        return $this->_issue;
+    }
+
+    /**
+     * Get the [_chapter] column value.
+     *
+     * @return string
+     */
+    public function getChapter()
+    {
+        return $this->_chapter;
+    }
+
+    /**
+     * Get the [_template] column value.
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->_template;
+    }
+
+    /**
+     * Get the [_contribution] column value.
+     *
+     * @return string
+     */
+    public function getContribution()
+    {
+        return $this->_contribution;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [_touched] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getTouched($format = NULL)
+    {
+        if ($format === null) {
+            return $this->_touched;
+        } else {
+            return $this->_touched instanceof \DateTimeInterface ? $this->_touched->format($format) : null;
+        }
     }
 
     /**
@@ -440,6 +579,126 @@ abstract class Contributionscache implements ActiveRecordInterface
     } // setCache()
 
     /**
+     * Set the value of [_book] column.
+     *
+     * @param string $v new value
+     * @return $this|\Contributionscache The current object (for fluent API support)
+     */
+    public function setBook($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->_book !== $v) {
+            $this->_book = $v;
+            $this->modifiedColumns[ContributionscacheTableMap::COL__BOOK] = true;
+        }
+
+        return $this;
+    } // setBook()
+
+    /**
+     * Set the value of [_issue] column.
+     *
+     * @param string $v new value
+     * @return $this|\Contributionscache The current object (for fluent API support)
+     */
+    public function setIssue($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->_issue !== $v) {
+            $this->_issue = $v;
+            $this->modifiedColumns[ContributionscacheTableMap::COL__ISSUE] = true;
+        }
+
+        return $this;
+    } // setIssue()
+
+    /**
+     * Set the value of [_chapter] column.
+     *
+     * @param string $v new value
+     * @return $this|\Contributionscache The current object (for fluent API support)
+     */
+    public function setChapter($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->_chapter !== $v) {
+            $this->_chapter = $v;
+            $this->modifiedColumns[ContributionscacheTableMap::COL__CHAPTER] = true;
+        }
+
+        return $this;
+    } // setChapter()
+
+    /**
+     * Set the value of [_template] column.
+     *
+     * @param string $v new value
+     * @return $this|\Contributionscache The current object (for fluent API support)
+     */
+    public function setTemplate($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->_template !== $v) {
+            $this->_template = $v;
+            $this->modifiedColumns[ContributionscacheTableMap::COL__TEMPLATE] = true;
+        }
+
+        return $this;
+    } // setTemplate()
+
+    /**
+     * Set the value of [_contribution] column.
+     *
+     * @param string $v new value
+     * @return $this|\Contributionscache The current object (for fluent API support)
+     */
+    public function setContribution($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->_contribution !== $v) {
+            $this->_contribution = $v;
+            $this->modifiedColumns[ContributionscacheTableMap::COL__CONTRIBUTION] = true;
+        }
+
+        return $this;
+    } // setContribution()
+
+    /**
+     * Sets the value of [_touched] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Contributionscache The current object (for fluent API support)
+     */
+    public function setTouched($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->_touched !== null || $dt !== null) {
+            if ($this->_touched === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->_touched->format("Y-m-d H:i:s.u")) {
+                $this->_touched = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[ContributionscacheTableMap::COL__TOUCHED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setTouched()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -486,6 +745,27 @@ abstract class Contributionscache implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ContributionscacheTableMap::translateFieldName('Cache', TableMap::TYPE_PHPNAME, $indexType)];
             $this->_cache = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ContributionscacheTableMap::translateFieldName('Book', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_book = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ContributionscacheTableMap::translateFieldName('Issue', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_issue = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ContributionscacheTableMap::translateFieldName('Chapter', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_chapter = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ContributionscacheTableMap::translateFieldName('Template', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_template = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : ContributionscacheTableMap::translateFieldName('Contribution', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->_contribution = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : ContributionscacheTableMap::translateFieldName('Touched', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->_touched = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -494,7 +774,7 @@ abstract class Contributionscache implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = ContributionscacheTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = ContributionscacheTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Contributionscache'), 0, $e);
@@ -614,13 +894,17 @@ abstract class Contributionscache implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(ContributionscacheTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -723,6 +1007,24 @@ abstract class Contributionscache implements ActiveRecordInterface
         if ($this->isColumnModified(ContributionscacheTableMap::COL__CACHE)) {
             $modifiedColumns[':p' . $index++]  = '_cache';
         }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__BOOK)) {
+            $modifiedColumns[':p' . $index++]  = '_book';
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__ISSUE)) {
+            $modifiedColumns[':p' . $index++]  = '_issue';
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__CHAPTER)) {
+            $modifiedColumns[':p' . $index++]  = '_chapter';
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__TEMPLATE)) {
+            $modifiedColumns[':p' . $index++]  = '_template';
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__CONTRIBUTION)) {
+            $modifiedColumns[':p' . $index++]  = '_contribution';
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__TOUCHED)) {
+            $modifiedColumns[':p' . $index++]  = '_touched';
+        }
 
         $sql = sprintf(
             'INSERT INTO _contributions_cache (%s) VALUES (%s)',
@@ -745,6 +1047,24 @@ abstract class Contributionscache implements ActiveRecordInterface
                         break;
                     case '_cache':
                         $stmt->bindValue($identifier, $this->_cache, PDO::PARAM_STR);
+                        break;
+                    case '_book':
+                        $stmt->bindValue($identifier, $this->_book, PDO::PARAM_STR);
+                        break;
+                    case '_issue':
+                        $stmt->bindValue($identifier, $this->_issue, PDO::PARAM_STR);
+                        break;
+                    case '_chapter':
+                        $stmt->bindValue($identifier, $this->_chapter, PDO::PARAM_STR);
+                        break;
+                    case '_template':
+                        $stmt->bindValue($identifier, $this->_template, PDO::PARAM_STR);
+                        break;
+                    case '_contribution':
+                        $stmt->bindValue($identifier, $this->_contribution, PDO::PARAM_STR);
+                        break;
+                    case '_touched':
+                        $stmt->bindValue($identifier, $this->_touched ? $this->_touched->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -820,6 +1140,24 @@ abstract class Contributionscache implements ActiveRecordInterface
             case 3:
                 return $this->getCache();
                 break;
+            case 4:
+                return $this->getBook();
+                break;
+            case 5:
+                return $this->getIssue();
+                break;
+            case 6:
+                return $this->getChapter();
+                break;
+            case 7:
+                return $this->getTemplate();
+                break;
+            case 8:
+                return $this->getContribution();
+                break;
+            case 9:
+                return $this->getTouched();
+                break;
             default:
                 return null;
                 break;
@@ -854,7 +1192,17 @@ abstract class Contributionscache implements ActiveRecordInterface
             $keys[1] => $this->getSignature(),
             $keys[2] => $this->getForcontribution(),
             $keys[3] => $this->getCache(),
+            $keys[4] => $this->getBook(),
+            $keys[5] => $this->getIssue(),
+            $keys[6] => $this->getChapter(),
+            $keys[7] => $this->getTemplate(),
+            $keys[8] => $this->getContribution(),
+            $keys[9] => $this->getTouched(),
         );
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -922,6 +1270,24 @@ abstract class Contributionscache implements ActiveRecordInterface
             case 3:
                 $this->setCache($value);
                 break;
+            case 4:
+                $this->setBook($value);
+                break;
+            case 5:
+                $this->setIssue($value);
+                break;
+            case 6:
+                $this->setChapter($value);
+                break;
+            case 7:
+                $this->setTemplate($value);
+                break;
+            case 8:
+                $this->setContribution($value);
+                break;
+            case 9:
+                $this->setTouched($value);
+                break;
         } // switch()
 
         return $this;
@@ -959,6 +1325,24 @@ abstract class Contributionscache implements ActiveRecordInterface
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setCache($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setBook($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setIssue($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setChapter($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setTemplate($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setContribution($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setTouched($arr[$keys[9]]);
         }
     }
 
@@ -1012,6 +1396,24 @@ abstract class Contributionscache implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ContributionscacheTableMap::COL__CACHE)) {
             $criteria->add(ContributionscacheTableMap::COL__CACHE, $this->_cache);
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__BOOK)) {
+            $criteria->add(ContributionscacheTableMap::COL__BOOK, $this->_book);
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__ISSUE)) {
+            $criteria->add(ContributionscacheTableMap::COL__ISSUE, $this->_issue);
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__CHAPTER)) {
+            $criteria->add(ContributionscacheTableMap::COL__CHAPTER, $this->_chapter);
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__TEMPLATE)) {
+            $criteria->add(ContributionscacheTableMap::COL__TEMPLATE, $this->_template);
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__CONTRIBUTION)) {
+            $criteria->add(ContributionscacheTableMap::COL__CONTRIBUTION, $this->_contribution);
+        }
+        if ($this->isColumnModified(ContributionscacheTableMap::COL__TOUCHED)) {
+            $criteria->add(ContributionscacheTableMap::COL__TOUCHED, $this->_touched);
         }
 
         return $criteria;
@@ -1102,6 +1504,12 @@ abstract class Contributionscache implements ActiveRecordInterface
         $copyObj->setSignature($this->getSignature());
         $copyObj->setForcontribution($this->getForcontribution());
         $copyObj->setCache($this->getCache());
+        $copyObj->setBook($this->getBook());
+        $copyObj->setIssue($this->getIssue());
+        $copyObj->setChapter($this->getChapter());
+        $copyObj->setTemplate($this->getTemplate());
+        $copyObj->setContribution($this->getContribution());
+        $copyObj->setTouched($this->getTouched());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1167,7 +1575,7 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function getContributions(ConnectionInterface $con = null)
     {
-        if ($this->aContributions === null && ($this->_forcontribution !== null)) {
+        if ($this->aContributions === null && ($this->_forcontribution != 0)) {
             $this->aContributions = ChildContributionsQuery::create()->findPk($this->_forcontribution, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1195,8 +1603,15 @@ abstract class Contributionscache implements ActiveRecordInterface
         $this->_signature = null;
         $this->_forcontribution = null;
         $this->_cache = null;
+        $this->_book = null;
+        $this->_issue = null;
+        $this->_chapter = null;
+        $this->_template = null;
+        $this->_contribution = null;
+        $this->_touched = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1235,6 +1650,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -1244,7 +1662,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -1254,6 +1674,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -1263,7 +1686,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -1273,6 +1698,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -1282,7 +1710,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -1292,6 +1722,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -1301,7 +1734,9 @@ abstract class Contributionscache implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRDataBookQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRDataBookQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRDataBookQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRDataBookQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRDataBookQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRDataBookQuery leftJoinRData($relationAlias = null) Adds a LEFT JOIN clause to the query using the RData relation
  * @method     ChildRDataBookQuery rightJoinRData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RData relation
  * @method     ChildRDataBookQuery innerJoinRData($relationAlias = null) Adds a INNER JOIN clause to the query using the RData relation
  *
+ * @method     ChildRDataBookQuery joinWithRData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RData relation
+ *
+ * @method     ChildRDataBookQuery leftJoinWithRData() Adds a LEFT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataBookQuery rightJoinWithRData() Adds a RIGHT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataBookQuery innerJoinWithRData() Adds a INNER JOIN clause and with to the query using the RData relation
+ *
  * @method     ChildRDataBookQuery leftJoinRBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RBook relation
  * @method     ChildRDataBookQuery rightJoinRBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RBook relation
  * @method     ChildRDataBookQuery innerJoinRBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RBook relation
+ *
+ * @method     ChildRDataBookQuery joinWithRBook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RBook relation
+ *
+ * @method     ChildRDataBookQuery leftJoinWithRBook() Adds a LEFT JOIN clause and with to the query using the RBook relation
+ * @method     ChildRDataBookQuery rightJoinWithRBook() Adds a RIGHT JOIN clause and with to the query using the RBook relation
+ * @method     ChildRDataBookQuery innerJoinWithRBook() Adds a INNER JOIN clause and with to the query using the RBook relation
  *
  * @method     \DataQuery|\BooksQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RDataBookQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RDataBookTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RDataBookTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RDataBookTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RDataBookQuery extends ModelCriteria
             /** @var ChildRDataBook $obj */
             $obj = new ChildRDataBook();
             $obj->hydrate($row);
-            RDataBookTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RDataBookTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

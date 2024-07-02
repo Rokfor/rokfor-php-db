@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRDataContributionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRDataContributionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRDataContributionQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRDataContributionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRDataContributionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRDataContributionQuery leftJoinRData($relationAlias = null) Adds a LEFT JOIN clause to the query using the RData relation
  * @method     ChildRDataContributionQuery rightJoinRData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RData relation
  * @method     ChildRDataContributionQuery innerJoinRData($relationAlias = null) Adds a INNER JOIN clause to the query using the RData relation
  *
+ * @method     ChildRDataContributionQuery joinWithRData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RData relation
+ *
+ * @method     ChildRDataContributionQuery leftJoinWithRData() Adds a LEFT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataContributionQuery rightJoinWithRData() Adds a RIGHT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataContributionQuery innerJoinWithRData() Adds a INNER JOIN clause and with to the query using the RData relation
+ *
  * @method     ChildRDataContributionQuery leftJoinRContribution($relationAlias = null) Adds a LEFT JOIN clause to the query using the RContribution relation
  * @method     ChildRDataContributionQuery rightJoinRContribution($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RContribution relation
  * @method     ChildRDataContributionQuery innerJoinRContribution($relationAlias = null) Adds a INNER JOIN clause to the query using the RContribution relation
+ *
+ * @method     ChildRDataContributionQuery joinWithRContribution($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RContribution relation
+ *
+ * @method     ChildRDataContributionQuery leftJoinWithRContribution() Adds a LEFT JOIN clause and with to the query using the RContribution relation
+ * @method     ChildRDataContributionQuery rightJoinWithRContribution() Adds a RIGHT JOIN clause and with to the query using the RContribution relation
+ * @method     ChildRDataContributionQuery innerJoinWithRContribution() Adds a INNER JOIN clause and with to the query using the RContribution relation
  *
  * @method     \DataQuery|\ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RDataContributionQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RDataContributionTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RDataContributionTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RDataContributionTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RDataContributionQuery extends ModelCriteria
             /** @var ChildRDataContribution $obj */
             $obj = new ChildRDataContribution();
             $obj->hydrate($row);
-            RDataContributionTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RDataContributionTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

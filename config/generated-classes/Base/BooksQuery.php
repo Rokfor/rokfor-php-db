@@ -40,37 +40,89 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBooksQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildBooksQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildBooksQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildBooksQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildBooksQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildBooksQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildBooksQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildBooksQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildBooksQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildBooksQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildBooksQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildBooksQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildBooksQuery leftJoinRBatchForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RBatchForbook relation
  * @method     ChildBooksQuery rightJoinRBatchForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RBatchForbook relation
  * @method     ChildBooksQuery innerJoinRBatchForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RBatchForbook relation
  *
+ * @method     ChildBooksQuery joinWithRBatchForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RBatchForbook relation
+ *
+ * @method     ChildBooksQuery leftJoinWithRBatchForbook() Adds a LEFT JOIN clause and with to the query using the RBatchForbook relation
+ * @method     ChildBooksQuery rightJoinWithRBatchForbook() Adds a RIGHT JOIN clause and with to the query using the RBatchForbook relation
+ * @method     ChildBooksQuery innerJoinWithRBatchForbook() Adds a INNER JOIN clause and with to the query using the RBatchForbook relation
+ *
  * @method     ChildBooksQuery leftJoinRRightsForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForbook relation
  * @method     ChildBooksQuery rightJoinRRightsForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForbook relation
  * @method     ChildBooksQuery innerJoinRRightsForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForbook relation
+ *
+ * @method     ChildBooksQuery joinWithRRightsForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForbook relation
+ *
+ * @method     ChildBooksQuery leftJoinWithRRightsForbook() Adds a LEFT JOIN clause and with to the query using the RRightsForbook relation
+ * @method     ChildBooksQuery rightJoinWithRRightsForbook() Adds a RIGHT JOIN clause and with to the query using the RRightsForbook relation
+ * @method     ChildBooksQuery innerJoinWithRRightsForbook() Adds a INNER JOIN clause and with to the query using the RRightsForbook relation
  *
  * @method     ChildBooksQuery leftJoinRTemplatenamesForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplatenamesForbook relation
  * @method     ChildBooksQuery rightJoinRTemplatenamesForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplatenamesForbook relation
  * @method     ChildBooksQuery innerJoinRTemplatenamesForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplatenamesForbook relation
  *
+ * @method     ChildBooksQuery joinWithRTemplatenamesForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RTemplatenamesForbook relation
+ *
+ * @method     ChildBooksQuery leftJoinWithRTemplatenamesForbook() Adds a LEFT JOIN clause and with to the query using the RTemplatenamesForbook relation
+ * @method     ChildBooksQuery rightJoinWithRTemplatenamesForbook() Adds a RIGHT JOIN clause and with to the query using the RTemplatenamesForbook relation
+ * @method     ChildBooksQuery innerJoinWithRTemplatenamesForbook() Adds a INNER JOIN clause and with to the query using the RTemplatenamesForbook relation
+ *
  * @method     ChildBooksQuery leftJoinRDataBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataBook relation
  * @method     ChildBooksQuery rightJoinRDataBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataBook relation
  * @method     ChildBooksQuery innerJoinRDataBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataBook relation
+ *
+ * @method     ChildBooksQuery joinWithRDataBook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataBook relation
+ *
+ * @method     ChildBooksQuery leftJoinWithRDataBook() Adds a LEFT JOIN clause and with to the query using the RDataBook relation
+ * @method     ChildBooksQuery rightJoinWithRDataBook() Adds a RIGHT JOIN clause and with to the query using the RDataBook relation
+ * @method     ChildBooksQuery innerJoinWithRDataBook() Adds a INNER JOIN clause and with to the query using the RDataBook relation
  *
  * @method     ChildBooksQuery leftJoinRPluginBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginBook relation
  * @method     ChildBooksQuery rightJoinRPluginBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginBook relation
  * @method     ChildBooksQuery innerJoinRPluginBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginBook relation
  *
+ * @method     ChildBooksQuery joinWithRPluginBook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginBook relation
+ *
+ * @method     ChildBooksQuery leftJoinWithRPluginBook() Adds a LEFT JOIN clause and with to the query using the RPluginBook relation
+ * @method     ChildBooksQuery rightJoinWithRPluginBook() Adds a RIGHT JOIN clause and with to the query using the RPluginBook relation
+ * @method     ChildBooksQuery innerJoinWithRPluginBook() Adds a INNER JOIN clause and with to the query using the RPluginBook relation
+ *
  * @method     ChildBooksQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildBooksQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildBooksQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
  *
+ * @method     ChildBooksQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
+ *
+ * @method     ChildBooksQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
+ * @method     ChildBooksQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
+ * @method     ChildBooksQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
+ *
  * @method     ChildBooksQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
  * @method     ChildBooksQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildBooksQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ *
+ * @method     ChildBooksQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ *
+ * @method     ChildBooksQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
+ * @method     ChildBooksQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
+ * @method     ChildBooksQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
  *
  * @method     \UsersQuery|\RBatchForbookQuery|\RRightsForbookQuery|\RTemplatenamesForbookQuery|\RDataBookQuery|\RPluginBookQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -166,21 +218,27 @@ abstract class BooksQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = BooksTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(BooksTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = BooksTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -210,7 +268,7 @@ abstract class BooksQuery extends ModelCriteria
             /** @var ChildBooks $obj */
             $obj = new ChildBooks();
             $obj->hydrate($row);
-            BooksTableMap::addInstanceToPool($obj, (string) $key);
+            BooksTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -333,11 +391,10 @@ abstract class BooksQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBooksQuery The current query, for fluid interface
@@ -347,9 +404,6 @@ abstract class BooksQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -405,11 +459,10 @@ abstract class BooksQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBooksQuery The current query, for fluid interface
@@ -419,9 +472,6 @@ abstract class BooksQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -434,11 +484,10 @@ abstract class BooksQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBooksQuery The current query, for fluid interface
@@ -448,9 +497,6 @@ abstract class BooksQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

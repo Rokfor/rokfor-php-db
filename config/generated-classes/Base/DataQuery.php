@@ -54,49 +54,119 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildDataQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildDataQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildDataQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildDataQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildDataQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildDataQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildDataQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildDataQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildDataQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildDataQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildDataQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildDataQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildDataQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildDataQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
  *
+ * @method     ChildDataQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildDataQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildDataQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildDataQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
+ *
  * @method     ChildDataQuery leftJoinTemplates($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templates relation
  * @method     ChildDataQuery rightJoinTemplates($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templates relation
  * @method     ChildDataQuery innerJoinTemplates($relationAlias = null) Adds a INNER JOIN clause to the query using the Templates relation
+ *
+ * @method     ChildDataQuery joinWithTemplates($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templates relation
+ *
+ * @method     ChildDataQuery leftJoinWithTemplates() Adds a LEFT JOIN clause and with to the query using the Templates relation
+ * @method     ChildDataQuery rightJoinWithTemplates() Adds a RIGHT JOIN clause and with to the query using the Templates relation
+ * @method     ChildDataQuery innerJoinWithTemplates() Adds a INNER JOIN clause and with to the query using the Templates relation
  *
  * @method     ChildDataQuery leftJoinRDataDataRelatedBySource($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataDataRelatedBySource relation
  * @method     ChildDataQuery rightJoinRDataDataRelatedBySource($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataDataRelatedBySource relation
  * @method     ChildDataQuery innerJoinRDataDataRelatedBySource($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataDataRelatedBySource relation
  *
+ * @method     ChildDataQuery joinWithRDataDataRelatedBySource($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataDataRelatedBySource relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataDataRelatedBySource() Adds a LEFT JOIN clause and with to the query using the RDataDataRelatedBySource relation
+ * @method     ChildDataQuery rightJoinWithRDataDataRelatedBySource() Adds a RIGHT JOIN clause and with to the query using the RDataDataRelatedBySource relation
+ * @method     ChildDataQuery innerJoinWithRDataDataRelatedBySource() Adds a INNER JOIN clause and with to the query using the RDataDataRelatedBySource relation
+ *
  * @method     ChildDataQuery leftJoinRDataDataRelatedByTarget($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataDataRelatedByTarget relation
  * @method     ChildDataQuery rightJoinRDataDataRelatedByTarget($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataDataRelatedByTarget relation
  * @method     ChildDataQuery innerJoinRDataDataRelatedByTarget($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataDataRelatedByTarget relation
+ *
+ * @method     ChildDataQuery joinWithRDataDataRelatedByTarget($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataDataRelatedByTarget relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataDataRelatedByTarget() Adds a LEFT JOIN clause and with to the query using the RDataDataRelatedByTarget relation
+ * @method     ChildDataQuery rightJoinWithRDataDataRelatedByTarget() Adds a RIGHT JOIN clause and with to the query using the RDataDataRelatedByTarget relation
+ * @method     ChildDataQuery innerJoinWithRDataDataRelatedByTarget() Adds a INNER JOIN clause and with to the query using the RDataDataRelatedByTarget relation
  *
  * @method     ChildDataQuery leftJoinRDataContribution($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataContribution relation
  * @method     ChildDataQuery rightJoinRDataContribution($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataContribution relation
  * @method     ChildDataQuery innerJoinRDataContribution($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataContribution relation
  *
+ * @method     ChildDataQuery joinWithRDataContribution($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataContribution relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataContribution() Adds a LEFT JOIN clause and with to the query using the RDataContribution relation
+ * @method     ChildDataQuery rightJoinWithRDataContribution() Adds a RIGHT JOIN clause and with to the query using the RDataContribution relation
+ * @method     ChildDataQuery innerJoinWithRDataContribution() Adds a INNER JOIN clause and with to the query using the RDataContribution relation
+ *
  * @method     ChildDataQuery leftJoinRDataBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataBook relation
  * @method     ChildDataQuery rightJoinRDataBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataBook relation
  * @method     ChildDataQuery innerJoinRDataBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataBook relation
+ *
+ * @method     ChildDataQuery joinWithRDataBook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataBook relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataBook() Adds a LEFT JOIN clause and with to the query using the RDataBook relation
+ * @method     ChildDataQuery rightJoinWithRDataBook() Adds a RIGHT JOIN clause and with to the query using the RDataBook relation
+ * @method     ChildDataQuery innerJoinWithRDataBook() Adds a INNER JOIN clause and with to the query using the RDataBook relation
  *
  * @method     ChildDataQuery leftJoinRDataFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataFormat relation
  * @method     ChildDataQuery rightJoinRDataFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataFormat relation
  * @method     ChildDataQuery innerJoinRDataFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataFormat relation
  *
+ * @method     ChildDataQuery joinWithRDataFormat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataFormat relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataFormat() Adds a LEFT JOIN clause and with to the query using the RDataFormat relation
+ * @method     ChildDataQuery rightJoinWithRDataFormat() Adds a RIGHT JOIN clause and with to the query using the RDataFormat relation
+ * @method     ChildDataQuery innerJoinWithRDataFormat() Adds a INNER JOIN clause and with to the query using the RDataFormat relation
+ *
  * @method     ChildDataQuery leftJoinRDataIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataIssue relation
  * @method     ChildDataQuery rightJoinRDataIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataIssue relation
  * @method     ChildDataQuery innerJoinRDataIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataIssue relation
+ *
+ * @method     ChildDataQuery joinWithRDataIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataIssue relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataIssue() Adds a LEFT JOIN clause and with to the query using the RDataIssue relation
+ * @method     ChildDataQuery rightJoinWithRDataIssue() Adds a RIGHT JOIN clause and with to the query using the RDataIssue relation
+ * @method     ChildDataQuery innerJoinWithRDataIssue() Adds a INNER JOIN clause and with to the query using the RDataIssue relation
  *
  * @method     ChildDataQuery leftJoinRDataTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataTemplate relation
  * @method     ChildDataQuery rightJoinRDataTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataTemplate relation
  * @method     ChildDataQuery innerJoinRDataTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataTemplate relation
  *
+ * @method     ChildDataQuery joinWithRDataTemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataTemplate relation
+ *
+ * @method     ChildDataQuery leftJoinWithRDataTemplate() Adds a LEFT JOIN clause and with to the query using the RDataTemplate relation
+ * @method     ChildDataQuery rightJoinWithRDataTemplate() Adds a RIGHT JOIN clause and with to the query using the RDataTemplate relation
+ * @method     ChildDataQuery innerJoinWithRDataTemplate() Adds a INNER JOIN clause and with to the query using the RDataTemplate relation
+ *
  * @method     ChildDataQuery leftJoinDataVersion($relationAlias = null) Adds a LEFT JOIN clause to the query using the DataVersion relation
  * @method     ChildDataQuery rightJoinDataVersion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the DataVersion relation
  * @method     ChildDataQuery innerJoinDataVersion($relationAlias = null) Adds a INNER JOIN clause to the query using the DataVersion relation
+ *
+ * @method     ChildDataQuery joinWithDataVersion($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the DataVersion relation
+ *
+ * @method     ChildDataQuery leftJoinWithDataVersion() Adds a LEFT JOIN clause and with to the query using the DataVersion relation
+ * @method     ChildDataQuery rightJoinWithDataVersion() Adds a RIGHT JOIN clause and with to the query using the DataVersion relation
+ * @method     ChildDataQuery innerJoinWithDataVersion() Adds a INNER JOIN clause and with to the query using the DataVersion relation
  *
  * @method     \UsersQuery|\ContributionsQuery|\TemplatesQuery|\RDataDataQuery|\RDataContributionQuery|\RDataBookQuery|\RDataFormatQuery|\RDataIssueQuery|\RDataTemplateQuery|\DataVersionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -220,21 +290,27 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = DataTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(DataTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = DataTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -264,7 +340,7 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
             /** @var ChildData $obj */
             $obj = new ChildData();
             $obj->hydrate($row);
-            DataTableMap::addInstanceToPool($obj, (string) $key);
+            DataTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -473,11 +549,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByContent('fooValue');   // WHERE _content = 'fooValue'
-     * $query->filterByContent('%fooValue%'); // WHERE _content LIKE '%fooValue%'
+     * $query->filterByContent('%fooValue%', Criteria::LIKE); // WHERE _content LIKE '%fooValue%'
      * </code>
      *
      * @param     string $content The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
@@ -487,9 +562,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($content)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $content)) {
-                $content = str_replace('*', '%', $content);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -572,11 +644,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
@@ -586,9 +657,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -601,11 +669,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
@@ -615,9 +682,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -796,11 +860,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
-     * $query->filterByVersionCreatedBy('%fooValue%'); // WHERE version_created_by LIKE '%fooValue%'
+     * $query->filterByVersionCreatedBy('%fooValue%', Criteria::LIKE); // WHERE version_created_by LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionCreatedBy The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
@@ -810,9 +873,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($versionCreatedBy)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionCreatedBy)) {
-                $versionCreatedBy = str_replace('*', '%', $versionCreatedBy);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -825,11 +885,10 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
      * Example usage:
      * <code>
      * $query->filterByVersionComment('fooValue');   // WHERE version_comment = 'fooValue'
-     * $query->filterByVersionComment('%fooValue%'); // WHERE version_comment LIKE '%fooValue%'
+     * $query->filterByVersionComment('%fooValue%', Criteria::LIKE); // WHERE version_comment LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionComment The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataQuery The current query, for fluid interface
@@ -839,9 +898,6 @@ protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityN
         if (null === $comparison) {
             if (is_array($versionComment)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionComment)) {
-                $versionComment = str_replace('*', '%', $versionComment);
-                $comparison = Criteria::LIKE;
             }
         }
 

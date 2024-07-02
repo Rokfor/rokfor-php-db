@@ -59,7 +59,7 @@ class ContributionscacheTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ContributionscacheTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the id field
@@ -92,6 +92,36 @@ class ContributionscacheTableMap extends TableMap
     const COL__CACHE = '_contributions_cache._cache';
 
     /**
+     * the column name for the _book field
+     */
+    const COL__BOOK = '_contributions_cache._book';
+
+    /**
+     * the column name for the _issue field
+     */
+    const COL__ISSUE = '_contributions_cache._issue';
+
+    /**
+     * the column name for the _chapter field
+     */
+    const COL__CHAPTER = '_contributions_cache._chapter';
+
+    /**
+     * the column name for the _template field
+     */
+    const COL__TEMPLATE = '_contributions_cache._template';
+
+    /**
+     * the column name for the _contribution field
+     */
+    const COL__CONTRIBUTION = '_contributions_cache._contribution';
+
+    /**
+     * the column name for the _touched field
+     */
+    const COL__TOUCHED = '_contributions_cache._touched';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -103,11 +133,11 @@ class ContributionscacheTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Signature', 'Forcontribution', 'Cache', ),
-        self::TYPE_CAMELNAME     => array('id', 'signature', 'forcontribution', 'cache', ),
-        self::TYPE_COLNAME       => array(ContributionscacheTableMap::COL_ID, ContributionscacheTableMap::COL__SIGNATURE, ContributionscacheTableMap::COL__FORCONTRIBUTION, ContributionscacheTableMap::COL__CACHE, ),
-        self::TYPE_FIELDNAME     => array('id', '_signature', '_forcontribution', '_cache', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id', 'Signature', 'Forcontribution', 'Cache', 'Book', 'Issue', 'Chapter', 'Template', 'Contribution', 'Touched', ),
+        self::TYPE_CAMELNAME     => array('id', 'signature', 'forcontribution', 'cache', 'book', 'issue', 'chapter', 'template', 'contribution', 'touched', ),
+        self::TYPE_COLNAME       => array(ContributionscacheTableMap::COL_ID, ContributionscacheTableMap::COL__SIGNATURE, ContributionscacheTableMap::COL__FORCONTRIBUTION, ContributionscacheTableMap::COL__CACHE, ContributionscacheTableMap::COL__BOOK, ContributionscacheTableMap::COL__ISSUE, ContributionscacheTableMap::COL__CHAPTER, ContributionscacheTableMap::COL__TEMPLATE, ContributionscacheTableMap::COL__CONTRIBUTION, ContributionscacheTableMap::COL__TOUCHED, ),
+        self::TYPE_FIELDNAME     => array('id', '_signature', '_forcontribution', '_cache', '_book', '_issue', '_chapter', '_template', '_contribution', '_touched', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -117,11 +147,11 @@ class ContributionscacheTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Signature' => 1, 'Forcontribution' => 2, 'Cache' => 3, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'signature' => 1, 'forcontribution' => 2, 'cache' => 3, ),
-        self::TYPE_COLNAME       => array(ContributionscacheTableMap::COL_ID => 0, ContributionscacheTableMap::COL__SIGNATURE => 1, ContributionscacheTableMap::COL__FORCONTRIBUTION => 2, ContributionscacheTableMap::COL__CACHE => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, '_signature' => 1, '_forcontribution' => 2, '_cache' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Signature' => 1, 'Forcontribution' => 2, 'Cache' => 3, 'Book' => 4, 'Issue' => 5, 'Chapter' => 6, 'Template' => 7, 'Contribution' => 8, 'Touched' => 9, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'signature' => 1, 'forcontribution' => 2, 'cache' => 3, 'book' => 4, 'issue' => 5, 'chapter' => 6, 'template' => 7, 'contribution' => 8, 'touched' => 9, ),
+        self::TYPE_COLNAME       => array(ContributionscacheTableMap::COL_ID => 0, ContributionscacheTableMap::COL__SIGNATURE => 1, ContributionscacheTableMap::COL__FORCONTRIBUTION => 2, ContributionscacheTableMap::COL__CACHE => 3, ContributionscacheTableMap::COL__BOOK => 4, ContributionscacheTableMap::COL__ISSUE => 5, ContributionscacheTableMap::COL__CHAPTER => 6, ContributionscacheTableMap::COL__TEMPLATE => 7, ContributionscacheTableMap::COL__CONTRIBUTION => 8, ContributionscacheTableMap::COL__TOUCHED => 9, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, '_signature' => 1, '_forcontribution' => 2, '_cache' => 3, '_book' => 4, '_issue' => 5, '_chapter' => 6, '_template' => 7, '_contribution' => 8, '_touched' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -145,6 +175,12 @@ class ContributionscacheTableMap extends TableMap
         $this->addColumn('_signature', 'Signature', 'VARCHAR', true, 255, null);
         $this->addForeignKey('_forcontribution', 'Forcontribution', 'INTEGER', '_contributions', 'id', false, 4, null);
         $this->addColumn('_cache', 'Cache', 'CLOB', false, null, null);
+        $this->addColumn('_book', 'Book', 'VARCHAR', false, 255, null);
+        $this->addColumn('_issue', 'Issue', 'VARCHAR', false, 255, null);
+        $this->addColumn('_chapter', 'Chapter', 'VARCHAR', false, 255, null);
+        $this->addColumn('_template', 'Template', 'VARCHAR', false, 255, null);
+        $this->addColumn('_contribution', 'Contribution', 'VARCHAR', false, 255, null);
+        $this->addColumn('_touched', 'Touched', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
     } // initialize()
 
     /**
@@ -194,7 +230,7 @@ class ContributionscacheTableMap extends TableMap
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -319,11 +355,23 @@ class ContributionscacheTableMap extends TableMap
             $criteria->addSelectColumn(ContributionscacheTableMap::COL__SIGNATURE);
             $criteria->addSelectColumn(ContributionscacheTableMap::COL__FORCONTRIBUTION);
             $criteria->addSelectColumn(ContributionscacheTableMap::COL__CACHE);
+            $criteria->addSelectColumn(ContributionscacheTableMap::COL__BOOK);
+            $criteria->addSelectColumn(ContributionscacheTableMap::COL__ISSUE);
+            $criteria->addSelectColumn(ContributionscacheTableMap::COL__CHAPTER);
+            $criteria->addSelectColumn(ContributionscacheTableMap::COL__TEMPLATE);
+            $criteria->addSelectColumn(ContributionscacheTableMap::COL__CONTRIBUTION);
+            $criteria->addSelectColumn(ContributionscacheTableMap::COL__TOUCHED);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '._signature');
             $criteria->addSelectColumn($alias . '._forcontribution');
             $criteria->addSelectColumn($alias . '._cache');
+            $criteria->addSelectColumn($alias . '._book');
+            $criteria->addSelectColumn($alias . '._issue');
+            $criteria->addSelectColumn($alias . '._chapter');
+            $criteria->addSelectColumn($alias . '._template');
+            $criteria->addSelectColumn($alias . '._contribution');
+            $criteria->addSelectColumn($alias . '._touched');
         }
     }
 

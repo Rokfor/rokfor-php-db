@@ -38,25 +38,59 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRightsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRightsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRightsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRightsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRightsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRightsQuery leftJoinRRightsForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForbook relation
  * @method     ChildRightsQuery rightJoinRRightsForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForbook relation
  * @method     ChildRightsQuery innerJoinRRightsForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForbook relation
+ *
+ * @method     ChildRightsQuery joinWithRRightsForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForbook relation
+ *
+ * @method     ChildRightsQuery leftJoinWithRRightsForbook() Adds a LEFT JOIN clause and with to the query using the RRightsForbook relation
+ * @method     ChildRightsQuery rightJoinWithRRightsForbook() Adds a RIGHT JOIN clause and with to the query using the RRightsForbook relation
+ * @method     ChildRightsQuery innerJoinWithRRightsForbook() Adds a INNER JOIN clause and with to the query using the RRightsForbook relation
  *
  * @method     ChildRightsQuery leftJoinRRightsForissue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildRightsQuery rightJoinRRightsForissue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildRightsQuery innerJoinRRightsForissue($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForissue relation
  *
+ * @method     ChildRightsQuery joinWithRRightsForissue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForissue relation
+ *
+ * @method     ChildRightsQuery leftJoinWithRRightsForissue() Adds a LEFT JOIN clause and with to the query using the RRightsForissue relation
+ * @method     ChildRightsQuery rightJoinWithRRightsForissue() Adds a RIGHT JOIN clause and with to the query using the RRightsForissue relation
+ * @method     ChildRightsQuery innerJoinWithRRightsForissue() Adds a INNER JOIN clause and with to the query using the RRightsForissue relation
+ *
  * @method     ChildRightsQuery leftJoinRRightsFortemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsFortemplate relation
  * @method     ChildRightsQuery rightJoinRRightsFortemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsFortemplate relation
  * @method     ChildRightsQuery innerJoinRRightsFortemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsFortemplate relation
+ *
+ * @method     ChildRightsQuery joinWithRRightsFortemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsFortemplate relation
+ *
+ * @method     ChildRightsQuery leftJoinWithRRightsFortemplate() Adds a LEFT JOIN clause and with to the query using the RRightsFortemplate relation
+ * @method     ChildRightsQuery rightJoinWithRRightsFortemplate() Adds a RIGHT JOIN clause and with to the query using the RRightsFortemplate relation
+ * @method     ChildRightsQuery innerJoinWithRRightsFortemplate() Adds a INNER JOIN clause and with to the query using the RRightsFortemplate relation
  *
  * @method     ChildRightsQuery leftJoinRRightsForformat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildRightsQuery rightJoinRRightsForformat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForformat relation
  * @method     ChildRightsQuery innerJoinRRightsForformat($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForformat relation
  *
+ * @method     ChildRightsQuery joinWithRRightsForformat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForformat relation
+ *
+ * @method     ChildRightsQuery leftJoinWithRRightsForformat() Adds a LEFT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildRightsQuery rightJoinWithRRightsForformat() Adds a RIGHT JOIN clause and with to the query using the RRightsForformat relation
+ * @method     ChildRightsQuery innerJoinWithRRightsForformat() Adds a INNER JOIN clause and with to the query using the RRightsForformat relation
+ *
  * @method     ChildRightsQuery leftJoinRRightsForuser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildRightsQuery rightJoinRRightsForuser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildRightsQuery innerJoinRRightsForuser($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForuser relation
+ *
+ * @method     ChildRightsQuery joinWithRRightsForuser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForuser relation
+ *
+ * @method     ChildRightsQuery leftJoinWithRRightsForuser() Adds a LEFT JOIN clause and with to the query using the RRightsForuser relation
+ * @method     ChildRightsQuery rightJoinWithRRightsForuser() Adds a RIGHT JOIN clause and with to the query using the RRightsForuser relation
+ * @method     ChildRightsQuery innerJoinWithRRightsForuser() Adds a INNER JOIN clause and with to the query using the RRightsForuser relation
  *
  * @method     \RRightsForbookQuery|\RRightsForissueQuery|\RRightsFortemplateQuery|\RRightsForformatQuery|\RRightsForuserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -149,21 +183,27 @@ abstract class RightsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RightsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RightsTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RightsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -193,7 +233,7 @@ abstract class RightsQuery extends ModelCriteria
             /** @var ChildRights $obj */
             $obj = new ChildRights();
             $obj->hydrate($row);
-            RightsTableMap::addInstanceToPool($obj, (string) $key);
+            RightsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -316,11 +356,10 @@ abstract class RightsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByGroup('fooValue');   // WHERE _group = 'fooValue'
-     * $query->filterByGroup('%fooValue%'); // WHERE _group LIKE '%fooValue%'
+     * $query->filterByGroup('%fooValue%', Criteria::LIKE); // WHERE _group LIKE '%fooValue%'
      * </code>
      *
      * @param     string $group The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildRightsQuery The current query, for fluid interface
@@ -330,9 +369,6 @@ abstract class RightsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($group)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $group)) {
-                $group = str_replace('*', '%', $group);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -345,11 +381,10 @@ abstract class RightsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildRightsQuery The current query, for fluid interface
@@ -359,9 +394,6 @@ abstract class RightsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -374,11 +406,10 @@ abstract class RightsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildRightsQuery The current query, for fluid interface
@@ -388,9 +419,6 @@ abstract class RightsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

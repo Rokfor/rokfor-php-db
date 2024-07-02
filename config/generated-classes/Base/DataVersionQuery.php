@@ -56,9 +56,19 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDataVersionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildDataVersionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildDataVersionQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildDataVersionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildDataVersionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildDataVersionQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildDataVersionQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildDataVersionQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
+ *
+ * @method     ChildDataVersionQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
+ *
+ * @method     ChildDataVersionQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
+ * @method     ChildDataVersionQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
+ * @method     ChildDataVersionQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
  *
  * @method     \DataQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -178,21 +188,27 @@ abstract class DataVersionQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = DataVersionTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(DataVersionTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = DataVersionTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -223,7 +239,7 @@ abstract class DataVersionQuery extends ModelCriteria
             /** @var ChildDataVersion $obj */
             $obj = new ChildDataVersion();
             $obj->hydrate($row);
-            DataVersionTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            DataVersionTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -441,11 +457,10 @@ abstract class DataVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByContent('fooValue');   // WHERE _content = 'fooValue'
-     * $query->filterByContent('%fooValue%'); // WHERE _content LIKE '%fooValue%'
+     * $query->filterByContent('%fooValue%', Criteria::LIKE); // WHERE _content LIKE '%fooValue%'
      * </code>
      *
      * @param     string $content The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataVersionQuery The current query, for fluid interface
@@ -455,9 +470,6 @@ abstract class DataVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($content)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $content)) {
-                $content = str_replace('*', '%', $content);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -538,11 +550,10 @@ abstract class DataVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataVersionQuery The current query, for fluid interface
@@ -552,9 +563,6 @@ abstract class DataVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -567,11 +575,10 @@ abstract class DataVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataVersionQuery The current query, for fluid interface
@@ -581,9 +588,6 @@ abstract class DataVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -762,11 +766,10 @@ abstract class DataVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
-     * $query->filterByVersionCreatedBy('%fooValue%'); // WHERE version_created_by LIKE '%fooValue%'
+     * $query->filterByVersionCreatedBy('%fooValue%', Criteria::LIKE); // WHERE version_created_by LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionCreatedBy The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataVersionQuery The current query, for fluid interface
@@ -776,9 +779,6 @@ abstract class DataVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($versionCreatedBy)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionCreatedBy)) {
-                $versionCreatedBy = str_replace('*', '%', $versionCreatedBy);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -791,11 +791,10 @@ abstract class DataVersionQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByVersionComment('fooValue');   // WHERE version_comment = 'fooValue'
-     * $query->filterByVersionComment('%fooValue%'); // WHERE version_comment LIKE '%fooValue%'
+     * $query->filterByVersionComment('%fooValue%', Criteria::LIKE); // WHERE version_comment LIKE '%fooValue%'
      * </code>
      *
      * @param     string $versionComment The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildDataVersionQuery The current query, for fluid interface
@@ -805,9 +804,6 @@ abstract class DataVersionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($versionComment)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $versionComment)) {
-                $versionComment = str_replace('*', '%', $versionComment);
-                $comparison = Criteria::LIKE;
             }
         }
 

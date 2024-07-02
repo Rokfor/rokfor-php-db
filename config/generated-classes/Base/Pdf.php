@@ -25,8 +25,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Pdf implements ActiveRecordInterface
 {
     /**
@@ -63,60 +63,70 @@ abstract class Pdf implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _file field.
+     *
      * @var        string
      */
     protected $_file;
 
     /**
      * The value for the _date field.
+     *
      * @var        int
      */
     protected $_date;
 
     /**
      * The value for the _issue field.
+     *
      * @var        int
      */
     protected $_issue;
 
     /**
      * The value for the _plugin field.
+     *
      * @var        int
      */
     protected $_plugin;
 
     /**
      * The value for the _fileinfo field.
+     *
      * @var        string
      */
     protected $_fileinfo;
 
     /**
      * The value for the _otc field.
+     *
      * @var        string
      */
     protected $_otc;
 
     /**
      * The value for the _config field.
+     *
      * @var        string
      */
     protected $_config;
 
     /**
      * The value for the _configvalue field.
+     *
      * @var        int
      */
     protected $_configvalue;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -348,7 +358,15 @@ abstract class Pdf implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -846,13 +864,17 @@ abstract class Pdf implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(PdfTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1517,7 +1539,7 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function getPlugins(ConnectionInterface $con = null)
     {
-        if ($this->aPlugins === null && ($this->_plugin !== null)) {
+        if ($this->aPlugins === null && ($this->_plugin != 0)) {
             $this->aPlugins = ChildPluginsQuery::create()->findPk($this->_plugin, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1591,6 +1613,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -1600,7 +1625,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -1610,6 +1637,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -1619,7 +1649,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -1629,6 +1661,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -1638,7 +1673,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -1648,6 +1685,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -1657,7 +1697,9 @@ abstract class Pdf implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

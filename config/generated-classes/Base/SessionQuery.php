@@ -35,6 +35,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSessionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildSessionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildSessionQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildSessionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildSessionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildSession findOne(ConnectionInterface $con = null) Return the first ChildSession matching the query
  * @method     ChildSession findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSession matching the query, or a new ChildSession object populated from the query conditions when no match is found
  *
@@ -121,21 +125,27 @@ abstract class SessionQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = SessionTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(SessionTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = SessionTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -165,7 +175,7 @@ abstract class SessionQuery extends ModelCriteria
             /** @var ChildSession $obj */
             $obj = new ChildSession();
             $obj->hydrate($row);
-            SessionTableMap::addInstanceToPool($obj, (string) $key);
+            SessionTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 

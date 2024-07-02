@@ -28,7 +28,12 @@ use \Users as ChildUsers;
 use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
+use Map\ContributionsTableMap;
 use Map\FormatsTableMap;
+use Map\RDataFormatTableMap;
+use Map\RPluginFormatTableMap;
+use Map\RRightsForformatTableMap;
+use Map\RTemplatenamesInchapterTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -47,8 +52,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Formats implements ActiveRecordInterface
 {
     /**
@@ -85,48 +90,56 @@ abstract class Formats implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _forbook field.
+     *
      * @var        int
      */
     protected $_forbook;
 
     /**
      * The value for the __user__ field.
+     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
@@ -487,7 +500,15 @@ abstract class Formats implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -941,13 +962,17 @@ abstract class Formats implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(FormatsTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1444,7 +1469,7 @@ abstract class Formats implements ActiveRecordInterface
                         $key = 'users';
                         break;
                     default:
-                        $key = 'Users';
+                        $key = 'userSysRef';
                 }
 
                 $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1908,7 +1933,7 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function getuserSysRef(ConnectionInterface $con = null)
     {
-        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+        if ($this->auserSysRef === null && ($this->__user__ != 0)) {
             $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1959,7 +1984,7 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function getBooks(ConnectionInterface $con = null)
     {
-        if ($this->aBooks === null && ($this->_forbook !== null)) {
+        if ($this->aBooks === null && ($this->_forbook != 0)) {
             $this->aBooks = ChildBooksQuery::create()->findPk($this->_forbook, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1985,19 +2010,24 @@ abstract class Formats implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RRightsForformat' == $relationName) {
-            return $this->initRRightsForformats();
+            $this->initRRightsForformats();
+            return;
         }
         if ('RTemplatenamesInchapter' == $relationName) {
-            return $this->initRTemplatenamesInchapters();
+            $this->initRTemplatenamesInchapters();
+            return;
         }
         if ('Contributions' == $relationName) {
-            return $this->initContributionss();
+            $this->initContributionss();
+            return;
         }
         if ('RDataFormat' == $relationName) {
-            return $this->initRDataFormats();
+            $this->initRDataFormats();
+            return;
         }
         if ('RPluginFormat' == $relationName) {
-            return $this->initRPluginFormats();
+            $this->initRPluginFormats();
+            return;
         }
     }
 
@@ -2040,7 +2070,10 @@ abstract class Formats implements ActiveRecordInterface
         if (null !== $this->collRRightsForformats && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForformats = new ObjectCollection();
+
+        $collectionClassName = RRightsForformatTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForformats = new $collectionClassName;
         $this->collRRightsForformats->setModel('\RRightsForformat');
     }
 
@@ -2188,6 +2221,10 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collRRightsForformats->contains($l)) {
             $this->doAddRRightsForformat($l);
+
+            if ($this->rRightsForformatsScheduledForDeletion and $this->rRightsForformatsScheduledForDeletion->contains($l)) {
+                $this->rRightsForformatsScheduledForDeletion->remove($this->rRightsForformatsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2286,7 +2323,10 @@ abstract class Formats implements ActiveRecordInterface
         if (null !== $this->collRTemplatenamesInchapters && !$overrideExisting) {
             return;
         }
-        $this->collRTemplatenamesInchapters = new ObjectCollection();
+
+        $collectionClassName = RTemplatenamesInchapterTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRTemplatenamesInchapters = new $collectionClassName;
         $this->collRTemplatenamesInchapters->setModel('\RTemplatenamesInchapter');
     }
 
@@ -2434,6 +2474,10 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesInchapters->contains($l)) {
             $this->doAddRTemplatenamesInchapter($l);
+
+            if ($this->rTemplatenamesInchaptersScheduledForDeletion and $this->rTemplatenamesInchaptersScheduledForDeletion->contains($l)) {
+                $this->rTemplatenamesInchaptersScheduledForDeletion->remove($this->rTemplatenamesInchaptersScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2532,7 +2576,10 @@ abstract class Formats implements ActiveRecordInterface
         if (null !== $this->collContributionss && !$overrideExisting) {
             return;
         }
-        $this->collContributionss = new ObjectCollection();
+
+        $collectionClassName = ContributionsTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collContributionss = new $collectionClassName;
         $this->collContributionss->setModel('\Contributions');
     }
 
@@ -2677,6 +2724,10 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
+
+            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
+                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2825,7 +2876,10 @@ abstract class Formats implements ActiveRecordInterface
         if (null !== $this->collRDataFormats && !$overrideExisting) {
             return;
         }
-        $this->collRDataFormats = new ObjectCollection();
+
+        $collectionClassName = RDataFormatTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataFormats = new $collectionClassName;
         $this->collRDataFormats->setModel('\RDataFormat');
     }
 
@@ -2973,6 +3027,10 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collRDataFormats->contains($l)) {
             $this->doAddRDataFormat($l);
+
+            if ($this->rDataFormatsScheduledForDeletion and $this->rDataFormatsScheduledForDeletion->contains($l)) {
+                $this->rDataFormatsScheduledForDeletion->remove($this->rDataFormatsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3071,7 +3129,10 @@ abstract class Formats implements ActiveRecordInterface
         if (null !== $this->collRPluginFormats && !$overrideExisting) {
             return;
         }
-        $this->collRPluginFormats = new ObjectCollection();
+
+        $collectionClassName = RPluginFormatTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginFormats = new $collectionClassName;
         $this->collRPluginFormats->setModel('\RPluginFormat');
     }
 
@@ -3219,6 +3280,10 @@ abstract class Formats implements ActiveRecordInterface
 
         if (!$this->collRPluginFormats->contains($l)) {
             $this->doAddRPluginFormat($l);
+
+            if ($this->rPluginFormatsScheduledForDeletion and $this->rPluginFormatsScheduledForDeletion->contains($l)) {
+                $this->rPluginFormatsScheduledForDeletion->remove($this->rPluginFormatsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3303,9 +3368,10 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function initRightss()
     {
-        $this->collRightss = new ObjectCollection();
-        $this->collRightssPartial = true;
+        $collectionClassName = RRightsForformatTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRightss = new $collectionClassName;
+        $this->collRightssPartial = true;
         $this->collRightss->setModel('\Rights');
     }
 
@@ -3494,8 +3560,8 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function removeRights(ChildRights $rights)
     {
-        if ($this->getRightss()->contains($rights)) { $rRightsForformat = new ChildRRightsForformat();
-
+        if ($this->getRightss()->contains($rights)) {
+            $rRightsForformat = new ChildRRightsForformat();
             $rRightsForformat->setRights($rights);
             if ($rights->isFormatssLoaded()) {
                 //remove the back reference if available
@@ -3545,9 +3611,10 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function initTemplatenamess()
     {
-        $this->collTemplatenamess = new ObjectCollection();
-        $this->collTemplatenamessPartial = true;
+        $collectionClassName = RTemplatenamesInchapterTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collTemplatenamess = new $collectionClassName;
+        $this->collTemplatenamessPartial = true;
         $this->collTemplatenamess->setModel('\Templatenames');
     }
 
@@ -3736,8 +3803,8 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function removeTemplatenames(ChildTemplatenames $templatenames)
     {
-        if ($this->getTemplatenamess()->contains($templatenames)) { $rTemplatenamesInchapter = new ChildRTemplatenamesInchapter();
-
+        if ($this->getTemplatenamess()->contains($templatenames)) {
+            $rTemplatenamesInchapter = new ChildRTemplatenamesInchapter();
             $rTemplatenamesInchapter->setTemplatenames($templatenames);
             if ($templatenames->isFormatssLoaded()) {
                 //remove the back reference if available
@@ -3787,9 +3854,10 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function initRDatas()
     {
-        $this->collRDatas = new ObjectCollection();
-        $this->collRDatasPartial = true;
+        $collectionClassName = RDataFormatTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRDatas = new $collectionClassName;
+        $this->collRDatasPartial = true;
         $this->collRDatas->setModel('\Data');
     }
 
@@ -3978,8 +4046,8 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function removeRData(ChildData $rData)
     {
-        if ($this->getRDatas()->contains($rData)) { $rDataFormat = new ChildRDataFormat();
-
+        if ($this->getRDatas()->contains($rData)) {
+            $rDataFormat = new ChildRDataFormat();
             $rDataFormat->setRData($rData);
             if ($rData->isRFormatsLoaded()) {
                 //remove the back reference if available
@@ -4029,9 +4097,10 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function initRPlugins()
     {
-        $this->collRPlugins = new ObjectCollection();
-        $this->collRPluginsPartial = true;
+        $collectionClassName = RPluginFormatTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRPlugins = new $collectionClassName;
+        $this->collRPluginsPartial = true;
         $this->collRPlugins->setModel('\Plugins');
     }
 
@@ -4220,8 +4289,8 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function removeRPlugin(ChildPlugins $rPlugin)
     {
-        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginFormat = new ChildRPluginFormat();
-
+        if ($this->getRPlugins()->contains($rPlugin)) {
+            $rPluginFormat = new ChildRPluginFormat();
             $rPluginFormat->setRPlugin($rPlugin);
             if ($rPlugin->isRFormatsLoaded()) {
                 //remove the back reference if available
@@ -4362,6 +4431,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -4371,7 +4443,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -4381,6 +4455,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -4390,7 +4467,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -4400,6 +4479,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -4409,7 +4491,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -4419,6 +4503,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -4428,7 +4515,9 @@ abstract class Formats implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

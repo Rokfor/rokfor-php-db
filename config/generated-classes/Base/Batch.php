@@ -11,6 +11,7 @@ use \RBatchForbookQuery as ChildRBatchForbookQuery;
 use \Exception;
 use \PDO;
 use Map\BatchTableMap;
+use Map\RBatchForbookTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -29,8 +30,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Batch implements ActiveRecordInterface
 {
     /**
@@ -67,54 +68,63 @@ abstract class Batch implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _description field.
+     *
      * @var        string
      */
     protected $_description;
 
     /**
      * The value for the _precode field.
+     *
      * @var        string
      */
     protected $_precode;
 
     /**
      * The value for the _postcode field.
+     *
      * @var        string
      */
     protected $_postcode;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -369,7 +379,15 @@ abstract class Batch implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -829,13 +847,17 @@ abstract class Batch implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(BatchTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1503,7 +1525,8 @@ abstract class Batch implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RBatchForbook' == $relationName) {
-            return $this->initRBatchForbooks();
+            $this->initRBatchForbooks();
+            return;
         }
     }
 
@@ -1546,7 +1569,10 @@ abstract class Batch implements ActiveRecordInterface
         if (null !== $this->collRBatchForbooks && !$overrideExisting) {
             return;
         }
-        $this->collRBatchForbooks = new ObjectCollection();
+
+        $collectionClassName = RBatchForbookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRBatchForbooks = new $collectionClassName;
         $this->collRBatchForbooks->setModel('\RBatchForbook');
     }
 
@@ -1694,6 +1720,10 @@ abstract class Batch implements ActiveRecordInterface
 
         if (!$this->collRBatchForbooks->contains($l)) {
             $this->doAddRBatchForbook($l);
+
+            if ($this->rBatchForbooksScheduledForDeletion and $this->rBatchForbooksScheduledForDeletion->contains($l)) {
+                $this->rBatchForbooksScheduledForDeletion->remove($this->rBatchForbooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1778,9 +1808,10 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function initBookss()
     {
-        $this->collBookss = new ObjectCollection();
-        $this->collBookssPartial = true;
+        $collectionClassName = RBatchForbookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collBookss = new $collectionClassName;
+        $this->collBookssPartial = true;
         $this->collBookss->setModel('\Books');
     }
 
@@ -1969,8 +2000,8 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function removeBooks(ChildBooks $books)
     {
-        if ($this->getBookss()->contains($books)) { $rBatchForbook = new ChildRBatchForbook();
-
+        if ($this->getBookss()->contains($books)) {
+            $rBatchForbook = new ChildRBatchForbook();
             $rBatchForbook->setBooks($books);
             if ($books->isBatchesLoaded()) {
                 //remove the back reference if available
@@ -2062,6 +2093,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -2071,7 +2105,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -2081,6 +2117,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -2090,7 +2129,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -2100,6 +2141,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -2109,7 +2153,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -2119,6 +2165,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -2128,7 +2177,9 @@ abstract class Batch implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

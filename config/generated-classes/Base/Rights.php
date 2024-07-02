@@ -26,6 +26,11 @@ use \Users as ChildUsers;
 use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
+use Map\RRightsForbookTableMap;
+use Map\RRightsForformatTableMap;
+use Map\RRightsForissueTableMap;
+use Map\RRightsFortemplateTableMap;
+use Map\RRightsForuserTableMap;
 use Map\RightsTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -45,8 +50,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Rights implements ActiveRecordInterface
 {
     /**
@@ -83,36 +88,42 @@ abstract class Rights implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _group field.
+     *
      * @var        string
      */
     protected $_group;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -479,7 +490,15 @@ abstract class Rights implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -852,13 +871,17 @@ abstract class Rights implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(RightsTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1734,19 +1757,24 @@ abstract class Rights implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RRightsForbook' == $relationName) {
-            return $this->initRRightsForbooks();
+            $this->initRRightsForbooks();
+            return;
         }
         if ('RRightsForissue' == $relationName) {
-            return $this->initRRightsForissues();
+            $this->initRRightsForissues();
+            return;
         }
         if ('RRightsFortemplate' == $relationName) {
-            return $this->initRRightsFortemplates();
+            $this->initRRightsFortemplates();
+            return;
         }
         if ('RRightsForformat' == $relationName) {
-            return $this->initRRightsForformats();
+            $this->initRRightsForformats();
+            return;
         }
         if ('RRightsForuser' == $relationName) {
-            return $this->initRRightsForusers();
+            $this->initRRightsForusers();
+            return;
         }
     }
 
@@ -1789,7 +1817,10 @@ abstract class Rights implements ActiveRecordInterface
         if (null !== $this->collRRightsForbooks && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForbooks = new ObjectCollection();
+
+        $collectionClassName = RRightsForbookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForbooks = new $collectionClassName;
         $this->collRRightsForbooks->setModel('\RRightsForbook');
     }
 
@@ -1937,6 +1968,10 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForbooks->contains($l)) {
             $this->doAddRRightsForbook($l);
+
+            if ($this->rRightsForbooksScheduledForDeletion and $this->rRightsForbooksScheduledForDeletion->contains($l)) {
+                $this->rRightsForbooksScheduledForDeletion->remove($this->rRightsForbooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2035,7 +2070,10 @@ abstract class Rights implements ActiveRecordInterface
         if (null !== $this->collRRightsForissues && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForissues = new ObjectCollection();
+
+        $collectionClassName = RRightsForissueTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForissues = new $collectionClassName;
         $this->collRRightsForissues->setModel('\RRightsForissue');
     }
 
@@ -2183,6 +2221,10 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForissues->contains($l)) {
             $this->doAddRRightsForissue($l);
+
+            if ($this->rRightsForissuesScheduledForDeletion and $this->rRightsForissuesScheduledForDeletion->contains($l)) {
+                $this->rRightsForissuesScheduledForDeletion->remove($this->rRightsForissuesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2281,7 +2323,10 @@ abstract class Rights implements ActiveRecordInterface
         if (null !== $this->collRRightsFortemplates && !$overrideExisting) {
             return;
         }
-        $this->collRRightsFortemplates = new ObjectCollection();
+
+        $collectionClassName = RRightsFortemplateTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsFortemplates = new $collectionClassName;
         $this->collRRightsFortemplates->setModel('\RRightsFortemplate');
     }
 
@@ -2429,6 +2474,10 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsFortemplates->contains($l)) {
             $this->doAddRRightsFortemplate($l);
+
+            if ($this->rRightsFortemplatesScheduledForDeletion and $this->rRightsFortemplatesScheduledForDeletion->contains($l)) {
+                $this->rRightsFortemplatesScheduledForDeletion->remove($this->rRightsFortemplatesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2527,7 +2576,10 @@ abstract class Rights implements ActiveRecordInterface
         if (null !== $this->collRRightsForformats && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForformats = new ObjectCollection();
+
+        $collectionClassName = RRightsForformatTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForformats = new $collectionClassName;
         $this->collRRightsForformats->setModel('\RRightsForformat');
     }
 
@@ -2675,6 +2727,10 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForformats->contains($l)) {
             $this->doAddRRightsForformat($l);
+
+            if ($this->rRightsForformatsScheduledForDeletion and $this->rRightsForformatsScheduledForDeletion->contains($l)) {
+                $this->rRightsForformatsScheduledForDeletion->remove($this->rRightsForformatsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2773,7 +2829,10 @@ abstract class Rights implements ActiveRecordInterface
         if (null !== $this->collRRightsForusers && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForusers = new ObjectCollection();
+
+        $collectionClassName = RRightsForuserTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForusers = new $collectionClassName;
         $this->collRRightsForusers->setModel('\RRightsForuser');
     }
 
@@ -2921,6 +2980,10 @@ abstract class Rights implements ActiveRecordInterface
 
         if (!$this->collRRightsForusers->contains($l)) {
             $this->doAddRRightsForuser($l);
+
+            if ($this->rRightsForusersScheduledForDeletion and $this->rRightsForusersScheduledForDeletion->contains($l)) {
+                $this->rRightsForusersScheduledForDeletion->remove($this->rRightsForusersScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3005,9 +3068,10 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function initBookss()
     {
-        $this->collBookss = new ObjectCollection();
-        $this->collBookssPartial = true;
+        $collectionClassName = RRightsForbookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collBookss = new $collectionClassName;
+        $this->collBookssPartial = true;
         $this->collBookss->setModel('\Books');
     }
 
@@ -3196,8 +3260,8 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function removeBooks(ChildBooks $books)
     {
-        if ($this->getBookss()->contains($books)) { $rRightsForbook = new ChildRRightsForbook();
-
+        if ($this->getBookss()->contains($books)) {
+            $rRightsForbook = new ChildRRightsForbook();
             $rRightsForbook->setBooks($books);
             if ($books->isRightssLoaded()) {
                 //remove the back reference if available
@@ -3247,9 +3311,10 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function initIssuess()
     {
-        $this->collIssuess = new ObjectCollection();
-        $this->collIssuessPartial = true;
+        $collectionClassName = RRightsForissueTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collIssuess = new $collectionClassName;
+        $this->collIssuessPartial = true;
         $this->collIssuess->setModel('\Issues');
     }
 
@@ -3438,8 +3503,8 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function removeIssues(ChildIssues $issues)
     {
-        if ($this->getIssuess()->contains($issues)) { $rRightsForissue = new ChildRRightsForissue();
-
+        if ($this->getIssuess()->contains($issues)) {
+            $rRightsForissue = new ChildRRightsForissue();
             $rRightsForissue->setIssues($issues);
             if ($issues->isRightssLoaded()) {
                 //remove the back reference if available
@@ -3489,9 +3554,10 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function initTemplatenamess()
     {
-        $this->collTemplatenamess = new ObjectCollection();
-        $this->collTemplatenamessPartial = true;
+        $collectionClassName = RRightsFortemplateTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collTemplatenamess = new $collectionClassName;
+        $this->collTemplatenamessPartial = true;
         $this->collTemplatenamess->setModel('\Templatenames');
     }
 
@@ -3680,8 +3746,8 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function removeTemplatenames(ChildTemplatenames $templatenames)
     {
-        if ($this->getTemplatenamess()->contains($templatenames)) { $rRightsFortemplate = new ChildRRightsFortemplate();
-
+        if ($this->getTemplatenamess()->contains($templatenames)) {
+            $rRightsFortemplate = new ChildRRightsFortemplate();
             $rRightsFortemplate->setTemplatenames($templatenames);
             if ($templatenames->isRightssLoaded()) {
                 //remove the back reference if available
@@ -3731,9 +3797,10 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function initFormatss()
     {
-        $this->collFormatss = new ObjectCollection();
-        $this->collFormatssPartial = true;
+        $collectionClassName = RRightsForformatTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collFormatss = new $collectionClassName;
+        $this->collFormatssPartial = true;
         $this->collFormatss->setModel('\Formats');
     }
 
@@ -3922,8 +3989,8 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function removeFormats(ChildFormats $formats)
     {
-        if ($this->getFormatss()->contains($formats)) { $rRightsForformat = new ChildRRightsForformat();
-
+        if ($this->getFormatss()->contains($formats)) {
+            $rRightsForformat = new ChildRRightsForformat();
             $rRightsForformat->setFormats($formats);
             if ($formats->isRightssLoaded()) {
                 //remove the back reference if available
@@ -3973,9 +4040,10 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function initUserss()
     {
-        $this->collUserss = new ObjectCollection();
-        $this->collUserssPartial = true;
+        $collectionClassName = RRightsForuserTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collUserss = new $collectionClassName;
+        $this->collUserssPartial = true;
         $this->collUserss->setModel('\Users');
     }
 
@@ -4164,8 +4232,8 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function removeUsers(ChildUsers $users)
     {
-        if ($this->getUserss()->contains($users)) { $rRightsForuser = new ChildRRightsForuser();
-
+        if ($this->getUserss()->contains($users)) {
+            $rRightsForuser = new ChildRRightsForuser();
             $rRightsForuser->setUsers($users);
             if ($users->isRightssLoaded()) {
                 //remove the back reference if available
@@ -4302,6 +4370,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -4311,7 +4382,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -4321,6 +4394,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -4330,7 +4406,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -4340,6 +4418,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -4349,7 +4430,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -4359,6 +4442,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -4368,7 +4454,9 @@ abstract class Rights implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

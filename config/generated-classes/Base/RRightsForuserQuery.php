@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRRightsForuserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRRightsForuserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRRightsForuserQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRRightsForuserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRRightsForuserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRRightsForuserQuery leftJoinRights($relationAlias = null) Adds a LEFT JOIN clause to the query using the Rights relation
  * @method     ChildRRightsForuserQuery rightJoinRights($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Rights relation
  * @method     ChildRRightsForuserQuery innerJoinRights($relationAlias = null) Adds a INNER JOIN clause to the query using the Rights relation
  *
+ * @method     ChildRRightsForuserQuery joinWithRights($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Rights relation
+ *
+ * @method     ChildRRightsForuserQuery leftJoinWithRights() Adds a LEFT JOIN clause and with to the query using the Rights relation
+ * @method     ChildRRightsForuserQuery rightJoinWithRights() Adds a RIGHT JOIN clause and with to the query using the Rights relation
+ * @method     ChildRRightsForuserQuery innerJoinWithRights() Adds a INNER JOIN clause and with to the query using the Rights relation
+ *
  * @method     ChildRRightsForuserQuery leftJoinUsers($relationAlias = null) Adds a LEFT JOIN clause to the query using the Users relation
  * @method     ChildRRightsForuserQuery rightJoinUsers($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Users relation
  * @method     ChildRRightsForuserQuery innerJoinUsers($relationAlias = null) Adds a INNER JOIN clause to the query using the Users relation
+ *
+ * @method     ChildRRightsForuserQuery joinWithUsers($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Users relation
+ *
+ * @method     ChildRRightsForuserQuery leftJoinWithUsers() Adds a LEFT JOIN clause and with to the query using the Users relation
+ * @method     ChildRRightsForuserQuery rightJoinWithUsers() Adds a RIGHT JOIN clause and with to the query using the Users relation
+ * @method     ChildRRightsForuserQuery innerJoinWithUsers() Adds a INNER JOIN clause and with to the query using the Users relation
  *
  * @method     \RightsQuery|\UsersQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RRightsForuserQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RRightsForuserTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RRightsForuserTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RRightsForuserTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RRightsForuserQuery extends ModelCriteria
             /** @var ChildRRightsForuser $obj */
             $obj = new ChildRRightsForuser();
             $obj->hydrate($row);
-            RRightsForuserTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RRightsForuserTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

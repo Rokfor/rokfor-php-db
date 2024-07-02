@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRDataFormatQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRDataFormatQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRDataFormatQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRDataFormatQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRDataFormatQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRDataFormatQuery leftJoinRData($relationAlias = null) Adds a LEFT JOIN clause to the query using the RData relation
  * @method     ChildRDataFormatQuery rightJoinRData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RData relation
  * @method     ChildRDataFormatQuery innerJoinRData($relationAlias = null) Adds a INNER JOIN clause to the query using the RData relation
  *
+ * @method     ChildRDataFormatQuery joinWithRData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RData relation
+ *
+ * @method     ChildRDataFormatQuery leftJoinWithRData() Adds a LEFT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataFormatQuery rightJoinWithRData() Adds a RIGHT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataFormatQuery innerJoinWithRData() Adds a INNER JOIN clause and with to the query using the RData relation
+ *
  * @method     ChildRDataFormatQuery leftJoinRFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFormat relation
  * @method     ChildRDataFormatQuery rightJoinRFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFormat relation
  * @method     ChildRDataFormatQuery innerJoinRFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RFormat relation
+ *
+ * @method     ChildRDataFormatQuery joinWithRFormat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFormat relation
+ *
+ * @method     ChildRDataFormatQuery leftJoinWithRFormat() Adds a LEFT JOIN clause and with to the query using the RFormat relation
+ * @method     ChildRDataFormatQuery rightJoinWithRFormat() Adds a RIGHT JOIN clause and with to the query using the RFormat relation
+ * @method     ChildRDataFormatQuery innerJoinWithRFormat() Adds a INNER JOIN clause and with to the query using the RFormat relation
  *
  * @method     \DataQuery|\FormatsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RDataFormatQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RDataFormatTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RDataFormatTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RDataFormatTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RDataFormatQuery extends ModelCriteria
             /** @var ChildRDataFormat $obj */
             $obj = new ChildRDataFormat();
             $obj->hydrate($row);
-            RDataFormatTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RDataFormatTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

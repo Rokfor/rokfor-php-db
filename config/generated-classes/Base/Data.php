@@ -36,6 +36,12 @@ use \Exception;
 use \PDO;
 use Map\DataTableMap;
 use Map\DataVersionTableMap;
+use Map\RDataBookTableMap;
+use Map\RDataContributionTableMap;
+use Map\RDataDataTableMap;
+use Map\RDataFormatTableMap;
+use Map\RDataIssueTableMap;
+use Map\RDataTemplateTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -55,8 +61,8 @@ use Propel\Runtime\Util\PropelDateTime;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Data implements ActiveRecordInterface
 {
     /**
@@ -93,66 +99,77 @@ abstract class Data implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _forcontribution field.
+     *
      * @var        int
      */
     protected $_forcontribution;
 
     /**
      * The value for the _fortemplatefield field.
+     *
      * @var        int
      */
     protected $_fortemplatefield;
 
     /**
      * The value for the _content field.
+     *
      * @var        string
      */
     protected $_content;
 
     /**
      * The value for the _isjson field.
+     *
      * @var        boolean
      */
     protected $_isjson;
 
     /**
      * The value for the __user__ field.
+     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the version field.
+     *
      * Note: this column has a database default value of: 0
      * @var        int
      */
@@ -160,18 +177,21 @@ abstract class Data implements ActiveRecordInterface
 
     /**
      * The value for the version_created_at field.
-     * @var        \DateTime
+     *
+     * @var        DateTime
      */
     protected $version_created_at;
 
     /**
      * The value for the version_created_by field.
+     *
      * @var        string
      */
     protected $version_created_by;
 
     /**
      * The value for the version_comment field.
+     *
      * @var        string
      */
     protected $version_comment;
@@ -642,7 +662,15 @@ abstract class Data implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -769,7 +797,7 @@ abstract class Data implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [version_created_at] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -781,7 +809,7 @@ abstract class Data implements ActiveRecordInterface
         if ($format === null) {
             return $this->version_created_at;
         } else {
-            return $this->version_created_at instanceof \DateTime ? $this->version_created_at->format($format) : null;
+            return $this->version_created_at instanceof \DateTimeInterface ? $this->version_created_at->format($format) : null;
         }
     }
 
@@ -1048,7 +1076,7 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Sets the value of [version_created_at] column to a normalized version of the date/time value specified.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      * @return $this|\Data The current object (for fluent API support)
      */
@@ -1056,7 +1084,7 @@ abstract class Data implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->version_created_at !== null || $dt !== null) {
-            if ($this->version_created_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->version_created_at->format("Y-m-d H:i:s")) {
+            if ($this->version_created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->version_created_at->format("Y-m-d H:i:s.u")) {
                 $this->version_created_at = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[DataTableMap::COL_VERSION_CREATED_AT] = true;
             }
@@ -1346,13 +1374,17 @@ abstract class Data implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(DataTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             // versionable behavior
             if ($this->isVersioningNecessary()) {
                 $this->setVersion($this->isNew() ? 1 : $this->getLastVersionNumber($con) + 1);
@@ -1893,7 +1925,7 @@ abstract class Data implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->version, PDO::PARAM_INT);
                         break;
                     case 'version_created_at':
-                        $stmt->bindValue($identifier, $this->version_created_at ? $this->version_created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->version_created_at ? $this->version_created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'version_created_by':
                         $stmt->bindValue($identifier, $this->version_created_by, PDO::PARAM_STR);
@@ -2050,12 +2082,8 @@ abstract class Data implements ActiveRecordInterface
             $keys[12] => $this->getVersionCreatedBy(),
             $keys[13] => $this->getVersionComment(),
         );
-
-        $utc = new \DateTimeZone('utc');
-        if ($result[$keys[11]] instanceof \DateTime) {
-            // When changing timezone we don't want to change existing instances
-            $dateTime = clone $result[$keys[11]];
-            $result[$keys[11]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        if ($result[$keys[11]] instanceof \DateTimeInterface) {
+            $result[$keys[11]] = $result[$keys[11]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2074,7 +2102,7 @@ abstract class Data implements ActiveRecordInterface
                         $key = 'users';
                         break;
                     default:
-                        $key = 'Users';
+                        $key = 'userSysRef';
                 }
 
                 $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -2676,7 +2704,7 @@ abstract class Data implements ActiveRecordInterface
      */
     public function getuserSysRef(ConnectionInterface $con = null)
     {
-        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+        if ($this->auserSysRef === null && ($this->__user__ != 0)) {
             $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2727,7 +2755,7 @@ abstract class Data implements ActiveRecordInterface
      */
     public function getContributions(ConnectionInterface $con = null)
     {
-        if ($this->aContributions === null && ($this->_forcontribution !== null)) {
+        if ($this->aContributions === null && ($this->_forcontribution != 0)) {
             $this->aContributions = ChildContributionsQuery::create()->findPk($this->_forcontribution, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2778,7 +2806,7 @@ abstract class Data implements ActiveRecordInterface
      */
     public function getTemplates(ConnectionInterface $con = null)
     {
-        if ($this->aTemplates === null && ($this->_fortemplatefield !== null)) {
+        if ($this->aTemplates === null && ($this->_fortemplatefield != 0)) {
             $this->aTemplates = ChildTemplatesQuery::create()->findPk($this->_fortemplatefield, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2804,28 +2832,36 @@ abstract class Data implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RDataDataRelatedBySource' == $relationName) {
-            return $this->initRDataDatasRelatedBySource();
+            $this->initRDataDatasRelatedBySource();
+            return;
         }
         if ('RDataDataRelatedByTarget' == $relationName) {
-            return $this->initRDataDatasRelatedByTarget();
+            $this->initRDataDatasRelatedByTarget();
+            return;
         }
         if ('RDataContribution' == $relationName) {
-            return $this->initRDataContributions();
+            $this->initRDataContributions();
+            return;
         }
         if ('RDataBook' == $relationName) {
-            return $this->initRDataBooks();
+            $this->initRDataBooks();
+            return;
         }
         if ('RDataFormat' == $relationName) {
-            return $this->initRDataFormats();
+            $this->initRDataFormats();
+            return;
         }
         if ('RDataIssue' == $relationName) {
-            return $this->initRDataIssues();
+            $this->initRDataIssues();
+            return;
         }
         if ('RDataTemplate' == $relationName) {
-            return $this->initRDataTemplates();
+            $this->initRDataTemplates();
+            return;
         }
         if ('DataVersion' == $relationName) {
-            return $this->initDataVersions();
+            $this->initDataVersions();
+            return;
         }
     }
 
@@ -2868,7 +2904,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataDatasRelatedBySource && !$overrideExisting) {
             return;
         }
-        $this->collRDataDatasRelatedBySource = new ObjectCollection();
+
+        $collectionClassName = RDataDataTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataDatasRelatedBySource = new $collectionClassName;
         $this->collRDataDatasRelatedBySource->setModel('\RDataData');
     }
 
@@ -3016,6 +3055,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataDatasRelatedBySource->contains($l)) {
             $this->doAddRDataDataRelatedBySource($l);
+
+            if ($this->rDataDatasRelatedBySourceScheduledForDeletion and $this->rDataDatasRelatedBySourceScheduledForDeletion->contains($l)) {
+                $this->rDataDatasRelatedBySourceScheduledForDeletion->remove($this->rDataDatasRelatedBySourceScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3089,7 +3132,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataDatasRelatedByTarget && !$overrideExisting) {
             return;
         }
-        $this->collRDataDatasRelatedByTarget = new ObjectCollection();
+
+        $collectionClassName = RDataDataTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataDatasRelatedByTarget = new $collectionClassName;
         $this->collRDataDatasRelatedByTarget->setModel('\RDataData');
     }
 
@@ -3237,6 +3283,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataDatasRelatedByTarget->contains($l)) {
             $this->doAddRDataDataRelatedByTarget($l);
+
+            if ($this->rDataDatasRelatedByTargetScheduledForDeletion and $this->rDataDatasRelatedByTargetScheduledForDeletion->contains($l)) {
+                $this->rDataDatasRelatedByTargetScheduledForDeletion->remove($this->rDataDatasRelatedByTargetScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3310,7 +3360,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataContributions && !$overrideExisting) {
             return;
         }
-        $this->collRDataContributions = new ObjectCollection();
+
+        $collectionClassName = RDataContributionTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataContributions = new $collectionClassName;
         $this->collRDataContributions->setModel('\RDataContribution');
     }
 
@@ -3458,6 +3511,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataContributions->contains($l)) {
             $this->doAddRDataContribution($l);
+
+            if ($this->rDataContributionsScheduledForDeletion and $this->rDataContributionsScheduledForDeletion->contains($l)) {
+                $this->rDataContributionsScheduledForDeletion->remove($this->rDataContributionsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3556,7 +3613,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataBooks && !$overrideExisting) {
             return;
         }
-        $this->collRDataBooks = new ObjectCollection();
+
+        $collectionClassName = RDataBookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataBooks = new $collectionClassName;
         $this->collRDataBooks->setModel('\RDataBook');
     }
 
@@ -3704,6 +3764,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataBooks->contains($l)) {
             $this->doAddRDataBook($l);
+
+            if ($this->rDataBooksScheduledForDeletion and $this->rDataBooksScheduledForDeletion->contains($l)) {
+                $this->rDataBooksScheduledForDeletion->remove($this->rDataBooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3802,7 +3866,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataFormats && !$overrideExisting) {
             return;
         }
-        $this->collRDataFormats = new ObjectCollection();
+
+        $collectionClassName = RDataFormatTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataFormats = new $collectionClassName;
         $this->collRDataFormats->setModel('\RDataFormat');
     }
 
@@ -3950,6 +4017,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataFormats->contains($l)) {
             $this->doAddRDataFormat($l);
+
+            if ($this->rDataFormatsScheduledForDeletion and $this->rDataFormatsScheduledForDeletion->contains($l)) {
+                $this->rDataFormatsScheduledForDeletion->remove($this->rDataFormatsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -4048,7 +4119,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataIssues && !$overrideExisting) {
             return;
         }
-        $this->collRDataIssues = new ObjectCollection();
+
+        $collectionClassName = RDataIssueTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataIssues = new $collectionClassName;
         $this->collRDataIssues->setModel('\RDataIssue');
     }
 
@@ -4196,6 +4270,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataIssues->contains($l)) {
             $this->doAddRDataIssue($l);
+
+            if ($this->rDataIssuesScheduledForDeletion and $this->rDataIssuesScheduledForDeletion->contains($l)) {
+                $this->rDataIssuesScheduledForDeletion->remove($this->rDataIssuesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -4294,7 +4372,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collRDataTemplates && !$overrideExisting) {
             return;
         }
-        $this->collRDataTemplates = new ObjectCollection();
+
+        $collectionClassName = RDataTemplateTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataTemplates = new $collectionClassName;
         $this->collRDataTemplates->setModel('\RDataTemplate');
     }
 
@@ -4442,6 +4523,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collRDataTemplates->contains($l)) {
             $this->doAddRDataTemplate($l);
+
+            if ($this->rDataTemplatesScheduledForDeletion and $this->rDataTemplatesScheduledForDeletion->contains($l)) {
+                $this->rDataTemplatesScheduledForDeletion->remove($this->rDataTemplatesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -4540,7 +4625,10 @@ abstract class Data implements ActiveRecordInterface
         if (null !== $this->collDataVersions && !$overrideExisting) {
             return;
         }
-        $this->collDataVersions = new ObjectCollection();
+
+        $collectionClassName = DataVersionTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDataVersions = new $collectionClassName;
         $this->collDataVersions->setModel('\DataVersion');
     }
 
@@ -4688,6 +4776,10 @@ abstract class Data implements ActiveRecordInterface
 
         if (!$this->collDataVersions->contains($l)) {
             $this->doAddDataVersion($l);
+
+            if ($this->dataVersionsScheduledForDeletion and $this->dataVersionsScheduledForDeletion->contains($l)) {
+                $this->dataVersionsScheduledForDeletion->remove($this->dataVersionsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -4747,9 +4839,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRDataRefs()
     {
-        $this->collRDataRefs = new ObjectCollection();
-        $this->collRDataRefsPartial = true;
+        $collectionClassName = RDataDataTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRDataRefs = new $collectionClassName;
+        $this->collRDataRefsPartial = true;
         $this->collRDataRefs->setModel('\Data');
     }
 
@@ -4938,8 +5031,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRDataRef(ChildData $rDataRef)
     {
-        if ($this->getRDataRefs()->contains($rDataRef)) { $rDataData = new ChildRDataData();
-
+        if ($this->getRDataRefs()->contains($rDataRef)) {
+            $rDataData = new ChildRDataData();
             $rDataData->setRDataRef($rDataRef);
             if ($rDataRef->isRDataSrcsLoaded()) {
                 //remove the back reference if available
@@ -4989,9 +5082,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRDataSrcs()
     {
-        $this->collRDataSrcs = new ObjectCollection();
-        $this->collRDataSrcsPartial = true;
+        $collectionClassName = RDataDataTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRDataSrcs = new $collectionClassName;
+        $this->collRDataSrcsPartial = true;
         $this->collRDataSrcs->setModel('\Data');
     }
 
@@ -5180,8 +5274,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRDataSrc(ChildData $rDataSrc)
     {
-        if ($this->getRDataSrcs()->contains($rDataSrc)) { $rDataData = new ChildRDataData();
-
+        if ($this->getRDataSrcs()->contains($rDataSrc)) {
+            $rDataData = new ChildRDataData();
             $rDataData->setRDataSrc($rDataSrc);
             if ($rDataSrc->isRDataRefsLoaded()) {
                 //remove the back reference if available
@@ -5231,9 +5325,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRContributions()
     {
-        $this->collRContributions = new ObjectCollection();
-        $this->collRContributionsPartial = true;
+        $collectionClassName = RDataContributionTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRContributions = new $collectionClassName;
+        $this->collRContributionsPartial = true;
         $this->collRContributions->setModel('\Contributions');
     }
 
@@ -5422,8 +5517,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRContribution(ChildContributions $rContribution)
     {
-        if ($this->getRContributions()->contains($rContribution)) { $rDataContribution = new ChildRDataContribution();
-
+        if ($this->getRContributions()->contains($rContribution)) {
+            $rDataContribution = new ChildRDataContribution();
             $rDataContribution->setRContribution($rContribution);
             if ($rContribution->isRDatasLoaded()) {
                 //remove the back reference if available
@@ -5473,9 +5568,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRBooks()
     {
-        $this->collRBooks = new ObjectCollection();
-        $this->collRBooksPartial = true;
+        $collectionClassName = RDataBookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRBooks = new $collectionClassName;
+        $this->collRBooksPartial = true;
         $this->collRBooks->setModel('\Books');
     }
 
@@ -5664,8 +5760,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRBook(ChildBooks $rBook)
     {
-        if ($this->getRBooks()->contains($rBook)) { $rDataBook = new ChildRDataBook();
-
+        if ($this->getRBooks()->contains($rBook)) {
+            $rDataBook = new ChildRDataBook();
             $rDataBook->setRBook($rBook);
             if ($rBook->isRDatasLoaded()) {
                 //remove the back reference if available
@@ -5715,9 +5811,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRFormats()
     {
-        $this->collRFormats = new ObjectCollection();
-        $this->collRFormatsPartial = true;
+        $collectionClassName = RDataFormatTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRFormats = new $collectionClassName;
+        $this->collRFormatsPartial = true;
         $this->collRFormats->setModel('\Formats');
     }
 
@@ -5906,8 +6003,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRFormat(ChildFormats $rFormat)
     {
-        if ($this->getRFormats()->contains($rFormat)) { $rDataFormat = new ChildRDataFormat();
-
+        if ($this->getRFormats()->contains($rFormat)) {
+            $rDataFormat = new ChildRDataFormat();
             $rDataFormat->setRFormat($rFormat);
             if ($rFormat->isRDatasLoaded()) {
                 //remove the back reference if available
@@ -5957,9 +6054,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRIssues()
     {
-        $this->collRIssues = new ObjectCollection();
-        $this->collRIssuesPartial = true;
+        $collectionClassName = RDataIssueTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRIssues = new $collectionClassName;
+        $this->collRIssuesPartial = true;
         $this->collRIssues->setModel('\Issues');
     }
 
@@ -6148,8 +6246,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRIssue(ChildIssues $rIssue)
     {
-        if ($this->getRIssues()->contains($rIssue)) { $rDataIssue = new ChildRDataIssue();
-
+        if ($this->getRIssues()->contains($rIssue)) {
+            $rDataIssue = new ChildRDataIssue();
             $rDataIssue->setRIssue($rIssue);
             if ($rIssue->isRDatasLoaded()) {
                 //remove the back reference if available
@@ -6199,9 +6297,10 @@ abstract class Data implements ActiveRecordInterface
      */
     public function initRTemplates()
     {
-        $this->collRTemplates = new ObjectCollection();
-        $this->collRTemplatesPartial = true;
+        $collectionClassName = RDataTemplateTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRTemplates = new $collectionClassName;
+        $this->collRTemplatesPartial = true;
         $this->collRTemplates->setModel('\Templates');
     }
 
@@ -6390,8 +6489,8 @@ abstract class Data implements ActiveRecordInterface
      */
     public function removeRTemplate(ChildTemplates $rTemplate)
     {
-        if ($this->getRTemplates()->contains($rTemplate)) { $rDataTemplate = new ChildRDataTemplate();
-
+        if ($this->getRTemplates()->contains($rTemplate)) {
+            $rDataTemplate = new ChildRDataTemplate();
             $rDataTemplate->setRTemplate($rTemplate);
             if ($rTemplate->isRDatasLoaded()) {
                 //remove the back reference if available
@@ -6589,9 +6688,10 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Checks whether the current state must be recorded as a version
      *
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      * @return  boolean
      */
-    public function isVersioningNecessary($con = null)
+    public function isVersioningNecessary(ConnectionInterface $con = null)
     {
         if ($this->alreadyInSave) {
             return false;
@@ -6615,11 +6715,11 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Creates a version of the current object and saves it.
      *
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      *
      * @return  ChildDataVersion A version object
      */
-    public function addVersion($con = null)
+    public function addVersion(ConnectionInterface $con = null)
     {
         $this->enforceVersion = false;
 
@@ -6651,11 +6751,11 @@ abstract class Data implements ActiveRecordInterface
      * Sets the properties of the current object to the value they had at a specific version
      *
      * @param   integer $versionNumber The version number to read
-     * @param   ConnectionInterface $con The connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      *
      * @return  $this|ChildData The current object (for fluent API support)
      */
-    public function toVersion($versionNumber, $con = null)
+    public function toVersion($versionNumber, ConnectionInterface $con = null)
     {
         $version = $this->getOneVersion($versionNumber, $con);
         if (!$version) {
@@ -6699,7 +6799,7 @@ abstract class Data implements ActiveRecordInterface
                 $related = new ChildContributions();
                 $relatedVersion = ChildContributionsVersionQuery::create()
                     ->filterById($fkValue)
-                    ->filterByVersion($version->getForcontributionVersion())
+                    ->filterByVersionComment($version->getForcontributionVersion())
                     ->findOne($con);
                 $related->populateFromVersion($relatedVersion, $con, $loadedObjects);
                 $related->setNew(false);
@@ -6713,11 +6813,11 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Gets the latest persisted version number for the current object
      *
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      *
      * @return  integer
      */
-    public function getLastVersionNumber($con = null)
+    public function getLastVersionNumber(ConnectionInterface $con = null)
     {
         $v = ChildDataVersionQuery::create()
             ->filterByData($this)
@@ -6733,11 +6833,11 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Checks whether the current object is the latest one
      *
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      *
      * @return  Boolean
      */
-    public function isLastVersion($con = null)
+    public function isLastVersion(ConnectionInterface $con = null)
     {
         return $this->getLastVersionNumber($con) == $this->getVersion();
     }
@@ -6746,11 +6846,11 @@ abstract class Data implements ActiveRecordInterface
      * Retrieves a version object for this entity and a version number
      *
      * @param   integer $versionNumber The version number to read
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      *
      * @return  ChildDataVersion A version object
      */
-    public function getOneVersion($versionNumber, $con = null)
+    public function getOneVersion($versionNumber, ConnectionInterface $con = null)
     {
         return ChildDataVersionQuery::create()
             ->filterByData($this)
@@ -6761,11 +6861,11 @@ abstract class Data implements ActiveRecordInterface
     /**
      * Gets all the versions of this object, in incremental order
      *
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      *
      * @return  ObjectCollection|ChildDataVersion[] A list of ChildDataVersion objects
      */
-    public function getAllVersions($con = null)
+    public function getAllVersions(ConnectionInterface $con = null)
     {
         $criteria = new Criteria();
         $criteria->addAscendingOrderByColumn(DataVersionTableMap::COL_VERSION);
@@ -6785,12 +6885,12 @@ abstract class Data implements ActiveRecordInterface
      *
      * @param   integer             $versionNumber
      * @param   string              $keys Main key used for the result diff (versions|columns)
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      * @param   array               $ignoredColumns  The columns to exclude from the diff.
      *
      * @return  array A list of differences
      */
-    public function compareVersion($versionNumber, $keys = 'columns', $con = null, $ignoredColumns = array())
+    public function compareVersion($versionNumber, $keys = 'columns', ConnectionInterface $con = null, $ignoredColumns = array())
     {
         $fromVersion = $this->toArray();
         $toVersion = $this->getOneVersion($versionNumber, $con)->toArray();
@@ -6811,12 +6911,12 @@ abstract class Data implements ActiveRecordInterface
      * @param   integer             $fromVersionNumber
      * @param   integer             $toVersionNumber
      * @param   string              $keys Main key used for the result diff (versions|columns)
-     * @param   ConnectionInterface $con the connection to use
+     * @param   ConnectionInterface $con The ConnectionInterface connection to use.
      * @param   array               $ignoredColumns  The columns to exclude from the diff.
      *
      * @return  array A list of differences
      */
-    public function compareVersions($fromVersionNumber, $toVersionNumber, $keys = 'columns', $con = null, $ignoredColumns = array())
+    public function compareVersions($fromVersionNumber, $toVersionNumber, $keys = 'columns', ConnectionInterface $con = null, $ignoredColumns = array())
     {
         $fromVersion = $this->getOneVersion($fromVersionNumber, $con)->toArray();
         $toVersion = $this->getOneVersion($toVersionNumber, $con)->toArray();
@@ -6877,10 +6977,13 @@ abstract class Data implements ActiveRecordInterface
     /**
      * retrieve the last $number versions.
      *
-     * @param Integer $number the number of record to return.
+     * @param  Integer             $number The number of record to return.
+     * @param  Criteria            $criteria The Criteria object containing modified values.
+     * @param  ConnectionInterface $con The ConnectionInterface connection to use.
+     *
      * @return PropelCollection|\DataVersion[] List of \DataVersion objects
      */
-    public function getLastVersions($number = 10, $criteria = null, $con = null)
+    public function getLastVersions($number = 10, $criteria = null, ConnectionInterface $con = null)
     {
         $criteria = ChildDataVersionQuery::create(null, $criteria);
         $criteria->addDescendingOrderByColumn(DataVersionTableMap::COL_VERSION);
@@ -6895,6 +6998,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -6904,7 +7010,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -6914,6 +7022,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -6923,7 +7034,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -6933,6 +7046,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -6942,7 +7058,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -6952,6 +7070,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -6961,7 +7082,9 @@ abstract class Data implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

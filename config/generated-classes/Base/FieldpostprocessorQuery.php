@@ -40,9 +40,19 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildFieldpostprocessorQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildFieldpostprocessorQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildFieldpostprocessorQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildFieldpostprocessorQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildFieldpostprocessorQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildFieldpostprocessorQuery leftJoinRFieldpostprocessorForfield($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildFieldpostprocessorQuery rightJoinRFieldpostprocessorForfield($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildFieldpostprocessorQuery innerJoinRFieldpostprocessorForfield($relationAlias = null) Adds a INNER JOIN clause to the query using the RFieldpostprocessorForfield relation
+ *
+ * @method     ChildFieldpostprocessorQuery joinWithRFieldpostprocessorForfield($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFieldpostprocessorForfield relation
+ *
+ * @method     ChildFieldpostprocessorQuery leftJoinWithRFieldpostprocessorForfield() Adds a LEFT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildFieldpostprocessorQuery rightJoinWithRFieldpostprocessorForfield() Adds a RIGHT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildFieldpostprocessorQuery innerJoinWithRFieldpostprocessorForfield() Adds a INNER JOIN clause and with to the query using the RFieldpostprocessorForfield relation
  *
  * @method     \RFieldpostprocessorForfieldQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -138,21 +148,27 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = FieldpostprocessorTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(FieldpostprocessorTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = FieldpostprocessorTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -182,7 +198,7 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
             /** @var ChildFieldpostprocessor $obj */
             $obj = new ChildFieldpostprocessor();
             $obj->hydrate($row);
-            FieldpostprocessorTableMap::addInstanceToPool($obj, (string) $key);
+            FieldpostprocessorTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -305,11 +321,10 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
@@ -319,9 +334,6 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -334,11 +346,10 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByCode('fooValue');   // WHERE _code = 'fooValue'
-     * $query->filterByCode('%fooValue%'); // WHERE _code LIKE '%fooValue%'
+     * $query->filterByCode('%fooValue%', Criteria::LIKE); // WHERE _code LIKE '%fooValue%'
      * </code>
      *
      * @param     string $code The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
@@ -348,9 +359,6 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($code)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $code)) {
-                $code = str_replace('*', '%', $code);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -363,11 +371,10 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
@@ -377,9 +384,6 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -392,11 +396,10 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildFieldpostprocessorQuery The current query, for fluid interface
@@ -406,9 +409,6 @@ abstract class FieldpostprocessorQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

@@ -50,29 +50,69 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildIssuesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildIssuesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildIssuesQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildIssuesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildIssuesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildIssuesQuery leftJoinuserSysRef($relationAlias = null) Adds a LEFT JOIN clause to the query using the userSysRef relation
  * @method     ChildIssuesQuery rightJoinuserSysRef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the userSysRef relation
  * @method     ChildIssuesQuery innerJoinuserSysRef($relationAlias = null) Adds a INNER JOIN clause to the query using the userSysRef relation
+ *
+ * @method     ChildIssuesQuery joinWithuserSysRef($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the userSysRef relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithuserSysRef() Adds a LEFT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildIssuesQuery rightJoinWithuserSysRef() Adds a RIGHT JOIN clause and with to the query using the userSysRef relation
+ * @method     ChildIssuesQuery innerJoinWithuserSysRef() Adds a INNER JOIN clause and with to the query using the userSysRef relation
  *
  * @method     ChildIssuesQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildIssuesQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
+ * @method     ChildIssuesQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
+ * @method     ChildIssuesQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
+ * @method     ChildIssuesQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
+ *
  * @method     ChildIssuesQuery leftJoinRRightsForissue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildIssuesQuery rightJoinRRightsForissue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForissue relation
  * @method     ChildIssuesQuery innerJoinRRightsForissue($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForissue relation
+ *
+ * @method     ChildIssuesQuery joinWithRRightsForissue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForissue relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithRRightsForissue() Adds a LEFT JOIN clause and with to the query using the RRightsForissue relation
+ * @method     ChildIssuesQuery rightJoinWithRRightsForissue() Adds a RIGHT JOIN clause and with to the query using the RRightsForissue relation
+ * @method     ChildIssuesQuery innerJoinWithRRightsForissue() Adds a INNER JOIN clause and with to the query using the RRightsForissue relation
  *
  * @method     ChildIssuesQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildIssuesQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildIssuesQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
  *
+ * @method     ChildIssuesQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildIssuesQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildIssuesQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
+ *
  * @method     ChildIssuesQuery leftJoinRDataIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataIssue relation
  * @method     ChildIssuesQuery rightJoinRDataIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataIssue relation
  * @method     ChildIssuesQuery innerJoinRDataIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataIssue relation
  *
+ * @method     ChildIssuesQuery joinWithRDataIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataIssue relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithRDataIssue() Adds a LEFT JOIN clause and with to the query using the RDataIssue relation
+ * @method     ChildIssuesQuery rightJoinWithRDataIssue() Adds a RIGHT JOIN clause and with to the query using the RDataIssue relation
+ * @method     ChildIssuesQuery innerJoinWithRDataIssue() Adds a INNER JOIN clause and with to the query using the RDataIssue relation
+ *
  * @method     ChildIssuesQuery leftJoinRPluginIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginIssue relation
  * @method     ChildIssuesQuery rightJoinRPluginIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginIssue relation
  * @method     ChildIssuesQuery innerJoinRPluginIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginIssue relation
+ *
+ * @method     ChildIssuesQuery joinWithRPluginIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginIssue relation
+ *
+ * @method     ChildIssuesQuery leftJoinWithRPluginIssue() Adds a LEFT JOIN clause and with to the query using the RPluginIssue relation
+ * @method     ChildIssuesQuery rightJoinWithRPluginIssue() Adds a RIGHT JOIN clause and with to the query using the RPluginIssue relation
+ * @method     ChildIssuesQuery innerJoinWithRPluginIssue() Adds a INNER JOIN clause and with to the query using the RPluginIssue relation
  *
  * @method     \UsersQuery|\BooksQuery|\RRightsForissueQuery|\ContributionsQuery|\RDataIssueQuery|\RPluginIssueQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -183,21 +223,27 @@ abstract class IssuesQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = IssuesTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(IssuesTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = IssuesTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -227,7 +273,7 @@ abstract class IssuesQuery extends ModelCriteria
             /** @var ChildIssues $obj */
             $obj = new ChildIssues();
             $obj->hydrate($row);
-            IssuesTableMap::addInstanceToPool($obj, (string) $key);
+            IssuesTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -350,11 +396,10 @@ abstract class IssuesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
@@ -364,9 +409,6 @@ abstract class IssuesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -461,11 +503,10 @@ abstract class IssuesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByStatus('fooValue');   // WHERE _status = 'fooValue'
-     * $query->filterByStatus('%fooValue%'); // WHERE _status LIKE '%fooValue%'
+     * $query->filterByStatus('%fooValue%', Criteria::LIKE); // WHERE _status LIKE '%fooValue%'
      * </code>
      *
      * @param     string $status The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
@@ -475,9 +516,6 @@ abstract class IssuesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($status)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $status)) {
-                $status = str_replace('*', '%', $status);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -490,11 +528,10 @@ abstract class IssuesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByInfotext('fooValue');   // WHERE _infotext = 'fooValue'
-     * $query->filterByInfotext('%fooValue%'); // WHERE _infotext LIKE '%fooValue%'
+     * $query->filterByInfotext('%fooValue%', Criteria::LIKE); // WHERE _infotext LIKE '%fooValue%'
      * </code>
      *
      * @param     string $infotext The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
@@ -504,9 +541,6 @@ abstract class IssuesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($infotext)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $infotext)) {
-                $infotext = str_replace('*', '%', $infotext);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -605,11 +639,10 @@ abstract class IssuesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
@@ -619,9 +652,6 @@ abstract class IssuesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -634,11 +664,10 @@ abstract class IssuesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildIssuesQuery The current query, for fluid interface
@@ -648,9 +677,6 @@ abstract class IssuesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRDataIssueQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRDataIssueQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRDataIssueQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRDataIssueQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRDataIssueQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRDataIssueQuery leftJoinRData($relationAlias = null) Adds a LEFT JOIN clause to the query using the RData relation
  * @method     ChildRDataIssueQuery rightJoinRData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RData relation
  * @method     ChildRDataIssueQuery innerJoinRData($relationAlias = null) Adds a INNER JOIN clause to the query using the RData relation
  *
+ * @method     ChildRDataIssueQuery joinWithRData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RData relation
+ *
+ * @method     ChildRDataIssueQuery leftJoinWithRData() Adds a LEFT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataIssueQuery rightJoinWithRData() Adds a RIGHT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataIssueQuery innerJoinWithRData() Adds a INNER JOIN clause and with to the query using the RData relation
+ *
  * @method     ChildRDataIssueQuery leftJoinRIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RIssue relation
  * @method     ChildRDataIssueQuery rightJoinRIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RIssue relation
  * @method     ChildRDataIssueQuery innerJoinRIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RIssue relation
+ *
+ * @method     ChildRDataIssueQuery joinWithRIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RIssue relation
+ *
+ * @method     ChildRDataIssueQuery leftJoinWithRIssue() Adds a LEFT JOIN clause and with to the query using the RIssue relation
+ * @method     ChildRDataIssueQuery rightJoinWithRIssue() Adds a RIGHT JOIN clause and with to the query using the RIssue relation
+ * @method     ChildRDataIssueQuery innerJoinWithRIssue() Adds a INNER JOIN clause and with to the query using the RIssue relation
  *
  * @method     \DataQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RDataIssueQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RDataIssueTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RDataIssueTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RDataIssueTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RDataIssueQuery extends ModelCriteria
             /** @var ChildRDataIssue $obj */
             $obj = new ChildRDataIssue();
             $obj->hydrate($row);
-            RDataIssueTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RDataIssueTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

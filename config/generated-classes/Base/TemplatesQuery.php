@@ -46,21 +46,49 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTemplatesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildTemplatesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildTemplatesQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildTemplatesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildTemplatesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildTemplatesQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
  * @method     ChildTemplatesQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildTemplatesQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
+ *
+ * @method     ChildTemplatesQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
+ *
+ * @method     ChildTemplatesQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildTemplatesQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildTemplatesQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
  *
  * @method     ChildTemplatesQuery leftJoinRFieldpostprocessorForfield($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildTemplatesQuery rightJoinRFieldpostprocessorForfield($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFieldpostprocessorForfield relation
  * @method     ChildTemplatesQuery innerJoinRFieldpostprocessorForfield($relationAlias = null) Adds a INNER JOIN clause to the query using the RFieldpostprocessorForfield relation
  *
+ * @method     ChildTemplatesQuery joinWithRFieldpostprocessorForfield($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFieldpostprocessorForfield relation
+ *
+ * @method     ChildTemplatesQuery leftJoinWithRFieldpostprocessorForfield() Adds a LEFT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildTemplatesQuery rightJoinWithRFieldpostprocessorForfield() Adds a RIGHT JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ * @method     ChildTemplatesQuery innerJoinWithRFieldpostprocessorForfield() Adds a INNER JOIN clause and with to the query using the RFieldpostprocessorForfield relation
+ *
  * @method     ChildTemplatesQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildTemplatesQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
  *
+ * @method     ChildTemplatesQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
+ *
+ * @method     ChildTemplatesQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
+ * @method     ChildTemplatesQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
+ * @method     ChildTemplatesQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
+ *
  * @method     ChildTemplatesQuery leftJoinRDataTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RDataTemplate relation
  * @method     ChildTemplatesQuery rightJoinRDataTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RDataTemplate relation
  * @method     ChildTemplatesQuery innerJoinRDataTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RDataTemplate relation
+ *
+ * @method     ChildTemplatesQuery joinWithRDataTemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RDataTemplate relation
+ *
+ * @method     ChildTemplatesQuery leftJoinWithRDataTemplate() Adds a LEFT JOIN clause and with to the query using the RDataTemplate relation
+ * @method     ChildTemplatesQuery rightJoinWithRDataTemplate() Adds a RIGHT JOIN clause and with to the query using the RDataTemplate relation
+ * @method     ChildTemplatesQuery innerJoinWithRDataTemplate() Adds a INNER JOIN clause and with to the query using the RDataTemplate relation
  *
  * @method     \TemplatenamesQuery|\RFieldpostprocessorForfieldQuery|\DataQuery|\RDataTemplateQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -165,21 +193,27 @@ abstract class TemplatesQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = TemplatesTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(TemplatesTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = TemplatesTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -209,7 +243,7 @@ abstract class TemplatesQuery extends ModelCriteria
             /** @var ChildTemplates $obj */
             $obj = new ChildTemplates();
             $obj->hydrate($row);
-            TemplatesTableMap::addInstanceToPool($obj, (string) $key);
+            TemplatesTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -375,11 +409,10 @@ abstract class TemplatesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByFieldname('fooValue');   // WHERE _fieldname = 'fooValue'
-     * $query->filterByFieldname('%fooValue%'); // WHERE _fieldname LIKE '%fooValue%'
+     * $query->filterByFieldname('%fooValue%', Criteria::LIKE); // WHERE _fieldname LIKE '%fooValue%'
      * </code>
      *
      * @param     string $fieldname The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatesQuery The current query, for fluid interface
@@ -389,9 +422,6 @@ abstract class TemplatesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($fieldname)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $fieldname)) {
-                $fieldname = str_replace('*', '%', $fieldname);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -404,11 +434,10 @@ abstract class TemplatesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByHelpdescription('fooValue');   // WHERE _helpdescription = 'fooValue'
-     * $query->filterByHelpdescription('%fooValue%'); // WHERE _helpdescription LIKE '%fooValue%'
+     * $query->filterByHelpdescription('%fooValue%', Criteria::LIKE); // WHERE _helpdescription LIKE '%fooValue%'
      * </code>
      *
      * @param     string $helpdescription The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatesQuery The current query, for fluid interface
@@ -418,9 +447,6 @@ abstract class TemplatesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($helpdescription)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $helpdescription)) {
-                $helpdescription = str_replace('*', '%', $helpdescription);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -433,11 +459,10 @@ abstract class TemplatesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByHelpimage('fooValue');   // WHERE _helpimage = 'fooValue'
-     * $query->filterByHelpimage('%fooValue%'); // WHERE _helpimage LIKE '%fooValue%'
+     * $query->filterByHelpimage('%fooValue%', Criteria::LIKE); // WHERE _helpimage LIKE '%fooValue%'
      * </code>
      *
      * @param     string $helpimage The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatesQuery The current query, for fluid interface
@@ -447,9 +472,6 @@ abstract class TemplatesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($helpimage)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $helpimage)) {
-                $helpimage = str_replace('*', '%', $helpimage);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -462,11 +484,10 @@ abstract class TemplatesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByFieldtype('fooValue');   // WHERE _fieldtype = 'fooValue'
-     * $query->filterByFieldtype('%fooValue%'); // WHERE _fieldtype LIKE '%fooValue%'
+     * $query->filterByFieldtype('%fooValue%', Criteria::LIKE); // WHERE _fieldtype LIKE '%fooValue%'
      * </code>
      *
      * @param     string $fieldtype The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatesQuery The current query, for fluid interface
@@ -476,9 +497,6 @@ abstract class TemplatesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($fieldtype)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $fieldtype)) {
-                $fieldtype = str_replace('*', '%', $fieldtype);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -491,11 +509,10 @@ abstract class TemplatesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatesQuery The current query, for fluid interface
@@ -505,9 +522,6 @@ abstract class TemplatesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -520,11 +534,10 @@ abstract class TemplatesQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTemplatesQuery The current query, for fluid interface
@@ -534,9 +547,6 @@ abstract class TemplatesQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

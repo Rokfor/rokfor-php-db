@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRTemplatenamesForbookQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRTemplatenamesForbookQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRTemplatenamesForbookQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRTemplatenamesForbookQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRTemplatenamesForbookQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRTemplatenamesForbookQuery leftJoinTemplatenames($relationAlias = null) Adds a LEFT JOIN clause to the query using the Templatenames relation
  * @method     ChildRTemplatenamesForbookQuery rightJoinTemplatenames($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Templatenames relation
  * @method     ChildRTemplatenamesForbookQuery innerJoinTemplatenames($relationAlias = null) Adds a INNER JOIN clause to the query using the Templatenames relation
  *
+ * @method     ChildRTemplatenamesForbookQuery joinWithTemplatenames($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Templatenames relation
+ *
+ * @method     ChildRTemplatenamesForbookQuery leftJoinWithTemplatenames() Adds a LEFT JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildRTemplatenamesForbookQuery rightJoinWithTemplatenames() Adds a RIGHT JOIN clause and with to the query using the Templatenames relation
+ * @method     ChildRTemplatenamesForbookQuery innerJoinWithTemplatenames() Adds a INNER JOIN clause and with to the query using the Templatenames relation
+ *
  * @method     ChildRTemplatenamesForbookQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildRTemplatenamesForbookQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildRTemplatenamesForbookQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
+ *
+ * @method     ChildRTemplatenamesForbookQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
+ *
+ * @method     ChildRTemplatenamesForbookQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
+ * @method     ChildRTemplatenamesForbookQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
+ * @method     ChildRTemplatenamesForbookQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
  *
  * @method     \TemplatenamesQuery|\BooksQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RTemplatenamesForbookQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RTemplatenamesForbookTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RTemplatenamesForbookTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RTemplatenamesForbookTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RTemplatenamesForbookQuery extends ModelCriteria
             /** @var ChildRTemplatenamesForbook $obj */
             $obj = new ChildRTemplatenamesForbook();
             $obj->hydrate($row);
-            RTemplatenamesForbookTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RTemplatenamesForbookTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

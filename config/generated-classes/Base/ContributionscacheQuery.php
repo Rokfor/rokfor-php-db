@@ -24,19 +24,41 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionscacheQuery orderBySignature($order = Criteria::ASC) Order by the _signature column
  * @method     ChildContributionscacheQuery orderByForcontribution($order = Criteria::ASC) Order by the _forcontribution column
  * @method     ChildContributionscacheQuery orderByCache($order = Criteria::ASC) Order by the _cache column
+ * @method     ChildContributionscacheQuery orderByBook($order = Criteria::ASC) Order by the _book column
+ * @method     ChildContributionscacheQuery orderByIssue($order = Criteria::ASC) Order by the _issue column
+ * @method     ChildContributionscacheQuery orderByChapter($order = Criteria::ASC) Order by the _chapter column
+ * @method     ChildContributionscacheQuery orderByTemplate($order = Criteria::ASC) Order by the _template column
+ * @method     ChildContributionscacheQuery orderByContribution($order = Criteria::ASC) Order by the _contribution column
+ * @method     ChildContributionscacheQuery orderByTouched($order = Criteria::ASC) Order by the _touched column
  *
  * @method     ChildContributionscacheQuery groupById() Group by the id column
  * @method     ChildContributionscacheQuery groupBySignature() Group by the _signature column
  * @method     ChildContributionscacheQuery groupByForcontribution() Group by the _forcontribution column
  * @method     ChildContributionscacheQuery groupByCache() Group by the _cache column
+ * @method     ChildContributionscacheQuery groupByBook() Group by the _book column
+ * @method     ChildContributionscacheQuery groupByIssue() Group by the _issue column
+ * @method     ChildContributionscacheQuery groupByChapter() Group by the _chapter column
+ * @method     ChildContributionscacheQuery groupByTemplate() Group by the _template column
+ * @method     ChildContributionscacheQuery groupByContribution() Group by the _contribution column
+ * @method     ChildContributionscacheQuery groupByTouched() Group by the _touched column
  *
  * @method     ChildContributionscacheQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildContributionscacheQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildContributionscacheQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildContributionscacheQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildContributionscacheQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildContributionscacheQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildContributionscacheQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildContributionscacheQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildContributionscacheQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
+ *
+ * @method     ChildContributionscacheQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildContributionscacheQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildContributionscacheQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildContributionscacheQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     \ContributionsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -46,7 +68,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionscache findOneById(int $id) Return the first ChildContributionscache filtered by the id column
  * @method     ChildContributionscache findOneBySignature(string $_signature) Return the first ChildContributionscache filtered by the _signature column
  * @method     ChildContributionscache findOneByForcontribution(int $_forcontribution) Return the first ChildContributionscache filtered by the _forcontribution column
- * @method     ChildContributionscache findOneByCache(string $_cache) Return the first ChildContributionscache filtered by the _cache column *
+ * @method     ChildContributionscache findOneByCache(string $_cache) Return the first ChildContributionscache filtered by the _cache column
+ * @method     ChildContributionscache findOneByBook(string $_book) Return the first ChildContributionscache filtered by the _book column
+ * @method     ChildContributionscache findOneByIssue(string $_issue) Return the first ChildContributionscache filtered by the _issue column
+ * @method     ChildContributionscache findOneByChapter(string $_chapter) Return the first ChildContributionscache filtered by the _chapter column
+ * @method     ChildContributionscache findOneByTemplate(string $_template) Return the first ChildContributionscache filtered by the _template column
+ * @method     ChildContributionscache findOneByContribution(string $_contribution) Return the first ChildContributionscache filtered by the _contribution column
+ * @method     ChildContributionscache findOneByTouched(string $_touched) Return the first ChildContributionscache filtered by the _touched column *
 
  * @method     ChildContributionscache requirePk($key, ConnectionInterface $con = null) Return the ChildContributionscache by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributionscache requireOne(ConnectionInterface $con = null) Return the first ChildContributionscache matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -55,12 +83,24 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildContributionscache requireOneBySignature(string $_signature) Return the first ChildContributionscache filtered by the _signature column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributionscache requireOneByForcontribution(int $_forcontribution) Return the first ChildContributionscache filtered by the _forcontribution column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildContributionscache requireOneByCache(string $_cache) Return the first ChildContributionscache filtered by the _cache column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributionscache requireOneByBook(string $_book) Return the first ChildContributionscache filtered by the _book column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributionscache requireOneByIssue(string $_issue) Return the first ChildContributionscache filtered by the _issue column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributionscache requireOneByChapter(string $_chapter) Return the first ChildContributionscache filtered by the _chapter column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributionscache requireOneByTemplate(string $_template) Return the first ChildContributionscache filtered by the _template column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributionscache requireOneByContribution(string $_contribution) Return the first ChildContributionscache filtered by the _contribution column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildContributionscache requireOneByTouched(string $_touched) Return the first ChildContributionscache filtered by the _touched column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildContributionscache[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildContributionscache objects based on current ModelCriteria
  * @method     ChildContributionscache[]|ObjectCollection findById(int $id) Return ChildContributionscache objects filtered by the id column
  * @method     ChildContributionscache[]|ObjectCollection findBySignature(string $_signature) Return ChildContributionscache objects filtered by the _signature column
  * @method     ChildContributionscache[]|ObjectCollection findByForcontribution(int $_forcontribution) Return ChildContributionscache objects filtered by the _forcontribution column
  * @method     ChildContributionscache[]|ObjectCollection findByCache(string $_cache) Return ChildContributionscache objects filtered by the _cache column
+ * @method     ChildContributionscache[]|ObjectCollection findByBook(string $_book) Return ChildContributionscache objects filtered by the _book column
+ * @method     ChildContributionscache[]|ObjectCollection findByIssue(string $_issue) Return ChildContributionscache objects filtered by the _issue column
+ * @method     ChildContributionscache[]|ObjectCollection findByChapter(string $_chapter) Return ChildContributionscache objects filtered by the _chapter column
+ * @method     ChildContributionscache[]|ObjectCollection findByTemplate(string $_template) Return ChildContributionscache objects filtered by the _template column
+ * @method     ChildContributionscache[]|ObjectCollection findByContribution(string $_contribution) Return ChildContributionscache objects filtered by the _contribution column
+ * @method     ChildContributionscache[]|ObjectCollection findByTouched(string $_touched) Return ChildContributionscache objects filtered by the _touched column
  * @method     ChildContributionscache[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -130,21 +170,27 @@ abstract class ContributionscacheQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = ContributionscacheTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(ContributionscacheTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->filterByPrimaryKey($key)->findOne($con);
         }
+
+        if ((null !== ($obj = ContributionscacheTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->filterByPrimaryKey($key)->findOne($con);
     }
 
     /**
@@ -160,7 +206,7 @@ abstract class ContributionscacheQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, _signature, _forcontribution, _cache FROM _contributions_cache WHERE id = :p0';
+        $sql = 'SELECT id, _signature, _forcontribution, _cache, _book, _issue, _chapter, _template, _contribution, _touched FROM _contributions_cache WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -174,7 +220,7 @@ abstract class ContributionscacheQuery extends ModelCriteria
             /** @var ChildContributionscache $obj */
             $obj = new ChildContributionscache();
             $obj->hydrate($row);
-            ContributionscacheTableMap::addInstanceToPool($obj, (string) $key);
+            ContributionscacheTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -297,11 +343,10 @@ abstract class ContributionscacheQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySignature('fooValue');   // WHERE _signature = 'fooValue'
-     * $query->filterBySignature('%fooValue%'); // WHERE _signature LIKE '%fooValue%'
+     * $query->filterBySignature('%fooValue%', Criteria::LIKE); // WHERE _signature LIKE '%fooValue%'
      * </code>
      *
      * @param     string $signature The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionscacheQuery The current query, for fluid interface
@@ -311,9 +356,6 @@ abstract class ContributionscacheQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($signature)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $signature)) {
-                $signature = str_replace('*', '%', $signature);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -369,11 +411,10 @@ abstract class ContributionscacheQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByCache('fooValue');   // WHERE _cache = 'fooValue'
-     * $query->filterByCache('%fooValue%'); // WHERE _cache LIKE '%fooValue%'
+     * $query->filterByCache('%fooValue%', Criteria::LIKE); // WHERE _cache LIKE '%fooValue%'
      * </code>
      *
      * @param     string $cache The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildContributionscacheQuery The current query, for fluid interface
@@ -383,13 +424,178 @@ abstract class ContributionscacheQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($cache)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $cache)) {
-                $cache = str_replace('*', '%', $cache);
-                $comparison = Criteria::LIKE;
             }
         }
 
         return $this->addUsingAlias(ContributionscacheTableMap::COL__CACHE, $cache, $comparison);
+    }
+
+    /**
+     * Filter the query on the _book column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByBook('fooValue');   // WHERE _book = 'fooValue'
+     * $query->filterByBook('%fooValue%', Criteria::LIKE); // WHERE _book LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $book The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionscacheQuery The current query, for fluid interface
+     */
+    public function filterByBook($book = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($book)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionscacheTableMap::COL__BOOK, $book, $comparison);
+    }
+
+    /**
+     * Filter the query on the _issue column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIssue('fooValue');   // WHERE _issue = 'fooValue'
+     * $query->filterByIssue('%fooValue%', Criteria::LIKE); // WHERE _issue LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $issue The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionscacheQuery The current query, for fluid interface
+     */
+    public function filterByIssue($issue = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($issue)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionscacheTableMap::COL__ISSUE, $issue, $comparison);
+    }
+
+    /**
+     * Filter the query on the _chapter column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByChapter('fooValue');   // WHERE _chapter = 'fooValue'
+     * $query->filterByChapter('%fooValue%', Criteria::LIKE); // WHERE _chapter LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $chapter The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionscacheQuery The current query, for fluid interface
+     */
+    public function filterByChapter($chapter = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($chapter)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionscacheTableMap::COL__CHAPTER, $chapter, $comparison);
+    }
+
+    /**
+     * Filter the query on the _template column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTemplate('fooValue');   // WHERE _template = 'fooValue'
+     * $query->filterByTemplate('%fooValue%', Criteria::LIKE); // WHERE _template LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $template The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionscacheQuery The current query, for fluid interface
+     */
+    public function filterByTemplate($template = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($template)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionscacheTableMap::COL__TEMPLATE, $template, $comparison);
+    }
+
+    /**
+     * Filter the query on the _contribution column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByContribution('fooValue');   // WHERE _contribution = 'fooValue'
+     * $query->filterByContribution('%fooValue%', Criteria::LIKE); // WHERE _contribution LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $contribution The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionscacheQuery The current query, for fluid interface
+     */
+    public function filterByContribution($contribution = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($contribution)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionscacheTableMap::COL__CONTRIBUTION, $contribution, $comparison);
+    }
+
+    /**
+     * Filter the query on the _touched column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTouched('2011-03-14'); // WHERE _touched = '2011-03-14'
+     * $query->filterByTouched('now'); // WHERE _touched = '2011-03-14'
+     * $query->filterByTouched(array('max' => 'yesterday')); // WHERE _touched > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $touched The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildContributionscacheQuery The current query, for fluid interface
+     */
+    public function filterByTouched($touched = null, $comparison = null)
+    {
+        if (is_array($touched)) {
+            $useMinMax = false;
+            if (isset($touched['min'])) {
+                $this->addUsingAlias(ContributionscacheTableMap::COL__TOUCHED, $touched['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($touched['max'])) {
+                $this->addUsingAlias(ContributionscacheTableMap::COL__TOUCHED, $touched['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ContributionscacheTableMap::COL__TOUCHED, $touched, $comparison);
     }
 
     /**

@@ -46,9 +46,19 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPdfQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPdfQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildPdfQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildPdfQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildPdfQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildPdfQuery leftJoinPlugins($relationAlias = null) Adds a LEFT JOIN clause to the query using the Plugins relation
  * @method     ChildPdfQuery rightJoinPlugins($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Plugins relation
  * @method     ChildPdfQuery innerJoinPlugins($relationAlias = null) Adds a INNER JOIN clause to the query using the Plugins relation
+ *
+ * @method     ChildPdfQuery joinWithPlugins($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Plugins relation
+ *
+ * @method     ChildPdfQuery leftJoinWithPlugins() Adds a LEFT JOIN clause and with to the query using the Plugins relation
+ * @method     ChildPdfQuery rightJoinWithPlugins() Adds a RIGHT JOIN clause and with to the query using the Plugins relation
+ * @method     ChildPdfQuery innerJoinWithPlugins() Adds a INNER JOIN clause and with to the query using the Plugins relation
  *
  * @method     \PluginsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -153,21 +163,27 @@ abstract class PdfQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = PdfTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(PdfTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = PdfTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -197,7 +213,7 @@ abstract class PdfQuery extends ModelCriteria
             /** @var ChildPdf $obj */
             $obj = new ChildPdf();
             $obj->hydrate($row);
-            PdfTableMap::addInstanceToPool($obj, (string) $key);
+            PdfTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -320,11 +336,10 @@ abstract class PdfQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByFile('fooValue');   // WHERE _file = 'fooValue'
-     * $query->filterByFile('%fooValue%'); // WHERE _file LIKE '%fooValue%'
+     * $query->filterByFile('%fooValue%', Criteria::LIKE); // WHERE _file LIKE '%fooValue%'
      * </code>
      *
      * @param     string $file The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
@@ -334,9 +349,6 @@ abstract class PdfQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($file)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $file)) {
-                $file = str_replace('*', '%', $file);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -474,11 +486,10 @@ abstract class PdfQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByPages('fooValue');   // WHERE _fileinfo = 'fooValue'
-     * $query->filterByPages('%fooValue%'); // WHERE _fileinfo LIKE '%fooValue%'
+     * $query->filterByPages('%fooValue%', Criteria::LIKE); // WHERE _fileinfo LIKE '%fooValue%'
      * </code>
      *
      * @param     string $pages The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
@@ -488,9 +499,6 @@ abstract class PdfQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($pages)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $pages)) {
-                $pages = str_replace('*', '%', $pages);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -503,11 +511,10 @@ abstract class PdfQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByOtc('fooValue');   // WHERE _otc = 'fooValue'
-     * $query->filterByOtc('%fooValue%'); // WHERE _otc LIKE '%fooValue%'
+     * $query->filterByOtc('%fooValue%', Criteria::LIKE); // WHERE _otc LIKE '%fooValue%'
      * </code>
      *
      * @param     string $otc The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
@@ -517,9 +524,6 @@ abstract class PdfQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($otc)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $otc)) {
-                $otc = str_replace('*', '%', $otc);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -532,11 +536,10 @@ abstract class PdfQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE _config = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE _config LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE _config LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPdfQuery The current query, for fluid interface
@@ -546,9 +549,6 @@ abstract class PdfQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 

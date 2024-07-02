@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRPluginFormatQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRPluginFormatQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRPluginFormatQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRPluginFormatQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRPluginFormatQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRPluginFormatQuery leftJoinRPlugin($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPlugin relation
  * @method     ChildRPluginFormatQuery rightJoinRPlugin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPlugin relation
  * @method     ChildRPluginFormatQuery innerJoinRPlugin($relationAlias = null) Adds a INNER JOIN clause to the query using the RPlugin relation
  *
+ * @method     ChildRPluginFormatQuery joinWithRPlugin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPlugin relation
+ *
+ * @method     ChildRPluginFormatQuery leftJoinWithRPlugin() Adds a LEFT JOIN clause and with to the query using the RPlugin relation
+ * @method     ChildRPluginFormatQuery rightJoinWithRPlugin() Adds a RIGHT JOIN clause and with to the query using the RPlugin relation
+ * @method     ChildRPluginFormatQuery innerJoinWithRPlugin() Adds a INNER JOIN clause and with to the query using the RPlugin relation
+ *
  * @method     ChildRPluginFormatQuery leftJoinRFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RFormat relation
  * @method     ChildRPluginFormatQuery rightJoinRFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RFormat relation
  * @method     ChildRPluginFormatQuery innerJoinRFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RFormat relation
+ *
+ * @method     ChildRPluginFormatQuery joinWithRFormat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RFormat relation
+ *
+ * @method     ChildRPluginFormatQuery leftJoinWithRFormat() Adds a LEFT JOIN clause and with to the query using the RFormat relation
+ * @method     ChildRPluginFormatQuery rightJoinWithRFormat() Adds a RIGHT JOIN clause and with to the query using the RFormat relation
+ * @method     ChildRPluginFormatQuery innerJoinWithRFormat() Adds a INNER JOIN clause and with to the query using the RFormat relation
  *
  * @method     \PluginsQuery|\FormatsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RPluginFormatQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RPluginFormatTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RPluginFormatTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RPluginFormatTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RPluginFormatQuery extends ModelCriteria
             /** @var ChildRPluginFormat $obj */
             $obj = new ChildRPluginFormat();
             $obj->hydrate($row);
-            RPluginFormatTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RPluginFormatTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

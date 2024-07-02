@@ -32,25 +32,59 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPluginsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPluginsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildPluginsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildPluginsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildPluginsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildPluginsQuery leftJoinRPluginBook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginBook relation
  * @method     ChildPluginsQuery rightJoinRPluginBook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginBook relation
  * @method     ChildPluginsQuery innerJoinRPluginBook($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginBook relation
+ *
+ * @method     ChildPluginsQuery joinWithRPluginBook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginBook relation
+ *
+ * @method     ChildPluginsQuery leftJoinWithRPluginBook() Adds a LEFT JOIN clause and with to the query using the RPluginBook relation
+ * @method     ChildPluginsQuery rightJoinWithRPluginBook() Adds a RIGHT JOIN clause and with to the query using the RPluginBook relation
+ * @method     ChildPluginsQuery innerJoinWithRPluginBook() Adds a INNER JOIN clause and with to the query using the RPluginBook relation
  *
  * @method     ChildPluginsQuery leftJoinRPluginFormat($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginFormat relation
  * @method     ChildPluginsQuery rightJoinRPluginFormat($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginFormat relation
  * @method     ChildPluginsQuery innerJoinRPluginFormat($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginFormat relation
  *
+ * @method     ChildPluginsQuery joinWithRPluginFormat($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginFormat relation
+ *
+ * @method     ChildPluginsQuery leftJoinWithRPluginFormat() Adds a LEFT JOIN clause and with to the query using the RPluginFormat relation
+ * @method     ChildPluginsQuery rightJoinWithRPluginFormat() Adds a RIGHT JOIN clause and with to the query using the RPluginFormat relation
+ * @method     ChildPluginsQuery innerJoinWithRPluginFormat() Adds a INNER JOIN clause and with to the query using the RPluginFormat relation
+ *
  * @method     ChildPluginsQuery leftJoinRPluginIssue($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginIssue relation
  * @method     ChildPluginsQuery rightJoinRPluginIssue($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginIssue relation
  * @method     ChildPluginsQuery innerJoinRPluginIssue($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginIssue relation
+ *
+ * @method     ChildPluginsQuery joinWithRPluginIssue($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginIssue relation
+ *
+ * @method     ChildPluginsQuery leftJoinWithRPluginIssue() Adds a LEFT JOIN clause and with to the query using the RPluginIssue relation
+ * @method     ChildPluginsQuery rightJoinWithRPluginIssue() Adds a RIGHT JOIN clause and with to the query using the RPluginIssue relation
+ * @method     ChildPluginsQuery innerJoinWithRPluginIssue() Adds a INNER JOIN clause and with to the query using the RPluginIssue relation
  *
  * @method     ChildPluginsQuery leftJoinRPluginTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RPluginTemplate relation
  * @method     ChildPluginsQuery rightJoinRPluginTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RPluginTemplate relation
  * @method     ChildPluginsQuery innerJoinRPluginTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RPluginTemplate relation
  *
+ * @method     ChildPluginsQuery joinWithRPluginTemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RPluginTemplate relation
+ *
+ * @method     ChildPluginsQuery leftJoinWithRPluginTemplate() Adds a LEFT JOIN clause and with to the query using the RPluginTemplate relation
+ * @method     ChildPluginsQuery rightJoinWithRPluginTemplate() Adds a RIGHT JOIN clause and with to the query using the RPluginTemplate relation
+ * @method     ChildPluginsQuery innerJoinWithRPluginTemplate() Adds a INNER JOIN clause and with to the query using the RPluginTemplate relation
+ *
  * @method     ChildPluginsQuery leftJoinPdf($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pdf relation
  * @method     ChildPluginsQuery rightJoinPdf($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pdf relation
  * @method     ChildPluginsQuery innerJoinPdf($relationAlias = null) Adds a INNER JOIN clause to the query using the Pdf relation
+ *
+ * @method     ChildPluginsQuery joinWithPdf($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Pdf relation
+ *
+ * @method     ChildPluginsQuery leftJoinWithPdf() Adds a LEFT JOIN clause and with to the query using the Pdf relation
+ * @method     ChildPluginsQuery rightJoinWithPdf() Adds a RIGHT JOIN clause and with to the query using the Pdf relation
+ * @method     ChildPluginsQuery innerJoinWithPdf() Adds a INNER JOIN clause and with to the query using the Pdf relation
  *
  * @method     \RPluginBookQuery|\RPluginFormatQuery|\RPluginIssueQuery|\RPluginTemplateQuery|\PdfQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -134,21 +168,27 @@ abstract class PluginsQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = PluginsTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(PluginsTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = PluginsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -178,7 +218,7 @@ abstract class PluginsQuery extends ModelCriteria
             /** @var ChildPlugins $obj */
             $obj = new ChildPlugins();
             $obj->hydrate($row);
-            PluginsTableMap::addInstanceToPool($obj, (string) $key);
+            PluginsTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -301,11 +341,10 @@ abstract class PluginsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPluginsQuery The current query, for fluid interface
@@ -315,9 +354,6 @@ abstract class PluginsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -330,11 +366,10 @@ abstract class PluginsQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByApi('fooValue');   // WHERE _api = 'fooValue'
-     * $query->filterByApi('%fooValue%'); // WHERE _api LIKE '%fooValue%'
+     * $query->filterByApi('%fooValue%', Criteria::LIKE); // WHERE _api LIKE '%fooValue%'
      * </code>
      *
      * @param     string $api The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildPluginsQuery The current query, for fluid interface
@@ -344,9 +379,6 @@ abstract class PluginsQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($api)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $api)) {
-                $api = str_replace('*', '%', $api);
-                $comparison = Criteria::LIKE;
             }
         }
 

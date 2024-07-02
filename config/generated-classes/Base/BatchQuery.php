@@ -44,9 +44,19 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBatchQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildBatchQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildBatchQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildBatchQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildBatchQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildBatchQuery leftJoinRBatchForbook($relationAlias = null) Adds a LEFT JOIN clause to the query using the RBatchForbook relation
  * @method     ChildBatchQuery rightJoinRBatchForbook($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RBatchForbook relation
  * @method     ChildBatchQuery innerJoinRBatchForbook($relationAlias = null) Adds a INNER JOIN clause to the query using the RBatchForbook relation
+ *
+ * @method     ChildBatchQuery joinWithRBatchForbook($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RBatchForbook relation
+ *
+ * @method     ChildBatchQuery leftJoinWithRBatchForbook() Adds a LEFT JOIN clause and with to the query using the RBatchForbook relation
+ * @method     ChildBatchQuery rightJoinWithRBatchForbook() Adds a RIGHT JOIN clause and with to the query using the RBatchForbook relation
+ * @method     ChildBatchQuery innerJoinWithRBatchForbook() Adds a INNER JOIN clause and with to the query using the RBatchForbook relation
  *
  * @method     \RBatchForbookQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -148,21 +158,27 @@ abstract class BatchQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = BatchTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(BatchTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = BatchTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -192,7 +208,7 @@ abstract class BatchQuery extends ModelCriteria
             /** @var ChildBatch $obj */
             $obj = new ChildBatch();
             $obj->hydrate($row);
-            BatchTableMap::addInstanceToPool($obj, (string) $key);
+            BatchTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -315,11 +331,10 @@ abstract class BatchQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByName('fooValue');   // WHERE _name = 'fooValue'
-     * $query->filterByName('%fooValue%'); // WHERE _name LIKE '%fooValue%'
+     * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE _name LIKE '%fooValue%'
      * </code>
      *
      * @param     string $name The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
@@ -329,9 +344,6 @@ abstract class BatchQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($name)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $name)) {
-                $name = str_replace('*', '%', $name);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -344,11 +356,10 @@ abstract class BatchQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByDescription('fooValue');   // WHERE _description = 'fooValue'
-     * $query->filterByDescription('%fooValue%'); // WHERE _description LIKE '%fooValue%'
+     * $query->filterByDescription('%fooValue%', Criteria::LIKE); // WHERE _description LIKE '%fooValue%'
      * </code>
      *
      * @param     string $description The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
@@ -358,9 +369,6 @@ abstract class BatchQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($description)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $description)) {
-                $description = str_replace('*', '%', $description);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -373,11 +381,10 @@ abstract class BatchQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByPrecode('fooValue');   // WHERE _precode = 'fooValue'
-     * $query->filterByPrecode('%fooValue%'); // WHERE _precode LIKE '%fooValue%'
+     * $query->filterByPrecode('%fooValue%', Criteria::LIKE); // WHERE _precode LIKE '%fooValue%'
      * </code>
      *
      * @param     string $precode The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
@@ -387,9 +394,6 @@ abstract class BatchQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($precode)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $precode)) {
-                $precode = str_replace('*', '%', $precode);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -402,11 +406,10 @@ abstract class BatchQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByPostcode('fooValue');   // WHERE _postcode = 'fooValue'
-     * $query->filterByPostcode('%fooValue%'); // WHERE _postcode LIKE '%fooValue%'
+     * $query->filterByPostcode('%fooValue%', Criteria::LIKE); // WHERE _postcode LIKE '%fooValue%'
      * </code>
      *
      * @param     string $postcode The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
@@ -416,9 +419,6 @@ abstract class BatchQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($postcode)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $postcode)) {
-                $postcode = str_replace('*', '%', $postcode);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -431,11 +431,10 @@ abstract class BatchQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
@@ -445,9 +444,6 @@ abstract class BatchQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -460,11 +456,10 @@ abstract class BatchQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterBySplit('fooValue');   // WHERE __split__ = 'fooValue'
-     * $query->filterBySplit('%fooValue%'); // WHERE __split__ LIKE '%fooValue%'
+     * $query->filterBySplit('%fooValue%', Criteria::LIKE); // WHERE __split__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $split The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBatchQuery The current query, for fluid interface
@@ -474,9 +469,6 @@ abstract class BatchQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($split)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $split)) {
-                $split = str_replace('*', '%', $split);
-                $comparison = Criteria::LIKE;
             }
         }
 

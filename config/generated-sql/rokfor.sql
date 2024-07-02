@@ -327,12 +327,66 @@ CREATE TABLE `_contributions_cache`
     `_signature` VARCHAR(255) NOT NULL,
     `_forcontribution` INTEGER(4),
     `_cache` LONGTEXT,
+    `_book` VARCHAR(255),
+    `_issue` VARCHAR(255),
+    `_chapter` VARCHAR(255),
+    `_template` VARCHAR(255),
+    `_contribution` VARCHAR(255),
     PRIMARY KEY (`id`),
     INDEX `_cacheforcontribution_index` (`_forcontribution`),
     INDEX `_signature_index` (`_signature`),
+    INDEX `_book_index` (`_book`),
+    INDEX `_issue_index` (`_issue`),
+    INDEX `_chapter_index` (`_chapter`),
+    INDEX `_template_index` (`_template`),
+    INDEX `_contribution_index` (`_contribution`),
     CONSTRAINT `c_contribution_fk`
         FOREIGN KEY (`_forcontribution`)
         REFERENCES `_contributions` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- _data
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `_data`;
+
+CREATE TABLE `_data`
+(
+    `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
+    `_forcontribution` INTEGER(4),
+    `_fortemplatefield` INTEGER(32),
+    `_content` LONGTEXT,
+    `_isjson` TINYINT(1),
+    `__user__` INTEGER(4),
+    `__config__` TEXT,
+    `__split__` TEXT,
+    `__parentnode__` INTEGER(32),
+    `__sort__` INTEGER(32),
+    `version` INTEGER DEFAULT 0,
+    `version_created_at` DATETIME,
+    `version_created_by` VARCHAR(100),
+    `version_comment` VARCHAR(255),
+    PRIMARY KEY (`id`),
+    INDEX `_user_index` (`__user__`),
+    INDEX `_dataforcontribution_index` (`_forcontribution`),
+    FULLTEXT INDEX `_content` (`_content`),
+    INDEX `_datafortemplatefield_index` (`_fortemplatefield`),
+    CONSTRAINT `user_ref_data`
+        FOREIGN KEY (`__user__`)
+        REFERENCES `users` (`id`)
+        ON UPDATE SET NULL
+        ON DELETE SET NULL,
+    CONSTRAINT `d_contribution_fk`
+        FOREIGN KEY (`_forcontribution`)
+        REFERENCES `_contributions` (`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT `d_template_fk`
+        FOREIGN KEY (`_fortemplatefield`)
+        REFERENCES `_templates` (`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -897,73 +951,6 @@ CREATE TABLE `_data_version`
         REFERENCES `_data` (`id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- _data
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `_data`;
-
-CREATE TABLE `_data`
-(
-    `id` INTEGER(4) NOT NULL AUTO_INCREMENT,
-    `_forcontribution` INTEGER(4),
-    `_fortemplatefield` INTEGER(32),
-    `_content` LONGTEXT,
-    `_isjson` TINYINT(1),
-    `__user__` INTEGER(4),
-    `__config__` TEXT,
-    `__split__` TEXT,
-    `__parentnode__` INTEGER(32),
-    `__sort__` INTEGER(32),
-    `version` INTEGER DEFAULT 0,
-    `version_created_at` DATETIME,
-    `version_created_by` VARCHAR(100),
-    `version_comment` VARCHAR(255),
-    PRIMARY KEY (`id`),
-    INDEX `_user_index` (`__user__`),
-    INDEX `_dataforcontribution_index` (`_forcontribution`),
-    FULLTEXT INDEX `_content` (`_content`),
-    INDEX `_datafortemplatefield_index` (`_fortemplatefield`),
-    CONSTRAINT `user_ref_data`
-        FOREIGN KEY (`__user__`)
-        REFERENCES `users` (`id`)
-        ON UPDATE SET NULL
-        ON DELETE SET NULL,
-    CONSTRAINT `d_contribution_fk`
-        FOREIGN KEY (`_forcontribution`)
-        REFERENCES `_contributions` (`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT `d_template_fk`
-        FOREIGN KEY (`_fortemplatefield`)
-        REFERENCES `_templates` (`id`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS `propel_migration`;
-CREATE TABLE `propel_migration` (
-  `version` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
-INSERT INTO `propel_migration` (`version`) VALUES (456855059);
-INSERT INTO `propel_migration` (`version`) VALUES (1452074796);
-INSERT INTO `propel_migration` (`version`) VALUES (1452076668);
-INSERT INTO `propel_migration` (`version`) VALUES (1452077180);
-INSERT INTO `propel_migration` (`version`) VALUES (1452358516);
-INSERT INTO `propel_migration` (`version`) VALUES (1452364153);
-INSERT INTO `propel_migration` (`version`) VALUES (1453121154);
-INSERT INTO `propel_migration` (`version`) VALUES (1453122685);
-INSERT INTO `propel_migration` (`version`) VALUES (1454919452);
-INSERT INTO `propel_migration` (`version`) VALUES (1477824860);
-INSERT INTO `propel_migration` (`version`) VALUES (1477824861);
-INSERT INTO `propel_migration` (`version`) VALUES (1494834687);
-INSERT INTO `propel_migration` (`version`) VALUES (1494930480);
-INSERT INTO `propel_migration` (`version`) VALUES (1505983179);
-INSERT INTO `propel_migration` (`version`) VALUES (1505986206);
-INSERT INTO `propel_migration` (`version`) VALUES (1506505250);
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

@@ -27,8 +27,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class RDataIssue implements ActiveRecordInterface
 {
     /**
@@ -65,12 +65,14 @@ abstract class RDataIssue implements ActiveRecordInterface
 
     /**
      * The value for the _dataid field.
+     *
      * @var        int
      */
     protected $_dataid;
 
     /**
      * The value for the _issueid field.
+     *
      * @var        int
      */
     protected $_issueid;
@@ -307,7 +309,15 @@ abstract class RDataIssue implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -549,13 +559,17 @@ abstract class RDataIssue implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(RDataIssueTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -780,7 +794,7 @@ abstract class RDataIssue implements ActiveRecordInterface
                         $key = '_data';
                         break;
                     default:
-                        $key = 'Data';
+                        $key = 'RData';
                 }
 
                 $result[$key] = $this->aRData->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -795,7 +809,7 @@ abstract class RDataIssue implements ActiveRecordInterface
                         $key = '_issues';
                         break;
                     default:
-                        $key = 'Issues';
+                        $key = 'RIssue';
                 }
 
                 $result[$key] = $this->aRIssue->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1093,7 +1107,7 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function getRData(ConnectionInterface $con = null)
     {
-        if ($this->aRData === null && ($this->_dataid !== null)) {
+        if ($this->aRData === null && ($this->_dataid != 0)) {
             $this->aRData = ChildDataQuery::create()->findPk($this->_dataid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1144,7 +1158,7 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function getRIssue(ConnectionInterface $con = null)
     {
-        if ($this->aRIssue === null && ($this->_issueid !== null)) {
+        if ($this->aRIssue === null && ($this->_issueid != 0)) {
             $this->aRIssue = ChildIssuesQuery::create()->findPk($this->_issueid, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1214,6 +1228,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -1223,7 +1240,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -1233,6 +1252,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -1242,7 +1264,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -1252,6 +1276,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -1261,7 +1288,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -1271,6 +1300,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -1280,7 +1312,9 @@ abstract class RDataIssue implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

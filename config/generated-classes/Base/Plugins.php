@@ -24,7 +24,12 @@ use \Templatenames as ChildTemplatenames;
 use \TemplatenamesQuery as ChildTemplatenamesQuery;
 use \Exception;
 use \PDO;
+use Map\PdfTableMap;
 use Map\PluginsTableMap;
+use Map\RPluginBookTableMap;
+use Map\RPluginFormatTableMap;
+use Map\RPluginIssueTableMap;
+use Map\RPluginTemplateTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -43,8 +48,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Plugins implements ActiveRecordInterface
 {
     /**
@@ -81,18 +86,21 @@ abstract class Plugins implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _api field.
+     *
      * @var        string
      */
     protected $_api;
@@ -443,7 +451,15 @@ abstract class Plugins implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -716,13 +732,17 @@ abstract class Plugins implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(PluginsTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1509,19 +1529,24 @@ abstract class Plugins implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RPluginBook' == $relationName) {
-            return $this->initRPluginBooks();
+            $this->initRPluginBooks();
+            return;
         }
         if ('RPluginFormat' == $relationName) {
-            return $this->initRPluginFormats();
+            $this->initRPluginFormats();
+            return;
         }
         if ('RPluginIssue' == $relationName) {
-            return $this->initRPluginIssues();
+            $this->initRPluginIssues();
+            return;
         }
         if ('RPluginTemplate' == $relationName) {
-            return $this->initRPluginTemplates();
+            $this->initRPluginTemplates();
+            return;
         }
         if ('Pdf' == $relationName) {
-            return $this->initPdfs();
+            $this->initPdfs();
+            return;
         }
     }
 
@@ -1564,7 +1589,10 @@ abstract class Plugins implements ActiveRecordInterface
         if (null !== $this->collRPluginBooks && !$overrideExisting) {
             return;
         }
-        $this->collRPluginBooks = new ObjectCollection();
+
+        $collectionClassName = RPluginBookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginBooks = new $collectionClassName;
         $this->collRPluginBooks->setModel('\RPluginBook');
     }
 
@@ -1712,6 +1740,10 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRPluginBooks->contains($l)) {
             $this->doAddRPluginBook($l);
+
+            if ($this->rPluginBooksScheduledForDeletion and $this->rPluginBooksScheduledForDeletion->contains($l)) {
+                $this->rPluginBooksScheduledForDeletion->remove($this->rPluginBooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1810,7 +1842,10 @@ abstract class Plugins implements ActiveRecordInterface
         if (null !== $this->collRPluginFormats && !$overrideExisting) {
             return;
         }
-        $this->collRPluginFormats = new ObjectCollection();
+
+        $collectionClassName = RPluginFormatTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginFormats = new $collectionClassName;
         $this->collRPluginFormats->setModel('\RPluginFormat');
     }
 
@@ -1958,6 +1993,10 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRPluginFormats->contains($l)) {
             $this->doAddRPluginFormat($l);
+
+            if ($this->rPluginFormatsScheduledForDeletion and $this->rPluginFormatsScheduledForDeletion->contains($l)) {
+                $this->rPluginFormatsScheduledForDeletion->remove($this->rPluginFormatsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2056,7 +2095,10 @@ abstract class Plugins implements ActiveRecordInterface
         if (null !== $this->collRPluginIssues && !$overrideExisting) {
             return;
         }
-        $this->collRPluginIssues = new ObjectCollection();
+
+        $collectionClassName = RPluginIssueTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginIssues = new $collectionClassName;
         $this->collRPluginIssues->setModel('\RPluginIssue');
     }
 
@@ -2204,6 +2246,10 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRPluginIssues->contains($l)) {
             $this->doAddRPluginIssue($l);
+
+            if ($this->rPluginIssuesScheduledForDeletion and $this->rPluginIssuesScheduledForDeletion->contains($l)) {
+                $this->rPluginIssuesScheduledForDeletion->remove($this->rPluginIssuesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2302,7 +2348,10 @@ abstract class Plugins implements ActiveRecordInterface
         if (null !== $this->collRPluginTemplates && !$overrideExisting) {
             return;
         }
-        $this->collRPluginTemplates = new ObjectCollection();
+
+        $collectionClassName = RPluginTemplateTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginTemplates = new $collectionClassName;
         $this->collRPluginTemplates->setModel('\RPluginTemplate');
     }
 
@@ -2450,6 +2499,10 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collRPluginTemplates->contains($l)) {
             $this->doAddRPluginTemplate($l);
+
+            if ($this->rPluginTemplatesScheduledForDeletion and $this->rPluginTemplatesScheduledForDeletion->contains($l)) {
+                $this->rPluginTemplatesScheduledForDeletion->remove($this->rPluginTemplatesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2548,7 +2601,10 @@ abstract class Plugins implements ActiveRecordInterface
         if (null !== $this->collPdfs && !$overrideExisting) {
             return;
         }
-        $this->collPdfs = new ObjectCollection();
+
+        $collectionClassName = PdfTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPdfs = new $collectionClassName;
         $this->collPdfs->setModel('\Pdf');
     }
 
@@ -2693,6 +2749,10 @@ abstract class Plugins implements ActiveRecordInterface
 
         if (!$this->collPdfs->contains($l)) {
             $this->doAddPdf($l);
+
+            if ($this->pdfsScheduledForDeletion and $this->pdfsScheduledForDeletion->contains($l)) {
+                $this->pdfsScheduledForDeletion->remove($this->pdfsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2752,9 +2812,10 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function initRBooks()
     {
-        $this->collRBooks = new ObjectCollection();
-        $this->collRBooksPartial = true;
+        $collectionClassName = RPluginBookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRBooks = new $collectionClassName;
+        $this->collRBooksPartial = true;
         $this->collRBooks->setModel('\Books');
     }
 
@@ -2943,8 +3004,8 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function removeRBook(ChildBooks $rBook)
     {
-        if ($this->getRBooks()->contains($rBook)) { $rPluginBook = new ChildRPluginBook();
-
+        if ($this->getRBooks()->contains($rBook)) {
+            $rPluginBook = new ChildRPluginBook();
             $rPluginBook->setRBook($rBook);
             if ($rBook->isRPluginsLoaded()) {
                 //remove the back reference if available
@@ -2994,9 +3055,10 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function initRFormats()
     {
-        $this->collRFormats = new ObjectCollection();
-        $this->collRFormatsPartial = true;
+        $collectionClassName = RPluginFormatTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRFormats = new $collectionClassName;
+        $this->collRFormatsPartial = true;
         $this->collRFormats->setModel('\Formats');
     }
 
@@ -3185,8 +3247,8 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function removeRFormat(ChildFormats $rFormat)
     {
-        if ($this->getRFormats()->contains($rFormat)) { $rPluginFormat = new ChildRPluginFormat();
-
+        if ($this->getRFormats()->contains($rFormat)) {
+            $rPluginFormat = new ChildRPluginFormat();
             $rPluginFormat->setRFormat($rFormat);
             if ($rFormat->isRPluginsLoaded()) {
                 //remove the back reference if available
@@ -3236,9 +3298,10 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function initRIssues()
     {
-        $this->collRIssues = new ObjectCollection();
-        $this->collRIssuesPartial = true;
+        $collectionClassName = RPluginIssueTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRIssues = new $collectionClassName;
+        $this->collRIssuesPartial = true;
         $this->collRIssues->setModel('\Issues');
     }
 
@@ -3427,8 +3490,8 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function removeRIssue(ChildIssues $rIssue)
     {
-        if ($this->getRIssues()->contains($rIssue)) { $rPluginIssue = new ChildRPluginIssue();
-
+        if ($this->getRIssues()->contains($rIssue)) {
+            $rPluginIssue = new ChildRPluginIssue();
             $rPluginIssue->setRIssue($rIssue);
             if ($rIssue->isRPluginsLoaded()) {
                 //remove the back reference if available
@@ -3478,9 +3541,10 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function initTemplatenamess()
     {
-        $this->collTemplatenamess = new ObjectCollection();
-        $this->collTemplatenamessPartial = true;
+        $collectionClassName = RPluginTemplateTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collTemplatenamess = new $collectionClassName;
+        $this->collTemplatenamessPartial = true;
         $this->collTemplatenamess->setModel('\Templatenames');
     }
 
@@ -3669,8 +3733,8 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function removeTemplatenames(ChildTemplatenames $templatenames)
     {
-        if ($this->getTemplatenamess()->contains($templatenames)) { $rPluginTemplate = new ChildRPluginTemplate();
-
+        if ($this->getTemplatenamess()->contains($templatenames)) {
+            $rPluginTemplate = new ChildRPluginTemplate();
             $rPluginTemplate->setTemplatenames($templatenames);
             if ($templatenames->isRPluginsLoaded()) {
                 //remove the back reference if available
@@ -3798,6 +3862,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -3807,7 +3874,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -3817,6 +3886,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -3826,7 +3898,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -3836,6 +3910,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -3845,7 +3922,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -3855,6 +3934,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -3864,7 +3946,9 @@ abstract class Plugins implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

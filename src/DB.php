@@ -1176,9 +1176,7 @@ class DB
 
       foreach ($ids as $id) {
         \ContributionscacheQuery::create()
-          ->filterByCache('%Contribution":{"Id":'.$id.'%') 
-          ->_or()
-          ->filterByCache('%"'.$id.'":%') 
+          ->filterByContribution('%|'.$id.'|%') 
           ->delete();
       }
 
@@ -1235,10 +1233,20 @@ class DB
     return json_encode(['lockdate'=>time()]);
   }
 
-  function NewContributionCache($contribution, $data = [], $hash = "") {
+  function NewContributionCache($contribution, $data = [], $hash = "", $stack) {
     $c = new \Contributionscache();
+
+    /* TODO: Need to add referenced issues, books, chapters, templates
+      This does not work correctly for both flat = true and complete json data
+     */
+
     $c->setContributions($contribution)
       ->setCache(json_encode($data))
+      ->setContribution('|'.join('|', $stack['contributions']).'|')
+      ->setIssue('|'.join('|', $stack['issues']).'|')
+      ->setChapter('|'.join('|', $stack['chapters']).'|')
+      ->setTemplate('|'.join('|', $stack['templates']).'|')
+      ->setBook('|'.join('|', $stack['books']).'|')
       ->setSignature($hash)
       ->save();
   }
@@ -1829,14 +1837,25 @@ $this->defaultLogger->info("PRIVATE: " . $private);
   }
 
 
-  private function _clearCache($id, $name, $type = false) {
-      $name = json_encode($name);
-      $name = str_replace('\u','\\\\u',$name);
-      \ContributionscacheQuery::create()
-      ->filterByCache('%"'.$id.'":{"Id":'.$id.',"Name":'.$name.'%')
-      ->_if($type)
-        ->_or()
-        ->filterByCache('%"'.$type.'":'.$name.'%')
+  private function _clearCache($id, $type) {
+    $table = '_contribution';
+    switch ($type) {
+      case 'books':
+        $table = '_book';
+        break;
+        case 'issues':
+          $table = '_issue';
+          break;
+          case 'templates':
+            $table = '_template';
+            break;
+            case 'chapters':
+              $table = '_chapter';
+              break;                              
+    }
+    
+    \ContributionscacheQuery::create()
+      ->where('_contributions_cache.'.$table.' LIKE ?', '%|'.$id.'|%')
       ->delete();
   }
 
@@ -3045,7 +3064,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameBook($id, $name) {
-    $this->_clearCache($id, $this->getBook($id)->getName(), 'ForbookName');
+    $this->_clearCache($id, 'books');
     $this->getBook($id)
          ->setName($name)
          ->save();
@@ -3097,7 +3116,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameIssue($id, $name) {
-    $this->_clearCache($id, $this->getIssue($id)->getName(), 'ForissueName');    
+    $this->_clearCache($id, 'issues');    
     $this->getIssue($id)
          ->setName($name)
          ->save();
@@ -3147,7 +3166,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameChapter($id, $name) {
-    $this->_clearCache($id, $this->getFormat($id)->getName(), 'ForchapterName');    
+    $this->_clearCache($id, 'chapters');    
     $this->getFormat($id)
          ->setName($name)
          ->save();
@@ -3199,7 +3218,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $_book =  $this->getBook($id);
     if ($_book) {
       // Delete Caches
-      $this->_clearCache($id, $_book->getName());
+      $this->_clearCache($id, 'books');
       // Update Contribution References
       $this->_clearReferencedObjects($_book);
       // Delete Binaries & References
@@ -3229,7 +3248,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $_issue = $this->getIssue($id);
     if ($_issue) {
       // Delete Caches
-      $this->_clearCache($id, $_issue->getName());
+      $this->_clearCache($id, 'issues');
       // Delete Contribution References
       $this->_clearReferencedObjects($_issue);
       // Delete Binaries & References
@@ -3254,7 +3273,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
     $_chapter = $this->getFormat($id);
     if ($_chapter) {
       // Delete Caches
-      $this->_clearCache($id, $_chapter->getName());
+      $this->_clearCache($id, 'chapters');
       // Update Contribution References
       $this->_clearReferencedObjects($_chapter);
       // Delete Binaries & References
@@ -3411,6 +3430,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function renameTemplates($id, $name) {
+    $this->_clearCache($id, 'templates');
     $this->TemplatenamesQuery()
          ->findPk($id)
          ->setName($name)
@@ -3425,6 +3445,7 @@ $this->defaultLogger->info("PRIVATE: " . $private);
    * @author Urs Hofer
    */
   function deleteTemplates($id) {
+    $this->_clearCache($id, 'templates');
     foreach ($this->ContributionsQuery()->filterByFortemplate($id) as $contribution) {
         $this->deleteData($contribution);
     }

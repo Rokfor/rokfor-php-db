@@ -30,13 +30,29 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRDataTemplateQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRDataTemplateQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildRDataTemplateQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildRDataTemplateQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildRDataTemplateQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildRDataTemplateQuery leftJoinRData($relationAlias = null) Adds a LEFT JOIN clause to the query using the RData relation
  * @method     ChildRDataTemplateQuery rightJoinRData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RData relation
  * @method     ChildRDataTemplateQuery innerJoinRData($relationAlias = null) Adds a INNER JOIN clause to the query using the RData relation
  *
+ * @method     ChildRDataTemplateQuery joinWithRData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RData relation
+ *
+ * @method     ChildRDataTemplateQuery leftJoinWithRData() Adds a LEFT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataTemplateQuery rightJoinWithRData() Adds a RIGHT JOIN clause and with to the query using the RData relation
+ * @method     ChildRDataTemplateQuery innerJoinWithRData() Adds a INNER JOIN clause and with to the query using the RData relation
+ *
  * @method     ChildRDataTemplateQuery leftJoinRTemplate($relationAlias = null) Adds a LEFT JOIN clause to the query using the RTemplate relation
  * @method     ChildRDataTemplateQuery rightJoinRTemplate($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RTemplate relation
  * @method     ChildRDataTemplateQuery innerJoinRTemplate($relationAlias = null) Adds a INNER JOIN clause to the query using the RTemplate relation
+ *
+ * @method     ChildRDataTemplateQuery joinWithRTemplate($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RTemplate relation
+ *
+ * @method     ChildRDataTemplateQuery leftJoinWithRTemplate() Adds a LEFT JOIN clause and with to the query using the RTemplate relation
+ * @method     ChildRDataTemplateQuery rightJoinWithRTemplate() Adds a RIGHT JOIN clause and with to the query using the RTemplate relation
+ * @method     ChildRDataTemplateQuery innerJoinWithRTemplate() Adds a INNER JOIN clause and with to the query using the RTemplate relation
  *
  * @method     \DataQuery|\TemplatesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -117,21 +133,27 @@ abstract class RDataTemplateQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = RDataTemplateTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(RDataTemplateTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = RDataTemplateTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -162,7 +184,7 @@ abstract class RDataTemplateQuery extends ModelCriteria
             /** @var ChildRDataTemplate $obj */
             $obj = new ChildRDataTemplate();
             $obj->hydrate($row);
-            RDataTemplateTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            RDataTemplateTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 

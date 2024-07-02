@@ -24,7 +24,11 @@ use \Users as ChildUsers;
 use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
+use Map\ContributionsTableMap;
 use Map\IssuesTableMap;
+use Map\RDataIssueTableMap;
+use Map\RPluginIssueTableMap;
+use Map\RRightsForissueTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -43,8 +47,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Issues implements ActiveRecordInterface
 {
     /**
@@ -81,72 +85,84 @@ abstract class Issues implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _opendate field.
+     *
      * @var        int
      */
     protected $_opendate;
 
     /**
      * The value for the _closedate field.
+     *
      * @var        int
      */
     protected $_closedate;
 
     /**
      * The value for the _status field.
+     *
      * @var        string
      */
     protected $_status;
 
     /**
      * The value for the _infotext field.
+     *
      * @var        string
      */
     protected $_infotext;
 
     /**
      * The value for the _forbook field.
+     *
      * @var        int
      */
     protected $_forbook;
 
     /**
      * The value for the __user__ field.
+     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -479,7 +495,15 @@ abstract class Issues implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -1062,13 +1086,17 @@ abstract class Issues implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(IssuesTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1559,7 +1587,7 @@ abstract class Issues implements ActiveRecordInterface
                         $key = 'users';
                         break;
                     default:
-                        $key = 'Users';
+                        $key = 'userSysRef';
                 }
 
                 $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -2042,7 +2070,7 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function getuserSysRef(ConnectionInterface $con = null)
     {
-        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+        if ($this->auserSysRef === null && ($this->__user__ != 0)) {
             $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2093,7 +2121,7 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function getBooks(ConnectionInterface $con = null)
     {
-        if ($this->aBooks === null && ($this->_forbook !== null)) {
+        if ($this->aBooks === null && ($this->_forbook != 0)) {
             $this->aBooks = ChildBooksQuery::create()->findPk($this->_forbook, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2119,16 +2147,20 @@ abstract class Issues implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RRightsForissue' == $relationName) {
-            return $this->initRRightsForissues();
+            $this->initRRightsForissues();
+            return;
         }
         if ('Contributions' == $relationName) {
-            return $this->initContributionss();
+            $this->initContributionss();
+            return;
         }
         if ('RDataIssue' == $relationName) {
-            return $this->initRDataIssues();
+            $this->initRDataIssues();
+            return;
         }
         if ('RPluginIssue' == $relationName) {
-            return $this->initRPluginIssues();
+            $this->initRPluginIssues();
+            return;
         }
     }
 
@@ -2171,7 +2203,10 @@ abstract class Issues implements ActiveRecordInterface
         if (null !== $this->collRRightsForissues && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForissues = new ObjectCollection();
+
+        $collectionClassName = RRightsForissueTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForissues = new $collectionClassName;
         $this->collRRightsForissues->setModel('\RRightsForissue');
     }
 
@@ -2319,6 +2354,10 @@ abstract class Issues implements ActiveRecordInterface
 
         if (!$this->collRRightsForissues->contains($l)) {
             $this->doAddRRightsForissue($l);
+
+            if ($this->rRightsForissuesScheduledForDeletion and $this->rRightsForissuesScheduledForDeletion->contains($l)) {
+                $this->rRightsForissuesScheduledForDeletion->remove($this->rRightsForissuesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2417,7 +2456,10 @@ abstract class Issues implements ActiveRecordInterface
         if (null !== $this->collContributionss && !$overrideExisting) {
             return;
         }
-        $this->collContributionss = new ObjectCollection();
+
+        $collectionClassName = ContributionsTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collContributionss = new $collectionClassName;
         $this->collContributionss->setModel('\Contributions');
     }
 
@@ -2562,6 +2604,10 @@ abstract class Issues implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
+
+            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
+                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2710,7 +2756,10 @@ abstract class Issues implements ActiveRecordInterface
         if (null !== $this->collRDataIssues && !$overrideExisting) {
             return;
         }
-        $this->collRDataIssues = new ObjectCollection();
+
+        $collectionClassName = RDataIssueTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataIssues = new $collectionClassName;
         $this->collRDataIssues->setModel('\RDataIssue');
     }
 
@@ -2858,6 +2907,10 @@ abstract class Issues implements ActiveRecordInterface
 
         if (!$this->collRDataIssues->contains($l)) {
             $this->doAddRDataIssue($l);
+
+            if ($this->rDataIssuesScheduledForDeletion and $this->rDataIssuesScheduledForDeletion->contains($l)) {
+                $this->rDataIssuesScheduledForDeletion->remove($this->rDataIssuesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2956,7 +3009,10 @@ abstract class Issues implements ActiveRecordInterface
         if (null !== $this->collRPluginIssues && !$overrideExisting) {
             return;
         }
-        $this->collRPluginIssues = new ObjectCollection();
+
+        $collectionClassName = RPluginIssueTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginIssues = new $collectionClassName;
         $this->collRPluginIssues->setModel('\RPluginIssue');
     }
 
@@ -3104,6 +3160,10 @@ abstract class Issues implements ActiveRecordInterface
 
         if (!$this->collRPluginIssues->contains($l)) {
             $this->doAddRPluginIssue($l);
+
+            if ($this->rPluginIssuesScheduledForDeletion and $this->rPluginIssuesScheduledForDeletion->contains($l)) {
+                $this->rPluginIssuesScheduledForDeletion->remove($this->rPluginIssuesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3188,9 +3248,10 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function initRightss()
     {
-        $this->collRightss = new ObjectCollection();
-        $this->collRightssPartial = true;
+        $collectionClassName = RRightsForissueTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRightss = new $collectionClassName;
+        $this->collRightssPartial = true;
         $this->collRightss->setModel('\Rights');
     }
 
@@ -3379,8 +3440,8 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function removeRights(ChildRights $rights)
     {
-        if ($this->getRightss()->contains($rights)) { $rRightsForissue = new ChildRRightsForissue();
-
+        if ($this->getRightss()->contains($rights)) {
+            $rRightsForissue = new ChildRRightsForissue();
             $rRightsForissue->setRights($rights);
             if ($rights->isIssuessLoaded()) {
                 //remove the back reference if available
@@ -3430,9 +3491,10 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function initRDatas()
     {
-        $this->collRDatas = new ObjectCollection();
-        $this->collRDatasPartial = true;
+        $collectionClassName = RDataIssueTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRDatas = new $collectionClassName;
+        $this->collRDatasPartial = true;
         $this->collRDatas->setModel('\Data');
     }
 
@@ -3621,8 +3683,8 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function removeRData(ChildData $rData)
     {
-        if ($this->getRDatas()->contains($rData)) { $rDataIssue = new ChildRDataIssue();
-
+        if ($this->getRDatas()->contains($rData)) {
+            $rDataIssue = new ChildRDataIssue();
             $rDataIssue->setRData($rData);
             if ($rData->isRIssuesLoaded()) {
                 //remove the back reference if available
@@ -3672,9 +3734,10 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function initRPlugins()
     {
-        $this->collRPlugins = new ObjectCollection();
-        $this->collRPluginsPartial = true;
+        $collectionClassName = RPluginIssueTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRPlugins = new $collectionClassName;
+        $this->collRPluginsPartial = true;
         $this->collRPlugins->setModel('\Plugins');
     }
 
@@ -3863,8 +3926,8 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function removeRPlugin(ChildPlugins $rPlugin)
     {
-        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginIssue = new ChildRPluginIssue();
-
+        if ($this->getRPlugins()->contains($rPlugin)) {
+            $rPluginIssue = new ChildRPluginIssue();
             $rPluginIssue->setRPlugin($rPlugin);
             if ($rPlugin->isRIssuesLoaded()) {
                 //remove the back reference if available
@@ -3997,6 +4060,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -4006,7 +4072,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -4016,6 +4084,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -4025,7 +4096,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -4035,6 +4108,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -4044,7 +4120,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -4054,6 +4132,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -4063,7 +4144,9 @@ abstract class Issues implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

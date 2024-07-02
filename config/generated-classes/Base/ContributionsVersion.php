@@ -27,8 +27,8 @@ use Propel\Runtime\Util\PropelDateTime;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class ContributionsVersion implements ActiveRecordInterface
 {
     /**
@@ -65,78 +65,91 @@ abstract class ContributionsVersion implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _fortemplate field.
+     *
      * @var        int
      */
     protected $_fortemplate;
 
     /**
      * The value for the _forissue field.
+     *
      * @var        int
      */
     protected $_forissue;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _status field.
+     *
      * @var        string
      */
     protected $_status;
 
     /**
      * The value for the _newdate field.
+     *
      * @var        int
      */
     protected $_newdate;
 
     /**
      * The value for the _moddate field.
+     *
      * @var        int
      */
     protected $_moddate;
 
     /**
      * The value for the __user__ field.
+     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the _forchapter field.
+     *
      * @var        int
      */
     protected $_forchapter;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the version field.
+     *
      * Note: this column has a database default value of: 0
      * @var        int
      */
@@ -144,24 +157,28 @@ abstract class ContributionsVersion implements ActiveRecordInterface
 
     /**
      * The value for the version_created_at field.
-     * @var        \DateTime
+     *
+     * @var        DateTime
      */
     protected $version_created_at;
 
     /**
      * The value for the version_created_by field.
+     *
      * @var        string
      */
     protected $version_created_by;
 
     /**
      * The value for the version_comment field.
+     *
      * @var        string
      */
     protected $version_comment;
 
     /**
      * The value for the _data_ids field.
+     *
      * @var        array
      */
     protected $_data_ids;
@@ -175,6 +192,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
 
     /**
      * The value for the _data_versions field.
+     *
      * @var        array
      */
     protected $_data_versions;
@@ -426,7 +444,15 @@ abstract class ContributionsVersion implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -563,7 +589,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [version_created_at] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -575,7 +601,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
         if ($format === null) {
             return $this->version_created_at;
         } else {
-            return $this->version_created_at instanceof \DateTime ? $this->version_created_at->format($format) : null;
+            return $this->version_created_at instanceof \DateTimeInterface ? $this->version_created_at->format($format) : null;
         }
     }
 
@@ -611,7 +637,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
         }
         if (!$this->_data_ids_unserialized && null !== $this->_data_ids) {
             $_data_ids_unserialized = substr($this->_data_ids, 2, -2);
-            $this->_data_ids_unserialized = $_data_ids_unserialized ? explode(' | ', $_data_ids_unserialized) : array();
+            $this->_data_ids_unserialized = '' !== $_data_ids_unserialized ? explode(' | ', $_data_ids_unserialized) : array();
         }
 
         return $this->_data_ids_unserialized;
@@ -640,7 +666,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
         }
         if (!$this->_data_versions_unserialized && null !== $this->_data_versions) {
             $_data_versions_unserialized = substr($this->_data_versions, 2, -2);
-            $this->_data_versions_unserialized = $_data_versions_unserialized ? explode(' | ', $_data_versions_unserialized) : array();
+            $this->_data_versions_unserialized = '' !== $_data_versions_unserialized ? explode(' | ', $_data_versions_unserialized) : array();
         }
 
         return $this->_data_versions_unserialized;
@@ -924,7 +950,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
     /**
      * Sets the value of [version_created_at] column to a normalized version of the date/time value specified.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      * @return $this|\ContributionsVersion The current object (for fluent API support)
      */
@@ -932,7 +958,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->version_created_at !== null || $dt !== null) {
-            if ($this->version_created_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->version_created_at->format("Y-m-d H:i:s")) {
+            if ($this->version_created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->version_created_at->format("Y-m-d H:i:s.u")) {
                 $this->version_created_at = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[ContributionsVersionTableMap::COL_VERSION_CREATED_AT] = true;
             }
@@ -1307,13 +1333,17 @@ abstract class ContributionsVersion implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(ContributionsVersionTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1503,7 +1533,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->version, PDO::PARAM_INT);
                         break;
                     case 'version_created_at':
-                        $stmt->bindValue($identifier, $this->version_created_at ? $this->version_created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->version_created_at ? $this->version_created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'version_created_by':
                         $stmt->bindValue($identifier, $this->version_created_by, PDO::PARAM_STR);
@@ -1675,12 +1705,8 @@ abstract class ContributionsVersion implements ActiveRecordInterface
             $keys[16] => $this->getDataIds(),
             $keys[17] => $this->getDataVersions(),
         );
-
-        $utc = new \DateTimeZone('utc');
-        if ($result[$keys[13]] instanceof \DateTime) {
-            // When changing timezone we don't want to change existing instances
-            $dateTime = clone $result[$keys[13]];
-            $result[$keys[13]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        if ($result[$keys[13]] instanceof \DateTimeInterface) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2158,7 +2184,7 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function getContributions(ConnectionInterface $con = null)
     {
-        if ($this->aContributions === null && ($this->id !== null)) {
+        if ($this->aContributions === null && ($this->id != 0)) {
             $this->aContributions = ChildContributionsQuery::create()->findPk($this->id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -2243,6 +2269,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -2252,7 +2281,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -2262,6 +2293,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -2271,7 +2305,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -2281,6 +2317,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -2290,7 +2329,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -2300,6 +2341,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -2309,7 +2353,9 @@ abstract class ContributionsVersion implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

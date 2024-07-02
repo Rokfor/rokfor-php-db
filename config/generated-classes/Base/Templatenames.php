@@ -26,7 +26,13 @@ use \Templates as ChildTemplates;
 use \TemplatesQuery as ChildTemplatesQuery;
 use \Exception;
 use \PDO;
+use Map\ContributionsTableMap;
+use Map\RPluginTemplateTableMap;
+use Map\RRightsFortemplateTableMap;
+use Map\RTemplatenamesForbookTableMap;
+use Map\RTemplatenamesInchapterTableMap;
 use Map\TemplatenamesTableMap;
+use Map\TemplatesTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -45,8 +51,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Templatenames implements ActiveRecordInterface
 {
     /**
@@ -83,60 +89,70 @@ abstract class Templatenames implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _helptext field.
+     *
      * @var        string
      */
     protected $_helptext;
 
     /**
      * The value for the _helpimage field.
+     *
      * @var        string
      */
     protected $_helpimage;
 
     /**
      * The value for the _category field.
+     *
      * @var        string
      */
     protected $_category;
 
     /**
      * The value for the _public field.
+     *
      * @var        string
      */
     protected $_public;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
@@ -499,7 +515,15 @@ abstract class Templatenames implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -1005,13 +1029,17 @@ abstract class Templatenames implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(TemplatenamesTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1976,22 +2004,28 @@ abstract class Templatenames implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RRightsFortemplate' == $relationName) {
-            return $this->initRRightsFortemplates();
+            $this->initRRightsFortemplates();
+            return;
         }
         if ('RTemplatenamesForbook' == $relationName) {
-            return $this->initRTemplatenamesForbooks();
+            $this->initRTemplatenamesForbooks();
+            return;
         }
         if ('RTemplatenamesInchapter' == $relationName) {
-            return $this->initRTemplatenamesInchapters();
+            $this->initRTemplatenamesInchapters();
+            return;
         }
         if ('Contributions' == $relationName) {
-            return $this->initContributionss();
+            $this->initContributionss();
+            return;
         }
         if ('RPluginTemplate' == $relationName) {
-            return $this->initRPluginTemplates();
+            $this->initRPluginTemplates();
+            return;
         }
         if ('Templates' == $relationName) {
-            return $this->initTemplatess();
+            $this->initTemplatess();
+            return;
         }
     }
 
@@ -2034,7 +2068,10 @@ abstract class Templatenames implements ActiveRecordInterface
         if (null !== $this->collRRightsFortemplates && !$overrideExisting) {
             return;
         }
-        $this->collRRightsFortemplates = new ObjectCollection();
+
+        $collectionClassName = RRightsFortemplateTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsFortemplates = new $collectionClassName;
         $this->collRRightsFortemplates->setModel('\RRightsFortemplate');
     }
 
@@ -2182,6 +2219,10 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRRightsFortemplates->contains($l)) {
             $this->doAddRRightsFortemplate($l);
+
+            if ($this->rRightsFortemplatesScheduledForDeletion and $this->rRightsFortemplatesScheduledForDeletion->contains($l)) {
+                $this->rRightsFortemplatesScheduledForDeletion->remove($this->rRightsFortemplatesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2280,7 +2321,10 @@ abstract class Templatenames implements ActiveRecordInterface
         if (null !== $this->collRTemplatenamesForbooks && !$overrideExisting) {
             return;
         }
-        $this->collRTemplatenamesForbooks = new ObjectCollection();
+
+        $collectionClassName = RTemplatenamesForbookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRTemplatenamesForbooks = new $collectionClassName;
         $this->collRTemplatenamesForbooks->setModel('\RTemplatenamesForbook');
     }
 
@@ -2428,6 +2472,10 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesForbooks->contains($l)) {
             $this->doAddRTemplatenamesForbook($l);
+
+            if ($this->rTemplatenamesForbooksScheduledForDeletion and $this->rTemplatenamesForbooksScheduledForDeletion->contains($l)) {
+                $this->rTemplatenamesForbooksScheduledForDeletion->remove($this->rTemplatenamesForbooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2526,7 +2574,10 @@ abstract class Templatenames implements ActiveRecordInterface
         if (null !== $this->collRTemplatenamesInchapters && !$overrideExisting) {
             return;
         }
-        $this->collRTemplatenamesInchapters = new ObjectCollection();
+
+        $collectionClassName = RTemplatenamesInchapterTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRTemplatenamesInchapters = new $collectionClassName;
         $this->collRTemplatenamesInchapters->setModel('\RTemplatenamesInchapter');
     }
 
@@ -2674,6 +2725,10 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesInchapters->contains($l)) {
             $this->doAddRTemplatenamesInchapter($l);
+
+            if ($this->rTemplatenamesInchaptersScheduledForDeletion and $this->rTemplatenamesInchaptersScheduledForDeletion->contains($l)) {
+                $this->rTemplatenamesInchaptersScheduledForDeletion->remove($this->rTemplatenamesInchaptersScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2772,7 +2827,10 @@ abstract class Templatenames implements ActiveRecordInterface
         if (null !== $this->collContributionss && !$overrideExisting) {
             return;
         }
-        $this->collContributionss = new ObjectCollection();
+
+        $collectionClassName = ContributionsTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collContributionss = new $collectionClassName;
         $this->collContributionss->setModel('\Contributions');
     }
 
@@ -2917,6 +2975,10 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collContributionss->contains($l)) {
             $this->doAddContributions($l);
+
+            if ($this->contributionssScheduledForDeletion and $this->contributionssScheduledForDeletion->contains($l)) {
+                $this->contributionssScheduledForDeletion->remove($this->contributionssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3065,7 +3127,10 @@ abstract class Templatenames implements ActiveRecordInterface
         if (null !== $this->collRPluginTemplates && !$overrideExisting) {
             return;
         }
-        $this->collRPluginTemplates = new ObjectCollection();
+
+        $collectionClassName = RPluginTemplateTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginTemplates = new $collectionClassName;
         $this->collRPluginTemplates->setModel('\RPluginTemplate');
     }
 
@@ -3213,6 +3278,10 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collRPluginTemplates->contains($l)) {
             $this->doAddRPluginTemplate($l);
+
+            if ($this->rPluginTemplatesScheduledForDeletion and $this->rPluginTemplatesScheduledForDeletion->contains($l)) {
+                $this->rPluginTemplatesScheduledForDeletion->remove($this->rPluginTemplatesScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3311,7 +3380,10 @@ abstract class Templatenames implements ActiveRecordInterface
         if (null !== $this->collTemplatess && !$overrideExisting) {
             return;
         }
-        $this->collTemplatess = new ObjectCollection();
+
+        $collectionClassName = TemplatesTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collTemplatess = new $collectionClassName;
         $this->collTemplatess->setModel('\Templates');
     }
 
@@ -3456,6 +3528,10 @@ abstract class Templatenames implements ActiveRecordInterface
 
         if (!$this->collTemplatess->contains($l)) {
             $this->doAddTemplates($l);
+
+            if ($this->templatessScheduledForDeletion and $this->templatessScheduledForDeletion->contains($l)) {
+                $this->templatessScheduledForDeletion->remove($this->templatessScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3515,9 +3591,10 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function initRightss()
     {
-        $this->collRightss = new ObjectCollection();
-        $this->collRightssPartial = true;
+        $collectionClassName = RRightsFortemplateTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRightss = new $collectionClassName;
+        $this->collRightssPartial = true;
         $this->collRightss->setModel('\Rights');
     }
 
@@ -3706,8 +3783,8 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function removeRights(ChildRights $rights)
     {
-        if ($this->getRightss()->contains($rights)) { $rRightsFortemplate = new ChildRRightsFortemplate();
-
+        if ($this->getRightss()->contains($rights)) {
+            $rRightsFortemplate = new ChildRRightsFortemplate();
             $rRightsFortemplate->setRights($rights);
             if ($rights->isTemplatenamessLoaded()) {
                 //remove the back reference if available
@@ -3757,9 +3834,10 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function initBookss()
     {
-        $this->collBookss = new ObjectCollection();
-        $this->collBookssPartial = true;
+        $collectionClassName = RTemplatenamesForbookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collBookss = new $collectionClassName;
+        $this->collBookssPartial = true;
         $this->collBookss->setModel('\Books');
     }
 
@@ -3948,8 +4026,8 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function removeBooks(ChildBooks $books)
     {
-        if ($this->getBookss()->contains($books)) { $rTemplatenamesForbook = new ChildRTemplatenamesForbook();
-
+        if ($this->getBookss()->contains($books)) {
+            $rTemplatenamesForbook = new ChildRTemplatenamesForbook();
             $rTemplatenamesForbook->setBooks($books);
             if ($books->isTemplatenamessLoaded()) {
                 //remove the back reference if available
@@ -3999,9 +4077,10 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function initFormatss()
     {
-        $this->collFormatss = new ObjectCollection();
-        $this->collFormatssPartial = true;
+        $collectionClassName = RTemplatenamesInchapterTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collFormatss = new $collectionClassName;
+        $this->collFormatssPartial = true;
         $this->collFormatss->setModel('\Formats');
     }
 
@@ -4190,8 +4269,8 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function removeFormats(ChildFormats $formats)
     {
-        if ($this->getFormatss()->contains($formats)) { $rTemplatenamesInchapter = new ChildRTemplatenamesInchapter();
-
+        if ($this->getFormatss()->contains($formats)) {
+            $rTemplatenamesInchapter = new ChildRTemplatenamesInchapter();
             $rTemplatenamesInchapter->setFormats($formats);
             if ($formats->isTemplatenamessLoaded()) {
                 //remove the back reference if available
@@ -4241,9 +4320,10 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function initRPlugins()
     {
-        $this->collRPlugins = new ObjectCollection();
-        $this->collRPluginsPartial = true;
+        $collectionClassName = RPluginTemplateTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRPlugins = new $collectionClassName;
+        $this->collRPluginsPartial = true;
         $this->collRPlugins->setModel('\Plugins');
     }
 
@@ -4432,8 +4512,8 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function removeRPlugin(ChildPlugins $rPlugin)
     {
-        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginTemplate = new ChildRPluginTemplate();
-
+        if ($this->getRPlugins()->contains($rPlugin)) {
+            $rPluginTemplate = new ChildRPluginTemplate();
             $rPluginTemplate->setRPlugin($rPlugin);
             if ($rPlugin->isTemplatenamessLoaded()) {
                 //remove the back reference if available
@@ -4574,6 +4654,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -4583,7 +4666,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -4593,6 +4678,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -4602,7 +4690,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -4612,6 +4702,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -4621,7 +4714,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -4631,6 +4726,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -4640,7 +4738,9 @@ abstract class Templatenames implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

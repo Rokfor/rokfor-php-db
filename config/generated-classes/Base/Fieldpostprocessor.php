@@ -11,6 +11,7 @@ use \TemplatesQuery as ChildTemplatesQuery;
 use \Exception;
 use \PDO;
 use Map\FieldpostprocessorTableMap;
+use Map\RFieldpostprocessorForfieldTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -29,8 +30,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Fieldpostprocessor implements ActiveRecordInterface
 {
     /**
@@ -67,42 +68,49 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the _code field.
+     *
      * @var        string
      */
     protected $_code;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -357,7 +365,15 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -751,13 +767,17 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(FieldpostprocessorTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1385,7 +1405,8 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RFieldpostprocessorForfield' == $relationName) {
-            return $this->initRFieldpostprocessorForfields();
+            $this->initRFieldpostprocessorForfields();
+            return;
         }
     }
 
@@ -1428,7 +1449,10 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
         if (null !== $this->collRFieldpostprocessorForfields && !$overrideExisting) {
             return;
         }
-        $this->collRFieldpostprocessorForfields = new ObjectCollection();
+
+        $collectionClassName = RFieldpostprocessorForfieldTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRFieldpostprocessorForfields = new $collectionClassName;
         $this->collRFieldpostprocessorForfields->setModel('\RFieldpostprocessorForfield');
     }
 
@@ -1576,6 +1600,10 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
 
         if (!$this->collRFieldpostprocessorForfields->contains($l)) {
             $this->doAddRFieldpostprocessorForfield($l);
+
+            if ($this->rFieldpostprocessorForfieldsScheduledForDeletion and $this->rFieldpostprocessorForfieldsScheduledForDeletion->contains($l)) {
+                $this->rFieldpostprocessorForfieldsScheduledForDeletion->remove($this->rFieldpostprocessorForfieldsScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -1660,9 +1688,10 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function initTemplatess()
     {
-        $this->collTemplatess = new ObjectCollection();
-        $this->collTemplatessPartial = true;
+        $collectionClassName = RFieldpostprocessorForfieldTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collTemplatess = new $collectionClassName;
+        $this->collTemplatessPartial = true;
         $this->collTemplatess->setModel('\Templates');
     }
 
@@ -1851,8 +1880,8 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function removeTemplates(ChildTemplates $templates)
     {
-        if ($this->getTemplatess()->contains($templates)) { $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
-
+        if ($this->getTemplatess()->contains($templates)) {
+            $rFieldpostprocessorForfield = new ChildRFieldpostprocessorForfield();
             $rFieldpostprocessorForfield->setTemplates($templates);
             if ($templates->isFieldpostprocessorsLoaded()) {
                 //remove the back reference if available
@@ -1942,6 +1971,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -1951,7 +1983,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -1961,6 +1995,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -1970,7 +2007,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -1980,6 +2019,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -1989,7 +2031,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -1999,6 +2043,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -2008,7 +2055,9 @@ abstract class Fieldpostprocessor implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 

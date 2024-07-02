@@ -172,7 +172,7 @@ class RDataFormatTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getDataid(), (string) $obj->getFormatid()));
+                $key = serialize([(null === $obj->getDataid() || is_scalar($obj->getDataid()) || is_callable([$obj->getDataid(), '__toString']) ? (string) $obj->getDataid() : $obj->getDataid()), (null === $obj->getFormatid() || is_scalar($obj->getFormatid()) || is_callable([$obj->getFormatid(), '__toString']) ? (string) $obj->getFormatid() : $obj->getFormatid())]);
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -192,11 +192,11 @@ class RDataFormatTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \RDataFormat) {
-                $key = serialize(array((string) $value->getDataid(), (string) $value->getFormatid()));
+                $key = serialize([(null === $value->getDataid() || is_scalar($value->getDataid()) || is_callable([$value->getDataid(), '__toString']) ? (string) $value->getDataid() : $value->getDataid()), (null === $value->getFormatid() || is_scalar($value->getFormatid()) || is_callable([$value->getFormatid(), '__toString']) ? (string) $value->getFormatid() : $value->getFormatid())]);
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
-                $key = serialize(array((string) $value[0], (string) $value[1]));
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
             } elseif ($value instanceof Criteria) {
                 self::$instances = [];
 
@@ -230,7 +230,7 @@ class RDataFormatTableMap extends TableMap
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Dataid', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Dataid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Dataid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Dataid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Dataid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Dataid', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Formatid', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**

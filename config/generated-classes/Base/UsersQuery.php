@@ -44,29 +44,69 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUsersQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildUsersQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ChildUsersQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildUsersQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildUsersQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
  * @method     ChildUsersQuery leftJoinRRightsForuser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildUsersQuery rightJoinRRightsForuser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RRightsForuser relation
  * @method     ChildUsersQuery innerJoinRRightsForuser($relationAlias = null) Adds a INNER JOIN clause to the query using the RRightsForuser relation
+ *
+ * @method     ChildUsersQuery joinWithRRightsForuser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the RRightsForuser relation
+ *
+ * @method     ChildUsersQuery leftJoinWithRRightsForuser() Adds a LEFT JOIN clause and with to the query using the RRightsForuser relation
+ * @method     ChildUsersQuery rightJoinWithRRightsForuser() Adds a RIGHT JOIN clause and with to the query using the RRightsForuser relation
+ * @method     ChildUsersQuery innerJoinWithRRightsForuser() Adds a INNER JOIN clause and with to the query using the RRightsForuser relation
  *
  * @method     ChildUsersQuery leftJoinBooks($relationAlias = null) Adds a LEFT JOIN clause to the query using the Books relation
  * @method     ChildUsersQuery rightJoinBooks($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Books relation
  * @method     ChildUsersQuery innerJoinBooks($relationAlias = null) Adds a INNER JOIN clause to the query using the Books relation
  *
+ * @method     ChildUsersQuery joinWithBooks($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Books relation
+ *
+ * @method     ChildUsersQuery leftJoinWithBooks() Adds a LEFT JOIN clause and with to the query using the Books relation
+ * @method     ChildUsersQuery rightJoinWithBooks() Adds a RIGHT JOIN clause and with to the query using the Books relation
+ * @method     ChildUsersQuery innerJoinWithBooks() Adds a INNER JOIN clause and with to the query using the Books relation
+ *
  * @method     ChildUsersQuery leftJoinContributions($relationAlias = null) Adds a LEFT JOIN clause to the query using the Contributions relation
  * @method     ChildUsersQuery rightJoinContributions($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Contributions relation
  * @method     ChildUsersQuery innerJoinContributions($relationAlias = null) Adds a INNER JOIN clause to the query using the Contributions relation
+ *
+ * @method     ChildUsersQuery joinWithContributions($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Contributions relation
+ *
+ * @method     ChildUsersQuery leftJoinWithContributions() Adds a LEFT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildUsersQuery rightJoinWithContributions() Adds a RIGHT JOIN clause and with to the query using the Contributions relation
+ * @method     ChildUsersQuery innerJoinWithContributions() Adds a INNER JOIN clause and with to the query using the Contributions relation
  *
  * @method     ChildUsersQuery leftJoinData($relationAlias = null) Adds a LEFT JOIN clause to the query using the Data relation
  * @method     ChildUsersQuery rightJoinData($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Data relation
  * @method     ChildUsersQuery innerJoinData($relationAlias = null) Adds a INNER JOIN clause to the query using the Data relation
  *
+ * @method     ChildUsersQuery joinWithData($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Data relation
+ *
+ * @method     ChildUsersQuery leftJoinWithData() Adds a LEFT JOIN clause and with to the query using the Data relation
+ * @method     ChildUsersQuery rightJoinWithData() Adds a RIGHT JOIN clause and with to the query using the Data relation
+ * @method     ChildUsersQuery innerJoinWithData() Adds a INNER JOIN clause and with to the query using the Data relation
+ *
  * @method     ChildUsersQuery leftJoinFormats($relationAlias = null) Adds a LEFT JOIN clause to the query using the Formats relation
  * @method     ChildUsersQuery rightJoinFormats($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Formats relation
  * @method     ChildUsersQuery innerJoinFormats($relationAlias = null) Adds a INNER JOIN clause to the query using the Formats relation
  *
+ * @method     ChildUsersQuery joinWithFormats($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Formats relation
+ *
+ * @method     ChildUsersQuery leftJoinWithFormats() Adds a LEFT JOIN clause and with to the query using the Formats relation
+ * @method     ChildUsersQuery rightJoinWithFormats() Adds a RIGHT JOIN clause and with to the query using the Formats relation
+ * @method     ChildUsersQuery innerJoinWithFormats() Adds a INNER JOIN clause and with to the query using the Formats relation
+ *
  * @method     ChildUsersQuery leftJoinIssues($relationAlias = null) Adds a LEFT JOIN clause to the query using the Issues relation
  * @method     ChildUsersQuery rightJoinIssues($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Issues relation
  * @method     ChildUsersQuery innerJoinIssues($relationAlias = null) Adds a INNER JOIN clause to the query using the Issues relation
+ *
+ * @method     ChildUsersQuery joinWithIssues($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Issues relation
+ *
+ * @method     ChildUsersQuery leftJoinWithIssues() Adds a LEFT JOIN clause and with to the query using the Issues relation
+ * @method     ChildUsersQuery rightJoinWithIssues() Adds a RIGHT JOIN clause and with to the query using the Issues relation
+ * @method     ChildUsersQuery innerJoinWithIssues() Adds a INNER JOIN clause and with to the query using the Issues relation
  *
  * @method     \RRightsForuserQuery|\BooksQuery|\ContributionsQuery|\DataQuery|\FormatsQuery|\IssuesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
@@ -168,21 +208,27 @@ abstract class UsersQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = UsersTableMap::getInstanceFromPool((string) $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(UsersTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = UsersTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -212,7 +258,7 @@ abstract class UsersQuery extends ModelCriteria
             /** @var ChildUsers $obj */
             $obj = new ChildUsers();
             $obj->hydrate($row);
-            UsersTableMap::addInstanceToPool($obj, (string) $key);
+            UsersTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -335,11 +381,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByUsername('fooValue');   // WHERE username = 'fooValue'
-     * $query->filterByUsername('%fooValue%'); // WHERE username LIKE '%fooValue%'
+     * $query->filterByUsername('%fooValue%', Criteria::LIKE); // WHERE username LIKE '%fooValue%'
      * </code>
      *
      * @param     string $username The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -349,9 +394,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($username)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $username)) {
-                $username = str_replace('*', '%', $username);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -364,11 +406,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByPassword('fooValue');   // WHERE password = 'fooValue'
-     * $query->filterByPassword('%fooValue%'); // WHERE password LIKE '%fooValue%'
+     * $query->filterByPassword('%fooValue%', Criteria::LIKE); // WHERE password LIKE '%fooValue%'
      * </code>
      *
      * @param     string $password The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -378,9 +419,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($password)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $password)) {
-                $password = str_replace('*', '%', $password);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -393,11 +431,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByUsergroup('fooValue');   // WHERE usergroup = 'fooValue'
-     * $query->filterByUsergroup('%fooValue%'); // WHERE usergroup LIKE '%fooValue%'
+     * $query->filterByUsergroup('%fooValue%', Criteria::LIKE); // WHERE usergroup LIKE '%fooValue%'
      * </code>
      *
      * @param     string $usergroup The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -407,9 +444,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($usergroup)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $usergroup)) {
-                $usergroup = str_replace('*', '%', $usergroup);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -422,11 +456,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
-     * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
+     * $query->filterByEmail('%fooValue%', Criteria::LIKE); // WHERE email LIKE '%fooValue%'
      * </code>
      *
      * @param     string $email The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -436,9 +469,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($email)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $email)) {
-                $email = str_replace('*', '%', $email);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -451,11 +481,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByRoapikey('fooValue');   // WHERE roapikey = 'fooValue'
-     * $query->filterByRoapikey('%fooValue%'); // WHERE roapikey LIKE '%fooValue%'
+     * $query->filterByRoapikey('%fooValue%', Criteria::LIKE); // WHERE roapikey LIKE '%fooValue%'
      * </code>
      *
      * @param     string $roapikey The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -465,9 +494,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($roapikey)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $roapikey)) {
-                $roapikey = str_replace('*', '%', $roapikey);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -480,11 +506,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByRwapikey('fooValue');   // WHERE rwapikey = 'fooValue'
-     * $query->filterByRwapikey('%fooValue%'); // WHERE rwapikey LIKE '%fooValue%'
+     * $query->filterByRwapikey('%fooValue%', Criteria::LIKE); // WHERE rwapikey LIKE '%fooValue%'
      * </code>
      *
      * @param     string $rwapikey The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -494,9 +519,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($rwapikey)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $rwapikey)) {
-                $rwapikey = str_replace('*', '%', $rwapikey);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -509,11 +531,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByIp('fooValue');   // WHERE __ip__ = 'fooValue'
-     * $query->filterByIp('%fooValue%'); // WHERE __ip__ LIKE '%fooValue%'
+     * $query->filterByIp('%fooValue%', Criteria::LIKE); // WHERE __ip__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $ip The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -523,9 +544,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($ip)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $ip)) {
-                $ip = str_replace('*', '%', $ip);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -538,11 +556,10 @@ abstract class UsersQuery extends ModelCriteria
      * Example usage:
      * <code>
      * $query->filterByConfigSys('fooValue');   // WHERE __config__ = 'fooValue'
-     * $query->filterByConfigSys('%fooValue%'); // WHERE __config__ LIKE '%fooValue%'
+     * $query->filterByConfigSys('%fooValue%', Criteria::LIKE); // WHERE __config__ LIKE '%fooValue%'
      * </code>
      *
      * @param     string $configSys The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUsersQuery The current query, for fluid interface
@@ -552,9 +569,6 @@ abstract class UsersQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($configSys)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $configSys)) {
-                $configSys = str_replace('*', '%', $configSys);
-                $comparison = Criteria::LIKE;
             }
         }
 

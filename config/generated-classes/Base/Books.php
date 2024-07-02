@@ -33,6 +33,13 @@ use \UsersQuery as ChildUsersQuery;
 use \Exception;
 use \PDO;
 use Map\BooksTableMap;
+use Map\FormatsTableMap;
+use Map\IssuesTableMap;
+use Map\RBatchForbookTableMap;
+use Map\RDataBookTableMap;
+use Map\RPluginBookTableMap;
+use Map\RRightsForbookTableMap;
+use Map\RTemplatenamesForbookTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -51,8 +58,8 @@ use Propel\Runtime\Parser\AbstractParser;
  *
  *
  *
-* @package    propel.generator..Base
-*/
+ * @package    propel.generator..Base
+ */
 abstract class Books implements ActiveRecordInterface
 {
     /**
@@ -89,42 +96,49 @@ abstract class Books implements ActiveRecordInterface
 
     /**
      * The value for the id field.
+     *
      * @var        int
      */
     protected $id;
 
     /**
      * The value for the _name field.
+     *
      * @var        string
      */
     protected $_name;
 
     /**
      * The value for the __user__ field.
+     *
      * @var        int
      */
     protected $__user__;
 
     /**
      * The value for the __config__ field.
+     *
      * @var        string
      */
     protected $__config__;
 
     /**
      * The value for the __split__ field.
+     *
      * @var        string
      */
     protected $__split__;
 
     /**
      * The value for the __parentnode__ field.
+     *
      * @var        int
      */
     protected $__parentnode__;
 
     /**
      * The value for the __sort__ field.
+     *
      * @var        int
      */
     protected $__sort__;
@@ -520,7 +534,15 @@ abstract class Books implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        return array_keys(get_object_vars($this));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
+
+        foreach($serializableProperties as $property) {
+            $propertyNames[] = $property->getName();
+        }
+
+        return $propertyNames;
     }
 
     /**
@@ -938,13 +960,17 @@ abstract class Books implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(BooksTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $isInsert = $this->isNew();
             $ret = $this->preSave($con);
+            $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
             } else {
@@ -1487,7 +1513,7 @@ abstract class Books implements ActiveRecordInterface
                         $key = 'users';
                         break;
                     default:
-                        $key = 'Users';
+                        $key = 'userSysRef';
                 }
 
                 $result[$key] = $this->auserSysRef->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1968,7 +1994,7 @@ abstract class Books implements ActiveRecordInterface
      */
     public function getuserSysRef(ConnectionInterface $con = null)
     {
-        if ($this->auserSysRef === null && ($this->__user__ !== null)) {
+        if ($this->auserSysRef === null && ($this->__user__ != 0)) {
             $this->auserSysRef = ChildUsersQuery::create()->findPk($this->__user__, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1994,25 +2020,32 @@ abstract class Books implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('RBatchForbook' == $relationName) {
-            return $this->initRBatchForbooks();
+            $this->initRBatchForbooks();
+            return;
         }
         if ('RRightsForbook' == $relationName) {
-            return $this->initRRightsForbooks();
+            $this->initRRightsForbooks();
+            return;
         }
         if ('RTemplatenamesForbook' == $relationName) {
-            return $this->initRTemplatenamesForbooks();
+            $this->initRTemplatenamesForbooks();
+            return;
         }
         if ('RDataBook' == $relationName) {
-            return $this->initRDataBooks();
+            $this->initRDataBooks();
+            return;
         }
         if ('RPluginBook' == $relationName) {
-            return $this->initRPluginBooks();
+            $this->initRPluginBooks();
+            return;
         }
         if ('Formats' == $relationName) {
-            return $this->initFormatss();
+            $this->initFormatss();
+            return;
         }
         if ('Issues' == $relationName) {
-            return $this->initIssuess();
+            $this->initIssuess();
+            return;
         }
     }
 
@@ -2055,7 +2088,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collRBatchForbooks && !$overrideExisting) {
             return;
         }
-        $this->collRBatchForbooks = new ObjectCollection();
+
+        $collectionClassName = RBatchForbookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRBatchForbooks = new $collectionClassName;
         $this->collRBatchForbooks->setModel('\RBatchForbook');
     }
 
@@ -2203,6 +2239,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRBatchForbooks->contains($l)) {
             $this->doAddRBatchForbook($l);
+
+            if ($this->rBatchForbooksScheduledForDeletion and $this->rBatchForbooksScheduledForDeletion->contains($l)) {
+                $this->rBatchForbooksScheduledForDeletion->remove($this->rBatchForbooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2301,7 +2341,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collRRightsForbooks && !$overrideExisting) {
             return;
         }
-        $this->collRRightsForbooks = new ObjectCollection();
+
+        $collectionClassName = RRightsForbookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRRightsForbooks = new $collectionClassName;
         $this->collRRightsForbooks->setModel('\RRightsForbook');
     }
 
@@ -2449,6 +2492,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRRightsForbooks->contains($l)) {
             $this->doAddRRightsForbook($l);
+
+            if ($this->rRightsForbooksScheduledForDeletion and $this->rRightsForbooksScheduledForDeletion->contains($l)) {
+                $this->rRightsForbooksScheduledForDeletion->remove($this->rRightsForbooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2547,7 +2594,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collRTemplatenamesForbooks && !$overrideExisting) {
             return;
         }
-        $this->collRTemplatenamesForbooks = new ObjectCollection();
+
+        $collectionClassName = RTemplatenamesForbookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRTemplatenamesForbooks = new $collectionClassName;
         $this->collRTemplatenamesForbooks->setModel('\RTemplatenamesForbook');
     }
 
@@ -2695,6 +2745,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRTemplatenamesForbooks->contains($l)) {
             $this->doAddRTemplatenamesForbook($l);
+
+            if ($this->rTemplatenamesForbooksScheduledForDeletion and $this->rTemplatenamesForbooksScheduledForDeletion->contains($l)) {
+                $this->rTemplatenamesForbooksScheduledForDeletion->remove($this->rTemplatenamesForbooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -2793,7 +2847,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collRDataBooks && !$overrideExisting) {
             return;
         }
-        $this->collRDataBooks = new ObjectCollection();
+
+        $collectionClassName = RDataBookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRDataBooks = new $collectionClassName;
         $this->collRDataBooks->setModel('\RDataBook');
     }
 
@@ -2941,6 +2998,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRDataBooks->contains($l)) {
             $this->doAddRDataBook($l);
+
+            if ($this->rDataBooksScheduledForDeletion and $this->rDataBooksScheduledForDeletion->contains($l)) {
+                $this->rDataBooksScheduledForDeletion->remove($this->rDataBooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3039,7 +3100,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collRPluginBooks && !$overrideExisting) {
             return;
         }
-        $this->collRPluginBooks = new ObjectCollection();
+
+        $collectionClassName = RPluginBookTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRPluginBooks = new $collectionClassName;
         $this->collRPluginBooks->setModel('\RPluginBook');
     }
 
@@ -3187,6 +3251,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collRPluginBooks->contains($l)) {
             $this->doAddRPluginBook($l);
+
+            if ($this->rPluginBooksScheduledForDeletion and $this->rPluginBooksScheduledForDeletion->contains($l)) {
+                $this->rPluginBooksScheduledForDeletion->remove($this->rPluginBooksScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3285,7 +3353,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collFormatss && !$overrideExisting) {
             return;
         }
-        $this->collFormatss = new ObjectCollection();
+
+        $collectionClassName = FormatsTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collFormatss = new $collectionClassName;
         $this->collFormatss->setModel('\Formats');
     }
 
@@ -3430,6 +3501,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collFormatss->contains($l)) {
             $this->doAddFormats($l);
+
+            if ($this->formatssScheduledForDeletion and $this->formatssScheduledForDeletion->contains($l)) {
+                $this->formatssScheduledForDeletion->remove($this->formatssScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3528,7 +3603,10 @@ abstract class Books implements ActiveRecordInterface
         if (null !== $this->collIssuess && !$overrideExisting) {
             return;
         }
-        $this->collIssuess = new ObjectCollection();
+
+        $collectionClassName = IssuesTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collIssuess = new $collectionClassName;
         $this->collIssuess->setModel('\Issues');
     }
 
@@ -3673,6 +3751,10 @@ abstract class Books implements ActiveRecordInterface
 
         if (!$this->collIssuess->contains($l)) {
             $this->doAddIssues($l);
+
+            if ($this->issuessScheduledForDeletion and $this->issuessScheduledForDeletion->contains($l)) {
+                $this->issuessScheduledForDeletion->remove($this->issuessScheduledForDeletion->search($l));
+            }
         }
 
         return $this;
@@ -3757,9 +3839,10 @@ abstract class Books implements ActiveRecordInterface
      */
     public function initBatches()
     {
-        $this->collBatches = new ObjectCollection();
-        $this->collBatchesPartial = true;
+        $collectionClassName = RBatchForbookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collBatches = new $collectionClassName;
+        $this->collBatchesPartial = true;
         $this->collBatches->setModel('\Batch');
     }
 
@@ -3948,8 +4031,8 @@ abstract class Books implements ActiveRecordInterface
      */
     public function removeBatch(ChildBatch $batch)
     {
-        if ($this->getBatches()->contains($batch)) { $rBatchForbook = new ChildRBatchForbook();
-
+        if ($this->getBatches()->contains($batch)) {
+            $rBatchForbook = new ChildRBatchForbook();
             $rBatchForbook->setBatch($batch);
             if ($batch->isBookssLoaded()) {
                 //remove the back reference if available
@@ -3999,9 +4082,10 @@ abstract class Books implements ActiveRecordInterface
      */
     public function initRightss()
     {
-        $this->collRightss = new ObjectCollection();
-        $this->collRightssPartial = true;
+        $collectionClassName = RRightsForbookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRightss = new $collectionClassName;
+        $this->collRightssPartial = true;
         $this->collRightss->setModel('\Rights');
     }
 
@@ -4190,8 +4274,8 @@ abstract class Books implements ActiveRecordInterface
      */
     public function removeRights(ChildRights $rights)
     {
-        if ($this->getRightss()->contains($rights)) { $rRightsForbook = new ChildRRightsForbook();
-
+        if ($this->getRightss()->contains($rights)) {
+            $rRightsForbook = new ChildRRightsForbook();
             $rRightsForbook->setRights($rights);
             if ($rights->isBookssLoaded()) {
                 //remove the back reference if available
@@ -4241,9 +4325,10 @@ abstract class Books implements ActiveRecordInterface
      */
     public function initTemplatenamess()
     {
-        $this->collTemplatenamess = new ObjectCollection();
-        $this->collTemplatenamessPartial = true;
+        $collectionClassName = RTemplatenamesForbookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collTemplatenamess = new $collectionClassName;
+        $this->collTemplatenamessPartial = true;
         $this->collTemplatenamess->setModel('\Templatenames');
     }
 
@@ -4432,8 +4517,8 @@ abstract class Books implements ActiveRecordInterface
      */
     public function removeTemplatenames(ChildTemplatenames $templatenames)
     {
-        if ($this->getTemplatenamess()->contains($templatenames)) { $rTemplatenamesForbook = new ChildRTemplatenamesForbook();
-
+        if ($this->getTemplatenamess()->contains($templatenames)) {
+            $rTemplatenamesForbook = new ChildRTemplatenamesForbook();
             $rTemplatenamesForbook->setTemplatenames($templatenames);
             if ($templatenames->isBookssLoaded()) {
                 //remove the back reference if available
@@ -4483,9 +4568,10 @@ abstract class Books implements ActiveRecordInterface
      */
     public function initRDatas()
     {
-        $this->collRDatas = new ObjectCollection();
-        $this->collRDatasPartial = true;
+        $collectionClassName = RDataBookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRDatas = new $collectionClassName;
+        $this->collRDatasPartial = true;
         $this->collRDatas->setModel('\Data');
     }
 
@@ -4674,8 +4760,8 @@ abstract class Books implements ActiveRecordInterface
      */
     public function removeRData(ChildData $rData)
     {
-        if ($this->getRDatas()->contains($rData)) { $rDataBook = new ChildRDataBook();
-
+        if ($this->getRDatas()->contains($rData)) {
+            $rDataBook = new ChildRDataBook();
             $rDataBook->setRData($rData);
             if ($rData->isRBooksLoaded()) {
                 //remove the back reference if available
@@ -4725,9 +4811,10 @@ abstract class Books implements ActiveRecordInterface
      */
     public function initRPlugins()
     {
-        $this->collRPlugins = new ObjectCollection();
-        $this->collRPluginsPartial = true;
+        $collectionClassName = RPluginBookTableMap::getTableMap()->getCollectionClassName();
 
+        $this->collRPlugins = new $collectionClassName;
+        $this->collRPluginsPartial = true;
         $this->collRPlugins->setModel('\Plugins');
     }
 
@@ -4916,8 +5003,8 @@ abstract class Books implements ActiveRecordInterface
      */
     public function removeRPlugin(ChildPlugins $rPlugin)
     {
-        if ($this->getRPlugins()->contains($rPlugin)) { $rPluginBook = new ChildRPluginBook();
-
+        if ($this->getRPlugins()->contains($rPlugin)) {
+            $rPluginBook = new ChildRPluginBook();
             $rPluginBook->setRPlugin($rPlugin);
             if ($rPlugin->isRBooksLoaded()) {
                 //remove the back reference if available
@@ -5071,6 +5158,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function preSave(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preSave')) {
+            return parent::preSave($con);
+        }
         return true;
     }
 
@@ -5080,7 +5170,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postSave')) {
+            parent::postSave($con);
+        }
     }
 
     /**
@@ -5090,6 +5182,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function preInsert(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preInsert')) {
+            return parent::preInsert($con);
+        }
         return true;
     }
 
@@ -5099,7 +5194,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postInsert')) {
+            parent::postInsert($con);
+        }
     }
 
     /**
@@ -5109,6 +5206,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preUpdate')) {
+            return parent::preUpdate($con);
+        }
         return true;
     }
 
@@ -5118,7 +5218,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postUpdate')) {
+            parent::postUpdate($con);
+        }
     }
 
     /**
@@ -5128,6 +5230,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function preDelete(ConnectionInterface $con = null)
     {
+        if (is_callable('parent::preDelete')) {
+            return parent::preDelete($con);
+        }
         return true;
     }
 
@@ -5137,7 +5242,9 @@ abstract class Books implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        if (is_callable('parent::postDelete')) {
+            parent::postDelete($con);
+        }
     }
 
 
