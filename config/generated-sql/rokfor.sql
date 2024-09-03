@@ -955,3 +955,5 @@ CREATE TABLE `_data_version`
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT into users SET username = "root", password = md5("123"), usergroup = "root";
