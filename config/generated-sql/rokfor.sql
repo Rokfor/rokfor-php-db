@@ -336,11 +336,11 @@ CREATE TABLE `_contributions_cache`
     PRIMARY KEY (`id`),
     INDEX `_cacheforcontribution_index` (`_forcontribution`),
     INDEX `_signature_index` (`_signature`),
-    INDEX `_book_index` (`_book`),
-    INDEX `_issue_index` (`_issue`),
-    INDEX `_chapter_index` (`_chapter`),
-    INDEX `_template_index` (`_template`),
-    INDEX `_contribution_index` (`_contribution`),
+    INDEX `_book_index` (`_book`(768)),
+    INDEX `_issue_index` (`_issue`(768)),
+    INDEX `_chapter_index` (`_chapter`(768)),
+    INDEX `_template_index` (`_template`(768)),
+    INDEX `_contribution_index` (`_contribution`(768)),
     CONSTRAINT `c_contribution_fk`
         FOREIGN KEY (`_forcontribution`)
         REFERENCES `_contributions` (`id`)
